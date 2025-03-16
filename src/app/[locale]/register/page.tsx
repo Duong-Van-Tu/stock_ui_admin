@@ -15,7 +15,6 @@ export default function Register() {
   const router = useRouter();
 
   const onFinish = (values: any) => {
-    console.log({ values });
     router.push(PageURLs.ofIndex());
   };
 
@@ -106,7 +105,9 @@ export default function Register() {
       </Form>
 
       <Text>
-        <a onClick={() => router.push('/login')}>{t('backToLogin')}</a>
+        <a onClick={() => router.push(PageURLs.ofLogin())}>
+          {t('backToLogin')}
+        </a>
       </Text>
     </AuthLayout>
   );

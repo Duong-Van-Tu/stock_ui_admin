@@ -6,7 +6,6 @@ import { store } from '@/redux/store';
 import { ConfigProvider } from 'antd';
 import enUS from 'antd/es/locale/en_US';
 import { AuthProvider } from './auth.provider';
-import { CurrentCtxInitializer } from './current-ctx.provider';
 import { usePathname } from 'next/navigation';
 import { getPathnameSegment } from '@/utils/common';
 import { antdLocales, Locale } from '@/constants/locale';
@@ -25,14 +24,12 @@ export default function Providers({ children }: { children: ReactNode }) {
   const antdLocale = antdLocales[locale] || enUS;
 
   return (
-    <CurrentCtxInitializer>
-      <AntdRegistry>
-        <ConfigProvider locale={antdLocale} theme={theme}>
-          <Provider store={store}>
-            <AuthProvider>{children}</AuthProvider>
-          </Provider>
-        </ConfigProvider>
-      </AntdRegistry>
-    </CurrentCtxInitializer>
+    <AntdRegistry>
+      <ConfigProvider locale={antdLocale} theme={theme}>
+        <Provider store={store}>
+          <AuthProvider>{children}</AuthProvider>
+        </Provider>
+      </ConfigProvider>
+    </AntdRegistry>
   );
 }

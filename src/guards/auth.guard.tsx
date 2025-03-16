@@ -1,8 +1,11 @@
+'use client';
+
 import { ReactNode, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/auth.hook';
 import { useAppSelector } from '@/redux/hooks';
-import { watchProfileLoading } from '@/redux/slices/auth.slice';
+import { watchLoggedIn, watchProfileLoading } from '@/redux/slices/auth.slice';
+import { PageURLs } from '@/utils/navigate';
 
 type AuthGuardProps = {
   children: ReactNode;
@@ -11,15 +14,13 @@ type AuthGuardProps = {
 export function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isLoggedIn } = useAuth();
   const loading = useAppSelector(watchProfileLoading);
+  const isLoggedIn = useAppSelector(watchLoggedIn);
 
   useEffect(() => {
     if (!loading) {
       if (!isLoggedIn) {
-        router.replace('/login');
-      } else if (pathname === '/') {
-        router.replace('/home');
+        router.replace(PageURLs.ofLogin());
       }
     }
   }, [isLoggedIn, loading, pathname, router]);

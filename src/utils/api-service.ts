@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { objectToQueryString } from '@/utils/common';
+import Cookies from 'js-cookie';
 
 export class ApiFetcher {
   static defaultHeaders = {
@@ -13,7 +14,7 @@ export class ApiFetcher {
   }
 
   static getToken() {
-    return localStorage.getItem('access_token');
+    return typeof window !== 'undefined' ? Cookies.get('access_token') : null;
   }
 
   static async request(url: string, options: AxiosRequestConfig) {

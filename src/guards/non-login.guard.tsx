@@ -1,8 +1,11 @@
+'use client';
+
 import { ReactNode, useEffect } from 'react';
 import { useAuth } from '@/hooks/auth.hook';
 import { useAppSelector } from '@/redux/hooks';
 import { watchProfileLoading } from '@/redux/slices/auth.slice';
 import { useRouter } from 'next/navigation';
+import { PageURLs } from '@/utils/navigate';
 
 type NonLoginGuardProps = {
   children: ReactNode;
@@ -15,7 +18,7 @@ export function NonLoginGuard({ children }: NonLoginGuardProps) {
 
   useEffect(() => {
     if (isLoggedIn && !loading) {
-      router.replace('/login');
+      router.replace(PageURLs.ofIndex());
     }
   }, [isLoggedIn, loading, router]);
 

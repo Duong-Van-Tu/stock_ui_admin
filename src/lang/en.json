@@ -2,9 +2,11 @@
   "appTitle": "Stock App",
   "appDescription": "System sends alerts",
   "home": "Home",
+  "homeDescription": "Home page",
   "login": "Login",
   "loginDescription": "Login page",
   "register": "Register",
+  "registerDescription": "Register page",
   "username": "Username",
   "password": "Password",
   "confirmPassword": "Confirm Password",
@@ -23,7 +25,7 @@
   "passwordMinLength": "Password must be at least 6 characters!",
   "passwordsDoNotMatch": "Passwords do not match!",
   "usernamePattern": "Username can only contain letters, numbers, and underscores!",
-  "registerPromptStart": "If you don’t have an account,",
-  "registerPromptLink": "click here to Register",
+  "registerPromptStart": "If you don’t have an account, click here to",
+  "registerPromptLink": "Register",
   "backToLogin": "Back to login page"
 }

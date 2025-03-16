@@ -1,9 +1,12 @@
+import Cookies from 'js-cookie';
 import { createAppSlice } from '../createAppSlice';
+import { defaultApiFetcher } from '@/utils/api-instances';
 
 export type AuthSliceState = {
   loading: boolean;
   profileLoading: boolean;
   isAuthenticated: boolean;
+  user?: User;
 };
 
 const initialState: AuthSliceState = {
@@ -18,7 +21,8 @@ export const authSlice = createAppSlice({
   reducers: (create) => ({
     getProfileUser: create.asyncThunk(
       async () => {
-        const response = await apiFetcher.get('users/profile');
+        const response = await defaultApiFetcher.get('users/profile');
+
         return response.data;
       },
       {
@@ -34,6 +38,33 @@ export const authSlice = createAppSlice({
           state.isAuthenticated = false;
         }
       }
+    ),
+    loginUser: create.asyncThunk(
+      async (credentials: LoginUserParams) => {
+        const response = await defaultApiFetcher.post(
+          'users/login',
+          credentials
+        );
+
+        Cookies.set('access_token', response.data.accesstoken, { expires: 7 });
+
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loading = true;
+        },
+        fulfilled: (state, action) => {
+          state.loading = false;
+          state.isAuthenticated = true;
+          state.user = action.payload;
+        },
+        rejected: (state) => {
+          state.loading = false;
+          state.isAuthenticated = false;
+          state.user = undefined;
+        }
+      }
     )
   }),
 
@@ -47,4 +78,4 @@ export const authSlice = createAppSlice({
 export const { watchLoggedIn, watchAuthLoading, watchProfileLoading } =
   authSlice.selectors;
 
-export const { getProfileUser } = authSlice.actions;
+export const { getProfileUser, loginUser } = authSlice.actions;

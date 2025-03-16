@@ -8,15 +8,22 @@ import { useRouter } from 'next/navigation';
 import { PageURLs } from '@/utils/navigate';
 import AuthLayout from '@/layout/auth.layout';
 import { useTranslations } from 'next-intl';
+import { useAppDispatch } from '@/redux/hooks';
+import { loginUser } from '@/redux/slices/auth.slice';
 
 const { Text } = Typography;
+
+type LoginFormValues = LoginUserParams & {
+  remember?: boolean;
+};
 
 export default function Login() {
   const t = useTranslations();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
-  const onFinish = (values: any) => {
-    console.log({ values });
+  const onFinish = (values: LoginFormValues) => {
+    dispatch(loginUser(values));
     router.push(PageURLs.ofIndex());
   };
 
