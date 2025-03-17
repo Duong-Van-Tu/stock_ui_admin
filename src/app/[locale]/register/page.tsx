@@ -9,7 +9,7 @@ import { PageURLs } from '@/utils/navigate';
 import AuthLayout from '@/layout/auth.layout';
 import { useAppDispatch } from '@/redux/hooks';
 import { registerAndLogin } from '@/redux/slices/auth.slice';
-import { regex } from '@/types/regex';
+import { regex } from '@/utils/regex';
 
 const { Text } = Typography;
 

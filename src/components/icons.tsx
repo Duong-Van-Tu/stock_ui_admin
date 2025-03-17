@@ -2,6 +2,9 @@
 import React from 'react';
 import { css, SerializedStyles } from '@emotion/react';
 import Logo from '@/assets/svgs/logo.svg';
+import ExpandLeft from '@/assets/svgs/expand-left.svg';
+import ExpandRight from '@/assets/svgs/expand-right.svg';
+import Home from '@/assets/svgs/home.svg';
 
 type IconProps = {
   width?: number | string;
@@ -12,7 +15,10 @@ type IconProps = {
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = {
-  logo: Logo
+  logo: Logo,
+  expandLeft: ExpandLeft,
+  expandRight: ExpandRight,
+  home: Home
 };
 
 export const Icon = ({

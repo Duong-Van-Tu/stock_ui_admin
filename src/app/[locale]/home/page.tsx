@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
+import MainLayout from '@/layout/main.layout';
 
 export default function Home() {
-  return <>Home page</>;
+  return <MainLayout>Home page</MainLayout>;
 }

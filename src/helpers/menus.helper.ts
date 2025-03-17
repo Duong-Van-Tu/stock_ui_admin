@@ -1,0 +1,50 @@
+import { Key, ReactNode } from 'react';
+import { MenuProps } from 'antd';
+import { PageURLs } from '@/utils/navigate';
+
+export type LevelKeysProps = {
+  key?: string;
+  children?: LevelKeysProps[];
+};
+
+export type MenuItem = Required<MenuProps>['items'][number];
+export function getItem(
+  label: ReactNode,
+  key: Key,
+  icon?: ReactNode,
+  children?: MenuItem[]
+): MenuItem {
+  return {
+    key,
+    icon,
+    children,
+    label
+  } as MenuItem;
+}
+
+export const getLevelKeys = (items1: LevelKeysProps[]) => {
+  const key: Record<string, number> = {};
+  const func = (items2: LevelKeysProps[], level = 1) => {
+    items2.forEach((item) => {
+      if (item.key) {
+        key[item.key] = level;
+      }
+      if (item.children) {
+        func(item.children, level + 1);
+      }
+    });
+  };
+  func(items1);
+  return key;
+};
+
+export const getMenuStructure = (
+  t: (key: string) => string
+): MenuItemStructure[] => [
+  {
+    label: t('home'),
+    key: 'home',
+    iconType: 'home',
+    link: PageURLs.ofIndex()
+  }
+];
