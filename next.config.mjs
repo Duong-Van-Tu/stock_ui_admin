@@ -7,12 +7,12 @@ const nextConfig = createIntlPlugin()({
     return [
       {
         source: '/',
-        destination: '/home',
+        destination: '/login',
         permanent: false
       },
       {
         source: '/:locale(en|vi)',
-        destination: '/home',
+        destination: '/login',
         permanent: false
       }
     ];

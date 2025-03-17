@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
+import { AppThunk } from '../store';
 
 export type AuthSliceState = {
   loading: boolean;
@@ -29,9 +30,19 @@ export const authSlice = createAppSlice({
         pending: (state) => {
           state.profileLoading = true;
         },
-        fulfilled: (state) => {
+        fulfilled: (state, action) => {
           state.profileLoading = false;
           state.isAuthenticated = true;
+          state.user = {
+            id: action.payload.id,
+            username: action.payload.username,
+            fullname: action.payload.fullname,
+            phone: action.payload.phone,
+            email: action.payload.email,
+            role: action.payload.role,
+            createdDate: action.payload.createdate,
+            dateOfBirth: action.payload.birthdate
+          };
         },
         rejected: (state) => {
           state.profileLoading = false;
@@ -57,7 +68,36 @@ export const authSlice = createAppSlice({
         fulfilled: (state, action) => {
           state.loading = false;
           state.isAuthenticated = true;
-          state.user = action.payload;
+          state.user = {
+            id: action.payload.id,
+            username: action.payload.username,
+            fullname: action.payload.fullname
+          };
+        },
+        rejected: (state) => {
+          state.loading = false;
+          state.isAuthenticated = false;
+          state.user = undefined;
+        }
+      }
+    ),
+    registerUser: create.asyncThunk(
+      async (userData: RegisterUserParams) => {
+        const response = await defaultApiFetcher.post('users', userData);
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loading = true;
+        },
+        fulfilled: (state, action) => {
+          state.loading = false;
+          state.isAuthenticated = true;
+          state.user = {
+            id: action.payload.id,
+            username: action.payload.username,
+            fullname: action.payload.fullname
+          };
         },
         rejected: (state) => {
           state.loading = false;
@@ -78,4 +118,16 @@ export const authSlice = createAppSlice({
 export const { watchLoggedIn, watchAuthLoading, watchProfileLoading } =
   authSlice.selectors;
 
-export const { getProfileUser, loginUser } = authSlice.actions;
+export const { getProfileUser, loginUser, registerUser } = authSlice.actions;
+
+export const registerAndLogin =
+  (userData: RegisterUserParams): AppThunk =>
+  async (dispatch) => {
+    const userInfo = await dispatch(registerUser(userData)).unwrap();
+    await dispatch(
+      loginUser({
+        username: userInfo.username,
+        password: userInfo.password
+      })
+    );
+  };

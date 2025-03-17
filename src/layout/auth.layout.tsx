@@ -4,18 +4,20 @@
 import { css } from '@emotion/react';
 import { Typography } from 'antd';
 import { Icon } from '@/components/icons';
+import { useWindowSize } from '@/hooks/useWindowSize';
 
 const { Title } = Typography;
 
-interface AuthLayoutProps {
+type AuthLayoutProps = {
   title: string;
   children: React.ReactNode;
-}
+};
 
 export default function AuthLayout({ title, children }: AuthLayoutProps) {
+  const { isMobile } = useWindowSize();
   return (
     <div css={rootStyle}>
-      <div css={containerStyles}>
+      <div css={containerStyles(isMobile)}>
         <div css={logoStyles}>
           <Icon type='logo' width={60} height={60} />
         </div>
@@ -35,11 +37,12 @@ const rootStyle = css`
   align-items: center;
   min-height: 100vh;
 `;
-const containerStyles = css`
-  min-width: 40rem;
+
+const containerStyles = (isMobile: boolean) => css`
+  min-width: ${isMobile ? '100%' : '50rem'};
   max-width: 50rem;
   padding: 2.6rem 2.4rem;
-  box-shadow: 0rem 0.4rem 1rem rgba(0, 0, 0, 0.1);
+  box-shadow: ${isMobile ? 'none' : '0rem 0.4rem 1rem rgba(0, 0, 0, 0.1)'};
   border-radius: 0.8rem;
   background: var(--white-color);
 `;

@@ -8,8 +8,8 @@ import { useRouter } from 'next/navigation';
 import { PageURLs } from '@/utils/navigate';
 import AuthLayout from '@/layout/auth.layout';
 import { useTranslations } from 'next-intl';
-import { useAppDispatch } from '@/redux/hooks';
-import { loginUser } from '@/redux/slices/auth.slice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { loginUser, watchAuthLoading } from '@/redux/slices/auth.slice';
 
 const { Text } = Typography;
 
@@ -21,6 +21,7 @@ export default function Login() {
   const t = useTranslations();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const loading = useAppSelector(watchAuthLoading);
 
   const onFinish = (values: LoginFormValues) => {
     dispatch(loginUser(values));
@@ -56,7 +57,13 @@ export default function Login() {
           <Checkbox>{t('rememberMe')}</Checkbox>
         </Form.Item>
         <Form.Item>
-          <Button size='large' type='primary' htmlType='submit' block>
+          <Button
+            loading={loading}
+            size='large'
+            type='primary'
+            htmlType='submit'
+            block
+          >
             {t('login')}
           </Button>
         </Form.Item>

@@ -1,6 +1,5 @@
 import { WithGuard } from '@/guards';
 import { Metadata } from 'next';
-import { ReactNode } from 'react';
 import Home from './page';
 import { AuthGuard } from '@/guards/auth.guard';
 

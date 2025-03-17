@@ -7,20 +7,35 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { PageURLs } from '@/utils/navigate';
 import AuthLayout from '@/layout/auth.layout';
+import { useAppDispatch } from '@/redux/hooks';
+import { registerAndLogin } from '@/redux/slices/auth.slice';
+import { regex } from '@/types/regex';
 
 const { Text } = Typography;
+
+type LoginFormValues = RegisterUserParams & {
+  confirmPassword: string;
+  remember?: boolean;
+};
 
 export default function Register() {
   const t = useTranslations();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
-  const onFinish = (values: any) => {
+  const onFinish = (values: LoginFormValues) => {
+    dispatch(registerAndLogin(values));
     router.push(PageURLs.ofIndex());
   };
 
   return (
     <AuthLayout title={t('register')}>
-      <Form name='register-form' onFinish={onFinish} layout='vertical'>
+      <Form
+        css={formStyles}
+        name='register-form'
+        onFinish={onFinish}
+        layout='vertical'
+      >
         <Form.Item
           label={<span css={formLabelStyles}>{t('fullName')}</span>}
           name='fullname'
@@ -43,7 +58,7 @@ export default function Register() {
             { required: true, message: t('pleaseEnterUsername') },
             { min: 3, message: t('usernameMinLength') },
             {
-              pattern: /^[a-zA-Z0-9_]+$/,
+              pattern: regex.username,
               message: t('usernamePattern')
             }
           ]}
@@ -60,7 +75,7 @@ export default function Register() {
           name='password'
           rules={[
             { required: true, message: t('pleaseEnterPassword') },
-            { min: 6, message: t('passwordMinLength') }
+            { pattern: regex.password, message: t('invalidPassword') }
           ]}
         >
           <Input.Password
@@ -116,4 +131,10 @@ export default function Register() {
 const formLabelStyles = css`
   font-weight: 500;
   font-size: 1.6rem;
+`;
+
+const formStyles = css`
+  .ant-form-item {
+    margin-bottom: 1.4rem;
+  }
 `;

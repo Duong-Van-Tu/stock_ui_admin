@@ -5,27 +5,30 @@ import { useEffect, useState } from 'react';
 export function useWindowSize() {
   const [size, setSize] = useState({
     width: 0,
-    height: 0
+    height: 0,
+    isMobile: false,
+    isTablet: false,
+    isDesktop: false
   });
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setSize({
-        width: window.innerWidth,
-        height: window.innerHeight
-      });
-
-      const handleResize = () => {
+      const updateSize = () => {
+        const width = window.innerWidth;
         setSize({
-          width: window.innerWidth,
-          height: window.innerHeight
+          width,
+          height: window.innerHeight,
+          isMobile: width < 768,
+          isTablet: width >= 768 && width < 1024,
+          isDesktop: width >= 1024
         });
       };
 
-      window.addEventListener('resize', handleResize);
+      updateSize();
+      window.addEventListener('resize', updateSize);
 
       return () => {
-        window.removeEventListener('resize', handleResize);
+        window.removeEventListener('resize', updateSize);
       };
     }
   }, []);

@@ -22,7 +22,7 @@
     "pleaseConfirmPassword": "Vui lòng xác nhận mật khẩu!",
     "fullNameMinLength": "Họ và tên phải có ít nhất 3 ký tự!",
     "usernameMinLength": "Tên đăng nhập phải có ít nhất 3 ký tự!",
-    "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự!",
+    "invalidPassword": "Tối thiểu 8 ký tự, ít nhất một chữ cái và một số!",
     "passwordsDoNotMatch": "Mật khẩu không khớp!",
     "usernamePattern": "Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới!",
     "registerPromptStart": "Nếu bạn chưa có tài khoản, hãy nhấn vào đây để",

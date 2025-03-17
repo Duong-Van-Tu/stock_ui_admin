@@ -3,12 +3,20 @@ type LoginUserParams = {
   password: string;
 };
 
-type User = {
+type RegisterUserParams = {
   username: string;
   fullname: string;
-  email: string;
-  accessToken: string;
-  birthOfBirth: string;
-  phone: string;
-  role: string;
+  password: string;
+};
+
+type User = {
+  id: number;
+  username: string;
+  fullname: string;
+  email?: string;
+  dateOfBirth?: string;
+  phone?: string;
+  role?: string;
+  createdDate?: string;
+  telegram?: string;
 };

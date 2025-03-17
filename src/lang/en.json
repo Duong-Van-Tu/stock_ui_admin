@@ -22,7 +22,7 @@
   "pleaseConfirmPassword": "Please confirm your password!",
   "fullNameMinLength": "Full name must be at least 3 characters!",
   "usernameMinLength": "Username must be at least 3 characters!",
-  "passwordMinLength": "Password must be at least 6 characters!",
+  "invalidPassword": "Minimum 8 characters, at least one letter and one number!",
   "passwordsDoNotMatch": "Passwords do not match!",
   "usernamePattern": "Username can only contain letters, numbers, and underscores!",
   "registerPromptStart": "If you don’t have an account, click here to",

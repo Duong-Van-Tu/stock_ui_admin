@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { css } from '@emotion/react';
+import { css, SerializedStyles } from '@emotion/react';
 import Logo from '@/assets/svgs/logo.svg';
 
 type IconProps = {
@@ -8,13 +8,20 @@ type IconProps = {
   height?: number | string;
   fill?: string;
   type: string;
+  customStyles?: SerializedStyles;
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   logo: Logo
 };
 
-export const Icon = ({ type, width, height, fill }: IconProps) => {
+export const Icon = ({
+  type,
+  width,
+  height,
+  fill,
+  customStyles
+}: IconProps) => {
   const SelectedIcon = iconMap[type];
 
   if (!SelectedIcon) return null;
@@ -23,7 +30,7 @@ export const Icon = ({ type, width, height, fill }: IconProps) => {
     <SelectedIcon
       width={width}
       height={height}
-      css={fill ? iconStyles(fill) : undefined}
+      css={[fill ? iconStyles(fill) : undefined, customStyles]}
     />
   );
 };

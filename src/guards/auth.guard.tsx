@@ -2,7 +2,6 @@
 
 import { ReactNode, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { useAuth } from '@/hooks/auth.hook';
 import { useAppSelector } from '@/redux/hooks';
 import { watchLoggedIn, watchProfileLoading } from '@/redux/slices/auth.slice';
 import { PageURLs } from '@/utils/navigate';
