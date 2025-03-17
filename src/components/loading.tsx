@@ -19,11 +19,16 @@ const spinAnimation = keyframes`
 `;
 
 const rootStyles = css`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background-color: var(--loading-background-color);
+  background: var(--loading-background-color);
+  z-index: 999;
 `;
 
 const loaderStyles = css`

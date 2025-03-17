@@ -17,9 +17,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!isAuthenticated) {
       const timeout = setTimeout(() => {
-        dispatch(getProfileUser());
         setDelayedLoading(false);
       }, 1000);
+
+      dispatch(getProfileUser());
 
       return () => clearTimeout(timeout);
     } else {
