@@ -29,7 +29,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ isLoggedIn: isAuthenticated }}>
-      {loading || delayedLoading ? <Loading /> : children}
+      {(loading || delayedLoading) && <Loading />}
+      {children}
     </AuthContext.Provider>
   );
 };

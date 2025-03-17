@@ -39,8 +39,8 @@ const rootStyle = css`
 `;
 
 const containerStyles = (isMobile: boolean) => css`
-  min-width: ${isMobile ? '100%' : '50rem'};
-  max-width: 50rem;
+  min-width: ${isMobile ? '100%' : '45rem'};
+  max-width: 45rem;
   padding: 2.6rem 2.4rem;
   box-shadow: ${isMobile ? 'none' : '0rem 0.4rem 1rem rgba(0, 0, 0, 0.1)'};
   border-radius: 0.8rem;
