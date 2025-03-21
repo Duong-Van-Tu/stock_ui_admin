@@ -7,6 +7,10 @@ export namespace PageURLs {
     return withPrefix('/home');
   }
 
+  export function stockRanking() {
+    return withPrefix('/stock-rankings');
+  }
+
   export function ofLogin() {
     return withPrefix('/login');
   }

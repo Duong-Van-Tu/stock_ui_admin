@@ -29,6 +29,7 @@ export const authSlice = createAppSlice({
       {
         pending: (state) => {
           state.profileLoading = true;
+          state.loading = false;
         },
         fulfilled: (state, action) => {
           state.profileLoading = false;

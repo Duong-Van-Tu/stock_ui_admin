@@ -118,3 +118,13 @@ export const cleanFalsyValues = (values: Record<string, any> = {}) => {
     Object.entries(values).filter(([_, value]) => Boolean(value))
   );
 };
+
+export const formatNumber = (
+  value: number | null | undefined,
+  decimals: number = 2
+): number | null | undefined => {
+  if (!value && value !== 0) return value;
+
+  const factor = Math.pow(10, decimals);
+  return Math.round(value * factor) / factor;
+};

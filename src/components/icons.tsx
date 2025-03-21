@@ -5,6 +5,7 @@ import Logo from '@/assets/svgs/logo.svg';
 import ExpandLeft from '@/assets/svgs/expand-left.svg';
 import ExpandRight from '@/assets/svgs/expand-right.svg';
 import Home from '@/assets/svgs/home.svg';
+import StockRanking from '@/assets/svgs/stock-ranking.svg';
 
 type IconProps = {
   width?: number | string;
@@ -18,7 +19,8 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   logo: Logo,
   expandLeft: ExpandLeft,
   expandRight: ExpandRight,
-  home: Home
+  home: Home,
+  stockRanking: StockRanking
 };
 
 export const Icon = ({

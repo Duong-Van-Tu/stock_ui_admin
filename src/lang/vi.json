@@ -27,6 +27,9 @@
     "usernamePattern": "Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới!",
     "registerPromptStart": "Nếu bạn chưa có tài khoản, hãy nhấn vào đây để",
     "registerPromptLink": "Đăng ký",
-    "backToLogin": "Quay lại trang đăng nhập"
+    "backToLogin": "Quay lại trang đăng nhập",
+    "tradeSignalsDashboard": "Bảng tín hiệu giao dịch",
+    "stockRanking": "Xếp hạng cổ phiếu",
+    "stockRankingDescription": "Trang xếp hạng cổ phiếu"
   }
   

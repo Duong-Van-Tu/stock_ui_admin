@@ -46,5 +46,11 @@ export const getMenuStructure = (
     key: 'home',
     iconType: 'home',
     link: PageURLs.ofIndex()
+  },
+  {
+    label: t('stockRanking'),
+    key: 'stock-rankings',
+    iconType: 'stockRanking',
+    link: PageURLs.stockRanking()
   }
 ];

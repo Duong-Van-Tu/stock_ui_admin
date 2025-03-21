@@ -27,5 +27,8 @@
   "usernamePattern": "Username can only contain letters, numbers, and underscores!",
   "registerPromptStart": "If you don’t have an account, click here to",
   "registerPromptLink": "Register",
-  "backToLogin": "Back to login page"
+  "backToLogin": "Back to login page",
+  "tradeSignalsDashboard": "Trade Signals Dashboard",
+  "stockRanking": "Stock Ranking",
+  "stockRankingDescription": "Stock Ranking page"
 }

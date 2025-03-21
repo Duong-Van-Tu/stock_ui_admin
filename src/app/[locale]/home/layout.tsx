@@ -7,7 +7,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await import('next-intl/server').then((m) => m.getTranslations());
 
   return {
-    title: t('home'),
+    title: t('tradeSignalsDashboard'),
     description: t('homeDescription')
   };
 }

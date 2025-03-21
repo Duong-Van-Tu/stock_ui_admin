@@ -6,14 +6,27 @@ import { Button, Layout, theme } from 'antd';
 import { Icon } from '@/components/icons';
 import { Menu } from '@/components/menu';
 import Header from '@/components/header';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import {
+  setSideBarCollapsed,
+  watchSideBarCollapsed
+} from '@/redux/slices/app.slice';
 
 const { Content, Sider } = Layout;
 
 type MainLayoutProps = {
   children: ReactNode;
 };
+
 export default function MainLayout({ children }: MainLayoutProps) {
-  const [collapsed, setCollapsed] = useState(true);
+  const dispatch = useAppDispatch();
+  const sideBarCollapsed = useAppSelector(watchSideBarCollapsed);
+  const [collapsed, setCollapsed] = useState(sideBarCollapsed);
+
+  const handleChangeSidebarCollapsed = () => {
+    setCollapsed(!collapsed);
+    dispatch(setSideBarCollapsed(!collapsed));
+  };
 
   const {
     token: { colorBgContainer }
@@ -27,7 +40,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
         collapsed={collapsed}
         theme='light'
         style={sidebarStyle}
-        width={280}
+        width={250}
         collapsedWidth={80}
       >
         <div css={menuTopStyles(collapsed)}>
@@ -51,7 +64,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
                 />
               )
             }
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={handleChangeSidebarCollapsed}
           />
         </div>
         <div css={menuContainerStyle}>
@@ -76,7 +89,7 @@ const contentStyles = (background: string, collapsed: boolean) => css`
     : 'var(--expanded-sidebar-width)'};
   transition: margin-inline-start 0.25s ease;
   min-height: calc(100vh - var(--header-height));
-  background: var(--bg-content-layout);
+  background: var(--white-color);
   padding: 2rem;
 `;
 
@@ -113,6 +126,7 @@ const menuTopStyles = (collapsed: boolean) => css`
 
 const menuContainerStyle = css`
   margin-top: var(--header-height);
+  height: calc(100% - var(--header-height));
 `;
 
 const collapsedBtnStyles = css`
