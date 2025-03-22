@@ -37,7 +37,7 @@ export const StockRankingTable = () => {
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<Set<Key>>(new Set());
   const [sortField, setSortField] = useState<string>('totalScore');
-  const [sortType, setSortType] = useState<'ascend' | 'descend'>('descend');
+  const [sortType, setSortType] = useState<SortOrder>('descend');
   const [filter, setFilter] = useState<StockScoreFilter>({});
 
   const onSelectChange = (newSelectedRowKeys: Key[]) => {
@@ -71,20 +71,26 @@ export const StockRankingTable = () => {
   );
 
   const handleSortOrder = (field: string) => {
-    const newSortType =
-      field === sortField
-        ? sortType === 'ascend'
-          ? 'descend'
-          : 'ascend'
-        : 'descend';
+    let newSortType: SortOrder;
+
+    if (field === sortField) {
+      newSortType =
+        sortType === 'descend'
+          ? 'ascend'
+          : sortType === 'ascend'
+          ? undefined
+          : 'descend';
+    } else {
+      newSortType = 'descend';
+    }
 
     setSortField(field);
     setSortType(newSortType);
 
     const newFilter = {
       ...filter,
-      sortField: fieldMapping[field],
-      sortType: convertSortType(newSortType)
+      sortField: newSortType ? fieldMapping[field] : undefined,
+      sortType: newSortType ? convertSortType(newSortType) : undefined
     };
 
     setFilter((prev) => ({ ...prev, ...newFilter }));
@@ -352,6 +358,7 @@ export const StockRankingTable = () => {
         dataSource={stockScoreData}
         loading={loading}
         scroll={{ x: 1200, y: 55 * 11 }}
+        sortDirections={['descend', 'ascend']}
         pagination={{
           position: ['bottomCenter'],
           showQuickJumper: true,

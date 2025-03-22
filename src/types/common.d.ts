@@ -1,1 +1,1 @@
-type SortOrder = 'ascend' | 'descend';
+type SortOrder = 'ascend' | 'descend' | undefined;
