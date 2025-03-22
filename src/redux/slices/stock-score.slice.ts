@@ -7,15 +7,19 @@ export type StockScoreState = {
   loading: boolean;
   pagination: Pagination;
   stockScoresData: StockScore[];
-  industries?: { industry: string }[];
   industryLoading: boolean;
+  industries?: { industry: string }[];
+  sectorLoading: boolean;
+  sectors?: { sector: string }[];
 };
 
 const initialState: StockScoreState = {
   loading: false,
   industryLoading: false,
+  sectorLoading: false,
   stockScoresData: [],
   industries: [],
+  sectors: [],
   pagination: PAGINATION
 };
 
@@ -69,6 +73,26 @@ export const stockScoreSlice = createAppSlice({
           state.industryLoading = false;
         }
       }
+    ),
+    getSectors: create.asyncThunk(
+      async () => {
+        const response = await defaultApiFetcher.get(
+          'tickers-profile/get-sector'
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.sectorLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.sectorLoading = false;
+          state.sectors = action.payload;
+        },
+        rejected: (state) => {
+          state.sectorLoading = false;
+        }
+      }
     )
   }),
 
@@ -77,7 +101,9 @@ export const stockScoreSlice = createAppSlice({
     watchStockScoreData: (stockScore) => stockScore.stockScoresData,
     watchStockScorePagination: (stockScore) => stockScore.pagination,
     watchIndustriesLoading: (industry) => industry.industryLoading,
-    watchIndustries: (industry) => industry.industries
+    watchIndustries: (industry) => industry.industries,
+    watchSectorLoading: (sector) => sector.sectorLoading,
+    watchSectors: (sector) => sector.sectors
   }
 });
 
@@ -86,7 +112,10 @@ export const {
   watchStockScoreData,
   watchStockScorePagination,
   watchIndustries,
-  watchIndustriesLoading
+  watchIndustriesLoading,
+  watchSectors,
+  watchSectorLoading
 } = stockScoreSlice.selectors;
 
-export const { getStockScore, getIndustries } = stockScoreSlice.actions;
+export const { getStockScore, getIndustries, getSectors } =
+  stockScoreSlice.actions;

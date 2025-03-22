@@ -9,9 +9,12 @@ import { cleanFalsyValues, formatNumber } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   getIndustries,
+  getSectors,
   getStockScore,
   watchIndustries,
   watchIndustriesLoading,
+  watchSectorLoading,
+  watchSectors,
   watchStockScoreData,
   watchStockScoreLoading,
   watchStockScorePagination
@@ -34,6 +37,8 @@ export const StockRankingTable = () => {
   const loading = useAppSelector(watchStockScoreLoading);
   const industriesLoading = useAppSelector(watchIndustriesLoading);
   const industries = useAppSelector(watchIndustries);
+  const sectorsLoading = useAppSelector(watchSectorLoading);
+  const sectors = useAppSelector(watchSectors);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<Set<Key>>(new Set());
   const [sortField, setSortField] = useState<string>('totalScore');
@@ -63,11 +68,20 @@ export const StockRankingTable = () => {
 
   const industryOptions = useMemo(
     () =>
-      industries?.map((industry) => ({
-        value: industry.industry,
-        label: industry.industry
+      industries?.map((item) => ({
+        value: item.industry,
+        label: item.industry
       })),
     [industries]
+  );
+
+  const sectorOptions = useMemo(
+    () =>
+      sectors?.map((item) => ({
+        value: item.sector,
+        label: item.sector
+      })),
+    [sectors]
   );
 
   const handleSortOrder = (field: string) => {
@@ -102,6 +116,30 @@ export const StockRankingTable = () => {
     });
   };
 
+  const handleIndustryChange = (value: string) => {
+    const updatedIndustry = value?.includes(' & ')
+      ? value.replace(/ & /g, ' @ ')
+      : value;
+
+    setFilter((prev) => ({ ...prev, industry: updatedIndustry }));
+
+    fetchDataStockScore({
+      page: PAGINATION.currentPage,
+      pageSize: pagination.pageSize,
+      filter: { ...filter, industry: updatedIndustry }
+    });
+  };
+
+  const handleSectorChange = (value: string) => {
+    setFilter((prev) => ({ ...prev, sector: value }));
+
+    fetchDataStockScore({
+      page: PAGINATION.currentPage,
+      pageSize: pagination.pageSize,
+      filter: { ...filter, sector: value }
+    });
+  };
+
   const fetchDataStockScore = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
@@ -126,6 +164,10 @@ export const StockRankingTable = () => {
     dispatch(getIndustries());
   }, [dispatch, getIndustries]);
 
+  const fetchSectors = useCallback(() => {
+    dispatch(getSectors());
+  }, [dispatch, getSectors]);
+
   useEffect(() => {
     fetchDataStockScore({});
   }, [fetchDataStockScore]);
@@ -133,6 +175,10 @@ export const StockRankingTable = () => {
   useEffect(() => {
     fetchIndustries();
   }, [fetchIndustries]);
+
+  useEffect(() => {
+    fetchSectors();
+  }, [fetchSectors]);
 
   useEffect(() => {
     setFilter((prev) => ({ ...prev, symbol }));
@@ -333,19 +379,24 @@ export const StockRankingTable = () => {
         </TableTitle>
         <div css={actionStyles}>
           <Select
+            allowClear
             showSearch
             css={selectStyles}
+            loading={sectorsLoading}
             placeholder='Search select Sector'
             optionFilterProp='label'
-            options={[]}
+            options={sectorOptions}
+            onChange={handleSectorChange}
           />
           <Select
+            allowClear
             showSearch
             css={selectStyles}
             loading={industriesLoading}
             placeholder='Search select Industry'
             optionFilterProp='label'
             options={industryOptions}
+            onChange={handleIndustryChange}
           />
           <Button type='primary'>Export Excel</Button>
         </div>
