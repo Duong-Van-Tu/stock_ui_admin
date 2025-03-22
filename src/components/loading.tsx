@@ -7,7 +7,7 @@ export default function Loading() {
     <div css={rootStyles}>
       <div css={loaderStyles}>
         <div css={circleStyles}></div>
-        <Icon type='logo' width={70} height={70} customStyles={logoStyles} />
+        <Icon icon='logo' width={70} height={70} customStyles={logoStyles} />
       </div>
     </div>
   );

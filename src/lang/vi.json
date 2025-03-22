@@ -30,6 +30,18 @@
     "backToLogin": "Quay lại trang đăng nhập",
     "tradeSignalsDashboard": "Bảng tín hiệu giao dịch",
     "stockRanking": "Xếp hạng cổ phiếu",
-    "stockRankingDescription": "Trang xếp hạng cổ phiếu"
+    "stockRankingDescription": "Trang xếp hạng cổ phiếu",
+    "no": "STT",
+    "symbol": "Mã chứng khoán",
+    "totalScore": "Tổng điểm",
+    "fundamentalScore": "Điểm Fundamental",
+    "sentimentScore": "Điểm Sentiment",
+    "earningsScore": "Điểm Earnings",
+    "ytd": "YTD",
+    "dayChange": "Giá Thay đổi trong ngày",
+    "currentPrice": "Giá hiện tại",
+    "volume": "Khối lượng",
+    "beta": "Beta",
+    "atr": "ATR"
   }
   

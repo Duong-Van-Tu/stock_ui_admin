@@ -50,14 +50,14 @@ export default function MainLayout({ children }: MainLayoutProps) {
             icon={
               collapsed ? (
                 <Icon
-                  type='expandLeft'
+                  icon='expandLeft'
                   width={24}
                   height={24}
                   fill='var(--primary-color)'
                 />
               ) : (
                 <Icon
-                  type='expandRight'
+                  icon='expandRight'
                   width={24}
                   height={24}
                   fill='var(--primary-color)'

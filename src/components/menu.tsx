@@ -39,7 +39,7 @@ export const Menu = ({ collapsed }: MenuProps) => {
 
     return (
       <span>
-        <Icon type={type} width={20} height={20} fill={fillColor} />
+        <Icon icon={type} width={20} height={20} fill={fillColor} />
       </span>
     );
   };

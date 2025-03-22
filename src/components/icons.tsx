@@ -1,17 +1,19 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { css, SerializedStyles } from '@emotion/react';
-import Logo from '@/assets/svgs/logo.svg';
-import ExpandLeft from '@/assets/svgs/expand-left.svg';
-import ExpandRight from '@/assets/svgs/expand-right.svg';
-import Home from '@/assets/svgs/home.svg';
-import StockRanking from '@/assets/svgs/stock-ranking.svg';
+import Logo from '@/assets/svg/logo.svg';
+import ExpandLeft from '@/assets/svg/expand-left.svg';
+import ExpandRight from '@/assets/svg/expand-right.svg';
+import Home from '@/assets/svg/home.svg';
+import StockRanking from '@/assets/svg/stock-ranking.svg';
+import Calendar from '@/assets/svg/calendar.svg';
+import Bell from '@/assets/svg/bell.svg';
 
 type IconProps = {
   width?: number | string;
   height?: number | string;
   fill?: string;
-  type: string;
+  icon: string;
   customStyles?: SerializedStyles;
 };
 
@@ -20,17 +22,19 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   expandLeft: ExpandLeft,
   expandRight: ExpandRight,
   home: Home,
-  stockRanking: StockRanking
+  stockRanking: StockRanking,
+  calendar: Calendar,
+  bell: Bell
 };
 
 export const Icon = ({
-  type,
+  icon,
   width,
   height,
   fill,
   customStyles
 }: IconProps) => {
-  const SelectedIcon = iconMap[type];
+  const SelectedIcon = iconMap[icon];
 
   if (!SelectedIcon) return null;
 

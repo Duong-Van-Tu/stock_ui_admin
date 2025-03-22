@@ -19,7 +19,7 @@ export default function AuthLayout({ title, children }: AuthLayoutProps) {
     <div css={rootStyle}>
       <div css={containerStyles(isMobile)}>
         <div css={logoStyles}>
-          <Icon type='logo' width={60} height={60} />
+          <Icon icon='logo' width={60} height={60} />
         </div>
 
         <Title level={3} css={titleStyles}>

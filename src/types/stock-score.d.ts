@@ -1,5 +1,6 @@
 type StockScore = {
   id: number;
+  key: string;
   symbol: string;
   companyName: string;
   earningDate: string;

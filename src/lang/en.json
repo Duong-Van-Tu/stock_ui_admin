@@ -30,5 +30,17 @@
   "backToLogin": "Back to login page",
   "tradeSignalsDashboard": "Trade Signals Dashboard",
   "stockRanking": "Stock Ranking",
-  "stockRankingDescription": "Stock Ranking page"
+  "stockRankingDescription": "Stock Ranking page",
+  "no": "No.",
+  "symbol": "Symbol",
+  "totalScore": "Total score",
+  "fundamentalScore": "Fundamental score",
+  "sentimentScore": "Sentiment score",
+  "earningsScore": "Earnings score",
+  "ytd": "YTD",
+  "dayChange": "Day change",
+  "currentPrice": "Current price",
+  "volume": "Volume",
+  "beta": "Beta",
+  "atr": "ATR"
 }
