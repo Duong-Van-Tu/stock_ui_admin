@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { AppThunk } from '../store';
+import { transformStockUserData } from '@/helpers/user.helper';
 
 export type AuthSliceState = {
   loading: boolean;
@@ -69,11 +70,7 @@ export const authSlice = createAppSlice({
         fulfilled: (state, action) => {
           state.loading = false;
           state.isAuthenticated = true;
-          state.user = {
-            id: action.payload.id,
-            username: action.payload.username,
-            fullname: action.payload.fullname
-          };
+          state.user = transformStockUserData(action.payload);
         },
         rejected: (state) => {
           state.loading = false;
@@ -94,11 +91,7 @@ export const authSlice = createAppSlice({
         fulfilled: (state, action) => {
           state.loading = false;
           state.isAuthenticated = true;
-          state.user = {
-            id: action.payload.id,
-            username: action.payload.username,
-            fullname: action.payload.fullname
-          };
+          state.user = transformStockUserData(action.payload);
         },
         rejected: (state) => {
           state.loading = false;
@@ -106,20 +99,32 @@ export const authSlice = createAppSlice({
           state.user = undefined;
         }
       }
-    )
+    ),
+    logoutUser: create.reducer((state) => {
+      console.log('logged out');
+      Cookies.remove('access_token');
+      state.isAuthenticated = false;
+      state.user = undefined;
+    })
   }),
 
   selectors: {
     watchAuthLoading: (auth) => auth.loading,
     watchProfileLoading: (auth) => auth.profileLoading,
-    watchLoggedIn: (auth) => auth.isAuthenticated
+    watchLoggedIn: (auth) => auth.isAuthenticated,
+    watchUser: (auth) => auth.user
   }
 });
 
-export const { watchLoggedIn, watchAuthLoading, watchProfileLoading } =
-  authSlice.selectors;
+export const {
+  watchLoggedIn,
+  watchAuthLoading,
+  watchProfileLoading,
+  watchUser
+} = authSlice.selectors;
 
-export const { getProfileUser, loginUser, registerUser } = authSlice.actions;
+export const { getProfileUser, loginUser, registerUser, logoutUser } =
+  authSlice.actions;
 
 export const registerAndLogin =
   (userData: RegisterUserParams): AppThunk =>

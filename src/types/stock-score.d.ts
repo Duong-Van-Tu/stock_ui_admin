@@ -18,3 +18,11 @@ type StockScore = {
   beta: number;
   atr: number;
 };
+
+type StockScoreFilter = {
+  symbol?: string;
+  sortField?: string;
+  sortType?: string;
+  industry?: string;
+  sector?: string;
+};

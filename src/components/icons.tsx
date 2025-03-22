@@ -8,6 +8,10 @@ import Home from '@/assets/svg/home.svg';
 import StockRanking from '@/assets/svg/stock-ranking.svg';
 import Calendar from '@/assets/svg/calendar.svg';
 import Bell from '@/assets/svg/bell.svg';
+import Language from '@/assets/svg/language.svg';
+import User from '@/assets/svg/user.svg';
+import Logout from '@/assets/svg/logout.svg';
+import UserProfile from '@/assets/svg/user-profile.svg';
 
 type IconProps = {
   width?: number | string;
@@ -24,7 +28,11 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   home: Home,
   stockRanking: StockRanking,
   calendar: Calendar,
-  bell: Bell
+  bell: Bell,
+  language: Language,
+  user: User,
+  logout: Logout,
+  userProfile: UserProfile
 };
 
 export const Icon = ({

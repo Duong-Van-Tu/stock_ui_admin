@@ -113,7 +113,7 @@ export const Menu = ({ collapsed }: MenuProps) => {
 };
 
 const rootStyles = (collapsed: boolean) => css`
-  height: calc(100% - var(--header-height));
+  height: 100%;
   .ant-menu-sub.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title,
   .ant-menu-item {
     white-space: normal;

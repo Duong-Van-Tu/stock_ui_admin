@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 
-export const transformStockData = (stocks: any[]) => {
+export const transformStockData = (stocks: any[]): StockScore[] => {
   return stocks.map((stock) => ({
     id: stock.id,
     key: uuid(),

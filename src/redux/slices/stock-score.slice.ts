@@ -7,12 +7,16 @@ export type StockScoreState = {
   loading: boolean;
   pagination: Pagination;
   stockScoresData: StockScore[];
+  industries?: { industry: string }[];
+  industryLoading: boolean;
 };
 
 const initialState: StockScoreState = {
   loading: false,
-  pagination: PAGINATION,
-  stockScoresData: []
+  industryLoading: false,
+  stockScoresData: [],
+  industries: [],
+  pagination: PAGINATION
 };
 
 export const stockScoreSlice = createAppSlice({
@@ -40,9 +44,29 @@ export const stockScoreSlice = createAppSlice({
           };
         },
         rejected: (state) => {
-          state.loading = true;
+          state.loading = false;
           state.stockScoresData = [];
           state.pagination = PAGINATION;
+        }
+      }
+    ),
+    getIndustries: create.asyncThunk(
+      async () => {
+        const response = await defaultApiFetcher.get(
+          'tickers-profile/get-industry'
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.industryLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.industryLoading = false;
+          state.industries = action.payload;
+        },
+        rejected: (state) => {
+          state.industryLoading = false;
         }
       }
     )
@@ -51,14 +75,18 @@ export const stockScoreSlice = createAppSlice({
   selectors: {
     watchStockScoreLoading: (stockScore) => stockScore.loading,
     watchStockScoreData: (stockScore) => stockScore.stockScoresData,
-    watchStockScorePagination: (stockScore) => stockScore.pagination
+    watchStockScorePagination: (stockScore) => stockScore.pagination,
+    watchIndustriesLoading: (industry) => industry.industryLoading,
+    watchIndustries: (industry) => industry.industries
   }
 });
 
 export const {
   watchStockScoreLoading,
   watchStockScoreData,
-  watchStockScorePagination
+  watchStockScorePagination,
+  watchIndustries,
+  watchIndustriesLoading
 } = stockScoreSlice.selectors;
 
-export const { getStockScore } = stockScoreSlice.actions;
+export const { getStockScore, getIndustries } = stockScoreSlice.actions;

@@ -1,14 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { Key, useCallback, useEffect, useState } from 'react';
-import { Table, TableColumnsType } from 'antd';
+import { Key, useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Select, Table, TableColumnsType } from 'antd';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { cleanFalsyValues, formatNumber } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
+  getIndustries,
   getStockScore,
+  watchIndustries,
+  watchIndustriesLoading,
   watchStockScoreData,
   watchStockScoreLoading,
   watchStockScorePagination
@@ -18,18 +21,24 @@ import { SymbolCell } from './columns/symbol-cell';
 import { useTranslations } from 'next-intl';
 import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
+import { watchSearchSymbol } from '@/redux/slices/search';
+import { TableTitle } from './title.table';
 
 export const StockRankingTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
+  const symbol = useAppSelector(watchSearchSymbol);
 
   const stockScoreData = useAppSelector(watchStockScoreData);
   const pagination = useAppSelector(watchStockScorePagination);
   const loading = useAppSelector(watchStockScoreLoading);
+  const industriesLoading = useAppSelector(watchIndustriesLoading);
+  const industries = useAppSelector(watchIndustries);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<Set<Key>>(new Set());
   const [sortField, setSortField] = useState<string>('totalScore');
   const [sortType, setSortType] = useState<'ascend' | 'descend'>('descend');
+  const [filter, setFilter] = useState<StockScoreFilter>({});
 
   const onSelectChange = (newSelectedRowKeys: Key[]) => {
     setSelectedRowKeys((prevKeys) => {
@@ -52,6 +61,15 @@ export const StockRankingTable = () => {
     onChange: onSelectChange
   };
 
+  const industryOptions = useMemo(
+    () =>
+      industries?.map((industry) => ({
+        value: industry.industry,
+        label: industry.industry
+      })),
+    [industries]
+  );
+
   const handleSortOrder = (field: string) => {
     const newSortType =
       field === sortField
@@ -63,13 +81,18 @@ export const StockRankingTable = () => {
     setSortField(field);
     setSortType(newSortType);
 
+    const newFilter = {
+      ...filter,
+      sortField: fieldMapping[field],
+      sortType: convertSortType(newSortType)
+    };
+
+    setFilter((prev) => ({ ...prev, ...newFilter }));
+
     fetchDataStockScore({
       page: PAGINATION.currentPage,
       pageSize: pagination.pageSize,
-      filter: {
-        sortField: fieldMapping[field],
-        sortType: convertSortType(newSortType)
-      }
+      filter: newFilter
     });
   };
 
@@ -90,12 +113,25 @@ export const StockRankingTable = () => {
         })
       );
     },
-    [dispatch]
+    [dispatch, getStockScore]
   );
+
+  const fetchIndustries = useCallback(() => {
+    dispatch(getIndustries());
+  }, [dispatch, getIndustries]);
 
   useEffect(() => {
     fetchDataStockScore({});
   }, [fetchDataStockScore]);
+
+  useEffect(() => {
+    fetchIndustries();
+  }, [fetchIndustries]);
+
+  useEffect(() => {
+    setFilter((prev) => ({ ...prev, symbol }));
+    fetchDataStockScore({ filter: { symbol } });
+  }, [symbol]);
 
   const columns: TableColumnsType<StockScore> = [
     {
@@ -253,7 +289,7 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('volume')
       }),
       align: 'center',
-      render: (value) => formatNumber(value, 2)
+      render: (value) => (value ? formatNumber(value, 2) : '-')
     },
     {
       title: t('beta'),
@@ -266,7 +302,7 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('beta')
       }),
       align: 'center',
-      render: (value) => formatNumber(value, 2)
+      render: (value) => (value ? formatNumber(value, 2) : '-')
     },
     {
       title: t('atr'),
@@ -279,36 +315,83 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('atr')
       }),
       align: 'center',
-      render: (value) => formatNumber(value, 2)
+      render: (value) => (value ? formatNumber(value, 2) : '-')
     }
   ];
 
   return (
-    <Table<StockScore>
-      css={tableStyles}
-      bordered
-      rowKey={(record) => record.key}
-      rowSelection={rowSelection}
-      columns={columns}
-      dataSource={stockScoreData}
-      loading={loading}
-      scroll={{ x: 'max-content', y: 55 * 11 }}
-      pagination={{
-        position: ['bottomCenter'],
-        showQuickJumper: true,
-        current: pagination.currentPage,
-        pageSize: pagination.pageSize,
-        total: pagination.total,
-        onChange: (page, pageSize) => {
-          fetchDataStockScore({ page, pageSize });
-        }
-      }}
-    />
+    <div css={rootStyles}>
+      <div css={tableTopStyles}>
+        <TableTitle customStyles={titleStyles}>
+          {t('stockRankingTitle')}
+        </TableTitle>
+        <div css={actionStyles}>
+          <Select
+            showSearch
+            css={selectStyles}
+            placeholder='Search select Sector'
+            optionFilterProp='label'
+            options={[]}
+          />
+          <Select
+            showSearch
+            css={selectStyles}
+            loading={industriesLoading}
+            placeholder='Search select Industry'
+            optionFilterProp='label'
+            options={industryOptions}
+          />
+          <Button type='primary'>Export Excel</Button>
+        </div>
+      </div>
+      <Table<StockScore>
+        css={tableStyles}
+        rowKey={(record) => record.key}
+        rowSelection={rowSelection}
+        columns={columns}
+        dataSource={stockScoreData}
+        loading={loading}
+        scroll={{ x: 1200, y: 55 * 11 }}
+        pagination={{
+          position: ['bottomCenter'],
+          showQuickJumper: true,
+          current: pagination.currentPage,
+          pageSize: pagination.pageSize,
+          total: pagination.total,
+          onChange: (page, pageSize) => {
+            fetchDataStockScore({ page, pageSize, filter });
+          }
+        }}
+      />
+    </div>
   );
 };
+
+const rootStyles = css`
+  border: 1px solid var(--border-table-color);
+  border-radius: 0.8rem;
+`;
 
 const tableStyles = css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
+`;
+
+const tableTopStyles = css``;
+
+const titleStyles = css`
+  padding: 1rem 1.4rem;
+`;
+
+const actionStyles = css`
+  padding: 1.2rem 1.4rem;
+  border-top: 1px solid var(--border-table-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.2rem;
+`;
+
+const selectStyles = css`
+  min-width: 20rem;
 `;

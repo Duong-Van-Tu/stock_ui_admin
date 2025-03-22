@@ -29,6 +29,7 @@
   "registerPromptLink": "Register",
   "backToLogin": "Back to login page",
   "tradeSignalsDashboard": "Trade Signals Dashboard",
+  "stockRankingTitle": "US stocks ranking by...",
   "stockRanking": "Stock Ranking",
   "stockRankingDescription": "Stock Ranking page",
   "no": "No.",
@@ -42,5 +43,10 @@
   "currentPrice": "Current price",
   "volume": "Volume",
   "beta": "Beta",
-  "atr": "ATR"
+  "atr": "ATR",
+  "searchPlaceholder": "Search stock",
+  "languageLabel": "Language",
+  "languageSelect": "Select Language",
+  "english": "English",
+  "vietnamese": "Vietnamese"
 }

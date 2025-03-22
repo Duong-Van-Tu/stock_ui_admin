@@ -122,6 +122,7 @@ const menuTopStyles = (collapsed: boolean) => css`
   background: var(--white-color);
   z-index: 99;
   transition: width 0.25s ease;
+  border-right: 0.1rem solid var(--border-color);
 `;
 
 const menuContainerStyle = css`
