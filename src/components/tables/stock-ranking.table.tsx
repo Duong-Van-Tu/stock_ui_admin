@@ -1,20 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { Key, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Select, Table, TableColumnsType } from 'antd';
+import { Key, useCallback, useEffect, useState } from 'react';
+import { Button, Table, TableColumnsType } from 'antd';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
-import { cleanFalsyValues, formatNumber } from '@/utils/common';
+import {
+  cleanFalsyValues,
+  formatNumber,
+  getRowClassName
+} from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  getIndustries,
-  getSectors,
   getStockScore,
-  watchIndustries,
-  watchIndustriesLoading,
-  watchSectorLoading,
-  watchSectors,
   watchStockScoreData,
   watchStockScoreLoading,
   watchStockScorePagination
@@ -27,6 +25,7 @@ import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { watchSearchSymbol } from '@/redux/slices/search';
 import { TableTitle } from './title.table';
 import { LegendStatus } from '../legend-status';
+import { StockRankingFilter } from '../filters/stock-ranking.filter';
 
 export const StockRankingTable = () => {
   const t = useTranslations();
@@ -36,10 +35,6 @@ export const StockRankingTable = () => {
   const stockScoreData = useAppSelector(watchStockScoreData);
   const pagination = useAppSelector(watchStockScorePagination);
   const loading = useAppSelector(watchStockScoreLoading);
-  const industriesLoading = useAppSelector(watchIndustriesLoading);
-  const industries = useAppSelector(watchIndustries);
-  const sectorsLoading = useAppSelector(watchSectorLoading);
-  const sectors = useAppSelector(watchSectors);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<Set<Key>>(new Set());
   const [sortField, setSortField] = useState<string>('totalScore');
@@ -66,24 +61,6 @@ export const StockRankingTable = () => {
     selectedRowKeys: Array.from(selectedRowKeys),
     onChange: onSelectChange
   };
-
-  const industryOptions = useMemo(
-    () =>
-      industries?.map((item) => ({
-        value: item.industry,
-        label: item.industry
-      })),
-    [industries]
-  );
-
-  const sectorOptions = useMemo(
-    () =>
-      sectors?.map((item) => ({
-        value: item.sector,
-        label: item.sector
-      })),
-    [sectors]
-  );
 
   const handleSortOrder = (field: string) => {
     let newSortType: SortOrder;
@@ -117,28 +94,13 @@ export const StockRankingTable = () => {
     });
   };
 
-  const handleIndustryChange = (value: string) => {
-    const updatedIndustry = value?.includes(' & ')
-      ? value.replace(/ & /g, ' @ ')
-      : value;
-
-    setFilter((prev) => ({ ...prev, industry: updatedIndustry }));
-
-    fetchDataStockScore({
-      page: PAGINATION.currentPage,
-      pageSize: pagination.pageSize,
-      filter: { ...filter, industry: updatedIndustry }
-    });
-  };
-
-  const handleSectorChange = (value: string) => {
-    setFilter((prev) => ({ ...prev, sector: value }));
-
-    fetchDataStockScore({
-      page: PAGINATION.currentPage,
-      pageSize: pagination.pageSize,
-      filter: { ...filter, sector: value }
-    });
+  const handleFilter = (values: StockScoreFilter) => {
+    const newFilter = {
+      ...filter,
+      ...values
+    };
+    setFilter(newFilter);
+    fetchDataStockScore({ filter: newFilter });
   };
 
   const fetchDataStockScore = useCallback(
@@ -161,25 +123,9 @@ export const StockRankingTable = () => {
     [dispatch, getStockScore]
   );
 
-  const fetchIndustries = useCallback(() => {
-    dispatch(getIndustries());
-  }, [dispatch, getIndustries]);
-
-  const fetchSectors = useCallback(() => {
-    dispatch(getSectors());
-  }, [dispatch, getSectors]);
-
   useEffect(() => {
     fetchDataStockScore({});
   }, [fetchDataStockScore]);
-
-  useEffect(() => {
-    fetchIndustries();
-  }, [fetchIndustries]);
-
-  useEffect(() => {
-    fetchSectors();
-  }, [fetchSectors]);
 
   useEffect(() => {
     setFilter((prev) => ({ ...prev, symbol }));
@@ -284,7 +230,7 @@ export const StockRankingTable = () => {
       title: t('ytd'),
       dataIndex: 'ytd',
       key: 'ytd',
-      width: 140,
+      width: 120,
       sorter: true,
       sortOrder: sortField === 'ytd' ? sortType : null,
       onHeaderCell: () => ({
@@ -377,31 +323,15 @@ export const StockRankingTable = () => {
       <div css={tableTopStyles}>
         <TableTitle>{t('stockRankingTitle')}</TableTitle>
         <div css={actionStyles}>
-          <Select
-            allowClear
-            showSearch
-            css={selectStyles}
-            loading={sectorsLoading}
-            placeholder={t('searchSelectSector')}
-            optionFilterProp='label'
-            options={sectorOptions}
-            onChange={handleSectorChange}
-          />
-          <Select
-            allowClear
-            showSearch
-            css={selectStyles}
-            loading={industriesLoading}
-            placeholder={t('searchSelectIndustry')}
-            optionFilterProp='label'
-            options={industryOptions}
-            onChange={handleIndustryChange}
-          />
+          <StockRankingFilter onFilter={handleFilter} />
           <Button type='primary'>{t('exportExcel')}</Button>
         </div>
       </div>
       <LegendStatus customStyles={legendStatusStyles} />
       <Table<StockScore>
+        rowClassName={(record) =>
+          getRowClassName(record, 'isAdd', 'hl-add-symbol')
+        }
         css={tableStyles}
         rowKey={(record) => record.key}
         rowSelection={rowSelection}
@@ -434,6 +364,9 @@ const tableStyles = css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
+  .add-my-portfolios {
+    background: var(--added-portfolio-color);
+  }
 `;
 
 const tableTopStyles = css`
@@ -447,10 +380,6 @@ const actionStyles = css`
   display: flex;
   justify-content: flex-end;
   gap: 1.2rem;
-`;
-
-const selectStyles = css`
-  min-width: 20rem;
 `;
 
 const legendStatusStyles = css`

@@ -128,3 +128,11 @@ export const formatNumber = (
   const factor = Math.pow(10, decimals);
   return Math.round(value * factor) / factor;
 };
+
+export const getRowClassName = <T extends Record<string, any>>(
+  record: T,
+  conditionKey: keyof T,
+  className: string
+) => {
+  return record[conditionKey] ? className : '';
+};
