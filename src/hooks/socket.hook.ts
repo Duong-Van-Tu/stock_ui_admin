@@ -18,15 +18,18 @@ const useWebSocket = (url: string) => {
   const [ws, setWs] = useState<WebSocket>();
   const [watchList, setWatchList] = useState<IWatchListItem[]>([]);
 
-  const waitForConnection = (callback: () => void, interval: number) => {
-    if (ws?.readyState === 1) {
-      callback();
-    } else {
-      setTimeout(() => {
-        waitForConnection(callback, interval);
-      }, interval);
-    }
-  };
+  const waitForConnection = useCallback(
+    (callback: () => void, interval: number) => {
+      if (ws?.readyState === 1) {
+        callback();
+      } else {
+        setTimeout(() => {
+          waitForConnection(callback, interval);
+        }, interval);
+      }
+    },
+    [ws]
+  );
 
   const setSymbolToWatchList = useCallback(
     (symbol: string) => {
@@ -39,12 +42,15 @@ const useWebSocket = (url: string) => {
     [watchList]
   );
 
-  const sendMessage = (message: any) => {
-    const generatedMessage = JSON.stringify(message);
-    waitForConnection(() => {
-      ws?.send(generatedMessage);
-    }, 10000);
-  };
+  const sendMessage = useCallback(
+    (message: any) => {
+      const generatedMessage = JSON.stringify(message);
+      waitForConnection(() => {
+        ws?.send(generatedMessage);
+      }, 10000);
+    },
+    [ws]
+  );
 
   useEffect(() => {
     const socket = new WebSocket(url);
