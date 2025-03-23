@@ -48,5 +48,12 @@
   "languageLabel": "Language",
   "languageSelect": "Select Language",
   "english": "English",
-  "vietnamese": "Vietnamese"
+  "vietnamese": "Vietnamese",
+  "searchSelectSector": "Search select Sector",
+  "searchSelectIndustry": "Search select Industry",
+  "exportExcel": "Export Excel",
+  "profile": "Profile",
+  "logout": "Logout",
+  "watching": "Watching",
+  "addedToPortfolio": "Added to portfolio"
 }

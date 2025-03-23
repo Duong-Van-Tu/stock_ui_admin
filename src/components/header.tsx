@@ -61,13 +61,13 @@ export default function Header({ collapsed }: HeaderProps) {
   const userMenus = {
     items: [
       {
-        label: 'Profile',
+        label: t('profile'),
         key: UserMenu.PROFILE,
         icon: <Icon icon='userProfile' width={16} height={16} />,
         style: { gap: '0.6rem', alignItems: 'flex-start' }
       },
       {
-        label: 'Logout',
+        label: t('logout'),
         key: UserMenu.LOGOUT,
         icon: <Icon icon='logout' width={16} height={16} />,
         style: { gap: '0.6rem' }

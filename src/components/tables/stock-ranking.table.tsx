@@ -26,6 +26,7 @@ import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { watchSearchSymbol } from '@/redux/slices/search';
 import { TableTitle } from './title.table';
+import { LegendStatus } from '../legend-status';
 
 export const StockRankingTable = () => {
   const t = useTranslations();
@@ -374,16 +375,14 @@ export const StockRankingTable = () => {
   return (
     <div css={rootStyles}>
       <div css={tableTopStyles}>
-        <TableTitle customStyles={titleStyles}>
-          {t('stockRankingTitle')}
-        </TableTitle>
+        <TableTitle>{t('stockRankingTitle')}</TableTitle>
         <div css={actionStyles}>
           <Select
             allowClear
             showSearch
             css={selectStyles}
             loading={sectorsLoading}
-            placeholder='Search select Sector'
+            placeholder={t('searchSelectSector')}
             optionFilterProp='label'
             options={sectorOptions}
             onChange={handleSectorChange}
@@ -393,14 +392,15 @@ export const StockRankingTable = () => {
             showSearch
             css={selectStyles}
             loading={industriesLoading}
-            placeholder='Search select Industry'
+            placeholder={t('searchSelectIndustry')}
             optionFilterProp='label'
             options={industryOptions}
             onChange={handleIndustryChange}
           />
-          <Button type='primary'>Export Excel</Button>
+          <Button type='primary'>{t('exportExcel')}</Button>
         </div>
       </div>
+      <LegendStatus customStyles={legendStatusStyles} />
       <Table<StockScore>
         css={tableStyles}
         rowKey={(record) => record.key}
@@ -436,15 +436,14 @@ const tableStyles = css`
   }
 `;
 
-const tableTopStyles = css``;
-
-const titleStyles = css`
-  padding: 1rem 1.4rem;
+const tableTopStyles = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 1.4rem;
 `;
 
 const actionStyles = css`
-  padding: 1.2rem 1.4rem;
-  border-top: 1px solid var(--border-table-color);
   display: flex;
   justify-content: flex-end;
   gap: 1.2rem;
@@ -452,4 +451,9 @@ const actionStyles = css`
 
 const selectStyles = css`
   min-width: 20rem;
+`;
+
+const legendStatusStyles = css`
+  border-top: 1px solid var(--border-table-color);
+  padding: 1.2rem 1.4rem;
 `;
