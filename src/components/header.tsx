@@ -90,7 +90,7 @@ export default function Header({ collapsed }: HeaderProps) {
 
   useEffect(() => {
     dispatch(searchSymbol(''));
-  }, [pathname]);
+  }, [pathname, dispatch]);
 
   return (
     <Layout.Header css={rootStyles(colorBgContainer, collapsed)}>

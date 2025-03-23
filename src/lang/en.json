@@ -55,5 +55,17 @@
   "profile": "Profile",
   "logout": "Logout",
   "watching": "Watching",
-  "addedToPortfolio": "Added to portfolio"
+  "addedToPortfolio": "Added to portfolio",
+  "alertLogs": "Stock Alert Logs",
+  "alertLogsDescription": "Alert logs page",
+  "strategy": "Strategy",
+  "period": "Period",
+  "entryDate": "Entry date",
+  "entryPrice": "Entry price",
+  "exitDate": "Exit date",
+  "exitPrice": "Exit price",
+  "highestPrice": "Highest price",
+  "highestPriceDate": "Highest price date",
+  "lowestPrice": "Lowest price",
+  "lowestPriceDate": "Lowest price date"
 }

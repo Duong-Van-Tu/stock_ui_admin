@@ -1,7 +1,7 @@
 import { PAGINATION } from '@/constants/pagination.constant';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
-import { transformStockData } from '@/helpers/stock-core.helper';
+import { transformStockScoreData } from '@/helpers/stock-core.helper';
 
 export type StockScoreState = {
   loading: boolean;
@@ -40,7 +40,9 @@ export const stockScoreSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.loading = false;
-          state.stockScoresData = transformStockData(action.payload.result);
+          state.stockScoresData = transformStockScoreData(
+            action.payload.result
+          );
           state.pagination = {
             currentPage: action.payload.offset,
             pageSize: action.payload.limit,

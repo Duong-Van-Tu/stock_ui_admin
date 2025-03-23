@@ -6,6 +6,6 @@ export const PAGINATION = {
 
 export const PAGINATION_PARAMS = {
   offset: 1,
-  limit: 10,
+  limit: 100,
   unLimit: 999999
 };

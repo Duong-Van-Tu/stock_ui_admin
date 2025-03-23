@@ -131,8 +131,27 @@ export const formatNumber = (
 
 export const getRowClassName = <T extends Record<string, any>>(
   record: T,
-  conditionKey: keyof T,
-  className: string
+  conditions: { key: keyof T; className: string }[]
 ) => {
-  return record[conditionKey] ? className : '';
+  return conditions.reduce<string[]>((acc, condition) => {
+    if (record[condition.key]) {
+      acc.push(condition.className);
+    }
+    return acc;
+  }, []);
+};
+
+export const formatMarketCap = (value: number): string => {
+  const marketCapValue = value * 1000000;
+  if (marketCapValue >= 1_000_000_000_000) {
+    return (marketCapValue / 1_000_000_000_000).toFixed(2) + 'T';
+  } else if (marketCapValue >= 1_000_000_000) {
+    return (marketCapValue / 1_000_000_000).toFixed(2) + 'B';
+  } else if (marketCapValue >= 1_000_000) {
+    return (marketCapValue / 1_000_000).toFixed(2) + 'M';
+  } else if (marketCapValue >= 1_000) {
+    return (value / 1_000).toFixed(2) + 'K';
+  } else {
+    return value.toString();
+  }
 };

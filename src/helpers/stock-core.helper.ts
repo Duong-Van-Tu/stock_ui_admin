@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 
-export const transformStockData = (stocks: any[]): StockScore[] => {
-  return stocks.map((stock) => ({
+export const transformStockScoreData = (stocksScore: any[]): StockScore[] => {
+  return stocksScore.map((stock) => ({
     id: stock.id,
     key: uuid(),
     symbol: stock.symbol,
@@ -12,7 +12,7 @@ export const transformStockData = (stocks: any[]): StockScore[] => {
     isNews: stock.isnews,
     totalScore: stock.totalscore,
     fundamentalScore: stock.fund_score,
-    sentimentScore: stock.estimate_score,
+    sentimentScore: stock.sentiment_score,
     earningsScore: stock.earnings_score,
     ytd: stock.perf_ytd_value,
     dayChangePercent: stock.daychangepercent,

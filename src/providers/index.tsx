@@ -10,6 +10,7 @@ import { usePathname } from 'next/navigation';
 import { getPathnameSegment } from '@/utils/common';
 import { antdLocales, Locale } from '@/constants/locale';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import SocketProvider from './socket.provider';
 
 const theme = {
   token: {
@@ -27,7 +28,9 @@ export default function Providers({ children }: { children: ReactNode }) {
     <AntdRegistry>
       <ConfigProvider locale={antdLocale} theme={theme}>
         <Provider store={store}>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <SocketProvider>{children}</SocketProvider>
+          </AuthProvider>
         </Provider>
       </ConfigProvider>
     </AntdRegistry>

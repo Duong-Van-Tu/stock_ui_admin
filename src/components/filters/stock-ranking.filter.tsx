@@ -61,11 +61,11 @@ export const StockRankingFilter = ({
 
   const fetchIndustries = useCallback(() => {
     dispatch(getIndustries());
-  }, [dispatch, getIndustries]);
+  }, [dispatch]);
 
   const fetchSectors = useCallback(() => {
     dispatch(getSectors());
-  }, [dispatch, getSectors]);
+  }, [dispatch]);
 
   useEffect(() => {
     fetchIndustries();

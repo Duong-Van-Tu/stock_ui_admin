@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { Key, useCallback, useEffect, useState } from 'react';
+import { Key, useCallback, useContext, useEffect, useState } from 'react';
 import { Button, Table, TableColumnsType } from 'antd';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
@@ -18,7 +18,7 @@ import {
   watchStockScorePagination
 } from '@/redux/slices/stock-score.slice';
 import { PositiveNegativeText } from '../positive-negative-text';
-import { SymbolCell } from './columns/symbol-cell';
+import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
 import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
@@ -26,11 +26,15 @@ import { watchSearchSymbol } from '@/redux/slices/search';
 import { TableTitle } from './title.table';
 import { LegendStatus } from '../legend-status';
 import { StockRankingFilter } from '../filters/stock-ranking.filter';
+import { Icon } from '../icons';
+import { SocketContext } from '@/providers/socket.provider';
+import { getCurrentPrice } from '@/helpers/socket.helper';
 
 export const StockRankingTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const symbol = useAppSelector(watchSearchSymbol);
+  const { setWatchList, resFromWS } = useContext(SocketContext);
 
   const stockScoreData = useAppSelector(watchStockScoreData);
   const pagination = useAppSelector(watchStockScorePagination);
@@ -59,7 +63,10 @@ export const StockRankingTable = () => {
 
   const rowSelection: TableRowSelection<StockScore> = {
     selectedRowKeys: Array.from(selectedRowKeys),
-    onChange: onSelectChange
+    onChange: onSelectChange,
+    getCheckboxProps: (record) => ({
+      disabled: record.isAdd
+    })
   };
 
   const handleSortOrder = (field: string) => {
@@ -120,7 +127,7 @@ export const StockRankingTable = () => {
         })
       );
     },
-    [dispatch, getStockScore]
+    [dispatch]
   );
 
   useEffect(() => {
@@ -130,14 +137,20 @@ export const StockRankingTable = () => {
   useEffect(() => {
     setFilter((prev) => ({ ...prev, symbol }));
     fetchDataStockScore({ filter: { symbol } });
-  }, [symbol]);
+  }, [symbol, fetchDataStockScore]);
+
+  useEffect(() => {
+    stockScoreData.forEach((row) => {
+      setWatchList(row.symbol);
+    });
+  }, [stockScoreData, setWatchList]);
 
   const columns: TableColumnsType<StockScore> = [
     {
       title: t('no'),
       dataIndex: 'index',
       key: 'index',
-      width: 50,
+      width: 60,
       align: 'center',
       fixed: true,
       render: (_, __, index) =>
@@ -271,11 +284,11 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('price')
       }),
       align: 'center',
-      render: (value) => (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatNumber(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value, record) => {
+        const currPrice = getCurrentPrice(resFromWS, record.symbol);
+        const price = currPrice ?? value;
+        return price ? formatNumber(price, 2) : '-';
+      }
     },
     {
       title: t('volume'),
@@ -324,13 +337,28 @@ export const StockRankingTable = () => {
         <TableTitle>{t('stockRankingTitle')}</TableTitle>
         <div css={actionStyles}>
           <StockRankingFilter onFilter={handleFilter} />
-          <Button type='primary'>{t('exportExcel')}</Button>
+          <Button
+            icon={
+              <Icon
+                icon='exportExcel'
+                width={18}
+                height={18}
+                fill='var(--white-color)'
+              />
+            }
+            type='primary'
+          >
+            {t('exportExcel')}
+          </Button>
         </div>
       </div>
       <LegendStatus customStyles={legendStatusStyles} />
       <Table<StockScore>
         rowClassName={(record) =>
-          getRowClassName(record, 'isAdd', 'hl-add-symbol')
+          getRowClassName(record, [
+            { key: 'isAdd', className: 'hl-add-symbol' },
+            { key: 'isAddWatchList', className: 'hl-watchList-symbol' }
+          ]).join(' ')
         }
         css={tableStyles}
         rowKey={(record) => record.key}

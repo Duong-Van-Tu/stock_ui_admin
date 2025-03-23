@@ -49,12 +49,24 @@
   "languageSelect": "Chọn ngôn ngữ",
   "english": "Tiếng Anh",
   "vietnamese": "Tiếng Việt",
-  "searchSelectSector": "Tìm kiếm theo chọn ngành",
-  "searchSelectIndustry": "Tìm kiếm theo chọn lĩnh vực",
+  "searchSelectSector": "Tìm kiếm theo Industry",
+  "searchSelectIndustry": "Tìm kiếm theo Sector",
   "exportExcel": "Xuất Excel",
   "profile": "Trang cá nhân",
   "logout": "Đăng xuất",
   "watching": "Đang theo dõi",
-  "addedToPortfolio": "Đã thêm vào Portfolio"
+  "addedToPortfolio": "Đã thêm vào Portfolio",
+  "alertLogs": "Nhật ký tín hiệu",
+  "alertLogsDescription": "Trang nhật ký tín hiệu",
+  "strategy": "Chiến lược",
+  "period": "Thời gian",
+  "entryDate": "Ngày vào lệnh",
+  "entryPrice": "Giá vào lệnh",
+  "exitDate": "Ngày thoát lệnh",
+  "exitPrice": "Giá thoát lệnh",
+  "highestPrice": "Giá cao nhất",
+  "highestPriceDate": "Ngày giá cao nhất",
+  "lowestPrice": "Giá thấp nhất",
+  "lowestPriceDate": "Ngày giá thấp nhất"
 }
   

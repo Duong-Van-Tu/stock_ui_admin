@@ -1,15 +1,17 @@
+import { WithGuard } from '@/guards';
 import { Metadata } from 'next';
-import { ReactNode } from 'react';
+import AlertLogs from './page';
+import { AuthGuard } from '@/guards/auth.guard';
 
-interface AlertLogsLayoutProps {
-  children: ReactNode;
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await import('next-intl/server').then((m) => m.getTranslations());
+
+  return {
+    title: t('alertLogs'),
+    description: t('alertLogsDescription')
+  };
 }
 
-export const metadata: Metadata = {
-  title: 'Alert logs',
-  description: 'Alert logs page'
-};
-
-export default function AlertLogsLayout({ children }: AlertLogsLayoutProps) {
-  return children;
+export default function AlertLogsLayout() {
+  return <WithGuard Page={AlertLogs} Guard={AuthGuard} />;
 }

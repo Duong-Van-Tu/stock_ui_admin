@@ -5,7 +5,7 @@ export interface AppSliceState {
 }
 
 const initialState: AppSliceState = {
-  sideBarCollapsed: true
+  sideBarCollapsed: false
 };
 
 export const appSlice = createSlice({

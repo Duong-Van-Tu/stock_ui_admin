@@ -1,6 +1,6 @@
 export const fieldMapping: Record<string, string> = {
   fundamentalScore: 'fund_score',
-  sentimentScore: 'estimate_score',
+  sentimentScore: 'sentiment_score',
   earningsScore: 'earnings_score',
   totalScore: 'totalscore',
   companyName: 'companyname',
@@ -13,5 +13,16 @@ export const fieldMapping: Record<string, string> = {
   price: 'price',
   volume: 'volume',
   beta: 'beta',
-  atr: 'atr'
+  atr: 'atr',
+  strategyName: 'strategy_name',
+  timeFrame: 'time_frame',
+  entryDate: 'entry_date',
+  entryPrice: 'entry_price',
+  exitDate: 'exit_date',
+  exitPrice: 'exit_price',
+  highestPrice: 'highest_price',
+  highestUpdateAt: 'highest_update_at',
+  lowestPrice: 'lowest_price',
+  lowestUpdateAt: 'lowest_update_at',
+  marketCap: 'marketcap'
 };
