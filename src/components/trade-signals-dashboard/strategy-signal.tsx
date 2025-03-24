@@ -242,4 +242,12 @@ const tableStyles = css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
+
+  .ant-table-body {
+    overflow: hidden !important;
+  }
+
+  &:hover .ant-table-body {
+    overflow: auto !important;
+  }
 `;
