@@ -36,6 +36,7 @@ export const transformAlertLogsData = (alertLogs: any[]): AlertLogs[] => {
     highestUpdateAt: stock.highest_update_at,
     lowestPrice: stock.lowest_price,
     lowestUpdateAt: stock.lowest_update_at,
-    marketCap: Number(stock.marketcap ?? 0)
+    marketCap: Number(stock.marketcap ?? 0),
+    plPercent: Number(stock.pl_percent ?? 0)
   }));
 };

@@ -67,6 +67,9 @@
   "highestPrice": "Giá cao nhất",
   "highestPriceDate": "Ngày giá cao nhất",
   "lowestPrice": "Giá thấp nhất",
-  "lowestPriceDate": "Ngày giá thấp nhất"
+  "lowestPriceDate": "Ngày giá thấp nhất",
+  "winOrLoss": "Lời/Lỗ",
+  "win": "lời",
+  "loss": "Lỗ"
 }
   

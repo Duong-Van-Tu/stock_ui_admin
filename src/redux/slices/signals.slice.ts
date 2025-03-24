@@ -11,6 +11,7 @@ export type AlertLogsState = {
   alertLogsLoading: boolean;
   pagination: Pagination;
   alertLogsData: AlertLogs[];
+  signalByStrategyId: Record<string, AlertLogs[]>;
   strategies: Strategies;
 };
 
@@ -19,6 +20,7 @@ const initialState: AlertLogsState = {
   alertLogsLoading: false,
   strategies: [],
   alertLogsData: [],
+  signalByStrategyId: {},
   pagination: PAGINATION
 };
 
@@ -74,6 +76,30 @@ export const signalSlice = createAppSlice({
           state.pagination = PAGINATION;
         }
       }
+    ),
+    getSignalStrategyId: create.asyncThunk(
+      async ({
+        strategyId,
+        ...query
+      }: { strategyId: number } & Record<string, any>) => {
+        const response = await defaultApiFetcher.get(
+          'tickers/get-stock-alert-log',
+          { query: { strategyId, ...query } }
+        );
+        return { data: response.data, strategyId };
+      },
+      {
+        fulfilled: (state, action) => {
+          const { data, strategyId } = action.payload;
+          state.signalByStrategyId[strategyId] = transformAlertLogsData(
+            data.result
+          );
+        },
+        rejected: (state, action) => {
+          const { strategyId } = action.meta.arg;
+          state.signalByStrategyId[strategyId] = [];
+        }
+      }
     )
   }),
 
@@ -82,7 +108,8 @@ export const signalSlice = createAppSlice({
     watchStrategyLoading: (signals) => signals.loading,
     watchAlertLogsLoading: (signals) => signals.alertLogsLoading,
     watchAlertLogsData: (signals) => signals.alertLogsData,
-    watchAlertLogsPagination: (signals) => signals.pagination
+    watchAlertLogsPagination: (signals) => signals.pagination,
+    watchSignalByStrategyId: (signals) => signals.signalByStrategyId
   }
 });
 
@@ -91,7 +118,9 @@ export const {
   watchStrategies,
   watchAlertLogsLoading,
   watchAlertLogsData,
+  watchSignalByStrategyId,
   watchAlertLogsPagination
 } = signalSlice.selectors;
 
-export const { getAlertLogs, getStrategies } = signalSlice.actions;
+export const { getAlertLogs, getStrategies, getSignalStrategyId } =
+  signalSlice.actions;

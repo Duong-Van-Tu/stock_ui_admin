@@ -23,5 +23,6 @@ export const fieldMapping: Record<string, string> = {
   marketCap: 'marketcap',
   volumeAVG: 'volumeavg',
   groupName: 'group_name',
-  currentPrice: 'current_price'
+  currentPrice: 'current_price',
+  pl_percent: 'pl_percent'
 };

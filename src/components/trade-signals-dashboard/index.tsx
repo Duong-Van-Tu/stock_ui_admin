@@ -36,7 +36,7 @@ export default function TradeSignalsDashboard() {
   return (
     <div css={rootStyles}>
       {rows.map((row, rowIndex) => (
-        <Row gutter={[16, 16]} key={rowIndex}>
+        <Row gutter={[24, 24]} key={rowIndex}>
           {row.map((strategy: Strategy, colIndex) => (
             <Col xs={24} md={12} lg={8} key={colIndex}>
               <Card
@@ -65,4 +65,8 @@ const rootStyles = css``;
 
 const cardStyles = css`
   width: 100%;
+  margin-bottom: 2.4rem;
+  .ant-card-body {
+    padding: 0;
+  }
 `;

@@ -25,6 +25,7 @@ type AlertLogs = {
   lowestPrice: number;
   lowestUpdateAt: string;
   marketCap: number;
+  plPercent: number;
 };
 
 type AlertLogsFilter = {

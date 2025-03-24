@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Table, TableColumnsType } from 'antd';
-import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { cleanFalsyValues, formatNumber } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
@@ -15,13 +14,12 @@ import { watchSearchSymbol } from '@/redux/slices/search';
 import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
 import {
-  getAlertLogs,
-  watchAlertLogsData,
-  watchAlertLogsLoading,
-  watchAlertLogsPagination
+  getSignalStrategyId,
+  watchSignalByStrategyId
 } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from '../tables/columns/date-time-cell.column';
 import { SymbolCell } from '../tables/columns/symbol-cell.column';
+import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 
 type StrategySignalProps = {
   isETF?: number;
@@ -36,9 +34,7 @@ export const StrategySignal = ({
   const symbol = useAppSelector(watchSearchSymbol);
   const { setWatchList, resFromWS } = useContext(SocketContext);
 
-  const alertLogsData = useAppSelector(watchAlertLogsData);
-  const pagination = useAppSelector(watchAlertLogsPagination);
-  const loading = useAppSelector(watchAlertLogsLoading);
+  const strategyData = useAppSelector(watchSignalByStrategyId);
 
   const [sortField, setSortField] = useState<string>('entryDate');
   const [sortType, setSortType] = useState<SortOrder>('descend');
@@ -69,29 +65,23 @@ export const StrategySignal = ({
 
     setFilter((prev) => ({ ...prev, ...newFilter }));
 
-    fetchDataAlertLogs({
-      page: PAGINATION.currentPage,
-      pageSize: pagination.pageSize,
+    fetchSignalByStrategy({
       filter: newFilter
     });
   };
 
-  const fetchDataAlertLogs = useCallback(
-    ({
-      page = PAGINATION_PARAMS.offset,
-      pageSize = PAGINATION_PARAMS.limit,
-      filter
-    }: PageChangeParams = {}) => {
+  const fetchSignalByStrategy = useCallback(
+    ({ filter }: PageChangeParams = {}) => {
       const filteredFilter = cleanFalsyValues(filter);
       dispatch(
-        getAlertLogs({
-          page,
-          limit: pageSize,
+        getSignalStrategyId({
           sortField: fieldMapping[sortField],
           sortType: convertSortType(sortType),
           ...filteredFilter,
           isImport: isETF,
-          strategyId
+          strategyId,
+          page: PAGINATION.currentPage,
+          limit: PAGINATION_PARAMS.unLimit
         })
       );
     },
@@ -101,14 +91,14 @@ export const StrategySignal = ({
 
   useEffect(() => {
     setFilter((prev) => ({ ...prev, symbol }));
-    fetchDataAlertLogs({ filter: { symbol } });
-  }, [symbol, fetchDataAlertLogs]);
+    fetchSignalByStrategy({ filter: { symbol } });
+  }, [symbol, fetchSignalByStrategy]);
 
   useEffect(() => {
-    alertLogsData.forEach((row) => {
+    strategyData[`${strategyId}`]?.forEach((row) => {
       setWatchList(row.symbol);
     });
-  }, [alertLogsData, setWatchList]);
+  }, [strategyData, setWatchList]);
 
   const columns: TableColumnsType<AlertLogs> = [
     {
@@ -116,7 +106,7 @@ export const StrategySignal = ({
       dataIndex: 'symbol',
       key: 'symbol',
       width: 80,
-      fixed: true,
+      fixed: 'left',
       render: (value) => <SymbolCell symbol={value} />
     },
     {
@@ -135,7 +125,7 @@ export const StrategySignal = ({
       title: t('entryDate'),
       dataIndex: 'entryDate',
       key: 'entryDate',
-      width: 140,
+      width: 120,
       align: 'center',
       sorter: true,
       sortOrder: sortField === 'entryDate' ? sortType : null,
@@ -148,7 +138,7 @@ export const StrategySignal = ({
       title: t('entryPrice'),
       dataIndex: 'entryPrice',
       key: 'entryPrice',
-      width: 140,
+      width: 120,
       align: 'center',
       defaultSortOrder: 'descend',
       sorter: true,
@@ -162,7 +152,7 @@ export const StrategySignal = ({
       title: t('exitDate'),
       dataIndex: 'exitDate',
       key: 'exitDate',
-      width: 150,
+      width: 120,
       align: 'center',
       sorter: true,
       sortOrder: sortField === 'exitDate' ? sortType : null,
@@ -195,7 +185,7 @@ export const StrategySignal = ({
       title: t('currentPrice'),
       dataIndex: 'currentPrice',
       key: 'currentPrice',
-      width: 140,
+      width: 130,
       sorter: true,
       sortOrder: sortField === 'currentPrice' ? sortType : null,
       onHeaderCell: () => ({
@@ -214,6 +204,24 @@ export const StrategySignal = ({
           </PositiveNegativeText>
         );
       }
+    },
+    {
+      title: t('winOrLoss'),
+      dataIndex: 'winOrLoss',
+      key: 'winOrLoss',
+      width: 100,
+      align: 'center',
+      fixed: 'right',
+      render: (_, record) => {
+        return (
+          <PositiveNegativeText
+            isPositive={record.plPercent >= 0}
+            isNegative={record.plPercent < 0}
+          >
+            {record.plPercent >= 0 ? t('win') : t('loss')}
+          </PositiveNegativeText>
+        );
+      }
     }
   ];
 
@@ -222,21 +230,10 @@ export const StrategySignal = ({
       css={tableStyles}
       rowKey={(record) => record.key}
       columns={columns}
-      dataSource={alertLogsData}
-      loading={loading}
-      scroll={{ x: 600, y: 55 * 5 }}
+      dataSource={strategyData[`${strategyId}`]}
+      scroll={{ x: 500, y: 55 * 5 }}
       sortDirections={['descend', 'ascend']}
-      pagination={{
-        position: ['bottomCenter'],
-        showSizeChanger: false,
-        showQuickJumper: false,
-        current: pagination.currentPage,
-        pageSize: pagination.pageSize,
-        total: pagination.total,
-        onChange: (page, pageSize) => {
-          fetchDataAlertLogs({ page, pageSize, filter });
-        }
-      }}
+      pagination={false}
     />
   );
 };
@@ -244,8 +241,5 @@ export const StrategySignal = ({
 const tableStyles = css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
-  }
-  .add-my-portfolios {
-    background: var(--added-portfolio-color);
   }
 `;

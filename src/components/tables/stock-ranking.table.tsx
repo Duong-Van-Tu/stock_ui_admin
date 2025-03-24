@@ -149,7 +149,7 @@ export const StockRankingTable = () => {
       key: 'index',
       width: 60,
       align: 'center',
-      fixed: true,
+      fixed: 'left',
       render: (_, __, index) =>
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
     },
@@ -158,7 +158,7 @@ export const StockRankingTable = () => {
       dataIndex: 'symbol',
       key: 'symbol',
       width: 200,
-      fixed: true,
+      fixed: 'left',
       render: (_, record) => (
         <SymbolCell
           symbol={record.symbol}
@@ -399,9 +399,6 @@ const rootStyles = css`
 const tableStyles = css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
-  }
-  .add-my-portfolios {
-    background: var(--added-portfolio-color);
   }
 `;
 
