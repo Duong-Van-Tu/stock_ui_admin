@@ -218,7 +218,11 @@ export const StrategySignal = ({
             isPositive={record.plPercent >= 0}
             isNegative={record.plPercent < 0}
           >
-            {record.plPercent >= 0 ? t('win') : t('loss')}
+            {record.plPercent
+              ? record.plPercent >= 0
+                ? t('win')
+                : t('loss')
+              : '-'}
           </PositiveNegativeText>
         );
       }
