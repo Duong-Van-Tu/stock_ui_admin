@@ -10,8 +10,8 @@ type AlertLogs = {
   sentimentScore: number;
   earningsScore: number;
   ytd: number;
-  price: number;
-  volume: number;
+  currentPrice: number;
+  volumeAVG: number;
   beta: number;
   atr: number;
   strategyName: string;
@@ -32,3 +32,12 @@ type AlertLogsFilter = {
   sortField?: string;
   sortType?: string;
 };
+
+type Strategy = {
+  id: number;
+  name: string;
+  groupName: string;
+  description: string;
+};
+
+type Strategies = Strategy[];

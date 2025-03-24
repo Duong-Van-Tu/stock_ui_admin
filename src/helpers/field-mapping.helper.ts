@@ -10,10 +10,6 @@ export const fieldMapping: Record<string, string> = {
   isNews: 'isnews',
   ytd: 'perf_ytd_value',
   dayChangePercent: 'daychangepercent',
-  price: 'price',
-  volume: 'volume',
-  beta: 'beta',
-  atr: 'atr',
   strategyName: 'strategy_name',
   timeFrame: 'time_frame',
   entryDate: 'entry_date',
@@ -24,5 +20,8 @@ export const fieldMapping: Record<string, string> = {
   highestUpdateAt: 'highest_update_at',
   lowestPrice: 'lowest_price',
   lowestUpdateAt: 'lowest_update_at',
-  marketCap: 'marketcap'
+  marketCap: 'marketcap',
+  volumeAVG: 'volumeavg',
+  groupName: 'group_name',
+  currentPrice: 'current_price'
 };

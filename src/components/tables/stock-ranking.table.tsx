@@ -88,7 +88,7 @@ export const StockRankingTable = () => {
 
     const newFilter = {
       ...filter,
-      sortField: newSortType ? fieldMapping[field] : undefined,
+      sortField: newSortType ? fieldMapping[field] ?? field : undefined,
       sortType: newSortType ? convertSortType(newSortType) : undefined
     };
 

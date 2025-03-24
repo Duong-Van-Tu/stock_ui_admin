@@ -26,8 +26,8 @@ import {
   watchAlertLogsData,
   watchAlertLogsLoading,
   watchAlertLogsPagination
-} from '@/redux/slices/alert-logs.slice';
-import { DateTimeCell } from './columns/date-time-cell.cloumn';
+} from '@/redux/slices/signals.slice';
+import { DateTimeCell } from './columns/date-time-cell.column';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -62,7 +62,7 @@ export const AlertLogsTable = () => {
 
     const newFilter = {
       ...filter,
-      sortField: newSortType ? fieldMapping[field] : undefined,
+      sortField: newSortType ? fieldMapping[field] ?? field : undefined,
       sortType: newSortType ? convertSortType(newSortType) : undefined
     };
 
@@ -219,13 +219,13 @@ export const AlertLogsTable = () => {
     },
     {
       title: t('currentPrice'),
-      dataIndex: 'price',
-      key: 'price',
+      dataIndex: 'currentPrice',
+      key: 'currentPrice',
       width: 140,
       sorter: true,
-      sortOrder: sortField === 'price' ? sortType : null,
+      sortOrder: sortField === 'currentPrice' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('price')
+        onClick: () => handleSortOrder('currentPrice')
       }),
       align: 'center',
       render: (value, record) => {
@@ -326,13 +326,13 @@ export const AlertLogsTable = () => {
     },
     {
       title: t('volume'),
-      dataIndex: 'volume',
-      key: 'volume',
+      dataIndex: 'volumeAVG',
+      key: 'volumeAVG',
       width: 120,
       sorter: true,
-      sortOrder: sortField === 'volume' ? sortType : null,
+      sortOrder: sortField === 'volumeAVG' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('volume')
+        onClick: () => handleSortOrder('volumeAVG')
       }),
       align: 'center',
       render: (value) => (value ? formatNumber(value, 2) : '-')

@@ -1,5 +1,14 @@
 import { v4 as uuid } from 'uuid';
 
+export const transformStrategyData = (strategies: any[]): Strategies => {
+  return strategies.map((strategy) => ({
+    id: strategy.id,
+    name: strategy.name,
+    groupName: strategy.group_name,
+    description: strategy.description
+  }));
+};
+
 export const transformAlertLogsData = (alertLogs: any[]): AlertLogs[] => {
   return alertLogs.map((stock) => ({
     id: stock.id,
@@ -13,8 +22,8 @@ export const transformAlertLogsData = (alertLogs: any[]): AlertLogs[] => {
     sentimentScore: stock.sentiment_score,
     earningsScore: stock.earnings_score,
     ytd: stock.perf_ytd_value,
-    price: stock.current_price,
-    volume: stock.volumeavg,
+    currentPrice: stock.current_price,
+    volumeAVG: stock.volumeavg,
     beta: stock.beta,
     atr: stock.atr,
     strategyName: stock.strategy_name,
