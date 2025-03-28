@@ -68,7 +68,8 @@
   "highestPriceDate": "Highest price date",
   "lowestPrice": "Lowest price",
   "lowestPriceDate": "Lowest price date",
-  "winOrLoss": "Win/Loss",
+  "winOrLoss": "Win/ Loss",
   "win": "Win",
-  "loss": "Loss"
+  "loss": "Loss",
+  "refresh": "Refresh"
 }

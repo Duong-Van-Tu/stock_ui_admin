@@ -6,22 +6,26 @@ import {
   transformStrategyData
 } from '@/helpers/signals.helper';
 
-export type AlertLogsState = {
+export type SignalsState = {
   loading: boolean;
   alertLogsLoading: boolean;
+  signalStrategyLoading: Record<number, boolean>;
   pagination: Pagination;
+  paginationByStrategyId: Record<number, Pagination>;
   alertLogsData: AlertLogs[];
   signalByStrategyId: Record<string, AlertLogs[]>;
   strategies: Strategies;
 };
 
-const initialState: AlertLogsState = {
-  loading: false,
-  alertLogsLoading: false,
+const initialState: SignalsState = {
+  loading: true,
+  alertLogsLoading: true,
+  signalStrategyLoading: {},
   strategies: [],
   alertLogsData: [],
   signalByStrategyId: {},
-  pagination: PAGINATION
+  pagination: PAGINATION,
+  paginationByStrategyId: {}
 };
 
 export const signalSlice = createAppSlice({
@@ -89,15 +93,27 @@ export const signalSlice = createAppSlice({
         return { data: response.data, strategyId };
       },
       {
+        pending: (state, action) => {
+          const { strategyId } = action.meta.arg;
+          state.signalStrategyLoading[strategyId] = true;
+        },
         fulfilled: (state, action) => {
           const { data, strategyId } = action.payload;
+          state.signalStrategyLoading[strategyId] = false;
           state.signalByStrategyId[strategyId] = transformAlertLogsData(
             data.result
           );
+          state.paginationByStrategyId[strategyId] = {
+            currentPage: data.offset,
+            pageSize: data.limit,
+            total: Number(data.total)
+          };
         },
         rejected: (state, action) => {
           const { strategyId } = action.meta.arg;
+          state.signalStrategyLoading[strategyId] = false;
           state.signalByStrategyId[strategyId] = [];
+          state.paginationByStrategyId[strategyId] = PAGINATION;
         }
       }
     )
@@ -106,10 +122,14 @@ export const signalSlice = createAppSlice({
   selectors: {
     watchStrategies: (signals) => signals.strategies,
     watchStrategyLoading: (signals) => signals.loading,
+    watchSignalStrategyLoading: (signals) => (strategyId: number) =>
+      signals.signalStrategyLoading[strategyId] || false,
     watchAlertLogsLoading: (signals) => signals.alertLogsLoading,
     watchAlertLogsData: (signals) => signals.alertLogsData,
     watchAlertLogsPagination: (signals) => signals.pagination,
-    watchSignalByStrategyId: (signals) => signals.signalByStrategyId
+    watchSignalByStrategyId: (signals) => signals.signalByStrategyId,
+    watchSignalPaginationByStrategyId: (signals) => (strategyId: number) =>
+      signals.paginationByStrategyId[strategyId] || PAGINATION
   }
 });
 
@@ -119,7 +139,9 @@ export const {
   watchAlertLogsLoading,
   watchAlertLogsData,
   watchSignalByStrategyId,
-  watchAlertLogsPagination
+  watchAlertLogsPagination,
+  watchSignalStrategyLoading,
+  watchSignalPaginationByStrategyId
 } = signalSlice.selectors;
 
 export const { getAlertLogs, getStrategies, getSignalStrategyId } =

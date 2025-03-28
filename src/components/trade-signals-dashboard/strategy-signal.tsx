@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Table, TableColumnsType } from 'antd';
+import { Card, Table, TableColumnsType, Typography } from 'antd';
 import { cleanFalsyValues, formatNumber } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
@@ -19,15 +19,20 @@ import {
 } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from '../tables/columns/date-time-cell.column';
 import { SymbolCell } from '../tables/columns/symbol-cell.column';
-import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
+import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
+import Link from 'next/link';
+import { PageURLs } from '@/utils/navigate';
+import { EmptyDataTable } from '../tables/empty.table';
 
 type StrategySignalProps = {
   isETF?: number;
   strategyId: number;
+  strategyName: string;
 };
 export const StrategySignal = ({
   isETF = 0,
-  strategyId
+  strategyId,
+  strategyName
 }: StrategySignalProps) => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
@@ -35,6 +40,13 @@ export const StrategySignal = ({
   const { setWatchList, resFromWS } = useContext(SocketContext);
 
   const strategyData = useAppSelector(watchSignalByStrategyId);
+  const signalStrategyLoading = useAppSelector(
+    (state) => state.signals.signalStrategyLoading?.[strategyId] || false
+  );
+
+  const signalStrategyPagination = useAppSelector(
+    (state) => state.signals.paginationByStrategyId?.[strategyId] || false
+  );
 
   const [sortField, setSortField] = useState<string>('entryDate');
   const [sortType, setSortType] = useState<SortOrder>('descend');
@@ -71,17 +83,21 @@ export const StrategySignal = ({
   };
 
   const fetchSignalByStrategy = useCallback(
-    ({ filter }: PageChangeParams = {}) => {
+    ({
+      page = PAGINATION_PARAMS.offset,
+      pageSize = 5,
+      filter
+    }: PageChangeParams = {}) => {
       const filteredFilter = cleanFalsyValues(filter);
       dispatch(
         getSignalStrategyId({
+          page,
+          limit: pageSize,
           sortField: fieldMapping[sortField],
           sortType: convertSortType(sortType),
-          ...filteredFilter,
           isImport: isETF,
           strategyId,
-          page: PAGINATION.currentPage,
-          limit: PAGINATION_PARAMS.unLimit
+          ...filteredFilter
         })
       );
     },
@@ -91,21 +107,23 @@ export const StrategySignal = ({
 
   useEffect(() => {
     setFilter((prev) => ({ ...prev, symbol }));
-    fetchSignalByStrategy({ filter: { symbol } });
-  }, [symbol, fetchSignalByStrategy]);
+    if (strategyId) {
+      fetchSignalByStrategy({ filter: { symbol } });
+    }
+  }, [symbol, fetchSignalByStrategy, strategyId]);
 
   useEffect(() => {
     strategyData[`${strategyId}`]?.forEach((row) => {
       setWatchList(row.symbol);
     });
-  }, [strategyData, setWatchList]);
+  }, [strategyData, strategyId, setWatchList]);
 
   const columns: TableColumnsType<AlertLogs> = [
     {
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: 80,
+      width: 90,
       fixed: 'left',
       render: (value) => <SymbolCell symbol={value} />
     },
@@ -125,7 +143,7 @@ export const StrategySignal = ({
       title: t('entryDate'),
       dataIndex: 'entryDate',
       key: 'entryDate',
-      width: 120,
+      width: 134,
       align: 'center',
       sorter: true,
       sortOrder: sortField === 'entryDate' ? sortType : null,
@@ -165,7 +183,7 @@ export const StrategySignal = ({
       title: t('exitPrice'),
       dataIndex: 'exitPrice',
       key: 'exitPrice',
-      width: 140,
+      width: 130,
       align: 'center',
       sorter: true,
       sortOrder: sortField === 'exitPrice' ? sortType : null,
@@ -209,7 +227,7 @@ export const StrategySignal = ({
       title: t('winOrLoss'),
       dataIndex: 'winOrLoss',
       key: 'winOrLoss',
-      width: 100,
+      width: 90,
       align: 'center',
       fixed: 'right',
       render: (_, record) => {
@@ -230,28 +248,78 @@ export const StrategySignal = ({
   ];
 
   return (
-    <Table<AlertLogs>
-      css={tableStyles}
-      rowKey={(record) => record.key}
-      columns={columns}
-      dataSource={strategyData[`${strategyId}`]}
-      scroll={{ x: 500, y: 55 * 5 }}
-      sortDirections={['descend', 'ascend']}
-      pagination={false}
-    />
+    <Card
+      css={cardStyles}
+      title={
+        <Link href={PageURLs.ofAlertLogs()}>
+          <Typography.Link css={strategyLinkStyles} strong>
+            {strategyName}
+          </Typography.Link>
+        </Link>
+      }
+    >
+      <Table<AlertLogs>
+        loading={signalStrategyLoading}
+        css={tableStyles(strategyData[`${strategyId}`]?.length === 0)}
+        rowKey={(record) => record.key}
+        columns={columns}
+        dataSource={strategyData[`${strategyId}`]}
+        showHeader={strategyData[`${strategyId}`]?.length > 0}
+        scroll={
+          strategyData[`${strategyId}`]?.length > 0
+            ? { x: 600, y: 55 * 6 }
+            : undefined
+        }
+        sortDirections={['descend', 'ascend']}
+        locale={{
+          emptyText: (
+            <div css={emptyStyles}>
+              <EmptyDataTable />
+            </div>
+          )
+        }}
+        pagination={{
+          position: ['bottomCenter'],
+          showSizeChanger: false,
+          current: signalStrategyPagination.currentPage,
+          pageSize: signalStrategyPagination.pageSize,
+          total: signalStrategyPagination.total,
+          onChange: (page, pageSize) => {
+            fetchSignalByStrategy({ page, pageSize, filter });
+          }
+        }}
+      />
+    </Card>
   );
 };
 
-const tableStyles = css`
+const tableStyles = (isEmpty: boolean) => css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
+    border-bottom: ${isEmpty ? 'unset' : '1px solid #f0f0f0'} !important;
   }
+`;
 
-  .ant-table-body {
-    overflow: hidden !important;
+const cardStyles = css`
+  width: 100%;
+  .ant-card-body {
+    border-top: '1px solid #f0f0f0';
+    padding: 0;
+    height: calc(100% - 5.6rem);
+    display: flex;
+    align-items: center;
   }
+`;
 
-  &:hover .ant-table-body {
-    overflow: auto !important;
-  }
+const emptyStyles = css`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 0;
+`;
+
+const strategyLinkStyles = css`
+  display: block;
+  text-align: center;
+  font-size: 1.8rem;
 `;

@@ -14,6 +14,7 @@ import Logout from '@/assets/svg/logout.svg';
 import UserProfile from '@/assets/svg/user-profile.svg';
 import ExportExcel from '@/assets/svg/export-excel.svg';
 import AlertLogs from '@/assets/svg/alert-logs.svg';
+import Refresh from '@/assets/svg/refresh.svg';
 
 type IconProps = {
   width?: number | string;
@@ -36,7 +37,8 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   logout: Logout,
   userProfile: UserProfile,
   exportExcel: ExportExcel,
-  alertLogs: AlertLogs
+  alertLogs: AlertLogs,
+  refresh: Refresh
 };
 
 export const Icon = ({

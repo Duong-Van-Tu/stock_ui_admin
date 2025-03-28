@@ -33,7 +33,7 @@
   "stockRanking": "Xếp hạng cổ phiếu",
   "stockRankingDescription": "Trang xếp hạng cổ phiếu",
   "no": "STT",
-  "symbol": "Mã chứng khoán",
+  "symbol": "Cổ phiếu",
   "totalScore": "Tổng điểm",
   "fundamentalScore": "Điểm Fundamental",
   "sentimentScore": "Điểm Sentiment",
@@ -68,8 +68,9 @@
   "highestPriceDate": "Ngày giá cao nhất",
   "lowestPrice": "Giá thấp nhất",
   "lowestPriceDate": "Ngày giá thấp nhất",
-  "winOrLoss": "Lời/Lỗ",
-  "win": "lời",
-  "loss": "Lỗ"
+  "winOrLoss": "Thắng/ Thua",
+  "win": "Thắng",
+  "loss": "Thua",
+  "refresh": "Làm mới"
 }
   

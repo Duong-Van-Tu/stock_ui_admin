@@ -49,7 +49,7 @@ const useWebSocket = (url: string) => {
         ws?.send(generatedMessage);
       }, 10000);
     },
-    [ws]
+    [ws, waitForConnection]
   );
 
   useEffect(() => {
