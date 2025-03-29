@@ -24,5 +24,6 @@ export const fieldMapping: Record<string, string> = {
   volumeAVG: 'volumeavg',
   groupName: 'group_name',
   currentPrice: 'current_price',
-  pl_percent: 'pl_percent'
+  plPercent: 'pl_percent',
+  atrPercent: 'atrpercent'
 };

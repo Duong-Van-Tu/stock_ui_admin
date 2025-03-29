@@ -1,4 +1,4 @@
-type AlertLogs = {
+type Signal = {
   id: number;
   key: string;
   symbol: string;
@@ -26,9 +26,10 @@ type AlertLogs = {
   lowestUpdateAt: string;
   marketCap: number;
   plPercent: number;
+  atrPercent: number;
 };
 
-type AlertLogsFilter = {
+type SignalFilter = {
   symbol?: string;
   sortField?: string;
   sortType?: string;

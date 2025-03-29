@@ -5,9 +5,10 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { Button, Table, TableColumnsType } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
+  calculatePercentage,
   cleanFalsyValues,
   formatMarketCap,
-  formatNumber
+  roundToDecimals
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
@@ -28,6 +29,7 @@ import {
   watchAlertLogsPagination
 } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
+import { StockChangeCell } from './columns/stock-change-cell.column';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -41,7 +43,7 @@ export const AlertLogsTable = () => {
 
   const [sortField, setSortField] = useState<string>('entryDate');
   const [sortType, setSortType] = useState<SortOrder>('descend');
-  const [filter, setFilter] = useState<AlertLogsFilter>({});
+  const [filter, setFilter] = useState<SignalFilter>({});
 
   const handleSortOrder = (field: string) => {
     let newSortType: SortOrder;
@@ -107,7 +109,7 @@ export const AlertLogsTable = () => {
     });
   }, [alertLogsData, setWatchList]);
 
-  const columns: TableColumnsType<AlertLogs> = [
+  const columns: TableColumnsType<Signal> = [
     {
       title: t('no'),
       dataIndex: 'index',
@@ -182,7 +184,7 @@ export const AlertLogsTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('entryPrice')
       }),
-      render: (value) => (value ? formatNumber(value, 2) : '-')
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
     },
     {
       title: t('exitDate'),
@@ -208,14 +210,10 @@ export const AlertLogsTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('exitPrice')
       }),
-      render: (value, record) => (
-        <PositiveNegativeText
-          isPositive={value >= record.entryPrice}
-          isNegative={value < record.entryPrice}
-        >
-          {value ? formatNumber(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return <StockChangeCell value={value} percentage={percentage} />;
+      }
     },
     {
       title: t('currentPrice'),
@@ -231,14 +229,8 @@ export const AlertLogsTable = () => {
       render: (value, record) => {
         const currPrice = getCurrentPrice(resFromWS, record.symbol);
         const price = currPrice ?? value;
-        return (
-          <PositiveNegativeText
-            isPositive={price >= record.entryPrice}
-            isNegative={price < record.entryPrice}
-          >
-            {price ? formatNumber(price, 2) : '-'}
-          </PositiveNegativeText>
-        );
+        const percentage = calculatePercentage(record.entryPrice, price);
+        return <StockChangeCell value={price} percentage={percentage} />;
       }
     },
     {
@@ -253,14 +245,8 @@ export const AlertLogsTable = () => {
       }),
       align: 'center',
       render: (value, record) => {
-        return (
-          <PositiveNegativeText
-            isPositive={value >= record.entryPrice}
-            isNegative={value < record.entryPrice}
-          >
-            {value ? formatNumber(value, 2) : '-'}
-          </PositiveNegativeText>
-        );
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return <StockChangeCell value={value} percentage={percentage} />;
       }
     },
     {
@@ -288,14 +274,8 @@ export const AlertLogsTable = () => {
       }),
       align: 'center',
       render: (value, record) => {
-        return (
-          <PositiveNegativeText
-            isPositive={value >= record.entryPrice}
-            isNegative={value < record.entryPrice}
-          >
-            {value ? formatNumber(value, 2) : '-'}
-          </PositiveNegativeText>
-        );
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return <StockChangeCell value={value} percentage={percentage} />;
       }
     },
     {
@@ -335,7 +315,7 @@ export const AlertLogsTable = () => {
         onClick: () => handleSortOrder('volumeAVG')
       }),
       align: 'center',
-      render: (value) => (value ? formatNumber(value, 2) : '-')
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
     },
     {
       title: t('beta'),
@@ -348,7 +328,7 @@ export const AlertLogsTable = () => {
         onClick: () => handleSortOrder('beta')
       }),
       align: 'center',
-      render: (value) => (value ? formatNumber(value, 2) : '-')
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
     },
     {
       title: t('atr'),
@@ -361,7 +341,12 @@ export const AlertLogsTable = () => {
         onClick: () => handleSortOrder('atr')
       }),
       align: 'center',
-      render: (value) => (value ? formatNumber(value, 2) : '-')
+      render: (value, record) =>
+        value ? (
+          <StockChangeCell value={value} percentage={record.atrPercent} />
+        ) : (
+          '-'
+        )
     },
     {
       title: t('totalScore'),
@@ -376,7 +361,7 @@ export const AlertLogsTable = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatNumber(value, 2) : '-'}
+          {value ? roundToDecimals(value, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -393,7 +378,7 @@ export const AlertLogsTable = () => {
       }),
       render: (value) => (
         <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatNumber(value, 2) : '-'}
+          {value ? roundToDecimals(value, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -410,7 +395,7 @@ export const AlertLogsTable = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatNumber(value, 2) : '-'}
+          {value ? roundToDecimals(value, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -427,7 +412,7 @@ export const AlertLogsTable = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatNumber(value, 2) : '-'}
+          {value ? roundToDecimals(value, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -444,7 +429,7 @@ export const AlertLogsTable = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatNumber(value, 2) : '-'}
+          {value ? roundToDecimals(value, 2) : '-'}
         </PositiveNegativeText>
       )
     }
@@ -470,7 +455,7 @@ export const AlertLogsTable = () => {
           </Button>
         </div>
       </div>
-      <Table<AlertLogs>
+      <Table<Signal>
         css={tableStyles}
         rowKey={(record) => record.key}
         columns={columns}

@@ -9,8 +9,8 @@ export const transformStrategyData = (strategies: any[]): Strategies => {
   }));
 };
 
-export const transformAlertLogsData = (alertLogs: any[]): AlertLogs[] => {
-  return alertLogs.map((stock) => ({
+export const transformSignalsData = (signals: any[]): Signal[] => {
+  return signals.map((stock) => ({
     id: stock.id,
     key: uuid(),
     symbol: stock.ticker_name,
@@ -37,6 +37,7 @@ export const transformAlertLogsData = (alertLogs: any[]): AlertLogs[] => {
     lowestPrice: stock.lowest_price,
     lowestUpdateAt: stock.lowest_update_at,
     marketCap: Number(stock.marketcap ?? 0),
-    plPercent: Number(stock.pl_percent ?? 0)
+    plPercent: Number(stock.pl_percent ?? 0),
+    atrPercent: stock.atrpercent
   }));
 };

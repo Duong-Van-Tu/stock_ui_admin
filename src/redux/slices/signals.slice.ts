@@ -2,7 +2,7 @@ import { PAGINATION } from '@/constants/pagination.constant';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import {
-  transformAlertLogsData,
+  transformSignalsData,
   transformStrategyData
 } from '@/helpers/signals.helper';
 
@@ -12,8 +12,8 @@ export type SignalsState = {
   signalStrategyLoading: Record<number, boolean>;
   pagination: Pagination;
   paginationByStrategyId: Record<number, Pagination>;
-  alertLogsData: AlertLogs[];
-  signalByStrategyId: Record<string, AlertLogs[]>;
+  alertLogsData: Signal[];
+  signalByStrategyId: Record<string, Signal[]>;
   strategies: Strategies;
 };
 
@@ -67,7 +67,7 @@ export const signalSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.alertLogsLoading = false;
-          state.alertLogsData = transformAlertLogsData(action.payload.result);
+          state.alertLogsData = transformSignalsData(action.payload.result);
           state.pagination = {
             currentPage: action.payload.offset,
             pageSize: action.payload.limit,
@@ -100,7 +100,7 @@ export const signalSlice = createAppSlice({
         fulfilled: (state, action) => {
           const { data, strategyId } = action.payload;
           state.signalStrategyLoading[strategyId] = false;
-          state.signalByStrategyId[strategyId] = transformAlertLogsData(
+          state.signalByStrategyId[strategyId] = transformSignalsData(
             data.result
           );
           state.paginationByStrategyId[strategyId] = {

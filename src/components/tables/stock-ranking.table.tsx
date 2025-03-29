@@ -7,8 +7,9 @@ import { TableRowSelection } from 'antd/es/table/interface';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   cleanFalsyValues,
-  formatNumber,
-  getRowClassName
+  roundToDecimals,
+  getRowClassName,
+  formatPercent
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -29,6 +30,7 @@ import { StockRankingFilter } from '../filters/stock-ranking.filter';
 import { Icon } from '../icons';
 import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
+import { StockChangeCell } from './columns/stock-change-cell.column';
 
 export const StockRankingTable = () => {
   const t = useTranslations();
@@ -181,7 +183,7 @@ export const StockRankingTable = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatNumber(value, 2) : '-'}
+          {value ? roundToDecimals(value, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -198,7 +200,7 @@ export const StockRankingTable = () => {
       }),
       render: (value) => (
         <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatNumber(value, 2) : '-'}
+          {value ? roundToDecimals(value, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -215,7 +217,7 @@ export const StockRankingTable = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatNumber(value, 2) : '-'}
+          {value ? roundToDecimals(value, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -232,7 +234,7 @@ export const StockRankingTable = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatNumber(value, 2) : '-'}
+          {value ? roundToDecimals(value, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -249,7 +251,7 @@ export const StockRankingTable = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatNumber(value, 2) : '-'}
+          {value ? roundToDecimals(value, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -266,7 +268,7 @@ export const StockRankingTable = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatNumber(value, 2) : '-'}
+          {value ? formatPercent(value, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -284,7 +286,12 @@ export const StockRankingTable = () => {
       render: (value, record) => {
         const currPrice = getCurrentPrice(resFromWS, record.symbol);
         const price = currPrice ?? value;
-        return price ? formatNumber(price, 2) : '-';
+        return (
+          <StockChangeCell
+            value={price}
+            percentage={record.dayChangePercent ? record.dayChangePercent : 0}
+          />
+        );
       }
     },
     {
@@ -298,7 +305,7 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('volume')
       }),
       align: 'center',
-      render: (value) => (value ? formatNumber(value, 2) : '-')
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
     },
     {
       title: t('beta'),
@@ -311,7 +318,7 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('beta')
       }),
       align: 'center',
-      render: (value) => (value ? formatNumber(value, 2) : '-')
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
     },
     {
       title: t('atr'),
@@ -324,7 +331,7 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('atr')
       }),
       align: 'center',
-      render: (value) => (value ? formatNumber(value, 2) : '-')
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
     }
   ];
 

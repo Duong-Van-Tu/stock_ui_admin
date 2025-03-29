@@ -119,13 +119,19 @@ export const cleanFalsyValues = (values: Record<string, any> = {}) => {
   );
 };
 
-export const formatNumber = (
+export const roundToDecimals = (
   value: number | null | undefined,
   decimals: number = 2
 ): number | null | undefined => {
   if (!value && value !== 0) return value;
 
-  const factor = Math.pow(10, decimals);
+  const extraDecimals =
+    value > 0.1
+      ? 0
+      : Math.max(0, -Math.floor(Math.log10(Math.abs(value))) - 1) * 2;
+  const adjustedDecimals = decimals + extraDecimals;
+
+  const factor = Math.pow(10, adjustedDecimals);
   return Math.round(value * factor) / factor;
 };
 
@@ -154,4 +160,25 @@ export const formatMarketCap = (value: number): string => {
   } else {
     return value.toString();
   }
+};
+
+export const formatPercent = (
+  value: number | null | undefined,
+  decimals: number = 2
+): string | null | undefined => {
+  if (!value) return '0%';
+
+  const formattedValue = roundToDecimals(value, decimals);
+  const sign = value > 0 ? '+' : '';
+
+  return `${sign}${formattedValue}%`;
+};
+
+export const calculatePercentage = (
+  initialValue: number,
+  finalValue: number
+): number => {
+  if (!initialValue) return 0;
+
+  return ((finalValue - initialValue) / initialValue) * 100;
 };

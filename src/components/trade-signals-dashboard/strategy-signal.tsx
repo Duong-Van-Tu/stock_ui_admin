@@ -3,7 +3,11 @@ import { css } from '@emotion/react';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Card, Table, TableColumnsType, Typography } from 'antd';
-import { cleanFalsyValues, formatNumber } from '@/utils/common';
+import {
+  calculatePercentage,
+  cleanFalsyValues,
+  roundToDecimals
+} from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 import { PositiveNegativeText } from '../positive-negative-text';
@@ -23,6 +27,7 @@ import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
 import { EmptyDataTable } from '../tables/empty.table';
+import { StockChangeCell } from '../tables/columns/stock-change-cell.column';
 
 type StrategySignalProps = {
   isETF?: number;
@@ -50,7 +55,7 @@ export const StrategySignal = ({
 
   const [sortField, setSortField] = useState<string>('entryDate');
   const [sortType, setSortType] = useState<SortOrder>('descend');
-  const [filter, setFilter] = useState<AlertLogsFilter>({});
+  const [filter, setFilter] = useState<SignalFilter>({});
 
   const handleSortOrder = (field: string) => {
     let newSortType: SortOrder;
@@ -118,7 +123,7 @@ export const StrategySignal = ({
     });
   }, [strategyData, strategyId, setWatchList]);
 
-  const columns: TableColumnsType<AlertLogs> = [
+  const columns: TableColumnsType<Signal> = [
     {
       title: t('symbol'),
       dataIndex: 'symbol',
@@ -164,7 +169,7 @@ export const StrategySignal = ({
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('entryPrice')
       }),
-      render: (value) => (value ? formatNumber(value, 2) : '-')
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
     },
     {
       title: t('exitDate'),
@@ -190,14 +195,10 @@ export const StrategySignal = ({
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('exitPrice')
       }),
-      render: (value, record) => (
-        <PositiveNegativeText
-          isPositive={value >= record.entryPrice}
-          isNegative={value < record.entryPrice}
-        >
-          {value ? formatNumber(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return <StockChangeCell value={value} percentage={percentage} />;
+      }
     },
     {
       title: t('currentPrice'),
@@ -213,14 +214,8 @@ export const StrategySignal = ({
       render: (value, record) => {
         const currPrice = getCurrentPrice(resFromWS, record.symbol);
         const price = currPrice ?? value;
-        return (
-          <PositiveNegativeText
-            isPositive={price >= record.entryPrice}
-            isNegative={price < record.entryPrice}
-          >
-            {price ? formatNumber(price, 2) : '-'}
-          </PositiveNegativeText>
-        );
+        const percentage = calculatePercentage(record.entryPrice, price);
+        return <StockChangeCell value={price} percentage={percentage} />;
       }
     },
     {
@@ -258,7 +253,7 @@ export const StrategySignal = ({
         </Link>
       }
     >
-      <Table<AlertLogs>
+      <Table<Signal>
         loading={signalStrategyLoading}
         css={tableStyles(strategyData[`${strategyId}`]?.length === 0)}
         rowKey={(record) => record.key}
@@ -297,15 +292,15 @@ const tableStyles = (isEmpty: boolean) => css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
     border-bottom: ${isEmpty ? 'unset' : '1px solid #f0f0f0'} !important;
+    height: ${isEmpty ? '33.2rem' : 'unset'};
   }
 `;
 
 const cardStyles = css`
   width: 100%;
   .ant-card-body {
-    border-top: '1px solid #f0f0f0';
+    border-top: 1px solid #f0f0f0;
     padding: 0;
-    height: calc(100% - 5.6rem);
     display: flex;
     align-items: center;
   }
