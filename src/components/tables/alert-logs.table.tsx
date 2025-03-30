@@ -132,7 +132,7 @@ export const AlertLogsTable = () => {
 
       router.replace(`${pathname}?${params.toString()}`);
     },
-    [pathname, searchParams]
+    [pathname, searchParams, router]
   );
 
   useEffect(() => {
