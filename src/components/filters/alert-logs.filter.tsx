@@ -88,7 +88,7 @@ export const AlertLogsFilter = ({
         css={formStyles}
         layout='horizontal'
       >
-        <Row gutter={[16, 12]} align='bottom'>
+        <Row gutter={[16, 12]} align='bottom' justify='end'>
           <Col>
             <Form.Item
               css={formItemStyles}
@@ -128,15 +128,21 @@ export const AlertLogsFilter = ({
               <RangePicker format='MM-DD-YYYY' allowClear />
             </Form.Item>
           </Col>
+          <Col>
+            <Space size='small'>
+              <Button
+                htmlType='submit'
+                type='primary'
+                icon={<SearchOutlined />}
+              >
+                {t('search')}
+              </Button>
+              <Button onClick={handleClearFilters} icon={<ClearOutlined />}>
+                {t('clear')}
+              </Button>
+            </Space>
+          </Col>
         </Row>
-        <Space size='small' css={actionStyles}>
-          <Button htmlType='submit' type='primary' icon={<SearchOutlined />}>
-            {t('search')}
-          </Button>
-          <Button onClick={handleClearFilters} icon={<ClearOutlined />}>
-            {t('clear')}
-          </Button>
-        </Space>
       </Form>
     </div>
   );
@@ -146,21 +152,11 @@ const rootStyles = css`
   border: 1px solid var(--border-table-color);
   border-radius: 0.6rem;
   padding: 1.4rem 1.6rem;
-  display: flex;
-  @media (max-width: 1615px) {
-    justify-content: flex-end;
-  }
 `;
 
 const formStyles = css`
   display: flex;
   gap: 1.6rem;
-  @media (max-width: 1615px) {
-    display: block;
-  }
-  @media (max-width: 1401px) {
-    display: flex;
-  }
 `;
 
 const formItemStyles = css`
@@ -175,15 +171,4 @@ const labelStyles = css`
 
 const selectStrategyStyles = css`
   min-width: 24rem;
-`;
-
-const actionStyles = css`
-  @media (max-width: 1615px) {
-    width: 100%;
-    margin-top: 1.6rem;
-    justify-content: flex-end;
-  }
-  @media (max-width: 1401px) {
-    width: auto;
-  }
 `;
