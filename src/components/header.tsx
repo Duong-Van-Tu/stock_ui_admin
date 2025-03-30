@@ -105,7 +105,7 @@ export default function Header({ collapsed }: HeaderProps) {
         />
         <Search
           placeholder={t('searchPlaceholder')}
-          size='large'
+          size='middle'
           allowClear
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
