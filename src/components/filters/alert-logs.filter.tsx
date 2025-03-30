@@ -3,7 +3,6 @@ import { css, SerializedStyles } from '@emotion/react';
 import { useTranslations } from 'next-intl';
 import { Button, Col, DatePicker, Form, Row, Select } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { Dayjs } from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   getStrategies,
@@ -17,12 +16,6 @@ type AlertLogsFilterProps = {
   customStyles?: SerializedStyles;
   defaultStrategyId?: number;
   onFilter: (values: AlertLogsFilter) => void;
-};
-
-type FormType = {
-  entryDate?: [Dayjs, Dayjs];
-  exitDate?: [Dayjs, Dayjs];
-  strategyId: number;
 };
 
 const { RangePicker } = DatePicker;
@@ -67,7 +60,6 @@ export const AlertLogsFilter = ({
 
     router.push(`?${params.toString()}`, { scroll: false });
     form.setFieldValue('strategyId', value);
-    handleSearch();
   };
 
   const handleClearStrategy = () => {
@@ -77,7 +69,6 @@ export const AlertLogsFilter = ({
     router.push(`?${params.toString()}`, { scroll: false });
 
     form.setFieldValue('strategyId', undefined);
-    handleSearch();
   };
 
   const fetchStrategies = useCallback(() => {
@@ -90,7 +81,7 @@ export const AlertLogsFilter = ({
 
   useEffect(() => {
     form.setFieldValue('strategyId', defaultStrategyId);
-  }, [form]);
+  }, [form, defaultStrategyId]);
 
   return (
     <div css={[rootStyles, customStyles]}>
@@ -173,12 +164,6 @@ const rootStyles = css`
 const formStyles = css`
   display: flex;
   gap: 1.6rem;
-`;
-
-const rowStyles = css`
-  /* display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end; */
 `;
 
 const formItemStyles = css`

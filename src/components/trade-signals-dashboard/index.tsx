@@ -27,7 +27,7 @@ export default function TradeSignalsDashboard() {
         {t('tradeSignalsDashboard')}
       </Typography.Title>
       <div css={gridStyles}>
-        {strategies.map((strategy, index) => (
+        {strategies.map((strategy) => (
           <div key={strategy.id} css={cardWrapperStyles}>
             <StrategySignal
               strategyId={strategy.id}

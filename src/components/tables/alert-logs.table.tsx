@@ -32,13 +32,14 @@ import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { AlertLogsFilter } from '../filters/alert-logs.filter';
 import { AlertLogsView } from '@/constants/common.constant';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const { setWatchList, resFromWS } = useContext(SocketContext);
-
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const isOption = searchParams.get('isOption')
     ? Number(searchParams.get('isOption'))
@@ -119,23 +120,34 @@ export const AlertLogsTable = () => {
     fetchDataAlertLogs({ filter: newFilter });
   };
 
-  const handleChangeView = (value: AlertLogsView) => {
-    const newFilter = {
-      ...filter,
-      isImport: value
-    };
-    setFilter(newFilter);
-    fetchDataAlertLogs({ filter: newFilter });
-  };
+  const handleChangeView = useCallback(
+    (view: AlertLogsView) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (view === AlertLogsView.STOCKS) {
+        params.delete('isOption');
+      } else {
+        params.set('isOption', '1');
+      }
+
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, searchParams]
+  );
 
   useEffect(() => {
     setFilter((prev) => ({
       ...prev,
       symbol,
-      isImport: isOption as AlertLogsView
+      isImport: isOption as AlertLogsView,
+      strategyId
     }));
-    fetchDataAlertLogs({ filter: { symbol, isImport: isOption } });
-  }, [symbol, isOption, fetchDataAlertLogs]);
+    fetchDataAlertLogs({ filter: { symbol, isImport: isOption, strategyId } });
+
+    if (isOption === AlertLogsView.OPTIONS) {
+      handleChangeView(AlertLogsView.OPTIONS);
+    }
+  }, [symbol, isOption, strategyId, fetchDataAlertLogs, handleChangeView]);
 
   useEffect(() => {
     alertLogsData.forEach((row) => {
@@ -507,6 +519,9 @@ export const AlertLogsTable = () => {
                 value: AlertLogsView.OPTIONS
               }
             ]}
+            defaultValue={
+              isOption ? AlertLogsView.OPTIONS : AlertLogsView.STOCKS
+            }
             onChange={(value) => handleChangeView(value)}
           />
           <div css={actionStyles}>
