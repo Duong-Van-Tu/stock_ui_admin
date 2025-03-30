@@ -1,5 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
+
+import { useEffect, useMemo } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Button, Col, DatePicker, Form, Row, Select, Space } from 'antd';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
@@ -9,8 +12,6 @@ import {
   watchStrategies,
   watchStrategyLoading
 } from '@/redux/slices/signals.slice';
-import { useCallback, useEffect, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 
 type AlertLogsFilterProps = {
   customStyles?: SerializedStyles;
@@ -35,13 +36,15 @@ export const AlertLogsFilter = ({
   const strategyLoading = useAppSelector(watchStrategyLoading);
 
   const strategyOptions = useMemo(
-    () =>
-      strategies?.map((strategy) => ({
-        value: strategy.id,
-        label: strategy.name
-      })),
+    () => strategies?.map(({ id, name }) => ({ value: id, label: name })),
     [strategies]
   );
+
+  const updateSearchParams = (key: string, value?: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    value ? params.set(key, value) : params.delete(key);
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
 
   const handleSearch = () => {
     const values = form.getFieldsValue();
@@ -56,11 +59,7 @@ export const AlertLogsFilter = ({
 
   const handleClearFilters = () => {
     form.resetFields();
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete('strategyId');
-
-    router.push(`?${params.toString()}`, { scroll: false });
-
+    updateSearchParams('strategyId');
     onFilter({
       fromEntryDate: undefined,
       toEntryDate: undefined,
@@ -70,33 +69,14 @@ export const AlertLogsFilter = ({
     });
   };
 
-  const handleSelectStrategy = (value: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('strategyId', value.toString());
-
-    router.push(`?${params.toString()}`, { scroll: false });
-    form.setFieldValue('strategyId', value);
-  };
-
-  const handleClearStrategy = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete('strategyId');
-
-    router.push(`?${params.toString()}`, { scroll: false });
-
-    form.setFieldValue('strategyId', undefined);
-  };
-
-  const fetchStrategies = useCallback(() => {
+  useEffect(() => {
     dispatch(getStrategies());
   }, [dispatch]);
 
   useEffect(() => {
-    fetchStrategies();
-  }, [fetchStrategies]);
-
-  useEffect(() => {
-    form.setFieldValue('strategyId', defaultStrategyId);
+    if (defaultStrategyId) {
+      form.setFieldValue('strategyId', defaultStrategyId);
+    }
   }, [form, defaultStrategyId]);
 
   return (
@@ -123,8 +103,10 @@ export const AlertLogsFilter = ({
                 placeholder={t('searchSelectStrategy')}
                 optionFilterProp='label'
                 options={strategyOptions}
-                onSelect={(value) => handleSelectStrategy(value)}
-                onClear={handleClearStrategy}
+                onSelect={(value) =>
+                  updateSearchParams('strategyId', value.toString())
+                }
+                onClear={() => updateSearchParams('strategyId')}
               />
             </Form.Item>
           </Col>
@@ -176,7 +158,6 @@ const formStyles = css`
   @media (max-width: 1615px) {
     display: block;
   }
-
   @media (max-width: 1401px) {
     display: flex;
   }
@@ -202,7 +183,6 @@ const actionStyles = css`
     margin-top: 1.6rem;
     justify-content: flex-end;
   }
-
   @media (max-width: 1401px) {
     width: auto;
   }
