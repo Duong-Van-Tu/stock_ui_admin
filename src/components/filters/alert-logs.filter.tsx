@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
 import { useTranslations } from 'next-intl';
-import { Button, Col, DatePicker, Form, Row, Select } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Button, Col, DatePicker, Form, Row, Select, Space } from 'antd';
+import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   getStrategies,
@@ -54,6 +54,22 @@ export const AlertLogsFilter = ({
     });
   };
 
+  const handleClearFilters = () => {
+    form.resetFields();
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('strategyId');
+
+    router.push(`?${params.toString()}`, { scroll: false });
+
+    onFilter({
+      fromEntryDate: undefined,
+      toEntryDate: undefined,
+      fromExitDate: undefined,
+      toExitDate: undefined,
+      strategyId: undefined
+    });
+  };
+
   const handleSelectStrategy = (value: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('strategyId', value.toString());
@@ -93,13 +109,11 @@ export const AlertLogsFilter = ({
         layout='horizontal'
       >
         <Row gutter={[16, 12]} align='bottom'>
-          <Col flex='1'>
+          <Col>
             <Form.Item
               css={formItemStyles}
               name='strategyId'
               label={<span css={labelStyles}>{t('strategy')}</span>}
-              labelCol={{ span: 7 }}
-              wrapperCol={{ span: 17 }}
             >
               <Select
                 css={selectStrategyStyles}
@@ -114,40 +128,33 @@ export const AlertLogsFilter = ({
               />
             </Form.Item>
           </Col>
-          <Col flex='1'>
+          <Col>
             <Form.Item
               css={formItemStyles}
               name='exitDate'
               label={<span css={labelStyles}>{t('exitDate')}</span>}
-              labelCol={{ span: 7 }}
-              wrapperCol={{ span: 17 }}
             >
               <RangePicker format='MM-DD-YYYY' allowClear />
             </Form.Item>
           </Col>
-          <Col flex='1'>
+          <Col>
             <Form.Item
               css={formItemStyles}
               name='entryDate'
               label={<span css={labelStyles}>{t('entryDate')}</span>}
-              labelCol={{ span: 7 }}
-              wrapperCol={{ span: 17 }}
             >
               <RangePicker format='MM-DD-YYYY' allowClear />
             </Form.Item>
           </Col>
-          <Col css={buttonColStyles}>
-            <Form.Item css={formItemStyles}>
-              <Button
-                htmlType='submit'
-                type='primary'
-                icon={<SearchOutlined />}
-              >
-                {t('search')}
-              </Button>
-            </Form.Item>
-          </Col>
         </Row>
+        <Space size='small' css={actionStyles}>
+          <Button htmlType='submit' type='primary' icon={<SearchOutlined />}>
+            {t('search')}
+          </Button>
+          <Button onClick={handleClearFilters} icon={<ClearOutlined />}>
+            {t('clear')}
+          </Button>
+        </Space>
       </Form>
     </div>
   );
@@ -158,12 +165,21 @@ const rootStyles = css`
   border-radius: 0.6rem;
   padding: 1.4rem 1.6rem;
   display: flex;
-  justify-content: flex-end;
+  @media (max-width: 1615px) {
+    justify-content: flex-end;
+  }
 `;
 
 const formStyles = css`
   display: flex;
   gap: 1.6rem;
+  @media (max-width: 1615px) {
+    display: block;
+  }
+
+  @media (max-width: 1401px) {
+    display: flex;
+  }
 `;
 
 const formItemStyles = css`
@@ -176,17 +192,18 @@ const labelStyles = css`
   line-height: 1.8rem;
 `;
 
-const buttonColStyles = css`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-
-  @media (max-width: 1500px) {
-    width: 100%;
-    justify-content: flex-end;
-  }
+const selectStrategyStyles = css`
+  min-width: 24rem;
 `;
 
-const selectStrategyStyles = css`
-  min-width: 27rem;
+const actionStyles = css`
+  @media (max-width: 1615px) {
+    width: 100%;
+    margin-top: 1.6rem;
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 1401px) {
+    width: auto;
+  }
 `;

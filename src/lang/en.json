@@ -76,5 +76,6 @@
   "strategyOptions": "Options",
   "stocks": "STOCKS",
   "options": "OPTIONS",
-  "searchSelectStrategy": "Search select Strategy"
+  "searchSelectStrategy": "Search select Strategy",
+  "clear": "Clear"
 }
