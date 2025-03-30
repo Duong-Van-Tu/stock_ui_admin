@@ -17,12 +17,3 @@ const rootStyles = css`
   justify-content: center;
   gap: 1.6rem;
 `;
-
-const btnReloadStyles = css`
-  margin: auto;
-  &:hover {
-    svg {
-      fill: var(--primary-color);
-    }
-  }
-`;

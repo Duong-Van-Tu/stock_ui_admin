@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Button, Table, TableColumnsType } from 'antd';
+import { Button, Segmented, Table, TableColumnsType } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   calculatePercentage,
@@ -30,20 +30,32 @@ import {
 } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
+import { AlertLogsFilter } from '../filters/alert-logs.filter';
+import { AlertLogsView } from '@/constants/common.constant';
+import { useSearchParams } from 'next/navigation';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const symbol = useAppSelector(watchSearchSymbol);
   const { setWatchList, resFromWS } = useContext(SocketContext);
 
+  const searchParams = useSearchParams();
+  const isOption = searchParams.get('isOption')
+    ? Number(searchParams.get('isOption'))
+    : 0;
+
+  const strategyId = searchParams.get('strategyId')
+    ? Number(searchParams.get('strategyId'))
+    : undefined;
+
+  const symbol = useAppSelector(watchSearchSymbol);
   const alertLogsData = useAppSelector(watchAlertLogsData);
   const pagination = useAppSelector(watchAlertLogsPagination);
   const loading = useAppSelector(watchAlertLogsLoading);
 
   const [sortField, setSortField] = useState<string>('entryDate');
   const [sortType, setSortType] = useState<SortOrder>('descend');
-  const [filter, setFilter] = useState<SignalFilter>({});
+  const [filter, setFilter] = useState<AlertLogsFilter>({});
 
   const handleSortOrder = (field: string) => {
     let newSortType: SortOrder;
@@ -98,10 +110,32 @@ export const AlertLogsTable = () => {
     []
   );
 
+  const handleFilter = (values: AlertLogsFilter) => {
+    const newFilter = {
+      ...filter,
+      ...values
+    };
+    setFilter(newFilter);
+    fetchDataAlertLogs({ filter: newFilter });
+  };
+
+  const handleChangeView = (value: AlertLogsView) => {
+    const newFilter = {
+      ...filter,
+      isImport: value
+    };
+    setFilter(newFilter);
+    fetchDataAlertLogs({ filter: newFilter });
+  };
+
   useEffect(() => {
-    setFilter((prev) => ({ ...prev, symbol }));
-    fetchDataAlertLogs({ filter: { symbol } });
-  }, [symbol, fetchDataAlertLogs]);
+    setFilter((prev) => ({
+      ...prev,
+      symbol,
+      isImport: isOption as AlertLogsView
+    }));
+    fetchDataAlertLogs({ filter: { symbol, isImport: isOption } });
+  }, [symbol, isOption, fetchDataAlertLogs]);
 
   useEffect(() => {
     alertLogsData.forEach((row) => {
@@ -142,6 +176,7 @@ export const AlertLogsTable = () => {
       align: 'center',
       fixed: 'left',
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'strategyName' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('strategyName')
@@ -154,6 +189,7 @@ export const AlertLogsTable = () => {
       width: 100,
       align: 'center',
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'timeFrame' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('timeFrame')
@@ -166,6 +202,7 @@ export const AlertLogsTable = () => {
       width: 140,
       align: 'center',
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'entryDate' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('entryDate')
@@ -180,6 +217,7 @@ export const AlertLogsTable = () => {
       align: 'center',
       defaultSortOrder: 'descend',
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'entryPrice' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('entryPrice')
@@ -193,6 +231,7 @@ export const AlertLogsTable = () => {
       width: 150,
       align: 'center',
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'exitDate' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('exitDate')
@@ -206,6 +245,7 @@ export const AlertLogsTable = () => {
       width: 140,
       align: 'center',
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'exitPrice' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('exitPrice')
@@ -221,6 +261,7 @@ export const AlertLogsTable = () => {
       key: 'currentPrice',
       width: 140,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'currentPrice' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('currentPrice')
@@ -239,6 +280,7 @@ export const AlertLogsTable = () => {
       key: 'highestPrice',
       width: 140,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'highestPrice' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('highestPrice')
@@ -255,6 +297,7 @@ export const AlertLogsTable = () => {
       key: 'highestUpdateAt',
       width: 164,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'highestUpdateAt' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('highestUpdateAt')
@@ -268,6 +311,7 @@ export const AlertLogsTable = () => {
       key: 'lowestPrice',
       width: 140,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'lowestPrice' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('lowestPrice')
@@ -284,6 +328,7 @@ export const AlertLogsTable = () => {
       key: 'lowestUpdateAt',
       width: 164,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'lowestUpdateAt' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('lowestUpdateAt')
@@ -297,6 +342,7 @@ export const AlertLogsTable = () => {
       key: 'marketCap',
       width: 120,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'marketCap' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('marketCap')
@@ -310,6 +356,7 @@ export const AlertLogsTable = () => {
       key: 'volumeAVG',
       width: 120,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'volumeAVG' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('volumeAVG')
@@ -323,6 +370,7 @@ export const AlertLogsTable = () => {
       key: 'beta',
       width: 110,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'beta' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('beta')
@@ -336,6 +384,7 @@ export const AlertLogsTable = () => {
       key: 'atr',
       width: 100,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'atr' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('atr')
@@ -354,6 +403,7 @@ export const AlertLogsTable = () => {
       key: 'totalScore',
       width: 120,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'totalScore' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('totalScore')
@@ -372,6 +422,7 @@ export const AlertLogsTable = () => {
       width: 170,
       align: 'center',
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'fundamentalScore' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('fundamentalScore')
@@ -388,6 +439,7 @@ export const AlertLogsTable = () => {
       key: 'sentimentScore',
       width: 160,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'sentimentScore' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('sentimentScore')
@@ -405,6 +457,7 @@ export const AlertLogsTable = () => {
       key: 'earningsScore',
       width: 140,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'earningsScore' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('earningsScore')
@@ -422,6 +475,7 @@ export const AlertLogsTable = () => {
       key: 'ytd',
       width: 120,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'ytd' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('ytd')
@@ -437,59 +491,82 @@ export const AlertLogsTable = () => {
 
   return (
     <div css={rootStyles}>
-      <div css={tableTopStyles}>
-        <TableTitle>{t('alertLogs')}</TableTitle>
-        <div css={actionStyles}>
-          <Button
-            icon={
-              <Icon
-                icon='exportExcel'
-                width={18}
-                height={18}
-                fill='var(--white-color)'
-              />
-            }
-            type='primary'
-          >
-            {t('exportExcel')}
-          </Button>
+      <AlertLogsFilter defaultStrategyId={strategyId} onFilter={handleFilter} />
+      <div css={tableWrapperStyles}>
+        <div css={tableTopStyles}>
+          <TableTitle>{t('alertLogs')}</TableTitle>
+          <Segmented
+            css={segmentedStyles}
+            options={[
+              {
+                label: <div css={segmentedLabelStyles}>{t('stocks')}</div>,
+                value: AlertLogsView.STOCKS
+              },
+              {
+                label: <div css={segmentedLabelStyles}>{t('options')}</div>,
+                value: AlertLogsView.OPTIONS
+              }
+            ]}
+            onChange={(value) => handleChangeView(value)}
+          />
+          <div css={actionStyles}>
+            <Button
+              icon={
+                <Icon
+                  icon='exportExcel'
+                  width={18}
+                  height={18}
+                  fill='var(--white-color)'
+                />
+              }
+              type='primary'
+            >
+              {t('exportExcel')}
+            </Button>
+          </div>
         </div>
+        <Table<Signal>
+          css={tableStyles}
+          rowKey={(record) => record.key}
+          columns={columns}
+          dataSource={alertLogsData}
+          loading={loading}
+          scroll={{ x: 1200, y: 55 * 11 }}
+          sortDirections={['descend', 'ascend']}
+          pagination={{
+            position: ['bottomCenter'],
+            pageSizeOptions: [
+              '10',
+              '20',
+              '50',
+              '100',
+              '200',
+              '300',
+              '400',
+              '500'
+            ],
+            showSizeChanger: true,
+            showQuickJumper: true,
+            current: pagination.currentPage,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+            onChange: (page, pageSize) => {
+              fetchDataAlertLogs({ page, pageSize, filter });
+            }
+          }}
+        />
       </div>
-      <Table<Signal>
-        css={tableStyles}
-        rowKey={(record) => record.key}
-        columns={columns}
-        dataSource={alertLogsData}
-        loading={loading}
-        scroll={{ x: 1200, y: 55 * 11 }}
-        sortDirections={['descend', 'ascend']}
-        pagination={{
-          position: ['bottomCenter'],
-          pageSizeOptions: [
-            '10',
-            '20',
-            '50',
-            '100',
-            '200',
-            '300',
-            '400',
-            '500'
-          ],
-          showSizeChanger: true,
-          showQuickJumper: true,
-          current: pagination.currentPage,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          onChange: (page, pageSize) => {
-            fetchDataAlertLogs({ page, pageSize, filter });
-          }
-        }}
-      />
     </div>
   );
 };
 
 const rootStyles = css`
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+`;
+
+const tableWrapperStyles = css`
   border: 1px solid var(--border-table-color);
   border-radius: 0.8rem;
 `;
@@ -504,11 +581,24 @@ const tableTopStyles = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.2rem 1.4rem;
+  padding: 1.2rem 1.6rem;
 `;
 
 const actionStyles = css`
   display: flex;
   justify-content: flex-end;
   gap: 1.2rem;
+`;
+
+const segmentedStyles = css`
+  padding: 0;
+  .ant-segmented-item-selected {
+    background: var(--orange-color);
+    color: var(--white-color);
+  }
+`;
+
+const segmentedLabelStyles = css`
+  font-size: 1.6rem;
+  font-weight: 500;
 `;

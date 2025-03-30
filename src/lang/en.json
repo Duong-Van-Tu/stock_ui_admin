@@ -71,5 +71,10 @@
   "winOrLoss": "Win/ Loss",
   "win": "Win",
   "loss": "Loss",
-  "refresh": "Refresh"
+  "refresh": "Refresh",
+  "search": "Search",
+  "strategyOptions": "Options",
+  "stocks": "STOCKS",
+  "options": "OPTIONS",
+  "searchSelectStrategy": "Search select Strategy"
 }

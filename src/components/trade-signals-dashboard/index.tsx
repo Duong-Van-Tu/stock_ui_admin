@@ -4,8 +4,12 @@ import { useEffect, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getStrategies, watchStrategies } from '@/redux/slices/signals.slice';
 import { StrategySignal } from './strategy-signal';
+import { Typography } from 'antd';
+import { useTranslations } from 'next-intl';
+import { OptionSignal } from './options-signal';
 
 export default function TradeSignalsDashboard() {
+  const t = useTranslations();
   const dispatch = useAppDispatch();
   const strategies = useAppSelector(watchStrategies);
 
@@ -18,18 +22,36 @@ export default function TradeSignalsDashboard() {
   }, [fetchStrategies]);
 
   return (
-    <div css={gridStyles}>
-      {strategies.map((strategy, index) => (
-        <div key={index} css={cardWrapperStyles}>
-          <StrategySignal
-            strategyId={strategy.id}
-            strategyName={strategy.name}
-          />
+    <div css={rootStyles}>
+      <Typography.Title css={titleStyles} level={2}>
+        {t('tradeSignalsDashboard')}
+      </Typography.Title>
+      <div css={gridStyles}>
+        {strategies.map((strategy, index) => (
+          <div key={strategy.id} css={cardWrapperStyles}>
+            <StrategySignal
+              strategyId={strategy.id}
+              strategyName={strategy.name}
+            />
+          </div>
+        ))}
+        <div css={cardWrapperStyles}>
+          <OptionSignal />
         </div>
-      ))}
+      </div>
     </div>
   );
 }
+
+const rootStyles = css`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const titleStyles = css`
+  text-align: center;
+`;
 
 const gridStyles = css`
   display: flex;

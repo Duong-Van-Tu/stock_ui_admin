@@ -10,7 +10,6 @@ export const StockChangeCell = ({
   value,
   percentage
 }: StockChangeCellProps) => {
-  console.log({ percentage });
   return (
     <PositiveNegativeText
       isPositive={percentage >= 0}

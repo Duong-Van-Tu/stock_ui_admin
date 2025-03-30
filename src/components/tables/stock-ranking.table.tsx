@@ -176,6 +176,7 @@ export const StockRankingTable = () => {
       width: 120,
       defaultSortOrder: 'descend',
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'totalScore' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('totalScore')
@@ -194,6 +195,7 @@ export const StockRankingTable = () => {
       width: 170,
       align: 'center',
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'fundamentalScore' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('fundamentalScore')
@@ -210,6 +212,7 @@ export const StockRankingTable = () => {
       key: 'sentimentScore',
       width: 160,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'sentimentScore' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('sentimentScore')
@@ -227,6 +230,7 @@ export const StockRankingTable = () => {
       key: 'earningsScore',
       width: 140,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'earningsScore' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('earningsScore')
@@ -244,6 +248,7 @@ export const StockRankingTable = () => {
       key: 'ytd',
       width: 120,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'ytd' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('ytd')
@@ -261,6 +266,7 @@ export const StockRankingTable = () => {
       key: 'dayChangePercent',
       width: 140,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'dayChangePercent' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('dayChangePercent')
@@ -278,6 +284,7 @@ export const StockRankingTable = () => {
       key: 'price',
       width: 140,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'price' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('price')
@@ -300,6 +307,7 @@ export const StockRankingTable = () => {
       key: 'volume',
       width: 120,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'volume' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('volume')
@@ -313,6 +321,7 @@ export const StockRankingTable = () => {
       key: 'beta',
       width: 110,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'beta' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('beta')
@@ -326,6 +335,7 @@ export const StockRankingTable = () => {
       key: 'atr',
       width: 100,
       sorter: true,
+      showSorterTooltip: false,
       sortOrder: sortField === 'atr' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('atr')

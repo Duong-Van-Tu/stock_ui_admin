@@ -10,6 +10,7 @@ import AuthLayout from '@/layout/auth.layout';
 import { useAppDispatch } from '@/redux/hooks';
 import { registerAndLogin } from '@/redux/slices/auth.slice';
 import { regex } from '@/utils/regex';
+import Link from 'next/link';
 
 const { Text } = Typography;
 
@@ -120,9 +121,7 @@ export default function Register() {
       </Form>
 
       <Text>
-        <a onClick={() => router.push(PageURLs.ofLogin())}>
-          {t('backToLogin')}
-        </a>
+        <Link href={PageURLs.ofLogin()}>{t('backToLogin')}</Link>
       </Text>
     </AuthLayout>
   );

@@ -22,6 +22,7 @@ type IconProps = {
   fill?: string;
   icon: string;
   customStyles?: SerializedStyles;
+  onClick?: () => void;
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = {
@@ -46,7 +47,8 @@ export const Icon = ({
   width,
   height,
   fill,
-  customStyles
+  customStyles,
+  onClick
 }: IconProps) => {
   const SelectedIcon = iconMap[icon];
 
@@ -57,6 +59,7 @@ export const Icon = ({
       width={width}
       height={height}
       css={[fill ? iconStyles(fill) : undefined, customStyles]}
+      onClick={onClick}
     />
   );
 };

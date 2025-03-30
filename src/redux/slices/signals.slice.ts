@@ -13,6 +13,7 @@ export type SignalsState = {
   pagination: Pagination;
   paginationByStrategyId: Record<number, Pagination>;
   alertLogsData: Signal[];
+  signalOptions: Signal[];
   signalByStrategyId: Record<string, Signal[]>;
   strategies: Strategies;
 };
@@ -23,6 +24,7 @@ const initialState: SignalsState = {
   signalStrategyLoading: {},
   strategies: [],
   alertLogsData: [],
+  signalOptions: [],
   signalByStrategyId: {},
   pagination: PAGINATION,
   paginationByStrategyId: {}
@@ -52,31 +54,39 @@ export const signalSlice = createAppSlice({
       }
     ),
     getAlertLogs: create.asyncThunk(
-      async (query?: Record<string, any>) => {
+      async ({
+        isOptions,
+        ...query
+      }: { isOptions?: boolean } & Record<string, any>) => {
         const response = await defaultApiFetcher.get(
           'tickers/get-stock-alert-log',
-          {
-            query
-          }
+          { query: { isImport: isOptions ? 1 : 0, ...query } }
         );
-        return response.data;
+        return { data: response.data, isOptions };
       },
       {
         pending: (state) => {
           state.alertLogsLoading = true;
         },
         fulfilled: (state, action) => {
+          const { data, isOptions } = action.payload;
           state.alertLogsLoading = false;
-          state.alertLogsData = transformSignalsData(action.payload.result);
+          state.alertLogsData = isOptions
+            ? []
+            : transformSignalsData(data.result);
+          state.signalOptions = isOptions
+            ? transformSignalsData(data.result)
+            : [];
           state.pagination = {
-            currentPage: action.payload.offset,
-            pageSize: action.payload.limit,
-            total: Number(action.payload.total)
+            currentPage: data.offset,
+            pageSize: data.limit,
+            total: Number(data.total)
           };
         },
         rejected: (state) => {
           state.alertLogsLoading = false;
           state.alertLogsData = [];
+          state.signalOptions = [];
           state.pagination = PAGINATION;
         }
       }
@@ -88,7 +98,7 @@ export const signalSlice = createAppSlice({
       }: { strategyId: number } & Record<string, any>) => {
         const response = await defaultApiFetcher.get(
           'tickers/get-stock-alert-log',
-          { query: { strategyId, ...query } }
+          { query: { strategyId, isImport: 0, ...query } }
         );
         return { data: response.data, strategyId };
       },
@@ -126,6 +136,7 @@ export const signalSlice = createAppSlice({
       signals.signalStrategyLoading[strategyId] || false,
     watchAlertLogsLoading: (signals) => signals.alertLogsLoading,
     watchAlertLogsData: (signals) => signals.alertLogsData,
+    watchSignalOptions: (signals) => signals.signalOptions,
     watchAlertLogsPagination: (signals) => signals.pagination,
     watchSignalByStrategyId: (signals) => signals.signalByStrategyId,
     watchSignalPaginationByStrategyId: (signals) => (strategyId: number) =>
@@ -141,7 +152,8 @@ export const {
   watchSignalByStrategyId,
   watchAlertLogsPagination,
   watchSignalStrategyLoading,
-  watchSignalPaginationByStrategyId
+  watchSignalPaginationByStrategyId,
+  watchSignalOptions
 } = signalSlice.selectors;
 
 export const { getAlertLogs, getStrategies, getSignalStrategyId } =

@@ -71,6 +71,10 @@
   "winOrLoss": "Thắng/ Thua",
   "win": "Thắng",
   "loss": "Thua",
-  "refresh": "Làm mới"
+  "refresh": "Làm mới",
+  "strategyOptions": "Options",
+  "search": "Tìm kiếm",
+  "stocks": "STOCKS",
+  "options": "OPTIONS"
 }
   

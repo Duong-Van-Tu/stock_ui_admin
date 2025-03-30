@@ -11,6 +11,7 @@ import type { MenuProps } from 'antd';
 import { Icon } from './icons';
 import { MenuItemType } from 'antd/es/menu/interface';
 import { logoutUser, watchUser } from '@/redux/slices/auth.slice';
+import { PageURLs } from '@/utils/navigate';
 
 enum UserMenu {
   PROFILE,
@@ -95,10 +96,16 @@ export default function Header({ collapsed }: HeaderProps) {
   return (
     <Layout.Header css={rootStyles(colorBgContainer, collapsed)}>
       <div css={leftSectionStyles}>
-        <Icon icon='logo' width={30} height={30} />
+        <Icon
+          onClick={() => router.push(PageURLs.ofIndex())}
+          customStyles={logoIconStyles}
+          icon='logo'
+          width={34}
+          height={34}
+        />
         <Search
           placeholder={t('searchPlaceholder')}
-          size='middle'
+          size='large'
           allowClear
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
@@ -172,7 +179,7 @@ const leftSectionStyles = css`
 `;
 
 const searchStyles = css`
-  width: 30rem;
+  width: 36rem;
 `;
 
 const rightSectionStyles = css`
@@ -183,4 +190,11 @@ const rightSectionStyles = css`
 const languageStyles = css`
   display: block;
   color: var(--primary-color);
+`;
+
+const logoIconStyles = css`
+  cursor: pointer;
+  &:hover {
+    opacity: 0.85;
+  }
 `;

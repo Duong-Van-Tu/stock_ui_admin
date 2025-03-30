@@ -10,6 +10,7 @@ import AuthLayout from '@/layout/auth.layout';
 import { useTranslations } from 'next-intl';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { loginUser, watchAuthLoading } from '@/redux/slices/auth.slice';
+import Link from 'next/link';
 
 const { Text } = Typography;
 
@@ -70,9 +71,7 @@ export default function Login() {
       </Form>
       <Text>
         {t('registerPromptStart')}{' '}
-        <a onClick={() => router.push('/register')}>
-          {t('registerPromptLink')}
-        </a>
+        <Link href={PageURLs.ofRegister()}>{t('registerPromptLink')}</Link>
       </Text>
     </AuthLayout>
   );

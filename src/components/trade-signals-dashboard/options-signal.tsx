@@ -18,8 +18,10 @@ import { watchSearchSymbol } from '@/redux/slices/search';
 import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
 import {
-  getSignalStrategyId,
-  watchSignalByStrategyId
+  getAlertLogs,
+  watchAlertLogsLoading,
+  watchAlertLogsPagination,
+  watchSignalOptions
 } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from '../tables/columns/date-time-cell.column';
 import { SymbolCell } from '../tables/columns/symbol-cell.column';
@@ -29,27 +31,15 @@ import { PageURLs } from '@/utils/navigate';
 import { EmptyDataTable } from '../tables/empty.table';
 import { StockChangeCell } from '../tables/columns/stock-change-cell.column';
 
-type StrategySignalProps = {
-  strategyId: number;
-  strategyName: string;
-};
-export const StrategySignal = ({
-  strategyId,
-  strategyName
-}: StrategySignalProps) => {
+export const OptionSignal = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const symbol = useAppSelector(watchSearchSymbol);
   const { setWatchList, resFromWS } = useContext(SocketContext);
 
-  const strategyData = useAppSelector(watchSignalByStrategyId);
-  const signalStrategyLoading = useAppSelector(
-    (state) => state.signals.signalStrategyLoading?.[strategyId] || false
-  );
-
-  const signalStrategyPagination = useAppSelector(
-    (state) => state.signals.paginationByStrategyId?.[strategyId] || false
-  );
+  const symbol = useAppSelector(watchSearchSymbol);
+  const strategyData = useAppSelector(watchSignalOptions);
+  const loading = useAppSelector(watchAlertLogsLoading);
+  const pagination = useAppSelector(watchAlertLogsPagination);
 
   const [sortField, setSortField] = useState<string>('entryDate');
   const [sortType, setSortType] = useState<SortOrder>('descend');
@@ -93,12 +83,12 @@ export const StrategySignal = ({
     }: PageChangeParams = {}) => {
       const filteredFilter = cleanFalsyValues(filter);
       dispatch(
-        getSignalStrategyId({
+        getAlertLogs({
           page,
           limit: pageSize,
           sortField: fieldMapping[sortField],
           sortType: convertSortType(sortType),
-          strategyId,
+          isOptions: true,
           ...filteredFilter
         })
       );
@@ -109,16 +99,14 @@ export const StrategySignal = ({
 
   useEffect(() => {
     setFilter((prev) => ({ ...prev, symbol }));
-    if (strategyId) {
-      fetchSignalByStrategy({ filter: { symbol } });
-    }
-  }, [symbol, fetchSignalByStrategy, strategyId]);
+    fetchSignalByStrategy({ filter: { symbol } });
+  }, [symbol, fetchSignalByStrategy]);
 
   useEffect(() => {
-    strategyData[`${strategyId}`]?.forEach((row) => {
+    strategyData.forEach((row) => {
       setWatchList(row.symbol);
     });
-  }, [strategyData, strategyId, setWatchList]);
+  }, [strategyData, setWatchList]);
 
   const columns: TableColumnsType<Signal> = [
     {
@@ -250,25 +238,21 @@ export const StrategySignal = ({
       css={cardStyles}
       title={
         <Link
-          href={`${PageURLs.ofAlertLogs()}?strategyId=${strategyId}`}
+          href={`${PageURLs.ofAlertLogs()}?isOption=1`}
           css={strategyLinkStyles}
         >
-          {strategyName}
+          {t('strategyOptions')}
         </Link>
       }
     >
       <Table<Signal>
-        loading={signalStrategyLoading}
-        css={tableStyles(strategyData[`${strategyId}`]?.length === 0)}
+        loading={loading}
+        css={tableStyles(strategyData.length === 0)}
         rowKey={(record) => record.key}
         columns={columns}
-        dataSource={strategyData[`${strategyId}`]}
-        showHeader={strategyData[`${strategyId}`]?.length > 0}
-        scroll={
-          strategyData[`${strategyId}`]?.length > 0
-            ? { x: 600, y: 55 * 6 }
-            : undefined
-        }
+        dataSource={strategyData}
+        showHeader={strategyData?.length > 0}
+        scroll={strategyData.length > 0 ? { x: 600, y: 55 * 6 } : undefined}
         sortDirections={['descend', 'ascend']}
         locale={{
           emptyText: (
@@ -280,9 +264,9 @@ export const StrategySignal = ({
         pagination={{
           position: ['bottomCenter'],
           showSizeChanger: false,
-          current: signalStrategyPagination.currentPage,
-          pageSize: signalStrategyPagination.pageSize,
-          total: signalStrategyPagination.total,
+          current: pagination.currentPage,
+          pageSize: pagination.pageSize,
+          total: pagination.total,
           onChange: (page, pageSize) => {
             fetchSignalByStrategy({ page, pageSize, filter });
           }

@@ -19,10 +19,7 @@ type StockScore = {
   atr: number;
 };
 
-type StockScoreFilter = {
-  symbol?: string;
-  sortField?: string;
-  sortType?: string;
+type StockScoreFilter = Filter & {
   industry?: string;
   sector?: string;
 };

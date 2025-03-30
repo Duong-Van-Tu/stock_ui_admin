@@ -29,10 +29,13 @@ type Signal = {
   atrPercent: number;
 };
 
-type SignalFilter = {
-  symbol?: string;
-  sortField?: string;
-  sortType?: string;
+type AlertLogsFilter = Filter & {
+  fromEntryDate?: Date;
+  toEntryDate?: Date;
+  fromExitDate?: Date;
+  toExitDate?: Date;
+  isImport?: 0 | 1;
+  strategyId?: number;
 };
 
 type Strategy = {
