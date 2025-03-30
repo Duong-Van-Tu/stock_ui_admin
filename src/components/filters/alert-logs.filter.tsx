@@ -170,5 +170,5 @@ const labelStyles = css`
 `;
 
 const selectStrategyStyles = css`
-  min-width: 24rem;
+  width: 27rem !important;
 `;
