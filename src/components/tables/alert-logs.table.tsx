@@ -198,7 +198,7 @@ export const AlertLogsTable = () => {
       title: t('period'),
       dataIndex: 'timeFrame',
       key: 'timeFrame',
-      width: 100,
+      width: 110,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
