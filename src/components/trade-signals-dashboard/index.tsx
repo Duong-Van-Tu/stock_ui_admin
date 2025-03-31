@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { useEffect, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { getStrategies, watchStrategies } from '@/redux/slices/signals.slice';
+import { getStrategies, watchStrategies, watchStrategyLoading } from '@/redux/slices/signals.slice';
 import { StrategySignal } from './strategy-signal';
 import { Typography } from 'antd';
 import { useTranslations } from 'next-intl';
@@ -12,6 +12,7 @@ export default function TradeSignalsDashboard() {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const strategies = useAppSelector(watchStrategies);
+  const loading = useAppSelector(watchStrategyLoading);
 
   const fetchStrategies = useCallback(() => {
     dispatch(getStrategies());
