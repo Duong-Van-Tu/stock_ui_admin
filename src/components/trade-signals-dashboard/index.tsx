@@ -2,7 +2,11 @@
 import { css } from '@emotion/react';
 import { useEffect, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { getStrategies, watchStrategies, watchStrategyLoading } from '@/redux/slices/signals.slice';
+import {
+  getStrategies,
+  watchStrategies,
+  watchStrategyLoading
+} from '@/redux/slices/signals.slice';
 import { StrategySignal } from './strategy-signal';
 import { Typography } from 'antd';
 import { useTranslations } from 'next-intl';
@@ -36,9 +40,11 @@ export default function TradeSignalsDashboard() {
             />
           </div>
         ))}
-        <div css={cardWrapperStyles}>
-          <OptionSignal />
-        </div>
+        {!loading && (
+          <div css={cardWrapperStyles}>
+            <OptionSignal />
+          </div>
+        )}
       </div>
     </div>
   );
