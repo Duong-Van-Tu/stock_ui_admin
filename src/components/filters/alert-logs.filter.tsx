@@ -156,6 +156,7 @@ const rootStyles = css`
 
 const formStyles = css`
   display: flex;
+  justify-content: flex-end;
   gap: 1.6rem;
 `;
 
