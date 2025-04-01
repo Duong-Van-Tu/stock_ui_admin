@@ -47,7 +47,9 @@ export const Menu = ({ collapsed }: MenuProps) => {
   const createMenuItems = (items: typeof menuStructure): MenuItem[] =>
     items.map((item) =>
       getItem(
-        <Link href={item.key} passHref>{item.label}</Link>,
+        <Link href={item.link!} passHref>
+          {item.label}
+        </Link>,
         item.key,
         item.iconType ? getMenuIcon(item.iconType, item.key) : undefined,
         item.children ? createMenuItems(item.children) : undefined

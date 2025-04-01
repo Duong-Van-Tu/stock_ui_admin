@@ -166,6 +166,7 @@ export const StockRankingTable = () => {
       fixed: 'left',
       render: (_, record) => (
         <SymbolCell
+          earningDate={record.earningDate}
           symbol={record.symbol}
           companyName={record.companyName}
           isNews={record.isNews}

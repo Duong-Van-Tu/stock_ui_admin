@@ -181,6 +181,7 @@ export const AlertLogsTable = () => {
           symbol={record.symbol}
           companyName={record.companyName}
           isNews={record.isNews}
+          earningDate={record.earningDate}
         />
       )
     },

@@ -77,6 +77,10 @@
   "stocks": "STOCKS",
   "options": "OPTIONS",
   "searchSelectStrategy": "Tìm kiếm theo chiến lược",
-  "clear": "Xoá bộ lọc"
+  "clear": "Xoá bộ lọc",
+  "earnings": "Earnings",
+  "earningsDescription": "Trang earnings",
+  "news": "Tin tức",
+  "newsDescription": "Trang tin tức"
 }
   

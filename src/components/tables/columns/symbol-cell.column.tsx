@@ -28,7 +28,7 @@ export const SymbolCell = ({
             </Button>
           </Tooltip>
         )}
-        {!!earningDate && (
+        {earningDate && (
           <Tooltip title={`Earnings`}>
             <Button css={buttonStyles} type='text'>
               <Icon

@@ -22,4 +22,12 @@ export namespace PageURLs {
   export function ofAlertLogs() {
     return withPrefix('/alert-logs');
   }
+
+  export function ofEarings() {
+    return withPrefix('/earnings');
+  }
+
+  export function ofNews() {
+    return withPrefix('/news');
+  }
 }
