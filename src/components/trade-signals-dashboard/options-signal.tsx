@@ -187,7 +187,11 @@ export const OptionSignal = () => {
       }),
       render: (value, record) => {
         const percentage = calculatePercentage(record.entryPrice, value);
-        return <StockChangeCell value={value} percentage={percentage} />;
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
       }
     },
     {
@@ -216,20 +220,21 @@ export const OptionSignal = () => {
       width: 90,
       align: 'center',
       fixed: 'right',
-      render: (_, record) => {
-        return (
+      render: (_, record) =>
+        record.plPercent ? (
           <PositiveNegativeText
             isPositive={record.plPercent >= 0}
             isNegative={record.plPercent < 0}
           >
-            {record.plPercent
-              ? record.plPercent >= 0
-                ? t('win')
-                : t('loss')
-              : '-'}
+            {record.plPercent >= 0 ? (
+              <span>{t('win')}</span>
+            ) : (
+              <span>{t('loss')}</span>
+            )}
           </PositiveNegativeText>
-        );
-      }
+        ) : (
+          '-'
+        )
     }
   ];
 
@@ -252,7 +257,7 @@ export const OptionSignal = () => {
         columns={columns}
         dataSource={strategyData}
         showHeader={strategyData?.length > 0}
-        scroll={strategyData.length > 0 ? { x: 600, y: 55 * 6 } : undefined}
+        scroll={strategyData.length > 0 ? { x: 600, y: undefined } : undefined}
         sortDirections={['descend', 'ascend']}
         locale={{
           emptyText: (

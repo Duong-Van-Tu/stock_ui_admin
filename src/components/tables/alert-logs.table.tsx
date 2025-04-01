@@ -33,6 +33,8 @@ import { StockChangeCell } from './columns/stock-change-cell.column';
 import { AlertLogsFilter } from '../filters/alert-logs.filter';
 import { AlertLogsView } from '@/constants/common.constant';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useWindowSize } from '@/hooks/useWindowSize';
+import { EmptyDataTable } from './empty.table';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -41,6 +43,8 @@ export const AlertLogsTable = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { height } = useWindowSize();
+
   const isOption = searchParams.get('isOption')
     ? Number(searchParams.get('isOption'))
     : 0;
@@ -264,7 +268,11 @@ export const AlertLogsTable = () => {
       }),
       render: (value, record) => {
         const percentage = calculatePercentage(record.entryPrice, value);
-        return <StockChangeCell value={value} percentage={percentage} />;
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
       }
     },
     {
@@ -421,11 +429,14 @@ export const AlertLogsTable = () => {
         onClick: () => handleSortOrder('totalScore')
       }),
       align: 'center',
-      render: (value) => (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? roundToDecimals(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('fundamentalScore'),
@@ -439,11 +450,14 @@ export const AlertLogsTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('fundamentalScore')
       }),
-      render: (value) => (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? roundToDecimals(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('sentimentScore'),
@@ -457,11 +471,14 @@ export const AlertLogsTable = () => {
         onClick: () => handleSortOrder('sentimentScore')
       }),
       align: 'center',
-      render: (value) => (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? roundToDecimals(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('earningsScore'),
@@ -475,11 +492,14 @@ export const AlertLogsTable = () => {
         onClick: () => handleSortOrder('earningsScore')
       }),
       align: 'center',
-      render: (value) => (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? roundToDecimals(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('ytd'),
@@ -493,11 +513,14 @@ export const AlertLogsTable = () => {
         onClick: () => handleSortOrder('ytd')
       }),
       align: 'center',
-      render: (value) => (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? roundToDecimals(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     }
   ];
 
@@ -546,8 +569,18 @@ export const AlertLogsTable = () => {
           columns={columns}
           dataSource={alertLogsData}
           loading={loading}
-          scroll={{ x: 1200, y: 55 * 11 }}
+          scroll={{
+            x: 1200,
+            y: alertLogsData.length > 0 ? height - 340 : undefined
+          }}
           sortDirections={['descend', 'ascend']}
+          locale={{
+            emptyText: (
+              <div css={emptyStyles(height - 400)}>
+                <EmptyDataTable />
+              </div>
+            )
+          }}
           pagination={{
             position: ['bottomCenter'],
             pageSizeOptions: [
@@ -616,4 +649,11 @@ const segmentedStyles = css`
 const segmentedLabelStyles = css`
   font-size: 1.6rem;
   font-weight: 500;
+`;
+
+const emptyStyles = (height: number) => css`
+  height: ${height}px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;

@@ -31,12 +31,15 @@ import { Icon } from '../icons';
 import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
 import { StockChangeCell } from './columns/stock-change-cell.column';
+import { useWindowSize } from '@/hooks/useWindowSize';
+import { EmptyDataTable } from './empty.table';
 
 export const StockRankingTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const symbol = useAppSelector(watchSearchSymbol);
   const { setWatchList, resFromWS } = useContext(SocketContext);
+  const { height } = useWindowSize();
 
   const stockScoreData = useAppSelector(watchStockScoreData);
   const pagination = useAppSelector(watchStockScorePagination);
@@ -182,11 +185,14 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('totalScore')
       }),
       align: 'center',
-      render: (value) => (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? roundToDecimals(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
     },
     {
       title: t('fundamentalScore'),
@@ -200,11 +206,14 @@ export const StockRankingTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('fundamentalScore')
       }),
-      render: (value) => (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? roundToDecimals(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
     },
     {
       title: t('sentimentScore'),
@@ -218,11 +227,14 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('sentimentScore')
       }),
       align: 'center',
-      render: (value) => (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? roundToDecimals(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
     },
     {
       title: t('earningsScore'),
@@ -236,11 +248,14 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('earningsScore')
       }),
       align: 'center',
-      render: (value) => (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? roundToDecimals(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
     },
     {
       title: t('ytd'),
@@ -254,11 +269,14 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('ytd')
       }),
       align: 'center',
-      render: (value) => (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? roundToDecimals(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
     },
     {
       title: t('dayChange'),
@@ -272,11 +290,14 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('dayChangePercent')
       }),
       align: 'center',
-      render: (value) => (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-          {value ? formatPercent(value, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{formatPercent(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
     },
     {
       title: t('currentPrice'),
@@ -380,8 +401,18 @@ export const StockRankingTable = () => {
         columns={columns}
         dataSource={stockScoreData}
         loading={loading}
-        scroll={{ x: 1200, y: 55 * 11 }}
+        scroll={{
+          x: 1200,
+          y: stockScoreData.length > 0 ? height - 310 : undefined
+        }}
         sortDirections={['descend', 'ascend']}
+        locale={{
+          emptyText: (
+            <div css={emptyStyles(height - 400)}>
+              <EmptyDataTable />
+            </div>
+          )
+        }}
         pagination={{
           position: ['bottomCenter'],
           pageSizeOptions: [
@@ -435,4 +466,11 @@ const actionStyles = css`
 const legendStatusStyles = css`
   border-top: 1px solid var(--border-table-color);
   padding: 1.2rem 1.4rem;
+`;
+
+const emptyStyles = (height: number) => css`
+  height: ${height}px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
