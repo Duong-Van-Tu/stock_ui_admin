@@ -13,8 +13,7 @@ import {
 } from '@/helpers/menus.helper';
 import { Icon } from './icons';
 import { useTranslations } from 'next-intl';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 
 type MenuProps = {
   collapsed: boolean;
@@ -22,7 +21,7 @@ type MenuProps = {
 export const Menu = ({ collapsed }: MenuProps) => {
   const t = useTranslations();
   const pathname = usePathname();
-
+  const router = useRouter();
   const [selectedKey, setSelectedKey] = useState<string>(
     getPathnameSegment(pathname, 1)
   );
@@ -47,9 +46,7 @@ export const Menu = ({ collapsed }: MenuProps) => {
   const createMenuItems = (items: typeof menuStructure): MenuItem[] =>
     items.map((item) =>
       getItem(
-        <Link href={item.link!} passHref>
-          {item.label}
-        </Link>,
+        item.label,
         item.key,
         item.iconType ? getMenuIcon(item.iconType, item.key) : undefined,
         item.children ? createMenuItems(item.children) : undefined
@@ -81,6 +78,7 @@ export const Menu = ({ collapsed }: MenuProps) => {
 
   const handleMenuItemClick = (path: string) => {
     setSelectedKey(path);
+    router.push(path);
   };
 
   useEffect(() => {
