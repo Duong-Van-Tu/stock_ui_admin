@@ -266,16 +266,20 @@ export const OptionSignal = () => {
             </div>
           )
         }}
-        pagination={{
-          position: ['bottomCenter'],
-          showSizeChanger: false,
-          current: pagination.currentPage,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          onChange: (page, pageSize) => {
-            fetchSignalByStrategy({ page, pageSize, filter });
-          }
-        }}
+        pagination={
+          pagination.total > 5
+            ? {
+                position: ['bottomCenter'],
+                showSizeChanger: false,
+                current: pagination.currentPage,
+                pageSize: pagination.pageSize,
+                total: pagination.total,
+                onChange: (page, pageSize) => {
+                  fetchSignalByStrategy({ page, pageSize, filter });
+                }
+              }
+            : false
+        }
       />
     </Card>
   );

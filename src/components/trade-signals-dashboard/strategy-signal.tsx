@@ -282,16 +282,20 @@ export const StrategySignal = ({
             </div>
           )
         }}
-        pagination={{
-          position: ['bottomCenter'],
-          showSizeChanger: false,
-          current: signalStrategyPagination.currentPage,
-          pageSize: signalStrategyPagination.pageSize,
-          total: signalStrategyPagination.total,
-          onChange: (page, pageSize) => {
-            fetchSignalByStrategy({ page, pageSize, filter });
-          }
-        }}
+        pagination={
+          signalStrategyPagination.total > 5
+            ? {
+                position: ['bottomCenter'],
+                showSizeChanger: false,
+                current: signalStrategyPagination.currentPage,
+                pageSize: signalStrategyPagination.pageSize,
+                total: signalStrategyPagination.total,
+                onChange: (page, pageSize) => {
+                  fetchSignalByStrategy({ page, pageSize, filter });
+                }
+              }
+            : false
+        }
       />
     </Card>
   );
