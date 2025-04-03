@@ -81,5 +81,6 @@
   "earnings": "Earnings",
   "earningsDescription": "Earnings page",
   "news": "News",
-   "newsDescription": "News page"
+  "newsDescription": "News page",
+  "earningTitle": "Earnings Calendar for:"
 }

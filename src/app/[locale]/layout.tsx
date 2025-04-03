@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import 'antd/dist/reset.css';
 import '../../assets/css/globals.scss';
+
 import Providers from '@/providers';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { Locale, locales } from '@/constants/locale';
