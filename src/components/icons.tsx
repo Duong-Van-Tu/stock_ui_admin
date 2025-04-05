@@ -17,6 +17,7 @@ import AlertLogs from '@/assets/svg/alert-logs.svg';
 import Refresh from '@/assets/svg/refresh.svg';
 import Earnings from '@/assets/svg/earnings.svg';
 import News from '@/assets/svg/news.svg';
+import Recent from '@/assets/svg/recent.svg';
 
 type IconProps = {
   width?: number | string;
@@ -43,7 +44,8 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   alertLogs: AlertLogs,
   refresh: Refresh,
   earnings: Earnings,
-  news: News
+  news: News,
+  recent: Recent
 };
 
 export const Icon = ({

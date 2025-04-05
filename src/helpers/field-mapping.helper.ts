@@ -30,5 +30,7 @@ export const fieldMapping: Record<string, string> = {
   epsSurprisePercent: 'epssurprisepercent',
   isAddWatchListEarnings: 'isAddWL',
   revenueSurprise: 'revenuesurprise',
-  revenueSurprisePercent: 'revenuesurprisepercent'
+  revenueSurprisePercent: 'revenuesurprisepercent',
+  isNewsNegative: 'isnews_negative',
+  showRecentNewsEarnings: 'is_earn_news'
 };

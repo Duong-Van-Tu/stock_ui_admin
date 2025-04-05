@@ -14,7 +14,6 @@ import {
 import { TableTitle } from './title.table';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { EmptyDataTable } from './empty.table';
-import { useSearchParams } from 'next/navigation';
 import dayjs from 'dayjs';
 import { watchSearchSymbol } from '@/redux/slices/search';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
@@ -34,7 +33,6 @@ export const EarningsTable = () => {
   const locale = useLocale() || 'en';
   const dispatch = useAppDispatch();
   const { height } = useWindowSize();
-  const searchParams = useSearchParams();
   const pagination = useAppSelector(watchEarningPagination);
   const earnings = useAppSelector(watchEarnings);
   const symbol = useAppSelector(watchSearchSymbol);
@@ -43,14 +41,12 @@ export const EarningsTable = () => {
   const [sortField, setSortField] = useState<string>('epsEstimate');
   const [sortType, setSortType] = useState<SortOrder>('descend');
 
-  const selectedDate = searchParams.get('selectedDate');
-
   const earningDate = useMemo(
     () =>
-      selectedDate
-        ? dayjs(selectedDate, 'YYYY/MM/DD').format('YYYY-MM-DD')
+      filter.date
+        ? dayjs(filter.date, 'YYYY/MM/DD').format('YYYY-MM-DD')
         : dayjs().format('YYYY-MM-DD'),
-    [selectedDate]
+    [filter.date]
   );
 
   const handleSortOrder = (field: string) => {

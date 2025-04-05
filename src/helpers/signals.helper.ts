@@ -38,6 +38,8 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     lowestUpdateAt: stock.lowest_update_at,
     marketCap: Number(stock.marketcap ?? 0),
     plPercent: Number(stock.pl_percent ?? 0),
-    atrPercent: stock.atrpercent
+    atrPercent: stock.atrpercent,
+    isNewsNegative: stock.isnews_negative,
+    recentNewsEarnings: stock.is_earn_news
   }));
 };

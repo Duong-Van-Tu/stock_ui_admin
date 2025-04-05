@@ -27,6 +27,8 @@ type Signal = {
   marketCap: number;
   plPercent: number;
   atrPercent: number;
+  isNewsNegative: boolean;
+  recentNewsEarnings: boolean;
 };
 
 type AlertLogsFilter = Filter & {

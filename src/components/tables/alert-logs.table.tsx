@@ -182,6 +182,8 @@ export const AlertLogsTable = () => {
           companyName={record.companyName}
           isNews={record.isNews}
           earningDate={record.earningDate}
+          isNewsNegative={record.isNewsNegative}
+          showRecentNewsEarnings={record.recentNewsEarnings}
         />
       )
     },
