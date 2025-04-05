@@ -19,6 +19,7 @@ export const transformStockScoreData = (stocksScore: any[]): StockScore[] => {
     price: stock.price,
     volume: stock.volume,
     beta: stock.beta,
-    atr: stock.atr
+    atr: stock.atr,
+    isNewsNegative: stock.isnews_negative
   }));
 };

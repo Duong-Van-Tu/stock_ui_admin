@@ -17,6 +17,7 @@ type StockScore = {
   volume: number;
   beta: number;
   atr: number;
+  isNewsNegative: boolean;
 };
 
 type StockScoreFilter = Filter & {

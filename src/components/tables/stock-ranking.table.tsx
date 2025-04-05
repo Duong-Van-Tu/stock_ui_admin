@@ -170,6 +170,7 @@ export const StockRankingTable = () => {
           symbol={record.symbol}
           companyName={record.companyName}
           isNews={record.isNews}
+          isNewsNegative={record.isNewsNegative}
         />
       )
     },

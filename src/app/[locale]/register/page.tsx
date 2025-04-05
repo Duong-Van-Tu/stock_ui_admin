@@ -2,7 +2,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useTranslations } from 'next-intl';
-import { Form, Input, Button, Checkbox, Typography } from 'antd';
+import {
+  Form,
+  Input,
+  Button,
+  Checkbox,
+  Typography,
+  ConfigProvider
+} from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { PageURLs } from '@/utils/navigate';
@@ -11,6 +18,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import { registerAndLogin } from '@/redux/slices/auth.slice';
 import { regex } from '@/utils/regex';
 import Link from 'next/link';
+import { createStyles } from 'antd-style';
 
 const { Text } = Typography;
 
@@ -19,7 +27,34 @@ type LoginFormValues = RegisterUserParams & {
   remember?: boolean;
 };
 
+const useStyle = createStyles(({ prefixCls, css }) => ({
+  linearGradientButton: css`
+    &.${prefixCls}-btn-primary:not([disabled]):not(
+        .${prefixCls}-btn-dangerous
+      ) {
+      > span {
+        position: relative;
+      }
+
+      &::before {
+        content: '';
+        background: linear-gradient(135deg, #6253e1, #04befe);
+        position: absolute;
+        inset: -1px;
+        opacity: 1;
+        transition: all 0.3s;
+        border-radius: inherit;
+      }
+
+      &:hover::before {
+        opacity: 0;
+      }
+    }
+  `
+}));
+
 export default function Register() {
+  const { styles } = useStyle();
   const t = useTranslations();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -114,9 +149,15 @@ export default function Register() {
         </Form.Item>
 
         <Form.Item>
-          <Button size='large' type='primary' htmlType='submit' block>
-            {t('register')}
-          </Button>
+          <ConfigProvider
+            button={{
+              className: styles.linearGradientButton
+            }}
+          >
+            <Button size='large' type='primary' htmlType='submit' block>
+              {t('register')}
+            </Button>
+          </ConfigProvider>
         </Form.Item>
       </Form>
 

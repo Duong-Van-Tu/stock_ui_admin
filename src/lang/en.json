@@ -90,5 +90,8 @@
   "revenueEstimate": "Revenue Estimate",
   "revenueSurprise": "Revenue Surprise",
   "previousWeek": "Previous Week",
-  "nextWeek": "Next Week"
+  "nextWeek": "Next Week",
+  "recentNewsAndEarnings": "Recent News & Earnings (14 days)",
+   "newDetail": "News Details",
+   "earningsDetail": "Earnings Report"
 }
