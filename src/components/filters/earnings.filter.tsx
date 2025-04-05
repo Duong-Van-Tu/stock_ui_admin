@@ -95,6 +95,7 @@ export const EarningFilter = ({
     <div css={[rootStyles, customStyles]}>
       <Tooltip placement='top' title={t('previousWeek')}>
         <Button
+          shape='circle'
           onClick={() => updateWeek(currentWeek.subtract(1, 'week'))}
           icon={<LeftOutlined />}
         />
@@ -125,6 +126,7 @@ export const EarningFilter = ({
 
       <Tooltip placement='top' title={t('nextWeek')}>
         <Button
+          shape='circle'
           onClick={() => updateWeek(currentWeek.add(1, 'week'))}
           icon={<RightOutlined />}
         />
