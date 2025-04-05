@@ -9,7 +9,7 @@ import {
   getCountEarningsCalendar,
   watchEarningsSummary
 } from '@/redux/slices/earnings.slice';
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale, useTimeZone, useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 type EarningsFilterProps = {
@@ -28,6 +28,7 @@ export const EarningFilter = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const selectedDateFromURL = searchParams.get('selectedDate');
+  const timezone = useTimeZone();
 
   const earningsSummary = useAppSelector(watchEarningsSummary);
 
@@ -58,7 +59,9 @@ export const EarningFilter = ({
   const weekData = useMemo(() => {
     return weekDays.map((day) => {
       const itemData = earningsSummary.find((item) =>
-        day.isSame(dayjs(item.date).startOf('day'), 'day')
+        day
+          .tz(timezone)
+          .isSame(dayjs(item.date).tz(timezone).startOf('day'), 'day')
       );
       return { date: day, total: itemData?.total ?? 0 };
     });
