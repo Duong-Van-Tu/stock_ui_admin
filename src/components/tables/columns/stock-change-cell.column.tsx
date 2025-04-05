@@ -2,7 +2,7 @@ import { PositiveNegativeText } from '@/components/positive-negative-text';
 import { roundToDecimals, formatPercent } from '@/utils/common';
 
 type StockChangeCellProps = {
-  value: number;
+  value: number | string;
   percentage: number;
 };
 
@@ -15,7 +15,7 @@ export const StockChangeCell = ({
       isPositive={percentage >= 0}
       isNegative={percentage < 0}
     >
-      <div>{roundToDecimals(value, 2)}</div>
+      <div>{typeof value === 'string' ? value : roundToDecimals(value, 2)}</div>
       <div>({formatPercent(percentage, 2)})</div>
     </PositiveNegativeText>
   );

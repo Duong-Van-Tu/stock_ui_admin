@@ -290,7 +290,7 @@ export const EarningsTable = () => {
       render: (value, record) =>
         value ? (
           <StockChangeCell
-            value={value}
+            value={formatNumberShort(value)}
             percentage={
               record.revenueSurprisePercent ? record.revenueSurprisePercent : 0
             }
