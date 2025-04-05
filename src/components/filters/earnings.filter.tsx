@@ -67,15 +67,15 @@ export const EarningFilter = ({
   const weekData = useMemo(() => {
     return weekDays.map((day) => {
       const itemData = earningsSummary.find((item) =>
-        day.isSame(dayjs(item.date).startOf('day').tz(timezone), 'day')
+        day.isSame(dayjs(item.date).startOf('day'), 'day')
       );
       return { date: day, total: itemData?.total ?? 0 };
     });
-  }, [earningsSummary, weekDays, timezone]);
+  }, [earningsSummary, weekDays]);
 
   const handleSelectedDate = (index: number) => {
     setSelected(index);
-    const selectedDate = weekData[index].date.format('YYYY-MM-DD');
+    const selectedDate = weekData[index].date.tz(timezone).format('YYYY-MM-DD');
     onFilter({ date: selectedDate });
 
     const params = new URLSearchParams(searchParams.toString());
@@ -85,8 +85,11 @@ export const EarningFilter = ({
   };
 
   const fetchEarningsSummary = useCallback(() => {
-    const fromDate = currentWeek.format('YYYY-MM-DD');
-    const toDate = currentWeek.endOf('isoWeek').format('YYYY-MM-DD');
+    const fromDate = currentWeek.tz(timezone).format('YYYY-MM-DD');
+    const toDate = currentWeek
+      .tz(timezone)
+      .endOf('isoWeek')
+      .format('YYYY-MM-DD');
 
     dispatch(
       getCountEarningsCalendar({
