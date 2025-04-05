@@ -9,7 +9,7 @@ import {
   getCountEarningsCalendar,
   watchEarningsSummary
 } from '@/redux/slices/earnings.slice';
-import { useLocale, useTimeZone, useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 type EarningsFilterProps = {
   customStyles?: SerializedStyles;
@@ -23,12 +23,11 @@ export const EarningFilter = ({
   const t = useTranslations();
   const locale = useLocale() || 'en';
   const dispatch = useAppDispatch();
-  const timezone = useTimeZone();
 
   const earningsSummary = useAppSelector(watchEarningsSummary);
 
   const [currentWeek, setCurrentWeek] = useState(() =>
-    dayjs().tz(timezone).startOf('isoWeek')
+    dayjs().startOf('isoWeek')
   );
 
   const weekDays = useMemo(() => {
@@ -39,7 +38,7 @@ export const EarningFilter = ({
 
   const [selected, setSelected] = useState(() => {
     const todayIndex = weekDays.findIndex((day) =>
-      day.startOf('day').isSame(dayjs().tz(timezone).startOf('day'), 'day')
+      day.startOf('day').isSame(dayjs().startOf('day'), 'day')
     );
     return todayIndex !== -1 ? todayIndex : 0;
   });
