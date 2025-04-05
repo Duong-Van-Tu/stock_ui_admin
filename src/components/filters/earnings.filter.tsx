@@ -28,7 +28,7 @@ export const EarningFilter = ({
   const earningsSummary = useAppSelector(watchEarningsSummary);
 
   const [currentWeek, setCurrentWeek] = useState(() =>
-    dayjs().startOf('isoWeek')
+    dayjs().tz(timezone).startOf('isoWeek')
   );
 
   const weekDays = useMemo(() => {
@@ -39,21 +39,27 @@ export const EarningFilter = ({
 
   const [selected, setSelected] = useState(() => {
     const todayIndex = weekDays.findIndex((day) =>
-      day.startOf('day').isSame(dayjs().startOf('day'), 'day')
+      day.startOf('day').isSame(dayjs().tz(timezone).startOf('day'), 'day')
     );
     return todayIndex !== -1 ? todayIndex : 0;
   });
 
+  const normalizedSummary = useMemo(() => {
+    return earningsSummary.map((item) => ({
+      date: dayjs.utc(item.date).startOf('day').format('YYYY-MM-DD'),
+      total: item.total
+    }));
+  }, [earningsSummary]);
+
   const weekData = useMemo(() => {
     return weekDays.map((day) => {
-      const itemData = earningsSummary.find((item) =>
-        day
-          .tz(timezone)
-          .isSame(dayjs(item.date).tz(timezone).startOf('day'), 'day')
+      const formattedDay = day.format('YYYY-MM-DD');
+      const itemData = normalizedSummary.find(
+        (item) => item.date === formattedDay
       );
       return { date: day, total: itemData?.total ?? 0 };
     });
-  }, [earningsSummary, weekDays]);
+  }, [normalizedSummary, weekDays]);
 
   const handleSelectedDate = (index: number) => {
     setSelected(index);
