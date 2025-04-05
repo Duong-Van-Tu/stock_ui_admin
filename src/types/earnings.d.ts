@@ -1,5 +1,5 @@
 type EarningFilter = {
-  earningDate: string;
+  date: string;
 };
 
 type EarningsSummary = {
@@ -10,4 +10,18 @@ type EarningsSummary = {
 type Earning = {
   id: number;
   key: string;
+  date: string;
+  symbol: string;
+  companyName: string;
+  earningsScore: number;
+  epsActual: number;
+  epsEstimate: number;
+  epsSurprise: number;
+  epsSurprisePercent: number;
+  isAddWatchListEarnings: boolean;
+  marketCap?: number;
+  revenueActual: number;
+  revenueEstimate: number;
+  revenueSurprise: number;
+  revenueSurprisePercent: number;
 };

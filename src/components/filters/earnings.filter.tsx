@@ -1,7 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import isoWeek from 'dayjs/plugin/isoWeek';
 import { Carousel, Card, Button, Tooltip } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -9,11 +12,9 @@ import {
   getCountEarningsCalendar,
   watchEarningsSummary
 } from '@/redux/slices/earnings.slice';
+import { useLocale, useTimeZone, useTranslations } from 'next-intl';
 import { TimeZone } from '@/constants/timezone';
-import 'dayjs/locale/en';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import isoWeek from 'dayjs/plugin/isoWeek';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -28,96 +29,87 @@ export const EarningFilter = ({
   customStyles,
   onFilter
 }: EarningsFilterProps) => {
+  const t = useTranslations();
+  const timezone = useTimeZone() || TimeZone.NEW_YORK;
+  const locale = useLocale() || 'en';
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const selectedDateFromURL = searchParams.get('selectedDate');
+
   const earningsSummary = useAppSelector(watchEarningsSummary);
-  const [currentWeek, setCurrentWeek] = useState(
-    dayjs().tz(TimeZone.NEW_YORK).startOf('isoWeek')
+
+  const [currentWeek, setCurrentWeek] = useState(() =>
+    dayjs().tz(timezone).startOf('isoWeek')
   );
 
-  const getWeekDays = (weekStart: dayjs.Dayjs) =>
-    Array.from({ length: 7 }, (_, i) => weekStart.add(i, 'day'));
+  const weekDays = useMemo(() => {
+    return Array.from({ length: 7 }, (_, i) =>
+      currentWeek.tz(timezone).add(i, 'day').startOf('day')
+    );
+  }, [currentWeek]);
 
-  const [weekDays, setWeekDays] = useState(() => getWeekDays(currentWeek));
+  const [selected, setSelected] = useState(() => {
+    if (selectedDateFromURL) {
+      const urlIndex = weekDays.findIndex(
+        (day) => day.format('YYYY-MM-DD') === selectedDateFromURL
+      );
+      return urlIndex !== -1 ? urlIndex : 0;
+    }
 
-  const fromDate = currentWeek.tz(TimeZone.NEW_YORK).format('YYYY-MM-DD');
-  const toDate = currentWeek
-    .tz(TimeZone.NEW_YORK)
-    .endOf('isoWeek')
-    .format('YYYY-MM-DD');
-
-  const [selected, setSelected] = useState<number | null>(() => {
     const todayIndex = weekDays.findIndex((day) =>
-      day
-        .startOf('day')
-        .tz(TimeZone.NEW_YORK)
-        .isSame(dayjs().tz(TimeZone.NEW_YORK).startOf('day'), 'day')
+      day.startOf('day').isSame(dayjs().tz(timezone).startOf('day'), 'day')
     );
     return todayIndex !== -1 ? todayIndex : 0;
   });
 
-  const updateWeek = (newWeek: dayjs.Dayjs) => {
-    const newWeekDays = getWeekDays(newWeek);
-    setWeekDays(newWeekDays);
+  const weekData = useMemo(() => {
+    return weekDays.map((day) => {
+      const itemData = earningsSummary.find((item) =>
+        day.isSame(dayjs(item.date).tz(timezone).startOf('day'), 'day')
+      );
+      return { date: day, total: itemData?.total ?? 0 };
+    });
+  }, [earningsSummary, weekDays]);
 
-    const todayIndex = newWeekDays.findIndex((day) =>
-      day.startOf('day').isSame(dayjs().startOf('day'), 'day')
-    );
-    const index = todayIndex !== -1 ? todayIndex : 0;
+  const handleSelectedDate = (index: number) => {
     setSelected(index);
-    const selectedDate = weekData[index]?.date;
-    if (selectedDate) {
-      onFilter({
-        earningDate: dayjs(selectedDate)
-          .tz(TimeZone.NEW_YORK)
-          .format('YYYY-MM-DD')
-      });
-    }
-  };
+    const selectedDate = weekData[index].date.format('YYYY-MM-DD');
+    onFilter({ date: selectedDate });
 
-  const handlePreviousWeek = () => {
-    setCurrentWeek((prev) => {
-      const newWeek = prev.subtract(1, 'week');
-      updateWeek(newWeek);
-      return newWeek;
-    });
-  };
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('selectedDate', selectedDate);
 
-  const handleNextWeek = () => {
-    setCurrentWeek((prev) => {
-      const newWeek = prev.add(1, 'week');
-      updateWeek(newWeek);
-      return newWeek;
-    });
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const fetchEarningsSummary = useCallback(() => {
+    const fromDate = currentWeek.tz(timezone).format('YYYY-MM-DD');
+    const toDate = currentWeek
+      .tz(timezone)
+      .endOf('isoWeek')
+      .format('YYYY-MM-DD');
+
     dispatch(
       getCountEarningsCalendar({
         fromDate,
         toDate
       })
     );
-  }, [dispatch, fromDate, toDate]);
+  }, [dispatch, currentWeek]);
 
-  const weekData = weekDays.map((day) => {
-    const dayData = earningsSummary.find((item) =>
-      day.isSame(dayjs(item.date).tz(TimeZone.NEW_YORK), 'day')
-    );
-    return { date: day, total: dayData?.total ?? 0 };
-  });
+  const updateWeek = (newWeek: dayjs.Dayjs) => {
+    setCurrentWeek(newWeek);
+    setSelected(0);
 
-  const handleSelectedDate = (index: number) => {
-    setSelected(index);
+    const firstDayOfWeek = newWeek.startOf('isoWeek').format('YYYY-MM-DD');
+    onFilter({ date: firstDayOfWeek });
 
-    const selectedDate = weekData[index]?.date;
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('selectedDate', firstDayOfWeek);
 
-    if (selectedDate) {
-      onFilter({
-        earningDate: dayjs(selectedDate)
-          .tz(TimeZone.NEW_YORK)
-          .format('YYYY-MM-DD')
-      });
-    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   useEffect(() => {
@@ -126,39 +118,41 @@ export const EarningFilter = ({
 
   return (
     <div css={[rootStyles, customStyles]}>
-      <Tooltip placement='topLeft' title={'Previous'}>
-        <Button onClick={handlePreviousWeek} icon={<LeftOutlined />} />
+      <Tooltip placement='topLeft' title='Previous'>
+        <Button
+          onClick={() => updateWeek(currentWeek.subtract(1, 'week'))}
+          icon={<LeftOutlined />}
+        />
       </Tooltip>
 
       <div css={scrollContainerStyles}>
         <Carousel dots={false} infinite={false}>
           <div>
-            <div
-              css={css`
-                display: flex;
-                gap: 2rem;
-              `}
-            >
+            <div css={carouselInnerStyles}>
               {weekData.map((item, index) => (
                 <Card
-                  key={index}
+                  key={item.date.toString()}
                   css={[cardStyles, selected === index && selectedCardStyles]}
                   onClick={() => handleSelectedDate(index)}
                 >
-                  <p css={dateTextStyles}>{item.date.format('ddd, MMM DD')}</p>
-                  {/* {item.total > 0 && ( */}
+                  <p css={dateTextStyles}>
+                    {item.date.locale(locale).format('ddd, MMM DD')}
+                  </p>
                   <Button type='default' css={earningsButtonStyles}>
-                    ● {item.total} Earnings
+                    ● {item.total} {t('earnings')}
                   </Button>
-                  {/* )} */}
                 </Card>
               ))}
             </div>
           </div>
         </Carousel>
       </div>
-      <Tooltip placement='topLeft' title={'Next'}>
-        <Button onClick={handleNextWeek} icon={<RightOutlined />} />
+
+      <Tooltip placement='topLeft' title='Next'>
+        <Button
+          onClick={() => updateWeek(currentWeek.add(1, 'week'))}
+          icon={<RightOutlined />}
+        />
       </Tooltip>
     </div>
   );
@@ -175,14 +169,17 @@ const scrollContainerStyles = css`
   display: flex;
   align-items: center;
   gap: 1.6rem;
-  justify-content: start;
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+
+const carouselInnerStyles = css`
+  display: flex;
+  gap: 2rem;
 `;
 
 const cardStyles = css`

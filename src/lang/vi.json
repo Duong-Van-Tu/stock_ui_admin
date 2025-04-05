@@ -79,9 +79,15 @@
   "searchSelectStrategy": "Tìm kiếm theo chiến lược",
   "clear": "Xoá bộ lọc",
   "earnings": "Earnings",
-  "earningsDescription": "Trang earnings",
+  "earningsDescription": "Trang Earnings",
   "news": "Tin tức",
   "newsDescription": "Trang tin tức",
-  "earningTitle": "Earnings Calendar for:"
+  "earningTitle": "Earnings vào",
+  "epsEstimate": "EPS ước tính",
+  "epsActual": "EPS thực tế",
+  "epsSurprise": "Chênh lệch EPS",
+  "revenueActual": "Revenue thực tế",
+  "revenueEstimate": "Revenue ước tính",
+  "revenueSurprise": "Chênh lệch Revenue"
 }
   

@@ -25,5 +25,10 @@ export const fieldMapping: Record<string, string> = {
   groupName: 'group_name',
   currentPrice: 'current_price',
   plPercent: 'pl_percent',
-  atrPercent: 'atrpercent'
+  atrPercent: 'atrpercent',
+  epsSurprise: 'epssurprise',
+  epsSurprisePercent: 'epssurprisepercent',
+  isAddWatchListEarnings: 'isAddWL',
+  revenueSurprise: 'revenuesurprise',
+  revenueSurprisePercent: 'revenuesurprisepercent'
 };

@@ -82,5 +82,11 @@
   "earningsDescription": "Earnings page",
   "news": "News",
   "newsDescription": "News page",
-  "earningTitle": "Earnings Calendar for:"
+  "earningTitle": "Earnings On",
+  "epsEstimate": "EPS Estimate",
+  "epsActual": "EPS Actual",
+  "epsSurprise": "EPS Surprise",
+  "revenueActual": "Revenue Actual",
+  "revenueEstimate": "Revenue Estimate",
+  "revenueSurprise": "Revenue Surprise"
 }

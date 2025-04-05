@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { searchSymbol, watchSearchSymbol } from '@/redux/slices/search';
 import { Button, Dropdown, Input, Layout, Space, theme } from 'antd';
@@ -34,6 +34,7 @@ export default function Header({ collapsed }: HeaderProps) {
   const pathname = usePathname();
   const symbol = useAppSelector(watchSearchSymbol);
   const user = useAppSelector(watchUser);
+  const searchParams = useSearchParams();
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -44,7 +45,10 @@ export default function Header({ collapsed }: HeaderProps) {
   };
 
   const handleLanguageChange: MenuProps['onClick'] = (e) => {
-    const newPath = pathname.replace(`/${locale}/`, `/${e.key}/`);
+    const newSearch = searchParams.toString();
+    const newPath =
+      pathname.replace(`/${locale}/`, `/${e.key}/`) +
+      (newSearch ? `?${newSearch}` : '');
     router.push(newPath);
   };
 

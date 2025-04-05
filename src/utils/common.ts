@@ -162,6 +162,24 @@ export const formatMarketCap = (value: number): string => {
   }
 };
 
+export const formatNumberShort = (value: number): string => {
+  const absValue = Math.abs(value);
+
+  if (absValue >= 1_000_000_000_000) {
+    return (value / 1_000_000_000_000).toFixed(2).replace(/\.00$/, '') + 'T';
+  }
+  if (absValue >= 1_000_000_000) {
+    return (value / 1_000_000_000).toFixed(2).replace(/\.00$/, '') + 'B';
+  }
+  if (absValue >= 1_000_000) {
+    return (value / 1_000_000).toFixed(2).replace(/\.00$/, '') + 'M';
+  }
+  if (absValue >= 1_000) {
+    return (value / 1_000).toFixed(2).replace(/\.00$/, '') + 'K';
+  }
+  return value.toString();
+};
+
 export const formatPercent = (
   value: number | null | undefined,
   decimals: number = 2

@@ -1,25 +1,91 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useState } from 'react';
-// import { Table, TableColumnsType } from 'antd';
-// import { useTranslations } from 'next-intl';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Table, TableColumnsType } from 'antd';
+import { useLocale, useTimeZone, useTranslations } from 'next-intl';
 import { EarningFilter } from '../filters/earnings.filter';
-// import { TableTitle } from './title.table';
-// import { useWindowSize } from '@/hooks/useWindowSize';
-// import { EmptyDataTable } from './empty.table';
-// import { PAGINATION } from '@/constants/pagination.constant';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import {
+  getEarnings,
+  watchEarningPagination,
+  watchEarnings,
+  watchEarningsLoading
+} from '@/redux/slices/earnings.slice';
+import { TableTitle } from './title.table';
+import { useWindowSize } from '@/hooks/useWindowSize';
+import { EmptyDataTable } from './empty.table';
+import { useSearchParams } from 'next/navigation';
+import dayjs from 'dayjs';
+import { watchSearchSymbol } from '@/redux/slices/search';
+import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
+import { fieldMapping } from '@/helpers/field-mapping.helper';
+import { convertSortType } from '@/utils/sort-table';
+import {
+  cleanFalsyValues,
+  formatNumberShort,
+  roundToDecimals
+} from '@/utils/common';
+import { SymbolCell } from './columns/symbol-cell.column';
+import { PositiveNegativeText } from '../positive-negative-text';
+import { StockChangeCell } from './columns/stock-change-cell.column';
+import { TimeZone } from '@/constants/timezone';
 
 export const EarningsTable = () => {
-  // const t = useTranslations();
-  // const { height } = useWindowSize();
+  const t = useTranslations();
+  const timezone = useTimeZone() || TimeZone.NEW_YORK;
+  const locale = useLocale() || 'en';
+  const dispatch = useAppDispatch();
+  const { height } = useWindowSize();
+  const searchParams = useSearchParams();
+  const pagination = useAppSelector(watchEarningPagination);
+  const earnings = useAppSelector(watchEarnings);
+  const symbol = useAppSelector(watchSearchSymbol);
+  const loading = useAppSelector(watchEarningsLoading);
+  const [filter, setFilter] = useState<EarningFilter>({ date: '' });
+  const [sortField, setSortField] = useState<string>('epsEstimate');
+  const [sortType, setSortType] = useState<SortOrder>('descend');
 
-  // const earningsData: Earning[] = [];
+  const selectedDate = searchParams.get('selectedDate');
 
-  // const pagination = PAGINATION;
+  const earningDate = useMemo(
+    () =>
+      selectedDate
+        ? dayjs(selectedDate, 'YYYY/MM/DD').format('YYYY-MM-DD')
+        : dayjs().format('YYYY-MM-DD'),
+    [selectedDate]
+  );
 
-  const [filter, setFilter] = useState<EarningFilter>({ earningDate: '' });
+  const handleSortOrder = (field: string) => {
+    let newSortType: SortOrder;
 
-  // const columns: TableColumnsType<Earning> = [];
+    if (field === sortField) {
+      newSortType =
+        sortType === 'descend'
+          ? 'ascend'
+          : sortType === 'ascend'
+          ? undefined
+          : 'descend';
+    } else {
+      newSortType = 'descend';
+    }
+
+    setSortField(field);
+    setSortType(newSortType);
+
+    const newFilter = {
+      ...filter,
+      sortField: newSortType ? fieldMapping[field] ?? field : undefined,
+      sortType: newSortType ? convertSortType(newSortType) : undefined
+    };
+
+    setFilter((prev) => ({ ...prev, ...newFilter }));
+
+    fetchEarnings({
+      page: PAGINATION.currentPage,
+      pageSize: pagination.pageSize,
+      filter: newFilter
+    });
+  };
 
   const handleFilter = (values: EarningFilter) => {
     const newFilter = {
@@ -27,24 +93,232 @@ export const EarningsTable = () => {
       ...values
     };
     setFilter(newFilter);
+    fetchEarnings({ filter: newFilter });
   };
+
+  const fetchEarnings = useCallback(
+    ({
+      page = PAGINATION_PARAMS.offset,
+      pageSize = PAGINATION_PARAMS.limit,
+      filter
+    }: PageChangeParams = {}) => {
+      const filteredFilter = cleanFalsyValues(filter);
+      const dateInTimeZone = filteredFilter.date
+        ? dayjs(filteredFilter.date).tz(timezone).format('YYYY-MM-DD')
+        : undefined;
+
+      dispatch(
+        getEarnings({
+          page,
+          limit: pageSize,
+          ...filteredFilter,
+          date: dateInTimeZone
+        })
+      );
+    },
+    []
+  );
+
+  useEffect(() => {
+    setFilter((prev) => ({ ...prev, symbol, date: earningDate }));
+    fetchEarnings({ filter: { symbol, date: earningDate } });
+  }, [fetchEarnings, symbol]);
+
+  const columns: TableColumnsType<Earning> = [
+    {
+      title: t('no'),
+      dataIndex: 'index',
+      key: 'index',
+      width: 60,
+      align: 'center',
+      fixed: 'left',
+      render: (_, __, index) =>
+        index + 1 + (pagination.currentPage - 1) * pagination.pageSize
+    },
+    {
+      title: t('symbol'),
+      dataIndex: 'symbol',
+      key: 'symbol',
+      width: 200,
+      fixed: 'left',
+      render: (_, record) => (
+        <SymbolCell symbol={record.symbol} companyName={record.companyName} />
+      )
+    },
+    {
+      title: t('earningsScore'),
+      dataIndex: 'earningsScore',
+      key: 'earningsScore',
+      width: 140,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'earningsScore' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('earningsScore')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
+      title: t('epsEstimate'),
+      dataIndex: 'epsEstimate',
+      key: 'epsEstimate',
+      width: 140,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'epsEstimate' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('epsEstimate')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
+      title: t('epsActual'),
+      dataIndex: 'epsActual',
+      key: 'epsActual',
+      width: 140,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'epsActual' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('epsActual')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
+      title: t('epsSurprise'),
+      dataIndex: 'epsSurprise',
+      key: 'epsSurprise',
+      width: 150,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'epsSurprise' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('epsSurprise')
+      }),
+      align: 'center',
+      render: (value, record) =>
+        value ? (
+          <StockChangeCell
+            value={value}
+            percentage={
+              record.epsSurprisePercent ? record.epsSurprisePercent : 0
+            }
+          />
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
+      title: t('revenueActual'),
+      dataIndex: 'revenueActual',
+      key: 'revenueActual',
+      width: 150,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'revenueActual' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('revenueActual')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{formatNumberShort(value)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
+      title: t('revenueEstimate'),
+      dataIndex: 'revenueEstimate',
+      key: 'revenueEstimate',
+      width: 160,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'revenueEstimate' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('revenueEstimate')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{formatNumberShort(value)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
+      title: t('revenueSurprise'),
+      dataIndex: 'revenueSurprise',
+      key: 'revenueSurprise',
+      width: 180,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'revenueSurprise' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('revenueSurprise')
+      }),
+      align: 'center',
+      render: (value, record) =>
+        value ? (
+          <StockChangeCell
+            value={value}
+            percentage={
+              record.revenueSurprisePercent ? record.revenueSurprisePercent : 0
+            }
+          />
+        ) : (
+          <span>-</span>
+        )
+    }
+  ];
 
   return (
     <div css={rootStyles}>
       <EarningFilter onFilter={handleFilter} />
-      {/* <div css={tableWrapperStyles}>
+      <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
-          <TableTitle>{t('earningTitle')}</TableTitle>
+          <TableTitle>
+            {t('earningTitle')}&nbsp;
+            {dayjs(earningDate).locale(locale).format('ddd, MMM DD')}
+          </TableTitle>
         </div>
         <Table<Earning>
           css={tableStyles}
           rowKey={(record) => record.key}
           columns={columns}
-          dataSource={earningsData}
-          loading={false}
+          dataSource={earnings}
+          loading={loading}
           scroll={{
             x: 1200,
-            y: earningsData.length > 0 ? height - 340 : undefined
+            y: earnings.length > 0 ? height - 364 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -76,7 +350,7 @@ export const EarningsTable = () => {
             }
           }}
         />
-      </div> */}
+      </div>
     </div>
   );
 };
@@ -87,33 +361,27 @@ const rootStyles = css`
   gap: 1.4rem;
 `;
 
-// const tableWrapperStyles = css`
-//   border: 1px solid var(--border-table-color);
-//   border-radius: 0.8rem;
-// `;
+const tableWrapperStyles = css`
+  border: 1px solid var(--border-table-color);
+  border-radius: 0.8rem;
+`;
 
-// const tableStyles = css`
-//   .ant-table-cell {
-//     padding: 0.8rem 1rem !important;
-//   }
-// `;
+const tableStyles = css`
+  .ant-table-cell {
+    padding: 0.8rem 1rem !important;
+  }
+`;
 
-// const tableTopStyles = css`
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   padding: 1.2rem 1.6rem;
-// `;
+const tableTopStyles = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 1.6rem;
+`;
 
-// const actionStyles = css`
-//   display: flex;
-//   justify-content: flex-end;
-//   gap: 1.2rem;
-// `;
-
-// const emptyStyles = (height: number) => css`
-//   height: ${height}px;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-// `;
+const emptyStyles = (height: number) => css`
+  height: ${height}px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
