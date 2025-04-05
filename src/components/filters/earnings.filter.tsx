@@ -48,7 +48,7 @@ export const EarningFilter = ({
     return Array.from({ length: 7 }, (_, i) =>
       currentWeek.tz(timezone).add(i, 'day').startOf('day')
     );
-  }, [currentWeek]);
+  }, [currentWeek, timezone]);
 
   const [selected, setSelected] = useState(() => {
     if (selectedDateFromURL) {
@@ -71,7 +71,7 @@ export const EarningFilter = ({
       );
       return { date: day, total: itemData?.total ?? 0 };
     });
-  }, [earningsSummary, weekDays]);
+  }, [earningsSummary, weekDays, timezone]);
 
   const handleSelectedDate = (index: number) => {
     setSelected(index);
@@ -97,7 +97,7 @@ export const EarningFilter = ({
         toDate
       })
     );
-  }, [dispatch, currentWeek]);
+  }, [dispatch, currentWeek, timezone]);
 
   const updateWeek = (newWeek: dayjs.Dayjs) => {
     setCurrentWeek(newWeek);

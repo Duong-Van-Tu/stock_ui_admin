@@ -116,12 +116,13 @@ export const EarningsTable = () => {
         })
       );
     },
-    []
+    [dispatch]
   );
 
   useEffect(() => {
     setFilter((prev) => ({ ...prev, symbol, date: earningDate }));
     fetchEarnings({ filter: { symbol, date: earningDate } });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchEarnings, symbol]);
 
   const columns: TableColumnsType<Earning> = [
