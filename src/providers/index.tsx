@@ -6,13 +6,12 @@ import { store } from '@/redux/store';
 import { ConfigProvider } from 'antd';
 import enUS from 'antd/es/locale/en_US';
 import { AuthProvider } from './auth.provider';
-import { usePathname } from 'next/navigation';
-import { getPathnameSegment } from '@/utils/common';
 import { antdLocales, Locale } from '@/constants/locale';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import SocketProvider from './socket.provider';
 import 'dayjs/locale/en';
 import 'dayjs/locale/vi';
+import { useLocale } from 'next-intl';
 
 const theme = {
   token: {
@@ -21,8 +20,7 @@ const theme = {
 };
 
 export default function Providers({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  const locale = getPathnameSegment(pathname, 0) as Locale;
+  const locale = (useLocale() || 'en') as Locale;
 
   const antdLocale = antdLocales[locale] || enUS;
 
