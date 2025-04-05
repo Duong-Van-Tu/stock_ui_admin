@@ -26,8 +26,12 @@ export default function RootLayout({
 
   if (!locales.includes(locale as Locale)) return null;
 
+  if (!messages) {
+    return null;
+  }
+
   return (
-    <html lang='en'>
+    <html lang={locale}>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>
