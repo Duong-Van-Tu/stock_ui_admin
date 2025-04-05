@@ -85,11 +85,8 @@ export const EarningFilter = ({
   };
 
   const fetchEarningsSummary = useCallback(() => {
-    const fromDate = currentWeek.tz(timezone).format('YYYY-MM-DD');
-    const toDate = currentWeek
-      .tz(timezone)
-      .endOf('isoWeek')
-      .format('YYYY-MM-DD');
+    const fromDate = currentWeek.format('YYYY-MM-DD');
+    const toDate = currentWeek.endOf('isoWeek').format('YYYY-MM-DD');
 
     dispatch(
       getCountEarningsCalendar({
