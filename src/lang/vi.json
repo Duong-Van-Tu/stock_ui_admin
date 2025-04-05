@@ -88,6 +88,8 @@
   "epsSurprise": "Chênh lệch EPS",
   "revenueActual": "Revenue thực tế",
   "revenueEstimate": "Revenue ước tính",
-  "revenueSurprise": "Chênh lệch Revenue"
+  "revenueSurprise": "Chênh lệch Revenue",
+  "previousWeek": "Tuần trước",
+  "nextWeek": "Tuần sau"
 }
   

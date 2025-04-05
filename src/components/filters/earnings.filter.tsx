@@ -93,7 +93,7 @@ export const EarningFilter = ({
 
   return (
     <div css={[rootStyles, customStyles]}>
-      <Tooltip placement='topLeft' title='Previous'>
+      <Tooltip placement='top' title={t('previousWeek')}>
         <Button
           onClick={() => updateWeek(currentWeek.subtract(1, 'week'))}
           icon={<LeftOutlined />}
@@ -123,7 +123,7 @@ export const EarningFilter = ({
         </Carousel>
       </div>
 
-      <Tooltip placement='topLeft' title='Next'>
+      <Tooltip placement='top' title={t('nextWeek')}>
         <Button
           onClick={() => updateWeek(currentWeek.add(1, 'week'))}
           icon={<RightOutlined />}

@@ -88,5 +88,7 @@
   "epsSurprise": "EPS Surprise",
   "revenueActual": "Revenue Actual",
   "revenueEstimate": "Revenue Estimate",
-  "revenueSurprise": "Revenue Surprise"
+  "revenueSurprise": "Revenue Surprise",
+  "previousWeek": "Previous Week",
+  "nextWeek": "Next Week"
 }
