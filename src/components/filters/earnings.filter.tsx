@@ -67,11 +67,11 @@ export const EarningFilter = ({
   const weekData = useMemo(() => {
     return weekDays.map((day) => {
       const itemData = earningsSummary.find((item) =>
-        day.isSame(dayjs(item.date).startOf('day'), 'day')
+        day.isSame(dayjs(item.date).startOf('day').tz(timezone), 'day')
       );
       return { date: day, total: itemData?.total ?? 0 };
     });
-  }, [earningsSummary, weekDays]);
+  }, [earningsSummary, weekDays, timezone]);
 
   const handleSelectedDate = (index: number) => {
     setSelected(index);
@@ -103,7 +103,10 @@ export const EarningFilter = ({
     setCurrentWeek(newWeek);
     setSelected(0);
 
-    const firstDayOfWeek = newWeek.startOf('isoWeek').format('YYYY-MM-DD');
+    const firstDayOfWeek = newWeek
+      .startOf('isoWeek')
+      .tz(timezone)
+      .format('YYYY-MM-DD');
     onFilter({ date: firstDayOfWeek });
 
     const params = new URLSearchParams(searchParams.toString());
