@@ -4,7 +4,7 @@ import { Icon } from '@/components/icons';
 import { Button, Tooltip } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details.drawer.tsx';
+import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details.drawer';
 
 enum ContentType {
   NEWS = 'news',
