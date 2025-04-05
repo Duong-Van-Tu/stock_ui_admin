@@ -103,6 +103,7 @@ export const EarningsTable = () => {
       filter
     }: PageChangeParams = {}) => {
       const filteredFilter = cleanFalsyValues(filter);
+      console.log({ timezone });
       const dateInTimeZone = filteredFilter.date
         ? dayjs(filteredFilter.date).tz(timezone).format('YYYY-MM-DD')
         : undefined;
@@ -116,7 +117,7 @@ export const EarningsTable = () => {
         })
       );
     },
-    [dispatch]
+    [dispatch, timezone]
   );
 
   useEffect(() => {
