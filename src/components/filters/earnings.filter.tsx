@@ -2,9 +2,6 @@
 import { css, SerializedStyles } from '@emotion/react';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import isoWeek from 'dayjs/plugin/isoWeek';
 import { Carousel, Card, Button, Tooltip } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -12,13 +9,8 @@ import {
   getCountEarningsCalendar,
   watchEarningsSummary
 } from '@/redux/slices/earnings.slice';
-import { useLocale, useTimeZone, useTranslations } from 'next-intl';
-import { TimeZone } from '@/constants/timezone';
+import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(isoWeek);
 
 type EarningsFilterProps = {
   customStyles?: SerializedStyles;
@@ -30,7 +22,6 @@ export const EarningFilter = ({
   onFilter
 }: EarningsFilterProps) => {
   const t = useTranslations();
-  const timezone = useTimeZone() || TimeZone.NEW_YORK;
   const locale = useLocale() || 'en';
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -41,14 +32,14 @@ export const EarningFilter = ({
   const earningsSummary = useAppSelector(watchEarningsSummary);
 
   const [currentWeek, setCurrentWeek] = useState(() =>
-    dayjs().tz(timezone).startOf('isoWeek')
+    dayjs().startOf('isoWeek')
   );
 
   const weekDays = useMemo(() => {
     return Array.from({ length: 7 }, (_, i) =>
-      currentWeek.tz(timezone).add(i, 'day').startOf('day')
+      currentWeek.add(i, 'day').startOf('day')
     );
-  }, [currentWeek, timezone]);
+  }, [currentWeek]);
 
   const [selected, setSelected] = useState(() => {
     if (selectedDateFromURL) {
@@ -59,7 +50,7 @@ export const EarningFilter = ({
     }
 
     const todayIndex = weekDays.findIndex((day) =>
-      day.startOf('day').isSame(dayjs().tz(timezone).startOf('day'), 'day')
+      day.startOf('day').isSame(dayjs().startOf('day'), 'day')
     );
     return todayIndex !== -1 ? todayIndex : 0;
   });
@@ -75,7 +66,7 @@ export const EarningFilter = ({
 
   const handleSelectedDate = (index: number) => {
     setSelected(index);
-    const selectedDate = weekData[index].date.tz(timezone).format('YYYY-MM-DD');
+    const selectedDate = weekData[index].date.format('YYYY-MM-DD');
     onFilter({ date: selectedDate });
 
     const params = new URLSearchParams(searchParams.toString());
@@ -85,11 +76,8 @@ export const EarningFilter = ({
   };
 
   const fetchEarningsSummary = useCallback(() => {
-    const fromDate = currentWeek.tz(timezone).format('YYYY-MM-DD');
-    const toDate = currentWeek
-      .tz(timezone)
-      .endOf('isoWeek')
-      .format('YYYY-MM-DD');
+    const fromDate = currentWeek.format('YYYY-MM-DD');
+    const toDate = currentWeek.endOf('isoWeek').format('YYYY-MM-DD');
 
     dispatch(
       getCountEarningsCalendar({
@@ -97,16 +85,13 @@ export const EarningFilter = ({
         toDate
       })
     );
-  }, [dispatch, currentWeek, timezone]);
+  }, [dispatch, currentWeek]);
 
   const updateWeek = (newWeek: dayjs.Dayjs) => {
     setCurrentWeek(newWeek);
     setSelected(0);
 
-    const firstDayOfWeek = newWeek
-      .startOf('isoWeek')
-      .tz(timezone)
-      .format('YYYY-MM-DD');
+    const firstDayOfWeek = newWeek.startOf('isoWeek').format('YYYY-MM-DD');
     onFilter({ date: firstDayOfWeek });
 
     const params = new URLSearchParams(searchParams.toString());

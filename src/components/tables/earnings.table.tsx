@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Table, TableColumnsType } from 'antd';
-import { useLocale, useTimeZone, useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { EarningFilter } from '../filters/earnings.filter';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -28,11 +28,9 @@ import {
 import { SymbolCell } from './columns/symbol-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { StockChangeCell } from './columns/stock-change-cell.column';
-import { TimeZone } from '@/constants/timezone';
 
 export const EarningsTable = () => {
   const t = useTranslations();
-  const timezone = useTimeZone() || TimeZone.NEW_YORK;
   const locale = useLocale() || 'en';
   const dispatch = useAppDispatch();
   const { height } = useWindowSize();
@@ -103,20 +101,16 @@ export const EarningsTable = () => {
       filter
     }: PageChangeParams = {}) => {
       const filteredFilter = cleanFalsyValues(filter);
-      const dateInTimeZone = filteredFilter.date
-        ? dayjs(filteredFilter.date).tz(timezone).format('YYYY-MM-DD')
-        : undefined;
 
       dispatch(
         getEarnings({
           page,
           limit: pageSize,
-          ...filteredFilter,
-          date: dateInTimeZone
+          ...filteredFilter
         })
       );
     },
-    [dispatch, timezone]
+    [dispatch]
   );
 
   useEffect(() => {
@@ -347,7 +341,11 @@ export const EarningsTable = () => {
             pageSize: pagination.pageSize,
             total: pagination.total,
             onChange: (page, pageSize) => {
-              console.log({ page, pageSize, filter });
+              fetchEarnings({
+                page,
+                pageSize,
+                filter
+              });
             }
           }}
         />

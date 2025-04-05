@@ -9,9 +9,18 @@ import { AuthProvider } from './auth.provider';
 import { antdLocales, Locale } from '@/constants/locale';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import SocketProvider from './socket.provider';
+import { useLocale } from 'next-intl';
 import 'dayjs/locale/en';
 import 'dayjs/locale/vi';
-import { useLocale } from 'next-intl';
+import dayjs from 'dayjs';
+
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import isoWeek from 'dayjs/plugin/isoWeek';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(isoWeek);
 
 const theme = {
   token: {
