@@ -154,7 +154,7 @@ const scrollContainerStyles = css`
 
 const carouselInnerStyles = css`
   display: flex;
-  gap: 2rem;
+  gap: 1.2rem;
 `;
 
 const cardStyles = css`
@@ -170,7 +170,8 @@ const cardStyles = css`
 `;
 
 const selectedCardStyles = css`
-  border: 1px solid #1890ff;
+  border: 1px solid var(--blue-500);
+  background: var(--blue-100);
 `;
 
 const dateTextStyles = css`
@@ -178,6 +179,6 @@ const dateTextStyles = css`
 `;
 
 const earningsButtonStyles = css`
-  border-color: #1890ff;
-  color: #1890ff;
+  border-color: var(--blue-500);
+  color: var(--blue-500);
 `;
