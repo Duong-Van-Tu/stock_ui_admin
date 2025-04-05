@@ -10,7 +10,6 @@ import {
   watchEarningsSummary
 } from '@/redux/slices/earnings.slice';
 import { useLocale, useTimeZone, useTranslations } from 'next-intl';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 type EarningsFilterProps = {
   customStyles?: SerializedStyles;
@@ -24,10 +23,6 @@ export const EarningFilter = ({
   const t = useTranslations();
   const locale = useLocale() || 'en';
   const dispatch = useAppDispatch();
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const selectedDateFromURL = searchParams.get('selectedDate');
   const timezone = useTimeZone();
 
   const earningsSummary = useAppSelector(watchEarningsSummary);
@@ -43,13 +38,6 @@ export const EarningFilter = ({
   }, [currentWeek]);
 
   const [selected, setSelected] = useState(() => {
-    if (selectedDateFromURL) {
-      const urlIndex = weekDays.findIndex(
-        (day) => day.format('YYYY-MM-DD') === selectedDateFromURL
-      );
-      return urlIndex !== -1 ? urlIndex : 0;
-    }
-
     const todayIndex = weekDays.findIndex((day) =>
       day.startOf('day').isSame(dayjs().startOf('day'), 'day')
     );
@@ -71,11 +59,6 @@ export const EarningFilter = ({
     setSelected(index);
     const selectedDate = weekData[index].date.format('YYYY-MM-DD');
     onFilter({ date: selectedDate });
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('selectedDate', selectedDate);
-
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const fetchEarningsSummary = useCallback(() => {
@@ -96,11 +79,6 @@ export const EarningFilter = ({
 
     const firstDayOfWeek = newWeek.startOf('isoWeek').format('YYYY-MM-DD');
     onFilter({ date: firstDayOfWeek });
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('selectedDate', firstDayOfWeek);
-
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   useEffect(() => {
