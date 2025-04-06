@@ -183,7 +183,7 @@ export const AlertLogsTable = () => {
           isNews={record.isNews}
           earningDate={record.earningDate}
           isNewsNegative={record.isNewsNegative}
-          showRecentNewsEarnings={record.recentNewsEarnings}
+          // showRecentNewsEarnings={record.recentNewsEarnings}
         />
       )
     },
