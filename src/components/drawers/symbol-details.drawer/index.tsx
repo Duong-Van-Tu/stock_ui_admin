@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+
 import { Drawer } from 'antd';
 import { useTranslations } from 'next-intl';
+import { NewDetails } from './news-details';
 
 enum ContentType {
   NEWS = 'news',
@@ -31,20 +33,20 @@ export const SymbolDetailsDrawer = ({
       case ContentType.EARNINGS:
         return `${t('earningsDetail')} (${symbol})`;
       case ContentType.RECENT:
-        return 'Recent';
+        return `${t('newsAndEarningsLast14Days')} (${symbol})`;
       default:
-        return 'Default';
+        return '';
     }
   };
 
   const renderContent = () => {
     switch (contentType) {
       case ContentType.NEWS:
-        return <div>NEWS</div>;
+        return <NewDetails symbol={symbol} />;
       case ContentType.EARNINGS:
         return <div>EARNINGS</div>;
       case ContentType.RECENT:
-        return <div>EARNINGS</div>;
+        return <div>News & Earnings</div>;
       default:
         return null;
     }
@@ -56,11 +58,15 @@ export const SymbolDetailsDrawer = ({
       title={getDrawerTitle(contentType)}
       open={visible}
       onClose={onClose}
-      width={400}
+      width={600}
     >
       {renderContent()}
     </Drawer>
   );
 };
 
-const drawerStyles = css``;
+const drawerStyles = css`
+  .ant-drawer-body {
+    padding: 1.6rem;
+  }
+`;

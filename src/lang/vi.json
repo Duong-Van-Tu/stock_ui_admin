@@ -93,6 +93,20 @@
   "nextWeek": "Tuần sau",
   "recentNewsAndEarnings": "Tin tức và Earnings (14 ngày)",
   "newDetail": "Tin tức chi tiết",
-  "earningsDetail": "Báo cáo tài chính"
+  "earningsDetail": "Báo cáo tài chính",
+  "positiveTitle": "TÍCH CỰC",
+  "veryPositiveTitle": "RẤT TÍCH CỰC",
+  "negativeTitle": "TIÊU CỰC",
+  "veryNegativeTitle": "RẤT TIÊU CỰC",
+  "newsAndEarningsLast14Days": "News và Earnings trong 14 ngày gần nhất",
+  "fromLabel": "Từ:",
+  "toLabel": "Đến:",
+  "1Day": "1 ngày",
+  "2Days": "2 ngày",
+  "3Days": "3 ngày",
+  "4Days": "4 ngày",
+  "5Days": "5 ngày",
+  "6Days": "6 ngày",
+  "1Week": "1 tuần",
+  "2Weeks": "2 tuần"
 }
-  

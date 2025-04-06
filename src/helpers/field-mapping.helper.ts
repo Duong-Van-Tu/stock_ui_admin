@@ -32,5 +32,10 @@ export const fieldMapping: Record<string, string> = {
   revenueSurprise: 'revenuesurprise',
   revenueSurprisePercent: 'revenuesurprisepercent',
   isNewsNegative: 'isnews_negative',
-  showRecentNewsEarnings: 'is_earn_news'
+  showRecentNewsEarnings: 'is_earn_news',
+  countVeryNegative: 'count_very_negative',
+  countVeryPositive: 'count_very_positive',
+  countNegative: 'count_negative',
+  countPositive: 'count_positive',
+  sentimentScore1w: 'sentiment_score_1w'
 };

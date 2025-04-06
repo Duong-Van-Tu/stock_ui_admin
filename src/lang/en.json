@@ -92,6 +92,21 @@
   "previousWeek": "Previous Week",
   "nextWeek": "Next Week",
   "recentNewsAndEarnings": "Recent News & Earnings (14 days)",
-   "newDetail": "News Details",
-   "earningsDetail": "Earnings Report"
+  "newDetail": "News Details",
+  "earningsDetail": "Earnings Report",
+  "positiveTitle": "POSITIVE",
+  "veryPositiveTitle": "VERY POSITIVE",
+  "negativeTitle": "NEGATIVE",
+  "veryNegativeTitle": "VERY NEGATIVE",
+  "newsAndEarningsLast14Days": "News and Earnings in the Last 14 Days",
+  "fromLabel": "From:",
+  "toLabel": "To:",
+  "1Day": "1 day",
+  "2Days": "2 days",
+  "3Days": "3 days",
+  "4Days": "4 days",
+  "5Days": "5 days",
+  "6Days": "6 days",
+  "1Week": "1 week",
+  "2Weeks": "2 weeks"
 }

@@ -82,7 +82,7 @@ export const earningsSlice = createAppSlice({
 
   selectors: {
     watchEarningsLoading: (earning) => earning.loading,
-    watchStockScoreLoading: (earning) => earning.loadingEarningsSummary,
+    watchEarningSummaryLoading: (earning) => earning.loadingEarningsSummary,
     watchEarningsSummary: (earning) => earning.earningsSummary,
     watchEarnings: (earning) => earning.earnings,
     watchEarningPagination: (earning) => earning.pagination
@@ -91,7 +91,7 @@ export const earningsSlice = createAppSlice({
 
 export const {
   watchEarningsLoading,
-  watchStockScoreLoading,
+  watchEarningSummaryLoading,
   watchEarningsSummary,
   watchEarnings,
   watchEarningPagination
