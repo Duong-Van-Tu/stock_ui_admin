@@ -108,5 +108,7 @@
   "5Days": "5 days",
   "6Days": "6 days",
   "1Week": "1 week",
-  "2Weeks": "2 weeks"
+  "2Weeks": "2 weeks",
+  "countSentiment": "Count Sentiment",
+  "companyNews": "Company News"
 }

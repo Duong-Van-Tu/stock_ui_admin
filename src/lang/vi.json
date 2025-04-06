@@ -108,5 +108,7 @@
   "5Days": "5 ngày",
   "6Days": "6 ngày",
   "1Week": "1 tuần",
-  "2Weeks": "2 tuần"
+  "2Weeks": "2 tuần",
+  "countSentiment": "Thống kê tin tức",
+  "companyNews": "Tin tức doanh nghiệp"
 }
