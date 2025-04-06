@@ -15,7 +15,6 @@ import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { DateTimeCell } from '../tables/columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { roundToDecimals } from '@/utils/common';
-import { useRouter } from 'next/navigation';
 
 type CompanyNewsProps = {
   symbol: string;
@@ -25,7 +24,6 @@ type CompanyNewsProps = {
 
 export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
   const dispatch = useAppDispatch();
-  const route = useRouter();
   const companyNews = useAppSelector(watchCompanyNews);
   const loading = useAppSelector(watchCompanyNewsLoading);
   const pagination = useAppSelector(watchCompanyNewsPagination);
