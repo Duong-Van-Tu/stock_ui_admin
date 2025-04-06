@@ -19,7 +19,6 @@ export const transformCountSentiment = (sentiment: any): CountSentiment => {
 
 export const transformCompanyNews = (companyNews: any[]): CompanyNews[] => {
   return companyNews.map((news) => ({
-    id: news.id,
     key: uuid(),
     timestamp: news.timestamp,
     headline: news.headline,

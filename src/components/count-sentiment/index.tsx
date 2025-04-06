@@ -1,18 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { Col, Row, Collapse, Typography } from 'antd';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useCallback, useEffect } from 'react';
+import { Col, Row, Collapse } from 'antd';
+import { CaretRightOutlined } from '@ant-design/icons';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   getCountSentiment,
   watchCountSentiment
 } from '@/redux/slices/sentiment.slice';
-import dayjs from 'dayjs';
 import { CountCard } from './count-card';
 import { useTranslations } from 'next-intl';
-
-const { Title } = Typography;
 
 type CountSentimentProps = {
   symbol: string;
@@ -30,38 +28,18 @@ export const CountSentiment = ({
   const countSentiment = useAppSelector(watchCountSentiment);
 
   const fetchCountSentiment = useCallback(() => {
-    const now = dayjs();
-
-    const from =
-      fromDate ??
-      (toDate
-        ? dayjs(toDate).subtract(7, 'day').format('YYYY-MM-DD')
-        : now.subtract(7, 'day').format('YYYY-MM-DD'));
-    const to =
-      toDate ??
-      (fromDate
-        ? dayjs(fromDate).add(7, 'day').format('YYYY-MM-DD')
-        : now.format('YYYY-MM-DD'));
-
-    dispatch(
-      getCountSentiment({ symbol, query: { fromDate: from, toDate: to } })
-    );
+    dispatch(getCountSentiment({ symbol, query: { fromDate, toDate } }));
   }, [dispatch, symbol, fromDate, toDate]);
 
   useEffect(() => {
     fetchCountSentiment();
   }, [fetchCountSentiment]);
 
-  return (
-    <Collapse defaultActiveKey={['1']} expandIconPosition='right'>
-      <Collapse.Panel
-        header={
-          <Title css={titleStyles} level={4}>
-            {t('countSentiment')}
-          </Title>
-        }
-        key='1'
-      >
+  const collapseItems = [
+    {
+      key: '1',
+      label: <h5 css={titleStyles}>{t('countSentiment')}</h5>,
+      children: (
         <Row gutter={[16, 16]}>
           <Col span={24}>
             <Row gutter={[16, 16]}>
@@ -92,11 +70,31 @@ export const CountSentiment = ({
             </Row>
           </Col>
         </Row>
-      </Collapse.Panel>
-    </Collapse>
+      )
+    }
+  ];
+
+  return (
+    <Collapse
+      css={collapseStyles}
+      defaultActiveKey={['1']}
+      expandIconPosition='end'
+      expandIcon={({ isActive }) => (
+        <CaretRightOutlined rotate={isActive ? 90 : 0} />
+      )}
+      items={collapseItems}
+    />
   );
 };
 
+const collapseStyles = css`
+  .ant-collapse-header {
+    align-items: center !important;
+  }
+`;
+
 const titleStyles = css`
-  margin-bottom: 0 !important;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 0;
 `;

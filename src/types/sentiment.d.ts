@@ -11,12 +11,13 @@ type CountSentiment = {
 
 type Sentiment = 'positive' | 'negative' | 'very_positive' | 'very_negative';
 
-type GetCountSentimentParams = {
+type SentimentParams = {
   symbol: string;
   query?: Record<string, any>;
 };
 
 type CompanyNews = {
+  key: string;
   timestamp: string;
   headline: string;
   source: string;

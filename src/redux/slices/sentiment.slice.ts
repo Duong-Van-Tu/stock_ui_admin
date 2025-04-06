@@ -32,7 +32,7 @@ export const SentimentSlice = createAppSlice({
   initialState,
   reducers: (create) => ({
     getCountSentiment: create.asyncThunk(
-      async ({ symbol, query }: GetCountSentimentParams) => {
+      async ({ symbol, query }: SentimentParams) => {
         const response = await defaultApiFetcher.get(
           `stock-scores/count-sentiment-detail/${symbol}`,
           {
@@ -56,10 +56,10 @@ export const SentimentSlice = createAppSlice({
       }
     ),
     getCompanyNews: create.asyncThunk(
-      async (params?: Record<string, any>) => {
-        const response = await defaultApiFetcher.post(
-          'stock-scores/company-news-detail',
-          params
+      async ({ symbol, query }: SentimentParams) => {
+        const response = await defaultApiFetcher.get(
+          `stock-scores/company-news-detail/${symbol}`,
+          { query }
         );
         return response.data;
       },
@@ -89,7 +89,7 @@ export const SentimentSlice = createAppSlice({
     watchCompanyNewsLoading: (sentiment) => sentiment.loading,
     watchCountSentimentLoading: (sentiment) => sentiment.loadingCountSentiment,
     watchCountSentiment: (sentiment) => sentiment.countSentiment,
-    watchSentiment: (sentiment) => sentiment.companyNews,
+    watchCompanyNews: (sentiment) => sentiment.companyNews,
     watchCompanyNewsPagination: (sentiment) => sentiment.pagination
   }
 });
@@ -98,7 +98,7 @@ export const {
   watchCompanyNewsLoading,
   watchCountSentimentLoading,
   watchCountSentiment,
-  watchSentiment,
+  watchCompanyNews,
   watchCompanyNewsPagination
 } = SentimentSlice.selectors;
 

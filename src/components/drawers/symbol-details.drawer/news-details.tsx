@@ -7,6 +7,7 @@ import { CountSentiment } from '@/components/count-sentiment';
 import { Select } from 'antd';
 import { Icon } from '@/components/icons';
 import { useTranslations } from 'next-intl';
+import { NewsSentiment } from '@/components/news-sentiment';
 
 type NewDetailsProps = { symbol: string };
 
@@ -46,6 +47,7 @@ export const NewDetails = ({ symbol }: NewDetailsProps) => {
         />
       </div>
       <CountSentiment fromDate={fromDate} toDate={toDate} symbol={symbol} />
+      <NewsSentiment fromDate={fromDate} toDate={toDate} symbol={symbol} />
     </div>
   );
 };
@@ -70,6 +72,7 @@ const rangeDateStyles = css`
 
 const selectStyles = css`
   width: 10rem;
+  height: 2.8rem;
   .ant-select-selector {
     background: var(--blue-100) !important;
     .ant-select-selection-item {
