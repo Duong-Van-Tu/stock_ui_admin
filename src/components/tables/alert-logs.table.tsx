@@ -434,7 +434,7 @@ export const AlertLogsTable = () => {
       align: 'center',
       render: (value) =>
         value ? (
-          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
         ) : (
@@ -455,7 +455,7 @@ export const AlertLogsTable = () => {
       }),
       render: (value) =>
         value ? (
-          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
         ) : (
@@ -476,7 +476,7 @@ export const AlertLogsTable = () => {
       align: 'center',
       render: (value) =>
         value ? (
-          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
         ) : (
@@ -497,7 +497,7 @@ export const AlertLogsTable = () => {
       align: 'center',
       render: (value) =>
         value ? (
-          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
         ) : (

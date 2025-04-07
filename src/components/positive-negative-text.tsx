@@ -21,7 +21,7 @@ const textStyle = (isPositive?: boolean, isNegative?: boolean) => {
     ? 'var(--positive-color)'
     : isNegative
     ? 'var(--negative-color)'
-    : 'var(--text-color)';
+    : 'var(--yellow-color)';
 
   return css`
     color: ${color};
