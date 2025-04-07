@@ -112,7 +112,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
         <>
           <PositiveNegativeText
             isPositive={
-              value === Sentiment.Positive || value === Sentiment.VeryNegative
+              value === Sentiment.Positive || value === Sentiment.VeryPositive
             }
             isNegative={
               value === Sentiment.Negative || value === Sentiment.VeryNegative
