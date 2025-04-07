@@ -124,7 +124,7 @@ export const SymbolEarningsDetail = ({
       title: t('revenueActual'),
       dataIndex: 'revenueActual',
       key: 'revenueActual',
-      width: 144,
+      width: 150,
       align: 'center',
       render: (value) =>
         value ? (
@@ -139,7 +139,7 @@ export const SymbolEarningsDetail = ({
       title: t('revenueEstimate'),
       dataIndex: 'revenueEstimate',
       key: 'revenueEstimate',
-      width: 150,
+      width: 154,
       align: 'center',
       render: (value) =>
         value ? (
