@@ -15,6 +15,7 @@ import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { DateTimeCell } from '../tables/columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { roundToDecimals } from '@/utils/common';
+import { useTranslations } from 'next-intl';
 
 type CompanyNewsProps = {
   symbol: string;
@@ -23,6 +24,7 @@ type CompanyNewsProps = {
 };
 
 export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
+  const t = useTranslations();
   const dispatch = useAppDispatch();
   const companyNews = useAppSelector(watchCompanyNews);
   const loading = useAppSelector(watchCompanyNewsLoading);
@@ -46,7 +48,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
 
   const columns: TableColumnsType<CompanyNews> = [
     {
-      title: 'Timestamp',
+      title: t('timestamp'),
       dataIndex: 'timestamp',
       key: 'timestamp',
       width: 120,
@@ -55,7 +57,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       render: (value) => <DateTimeCell value={value} />
     },
     {
-      title: 'Sentiment Score',
+      title: t('sentimentScore'),
       dataIndex: 'sentimentScore',
       key: 'sentimentScore',
       width: 150,
@@ -70,7 +72,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
         )
     },
     {
-      title: 'Sentiment Score (1 Week)',
+      title: t('sentimentScore1w'),
       dataIndex: 'sentimentScore1w',
       key: 'sentimentScore1w',
       width: 150,
@@ -85,14 +87,29 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
         )
     },
     {
-      title: 'Impact',
+      title: t('impact'),
       dataIndex: 'impact',
       key: 'impact',
       width: 120,
       align: 'center'
     },
     {
-      title: 'Sentiment',
+      title: t('source'),
+      dataIndex: 'source',
+      key: 'source',
+      width: 120,
+      align: 'center',
+      render: (value, record) => (
+        <div>
+          {value} <br />
+          <a href={record.url} target='_blank'>
+            {t('viewDetails')}
+          </a>
+        </div>
+      )
+    },
+    {
+      title: t('sentiment'),
       dataIndex: 'sentiment',
       key: 'sentiment',
       width: 140,
@@ -111,6 +128,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
         )
     }
   ];
+
   return (
     <Table<CompanyNews>
       bordered={false}

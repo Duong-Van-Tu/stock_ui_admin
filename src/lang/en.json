@@ -110,5 +110,11 @@
   "1Week": "1 week",
   "2Weeks": "2 weeks",
   "countSentiment": "Count Sentiment",
-  "companyNews": "Company News"
+  "companyNews": "Company News",
+  "sentimentScore1w": "Sentiment Score (1 Week)",
+  "impact": "Impact",
+  "source": "Source",
+  "viewDetails": "View details",
+  "sentiment": "Sentiment",
+  "timestamp": "Timestamp"
 }
