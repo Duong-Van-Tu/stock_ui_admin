@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 import { Drawer } from 'antd';
 import { useTranslations } from 'next-intl';
 import { NewDetails } from './news-details';
+import { EarningsDetails } from './earnings-details';
 
 enum ContentType {
   NEWS = 'news',
@@ -44,7 +45,7 @@ export const SymbolDetailsDrawer = ({
       case ContentType.NEWS:
         return <NewDetails symbol={symbol} />;
       case ContentType.EARNINGS:
-        return <div>EARNINGS</div>;
+        return <EarningsDetails symbol={symbol} />;
       case ContentType.RECENT:
         return <div>News & Earnings</div>;
       default:

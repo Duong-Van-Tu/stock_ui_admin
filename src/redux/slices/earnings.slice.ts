@@ -11,6 +11,7 @@ export type EarningsState = {
   loadingEarningsSummary: boolean;
   earningsSummary: EarningsSummary[];
   earnings: Earning[];
+  earningsFilter: Earning[];
   pagination: Pagination;
 };
 
@@ -19,6 +20,7 @@ const initialState: EarningsState = {
   loadingEarningsSummary: false,
   earningsSummary: [],
   earnings: [],
+  earningsFilter: [],
   pagination: PAGINATION
 };
 
@@ -53,7 +55,7 @@ export const earningsSlice = createAppSlice({
     getEarnings: create.asyncThunk(
       async (params?: Record<string, any>) => {
         const response = await defaultApiFetcher.post(
-          'stock-scores/get-earning-calender-nextdate',
+          `stock-scores/get-earning-calender-nextdate?symbol=${params?.symbol}&fromDate=${params?.fromDate}&toDate=${params?.toDate}`,
           params
         );
         return response.data;
@@ -77,6 +79,28 @@ export const earningsSlice = createAppSlice({
           state.pagination = PAGINATION;
         }
       }
+    ),
+    getEarningsFilter: create.asyncThunk(
+      async (query?: Record<string, any>) => {
+        const response = await defaultApiFetcher.get(
+          'stock-scores/get-earning-calender-filter',
+          { query }
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loading = true;
+        },
+        fulfilled: (state, action) => {
+          state.loading = false;
+          state.earningsFilter = transformEarnings(action.payload);
+        },
+        rejected: (state) => {
+          state.loading = false;
+          state.earningsFilter = [];
+        }
+      }
     )
   }),
 
@@ -85,6 +109,7 @@ export const earningsSlice = createAppSlice({
     watchEarningSummaryLoading: (earning) => earning.loadingEarningsSummary,
     watchEarningsSummary: (earning) => earning.earningsSummary,
     watchEarnings: (earning) => earning.earnings,
+    watchEarningsFilter: (earning) => earning.earningsFilter,
     watchEarningPagination: (earning) => earning.pagination
   }
 });
@@ -94,7 +119,9 @@ export const {
   watchEarningSummaryLoading,
   watchEarningsSummary,
   watchEarnings,
-  watchEarningPagination
+  watchEarningPagination,
+  watchEarningsFilter
 } = earningsSlice.selectors;
 
-export const { getCountEarningsCalendar, getEarnings } = earningsSlice.actions;
+export const { getCountEarningsCalendar, getEarnings, getEarningsFilter } =
+  earningsSlice.actions;

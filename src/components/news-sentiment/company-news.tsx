@@ -139,7 +139,6 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       dataSource={companyNews}
       showHeader={companyNews?.length > 0}
       scroll={companyNews.length > 0 ? { x: 600, y: undefined } : undefined}
-      sortDirections={['descend', 'ascend']}
       locale={{
         emptyText: (
           <div css={emptyStyles}>
@@ -169,7 +168,7 @@ const tableStyles = css`
   .ant-table-thead {
     .ant-table-cell {
       background: var(--blue-100);
-      &:first-child {
+      &:first-of-type {
         border-start-start-radius: 0 !important;
       }
       &:last-child {
