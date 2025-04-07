@@ -10,3 +10,9 @@ export enum Sentiment {
   Positive = 'positive',
   VeryPositive = 'very_positive'
 }
+
+export enum Impact {
+  Critical = 'critical',
+  High = 'high',
+  Moderate = 'moderate'
+}

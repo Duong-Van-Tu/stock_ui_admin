@@ -8,7 +8,7 @@ import {
   watchCompanyNewsLoading,
   watchCompanyNewsPagination
 } from '@/redux/slices/sentiment.slice';
-import { Table, TableColumnsType } from 'antd';
+import { Table, TableColumnsType, Tag } from 'antd';
 import { EmptyDataTable } from '../tables/empty.table';
 import { useCallback, useEffect } from 'react';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
@@ -16,7 +16,7 @@ import { DateTimeCell } from '../tables/columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { roundToDecimals } from '@/utils/common';
 import { useTranslations } from 'next-intl';
-import { Sentiment } from '@/constants/common.constant';
+import { Impact, Sentiment } from '@/constants/common.constant';
 
 type CompanyNewsProps = {
   symbol: string;
@@ -76,7 +76,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       title: t('sentimentScore1w'),
       dataIndex: 'sentimentScore1w',
       key: 'sentimentScore1w',
-      width: 150,
+      width: 140,
       align: 'center',
       render: (value) =>
         value ? (
@@ -92,7 +92,20 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       dataIndex: 'impact',
       key: 'impact',
       width: 120,
-      align: 'center'
+      align: 'center',
+      render: (value) => (
+        <Tag
+          color={
+            value === Impact.Critical
+              ? 'red'
+              : value === Impact.High
+              ? 'gold'
+              : 'cyan'
+          }
+        >
+          {value}
+        </Tag>
+      )
     },
     {
       title: t('source'),
@@ -165,6 +178,9 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
 };
 
 const tableStyles = css`
+  .ant-table-cell {
+    padding: 0.8rem 1rem !important;
+  }
   .ant-table-thead {
     .ant-table-cell {
       background: var(--blue-100);

@@ -360,7 +360,7 @@ export const AlertLogsTable = () => {
       render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
-      title: 'Market cap',
+      title: t('marketCap'),
       dataIndex: 'marketCap',
       key: 'marketCap',
       width: 120,

@@ -116,5 +116,17 @@
   "source": "Nguồn",
   "viewDetails": "Xem chi tiết",
   "sentiment": "Sentiment",
-  "timestamp": "Thời gian"
+  "timestamp": "Thời gian",
+  "AISentiment": "AI Sentiment",
+  "AISentimentDescription": "Trang AI Sentiment",
+  "marketCap": "Vốn hoá",
+  "industry": "Industry",
+  "subIndustry": "SubIndustry",
+  "sector": "Sector",
+  "publishingTime": "Thời gian công bố",
+  "group": "Nhóm",
+  "headline": "Tiêu đề",
+  "avgVolume": "Khối lượng",
+  "52WeekLow": "Giá thấp nhất trong 52 tuần",
+  "52WeekHigh": "Giá thấp nhất trong 52 tuần"
 }

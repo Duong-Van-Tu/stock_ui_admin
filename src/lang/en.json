@@ -116,5 +116,17 @@
   "source": "Source",
   "viewDetails": "View details",
   "sentiment": "Sentiment",
-  "timestamp": "Timestamp"
+  "timestamp": "Timestamp",
+  "AISentiment": "AI Sentiment",
+  "AISentimentDescription": "AI Sentiment page",
+  "marketCap": "Market Cap",
+  "industry": "Industry",
+  "subIndustry": "SubIndustry",
+  "sector": "Sector",
+  "publishingTime": "Publishing Time",
+  "group": "Group",
+  "headline": "Headline",
+  "avgVolume": "Avg volume",
+  "52WeekLow": "52 Week Low",
+  "52WeekHigh": "52 Week High"
 }

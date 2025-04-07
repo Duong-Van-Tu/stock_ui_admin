@@ -64,11 +64,11 @@ export const getMenuStructure = (
     key: 'earnings',
     iconType: 'earnings',
     link: PageURLs.ofEarings()
+  },
+  {
+    label: t('AISentiment'),
+    key: 'AI-sentiment',
+    iconType: 'AISentiment',
+    link: PageURLs.ofAISentiment()
   }
-  // {
-  //   label: t('news'),
-  //   key: 'news',
-  //   iconType: 'news',
-  //   link: PageURLs.ofNews()
-  // }
 ];

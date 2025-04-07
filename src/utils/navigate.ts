@@ -30,4 +30,8 @@ export namespace PageURLs {
   export function ofNews() {
     return withPrefix('/news');
   }
+
+  export function ofAISentiment() {
+    return withPrefix('/AI-sentiment');
+  }
 }

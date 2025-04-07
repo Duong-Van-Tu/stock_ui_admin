@@ -1,6 +1,7 @@
 import {
   transformCompanyNews,
-  transformCountSentiment
+  transformCountSentiment,
+  transformListWatcher
 } from '@/helpers/sentiment.helper';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
@@ -9,14 +10,18 @@ import { PAGINATION } from '@/constants/pagination.constant';
 export type SentimentState = {
   loading: boolean;
   loadingCountSentiment: boolean;
+  loadingListWatcher: boolean;
   countSentiment: CountSentiment;
   companyNews: CompanyNews[];
+  listWatcher: ListWatcher[];
   pagination: Pagination;
+  listWatcherPagination: Pagination;
 };
 
 const initialState: SentimentState = {
   loading: false,
   loadingCountSentiment: false,
+  loadingListWatcher: false,
   countSentiment: {
     countPositive: 0,
     countVeryPositive: 0,
@@ -24,7 +29,9 @@ const initialState: SentimentState = {
     countVeryNegative: 0
   },
   companyNews: [],
-  pagination: PAGINATION
+  listWatcher: [],
+  pagination: PAGINATION,
+  listWatcherPagination: PAGINATION
 };
 
 export const SentimentSlice = createAppSlice({
@@ -82,6 +89,36 @@ export const SentimentSlice = createAppSlice({
           state.pagination = PAGINATION;
         }
       }
+    ),
+    getListWatcher: create.asyncThunk(
+      async (query?: Record<string, any>) => {
+        const response = await defaultApiFetcher.get(
+          'stock-scores/list-watcher',
+          {
+            query
+          }
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loadingListWatcher = true;
+        },
+        fulfilled: (state, action) => {
+          state.loadingListWatcher = false;
+          state.listWatcher = transformListWatcher(action.payload.result);
+          state.listWatcherPagination = {
+            currentPage: action.payload.offset,
+            pageSize: action.payload.limit,
+            total: Number(action.payload.total)
+          };
+        },
+        rejected: (state) => {
+          state.loadingListWatcher = false;
+          state.listWatcher = [];
+          state.listWatcherPagination = PAGINATION;
+        }
+      }
     )
   }),
 
@@ -90,7 +127,10 @@ export const SentimentSlice = createAppSlice({
     watchCountSentimentLoading: (sentiment) => sentiment.loadingCountSentiment,
     watchCountSentiment: (sentiment) => sentiment.countSentiment,
     watchCompanyNews: (sentiment) => sentiment.companyNews,
-    watchCompanyNewsPagination: (sentiment) => sentiment.pagination
+    watchCompanyNewsPagination: (sentiment) => sentiment.pagination,
+    watchListWatcherLoading: (sentiment) => sentiment.loadingListWatcher,
+    watchListWatcher: (sentiment) => sentiment.listWatcher,
+    watchListWatcherPagination: (sentiment) => sentiment.listWatcherPagination
   }
 });
 
@@ -99,7 +139,11 @@ export const {
   watchCountSentimentLoading,
   watchCountSentiment,
   watchCompanyNews,
-  watchCompanyNewsPagination
+  watchCompanyNewsPagination,
+  watchListWatcher,
+  watchListWatcherPagination,
+  watchListWatcherLoading
 } = SentimentSlice.selectors;
 
-export const { getCountSentiment, getCompanyNews } = SentimentSlice.actions;
+export const { getCountSentiment, getCompanyNews, getListWatcher } =
+  SentimentSlice.actions;

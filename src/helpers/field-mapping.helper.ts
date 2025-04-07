@@ -37,5 +37,13 @@ export const fieldMapping: Record<string, string> = {
   countVeryPositive: 'count_very_positive',
   countNegative: 'count_negative',
   countPositive: 'count_positive',
-  sentimentScore1w: 'sentiment_score_1w'
+  sentimentScore1w: 'sentiment_score_1w',
+  groupStock: 'groupstock',
+  publishingTime: 'publishing_time',
+  avgVolume: 'avg_volume',
+  weekLow52: 'week_low52',
+  weekHigh52: 'week_high52',
+  marketCapListWatcher: 'market_cap',
+  subIndustry: 'subindustry',
+  dateTime: 'datetime'
 };
