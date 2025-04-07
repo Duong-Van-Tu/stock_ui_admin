@@ -16,6 +16,7 @@ import { DateTimeCell } from '../tables/columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { roundToDecimals } from '@/utils/common';
 import { useTranslations } from 'next-intl';
+import { Sentiment } from '@/constants/common.constant';
 
 type CompanyNewsProps = {
   symbol: string;
@@ -98,15 +99,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       dataIndex: 'source',
       key: 'source',
       width: 120,
-      align: 'center',
-      render: (value, record) => (
-        <div>
-          {value} <br />
-          <a href={record.url} target='_blank'>
-            {t('viewDetails')}
-          </a>
-        </div>
-      )
+      align: 'center'
     },
     {
       title: t('sentiment'),
@@ -115,17 +108,24 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       width: 140,
       align: 'center',
       fixed: 'right',
-      render: (value) =>
-        value ? (
+      render: (value, record) => (
+        <>
           <PositiveNegativeText
-            isPositive={value === 'positive' || value === 'very_positive'}
-            isNegative={value === 'negative' || value === 'very_negative'}
+            isPositive={
+              value === Sentiment.Positive || value === Sentiment.VeryNegative
+            }
+            isNegative={
+              value === Sentiment.Negative || value === Sentiment.VeryNegative
+            }
           >
             <span>{value}</span>
           </PositiveNegativeText>
-        ) : (
-          '-'
-        )
+          <br />
+          <a href={record.url} target='_blank'>
+            ({t('viewDetails')})
+          </a>
+        </>
+      )
     }
   ];
 
@@ -169,6 +169,12 @@ const tableStyles = css`
   .ant-table-thead {
     .ant-table-cell {
       background: var(--blue-100);
+      &:first-child {
+        border-start-start-radius: 0 !important;
+      }
+      &:last-child {
+        border-start-end-radius: 0 !important;
+      }
     }
   }
 `;

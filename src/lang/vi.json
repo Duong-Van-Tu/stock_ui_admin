@@ -111,10 +111,10 @@
   "2Weeks": "2 tuần",
   "countSentiment": "Thống kê tin tức",
   "companyNews": "Tin tức doanh nghiệp",
-  "sentimentScore1w": "Điểm cảm xúc (1 Tuần)",
+  "sentimentScore1w": "Điểm Sentiment (1 Tuần)",
   "impact": "Tác động",
   "source": "Nguồn",
   "viewDetails": "Xem chi tiết",
-  "sentiment": "Cảm xúc",
+  "sentiment": "Sentiment",
   "timestamp": "Thời gian"
 }
