@@ -26,10 +26,16 @@ import { watchSearchSymbol } from '@/redux/slices/search';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
-import { Impact, Sentiment } from '@/constants/common.constant';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import EllipsisText from '../ellipsis-text';
 import { TableTitle } from './title.table';
+import {
+  getImpactColor,
+  isNegativeSentiment,
+  isPositiveSentiment
+} from '@/helpers/sentiment.helper';
+import { ListWatcherFilter } from '../filters/AI-sentiment.filter';
+import { useSearchParams } from 'next/navigation';
 
 export const ListWatcherTable = () => {
   const t = useTranslations();
@@ -39,10 +45,11 @@ export const ListWatcherTable = () => {
   const loading = useAppSelector(watchListWatcherLoading);
   const listWatcher = useAppSelector(watchListWatcher);
   const pagination = useAppSelector(watchListWatcherPagination);
+  const searchParams = useSearchParams();
 
   const [sortField, setSortField] = useState<string>('totalScore');
   const [sortType, setSortType] = useState<SortOrder>('descend');
-  const [filter, setFilter] = useState<StockScoreFilter>({});
+  const [filter, setFilter] = useState<SentimentFilter>({});
 
   const handleSortOrder = (field: string) => {
     let newSortType: SortOrder;
@@ -76,6 +83,15 @@ export const ListWatcherTable = () => {
     });
   };
 
+  const handleFilter = (values: SentimentFilter) => {
+    const newFilter = {
+      ...filter,
+      ...values
+    };
+    setFilter(newFilter);
+    fetchListWatcher({ filter: newFilter });
+  };
+
   const fetchListWatcher = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
@@ -96,6 +112,18 @@ export const ListWatcherTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    const initialValues = {
+      hours: params.get('hours') ? Number(params.get('hours')) : 168, // 168 hours = 7days
+      group: params.get('group') || undefined,
+      sentiment: params.get('sentiment') || undefined,
+      impact: params.get('impact') || undefined
+    };
+    setFilter((prev) => ({ ...prev, symbol, ...initialValues }));
+    fetchListWatcher({ filter: { symbol, ...initialValues } });
+  }, [symbol, searchParams, fetchListWatcher]);
 
   const columns: TableColumnsType<ListWatcher> = [
     {
@@ -189,12 +217,8 @@ export const ListWatcherTable = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText
-          isPositive={
-            value === Sentiment.Positive || value === Sentiment.VeryPositive
-          }
-          isNegative={
-            value === Sentiment.Negative || value === Sentiment.VeryNegative
-          }
+          isPositive={isPositiveSentiment(value)}
+          isNegative={isNegativeSentiment(value)}
         >
           <span>{value}</span>
         </PositiveNegativeText>
@@ -213,19 +237,7 @@ export const ListWatcherTable = () => {
         onClick: () => handleSortOrder('impact')
       }),
       align: 'center',
-      render: (value) => (
-        <Tag
-          color={
-            value === Impact.Critical
-              ? 'red'
-              : value === Impact.High
-              ? 'gold'
-              : 'cyan'
-          }
-        >
-          {value}
-        </Tag>
-      )
+      render: (value) => <Tag color={getImpactColor(value)}>{value}</Tag>
     },
     {
       title: t('beta'),
@@ -467,56 +479,61 @@ export const ListWatcherTable = () => {
     }
   ];
 
-  useEffect(() => {
-    setFilter((prev) => ({ ...prev, symbol }));
-    fetchListWatcher({ filter: { symbol } });
-  }, [symbol, fetchListWatcher]);
   return (
-    <div css={tableWrapperStyles}>
-      <TableTitle customStyles={titleStyles}>{t('AISentiment')}</TableTitle>
-      <Table<ListWatcher>
-        css={tableStyles}
-        rowKey={(record) => record.key}
-        columns={columns}
-        dataSource={listWatcher}
-        loading={loading}
-        scroll={{
-          x: 1200,
-          y: listWatcher.length > 0 ? height - 260 : undefined
-        }}
-        sortDirections={['descend', 'ascend']}
-        locale={{
-          emptyText: (
-            <div css={emptyStyles(height - 400)}>
-              <EmptyDataTable />
-            </div>
-          )
-        }}
-        pagination={{
-          position: ['bottomCenter'],
-          pageSizeOptions: [
-            '10',
-            '20',
-            '50',
-            '100',
-            '200',
-            '300',
-            '400',
-            '500'
-          ],
-          showSizeChanger: true,
-          showQuickJumper: true,
-          current: pagination.currentPage,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          onChange: (page, pageSize) => {
-            fetchListWatcher({ page, pageSize, filter });
-          }
-        }}
-      />
+    <div css={rootStyles}>
+      <ListWatcherFilter onFilter={handleFilter} />
+      <div css={tableWrapperStyles}>
+        <TableTitle customStyles={titleStyles}>{t('AISentiment')}</TableTitle>
+        <Table<ListWatcher>
+          css={tableStyles}
+          rowKey={(record) => record.key}
+          columns={columns}
+          dataSource={listWatcher}
+          loading={loading}
+          scroll={{
+            x: 1200,
+            y: listWatcher.length > 0 ? height - 334 : undefined
+          }}
+          sortDirections={['descend', 'ascend']}
+          locale={{
+            emptyText: (
+              <div css={emptyStyles(height - 400)}>
+                <EmptyDataTable />
+              </div>
+            )
+          }}
+          pagination={{
+            position: ['bottomCenter'],
+            pageSizeOptions: [
+              '10',
+              '20',
+              '50',
+              '100',
+              '200',
+              '300',
+              '400',
+              '500'
+            ],
+            showSizeChanger: true,
+            showQuickJumper: true,
+            current: pagination.currentPage,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+            onChange: (page, pageSize) => {
+              fetchListWatcher({ page, pageSize, filter });
+            }
+          }}
+        />
+      </div>
     </div>
   );
 };
+
+const rootStyles = css`
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+`;
 
 const tableStyles = css`
   .ant-table-cell {

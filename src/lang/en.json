@@ -134,5 +134,7 @@
   "neutral": "Neutral",
   "positive": "Positive",
   "veryPositive": "Very Positive",
-  "unknown": "Unknown"
+  "unknown": "Unknown",
+  "high": "High",
+  "critical": "Critical"
 }

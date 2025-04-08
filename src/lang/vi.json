@@ -134,5 +134,7 @@
   "neutral": "Trung lập",
   "positive": "Tích cực",
   "veryPositive": "Rất tích cực",
-  "unknown": "Không xác định"
+  "unknown": "Không xác định",
+  "high": "Cao",
+  "critical": "Nghiêm trọng"
 }
