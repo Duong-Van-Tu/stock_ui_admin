@@ -1,5 +1,5 @@
 type SentimentFilter = Filter & {
-  hours?: number;
+  lastHours?: number;
   group?: string;
   sentiment?: string;
   impact?: string;

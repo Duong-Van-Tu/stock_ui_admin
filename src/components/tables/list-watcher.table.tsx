@@ -116,7 +116,9 @@ export const ListWatcherTable = () => {
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
     const initialValues = {
-      hours: params.get('hours') ? Number(params.get('hours')) : 168, // 168 hours = 7days
+      lastHours: params.get('lastHours')
+        ? Number(params.get('lastHours'))
+        : 168, // 168 hours = 7days
       group: params.get('group') || undefined,
       sentiment: params.get('sentiment') || undefined,
       impact: params.get('impact') || undefined
@@ -587,6 +589,7 @@ const groupDescStyles = css`
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
+  flex-wrap: wrap;
 `;
 
 const groupItemStyles = css`

@@ -70,7 +70,7 @@ export const ListWatcherFilter = ({
   const handleSearch = () => {
     const values = form.getFieldsValue();
     onFilter({
-      hours: values.hours,
+      lastHours: values.lastHours,
       group: values.group,
       sentiment: values.sentiment,
       impact: values.impact
@@ -87,7 +87,9 @@ export const ListWatcherFilter = ({
     const params = new URLSearchParams(searchParams.toString());
 
     const initialValues = {
-      hours: params.get('hours') ? Number(params.get('hours')) : 168, // 168 hours = 7days
+      lastHours: params.get('lastHours')
+        ? Number(params.get('lastHours'))
+        : 168, // 168 hours = 7days
       group: params.get('group') || undefined,
       sentiment: params.get('sentiment') || undefined,
       impact: params.get('impact') || undefined
@@ -107,7 +109,7 @@ export const ListWatcherFilter = ({
       >
         <Row gutter={[16, 12]} align='bottom' justify='end'>
           <Col>
-            <Form.Item css={formItemStyles} name='hours' initialValue={168}>
+            <Form.Item css={formItemStyles} name='lastHours' initialValue={168}>
               <InputNumber css={inputStyles} addonAfter='Hours' />
             </Form.Item>
           </Col>
