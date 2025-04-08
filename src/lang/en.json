@@ -136,5 +136,8 @@
   "veryPositive": "Very Positive",
   "unknown": "Unknown",
   "high": "High",
-  "critical": "Critical"
+  "critical": "Critical",
+  "group1": "ATR% ≥ 3%, Volume ≥ 3M, Beta ≥ 1.5",
+  "group2": "ATR% 1-3%, Beta 1-1.5, filtered from Group 1 when ATR% reaches 10% and Beta reaches 4-5",
+  "group3": "Combination of ATR% 3% and ATR% 5%"
 }

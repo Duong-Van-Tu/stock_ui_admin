@@ -157,7 +157,13 @@ export const ListWatcherTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('groupStock')
       }),
-      align: 'center'
+      align: 'center',
+      render: (value) =>
+        value === 'group_1'
+          ? `${t('group')} 1`
+          : value === 'group_2'
+          ? `${t('group')} 2`
+          : `${t('group')} 3`
     },
     {
       title: t('publishingTime'),
@@ -482,6 +488,26 @@ export const ListWatcherTable = () => {
   return (
     <div css={rootStyles}>
       <ListWatcherFilter onFilter={handleFilter} />
+      <div css={groupDescStyles}>
+        <div css={groupItemStyles}>
+          <strong>{t('group')} 1:</strong>
+          <Tag color={filter.group === 'group_1' ? 'blue' : ''}>
+            {t('group1')}
+          </Tag>
+        </div>
+        <div css={groupItemStyles}>
+          <strong>{t('group')} 2:</strong>
+          <Tag color={filter.group === 'group_2' ? 'blue' : ''}>
+            {t('group2')}
+          </Tag>
+        </div>
+        <div css={groupItemStyles}>
+          <strong>{t('group')} 3:</strong>
+          <Tag color={filter.group === 'group_3' ? 'blue' : ''}>
+            {t('group3')}
+          </Tag>
+        </div>
+      </div>
       <div css={tableWrapperStyles}>
         <TableTitle customStyles={titleStyles}>{t('AISentiment')}</TableTitle>
         <Table<ListWatcher>
@@ -492,7 +518,7 @@ export const ListWatcherTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: listWatcher.length > 0 ? height - 334 : undefined
+            y: listWatcher.length > 0 ? height - 370 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -555,4 +581,17 @@ const emptyStyles = (height: number) => css`
 
 const titleStyles = css`
   padding: 1.2rem 1.6rem;
+`;
+
+const groupDescStyles = css`
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+`;
+
+const groupItemStyles = css`
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  flex-wrap: wrap;
 `;
