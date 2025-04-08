@@ -1,5 +1,10 @@
-type SentimentFilter = {
-  date: string;
+type SentimentFilter = Filter & {
+  hours?: number;
+  group?: string;
+  sentiment?: string;
+  impact?: string;
+  fromDate?: string;
+  toDate?: string;
 };
 
 type CountSentiment = {
@@ -13,7 +18,7 @@ type Sentiment = 'positive' | 'negative' | 'very_positive' | 'very_negative';
 
 type SentimentParams = {
   symbol: string;
-  query?: Record<string, any>;
+  query?: SentimentFilter;
 };
 
 type CompanyNews = {

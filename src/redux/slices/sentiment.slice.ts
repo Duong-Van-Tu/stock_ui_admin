@@ -91,7 +91,7 @@ export const SentimentSlice = createAppSlice({
       }
     ),
     getListWatcher: create.asyncThunk(
-      async (query?: Record<string, any>) => {
+      async (query?: SentimentFilter) => {
         const response = await defaultApiFetcher.get(
           'stock-scores/list-watcher',
           {

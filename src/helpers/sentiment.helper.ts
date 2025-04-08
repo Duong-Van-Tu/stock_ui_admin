@@ -1,3 +1,4 @@
+import { Impact, Sentiment } from '@/constants/common.constant';
 import { v4 as uuid } from 'uuid';
 
 export const transformCountSentiment = (sentiment: any): CountSentiment => {
@@ -59,4 +60,40 @@ export const transformListWatcher = (listWatcher: any[]): ListWatcher[] => {
     earningDate: item.earning_date,
     totalScore: item.totalscore
   }));
+};
+
+export const getSentimentText = (
+  sentiment: Sentiment,
+  t: (key: string) => string
+): string => {
+  const sentimentMap: Record<Sentiment, string> = {
+    [Sentiment.VeryNegative]: t('veryNegative'),
+    [Sentiment.Negative]: t('negative'),
+    [Sentiment.Neutral]: t('neutral'),
+    [Sentiment.Positive]: t('positive'),
+    [Sentiment.VeryPositive]: t('veryPositive')
+  };
+
+  return sentimentMap[sentiment] || t('unknown');
+};
+
+export const isPositiveSentiment = (value: Sentiment): boolean => {
+  return value === Sentiment.Positive || value === Sentiment.VeryPositive;
+};
+
+export const isNegativeSentiment = (value: Sentiment): boolean => {
+  return value === Sentiment.Negative || value === Sentiment.VeryNegative;
+};
+
+export const getImpactColor = (impact: Impact): string => {
+  switch (impact) {
+    case Impact.Critical:
+      return 'red';
+    case Impact.High:
+      return 'gold';
+    case Impact.Low:
+      return 'green';
+    default:
+      return 'cyan';
+  }
 };

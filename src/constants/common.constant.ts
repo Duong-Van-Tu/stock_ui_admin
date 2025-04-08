@@ -14,5 +14,6 @@ export enum Sentiment {
 export enum Impact {
   Critical = 'critical',
   High = 'high',
-  Moderate = 'moderate'
+  Moderate = 'moderate',
+  Low = 'low'
 }

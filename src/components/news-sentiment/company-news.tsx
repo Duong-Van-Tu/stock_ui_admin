@@ -16,7 +16,12 @@ import { DateTimeCell } from '../tables/columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { roundToDecimals } from '@/utils/common';
 import { useTranslations } from 'next-intl';
-import { Impact, Sentiment } from '@/constants/common.constant';
+import {
+  getImpactColor,
+  getSentimentText,
+  isNegativeSentiment,
+  isPositiveSentiment
+} from '@/helpers/sentiment.helper';
 
 type CompanyNewsProps = {
   symbol: string;
@@ -93,19 +98,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       key: 'impact',
       width: 120,
       align: 'center',
-      render: (value) => (
-        <Tag
-          color={
-            value === Impact.Critical
-              ? 'red'
-              : value === Impact.High
-              ? 'gold'
-              : 'cyan'
-          }
-        >
-          {value}
-        </Tag>
-      )
+      render: (value) => <Tag color={getImpactColor(value)}>{value}</Tag>
     },
     {
       title: t('source'),
@@ -124,14 +117,10 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       render: (value, record) => (
         <>
           <PositiveNegativeText
-            isPositive={
-              value === Sentiment.Positive || value === Sentiment.VeryPositive
-            }
-            isNegative={
-              value === Sentiment.Negative || value === Sentiment.VeryNegative
-            }
+            isPositive={isPositiveSentiment(value)}
+            isNegative={isNegativeSentiment(value)}
           >
-            <span>{value}</span>
+            <span>{getSentimentText(value, t)}</span>
           </PositiveNegativeText>
           <br />
           <a href={record.url} target='_blank'>

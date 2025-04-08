@@ -4,4 +4,6 @@ type Filter = {
   symbol?: string;
   sortField?: string;
   sortType?: string;
+  page?: number;
+  limit?: number;
 };

@@ -128,5 +128,11 @@
   "headline": "Tiêu đề",
   "avgVolume": "Khối lượng",
   "52WeekLow": "Giá thấp nhất trong 52 tuần",
-  "52WeekHigh": "Giá thấp nhất trong 52 tuần"
+  "52WeekHigh": "Giá thấp nhất trong 52 tuần",
+  "veryNegative": "Rất tiêu cực",
+  "negative": "Tiêu cực",
+  "neutral": "Trung lập",
+  "positive": "Tích cực",
+  "veryPositive": "Rất tích cực",
+  "unknown": "Không xác định"
 }

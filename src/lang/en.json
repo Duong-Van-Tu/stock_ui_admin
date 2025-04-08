@@ -128,5 +128,11 @@
   "headline": "Headline",
   "avgVolume": "Avg volume",
   "52WeekLow": "52 Week Low",
-  "52WeekHigh": "52 Week High"
+  "52WeekHigh": "52 Week High",
+  "veryNegative": "Very Negative",
+  "negative": "Negative",
+  "neutral": "Neutral",
+  "positive": "Positive",
+  "veryPositive": "Very Positive",
+  "unknown": "Unknown"
 }
