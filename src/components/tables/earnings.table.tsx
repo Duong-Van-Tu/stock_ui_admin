@@ -37,7 +37,9 @@ export const EarningsTable = () => {
   const earnings = useAppSelector(watchEarnings);
   const symbol = useAppSelector(watchSearchSymbol);
   const loading = useAppSelector(watchEarningsLoading);
-  const [filter, setFilter] = useState<EarningFilter>({ date: '' });
+  const [filter, setFilter] = useState<EarningFilter>({
+    date: dayjs().format('YYYY-MM-DD')
+  });
   const [sortField, setSortField] = useState<string>('epsEstimate');
   const [sortType, setSortType] = useState<SortOrder>('descend');
 

@@ -55,7 +55,7 @@ export const earningsSlice = createAppSlice({
     getEarnings: create.asyncThunk(
       async (params?: Record<string, any>) => {
         const response = await defaultApiFetcher.post(
-          `stock-scores/get-earning-calender-nextdate?symbol=${params?.symbol}&fromDate=${params?.fromDate}&toDate=${params?.toDate}`,
+          `stock-scores/get-earning-calender-nextdate`,
           params
         );
         return response.data;

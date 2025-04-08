@@ -1,4 +1,4 @@
-type EarningFilter = {
+type EarningFilter = Filter & {
   date: string;
 };
 
