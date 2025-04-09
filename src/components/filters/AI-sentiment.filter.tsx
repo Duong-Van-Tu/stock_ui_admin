@@ -96,7 +96,7 @@ export const ListWatcherFilter = ({
     };
 
     form.setFieldsValue(initialValues);
-  }, [searchParams]);
+  }, [searchParams, form]);
 
   return (
     <div css={[rootStyles, customStyles]}>

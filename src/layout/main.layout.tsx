@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { CSSProperties, ReactNode, useState } from 'react';
+import { CSSProperties, ReactNode, useEffect, useState } from 'react';
 import { Button, Layout, theme } from 'antd';
 import { Icon } from '@/components/icons';
 import { Menu } from '@/components/menu';
@@ -11,6 +11,7 @@ import {
   setSideBarCollapsed,
   watchSideBarCollapsed
 } from '@/redux/slices/app.slice';
+import { useWindowSize } from '@/hooks/useWindowSize';
 
 const { Content, Sider } = Layout;
 
@@ -20,6 +21,7 @@ type MainLayoutProps = {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   const dispatch = useAppDispatch();
+  const { width } = useWindowSize();
   const sideBarCollapsed = useAppSelector(watchSideBarCollapsed);
   const [collapsed, setCollapsed] = useState(sideBarCollapsed);
 
@@ -31,6 +33,13 @@ export default function MainLayout({ children }: MainLayoutProps) {
   const {
     token: { colorBgContainer }
   } = theme.useToken();
+
+  useEffect(() => {
+    if (width <= 1450) {
+      dispatch(setSideBarCollapsed(true));
+      setCollapsed(true);
+    }
+  }, [dispatch, width]);
 
   return (
     <Layout hasSider>

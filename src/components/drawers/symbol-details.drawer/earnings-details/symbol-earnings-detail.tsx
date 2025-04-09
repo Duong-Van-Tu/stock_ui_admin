@@ -41,7 +41,7 @@ export const SymbolEarningsDetail = ({
         toDate
       })
     );
-  }, [dispatch, fromDate, toDate]);
+  }, [dispatch, fromDate, toDate, symbol]);
 
   useEffect(() => {
     fetchEarnings();
