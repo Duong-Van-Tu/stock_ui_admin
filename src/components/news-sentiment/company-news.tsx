@@ -22,6 +22,7 @@ import {
   isNegativeSentiment,
   isPositiveSentiment
 } from '@/helpers/sentiment.helper';
+import EllipsisText from '../ellipsis-text';
 
 type CompanyNewsProps = {
   symbol: string;
@@ -99,6 +100,13 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       width: 120,
       align: 'center',
       render: (value) => <Tag color={getImpactColor(value)}>{value}</Tag>
+    },
+    {
+      title: t('headline'),
+      dataIndex: 'headline',
+      key: 'headline',
+      width: 160,
+      render: (value) => <EllipsisText text={value} maxLines={1} />
     },
     {
       title: t('source'),
