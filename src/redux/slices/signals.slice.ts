@@ -19,8 +19,8 @@ export type SignalsState = {
 };
 
 const initialState: SignalsState = {
-  loading: true,
-  alertLogsLoading: true,
+  loading: false,
+  alertLogsLoading: false,
   signalStrategyLoading: {},
   strategies: [],
   alertLogsData: [],

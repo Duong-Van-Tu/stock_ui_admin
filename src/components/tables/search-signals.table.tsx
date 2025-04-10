@@ -32,6 +32,8 @@ import { AlertLogsView } from '@/constants/common.constant';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { EmptyDataTable } from './empty.table';
+import { NotFoundSearchResult } from '../not-found-search-result';
+import { searchSymbol } from '@/redux/slices/search';
 
 type SearchSignalTable = {
   symbol: string;
@@ -129,6 +131,10 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
     },
     [pathname, searchParams, router]
   );
+
+  const handleReload = () => {
+    dispatch(searchSymbol(''));
+  };
 
   useEffect(() => {
     setFilter((prev) => ({
@@ -518,7 +524,12 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
     }
   ];
 
-  return (
+  return alertLogsData.length === 0 ? (
+    <NotFoundSearchResult
+      title={`${t('noSignalsForSymbol')}: "${symbol}"`}
+      onReload={handleReload}
+    />
+  ) : (
     <div css={rootStyles}>
       <div css={tableWrapperStyles}>
         <TableTitle customStyles={titleStyles}>

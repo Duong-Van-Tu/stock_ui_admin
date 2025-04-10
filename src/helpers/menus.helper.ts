@@ -70,5 +70,11 @@ export const getMenuStructure = (
     key: 'AI-sentiment',
     iconType: 'AISentiment',
     link: PageURLs.ofAISentiment()
+  },
+  {
+    label: t('listHighActivity'),
+    key: 'high-activity',
+    iconType: 'listHighActivity',
+    link: PageURLs.ofHighActivity()
   }
 ];

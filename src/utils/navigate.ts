@@ -34,4 +34,8 @@ export namespace PageURLs {
   export function ofAISentiment() {
     return withPrefix('/AI-sentiment');
   }
+
+  export function ofHighActivity() {
+    return withPrefix('/high-activity');
+  }
 }
