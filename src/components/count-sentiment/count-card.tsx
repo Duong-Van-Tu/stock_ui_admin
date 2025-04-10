@@ -22,7 +22,7 @@ export const CountCard = ({
     <Card css={cardStyles}>
       <Title level={5}>{title}</Title>
       <PositiveNegativeText isPositive={isPositive} isNegative={isNegative}>
-        <div css={valueStyles}>{value}</div>
+        <span css={valueStyles}>{value}</span>
       </PositiveNegativeText>
     </Card>
   </Col>
@@ -32,12 +32,14 @@ const cardStyles = css`
   display: flex;
   justify-content: center;
   .ant-card-body {
-    padding: 2rem 1rem;
+    padding: 1rem;
   }
 `;
 
 const valueStyles = css`
-  font-size: 3.4rem;
+  display: block;
+  font-size: 4rem;
+  line-height: 4.2rem;
   text-align: center;
   font-weight: 600;
 `;
