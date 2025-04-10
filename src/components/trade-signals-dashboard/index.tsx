@@ -11,12 +11,15 @@ import { StrategySignal } from './strategy-signal';
 import { Typography } from 'antd';
 import { useTranslations } from 'next-intl';
 import { OptionSignal } from './options-signal';
+import { watchSearchSymbol } from '@/redux/slices/search';
+import { SearchSignalTable } from '../tables/search-signals.table';
 
 export default function TradeSignalsDashboard() {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const strategies = useAppSelector(watchStrategies);
   const loading = useAppSelector(watchStrategyLoading);
+  const symbol = useAppSelector(watchSearchSymbol);
 
   const fetchStrategies = useCallback(() => {
     dispatch(getStrategies());
@@ -26,7 +29,9 @@ export default function TradeSignalsDashboard() {
     fetchStrategies();
   }, [fetchStrategies]);
 
-  return (
+  return symbol ? (
+    <SearchSignalTable symbol={symbol} />
+  ) : (
     <div css={rootStyles}>
       <Typography.Title css={titleStyles} level={2}>
         {t('tradeSignalsDashboard')}

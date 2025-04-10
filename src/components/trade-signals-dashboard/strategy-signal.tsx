@@ -14,7 +14,6 @@ import { PositiveNegativeText } from '../positive-negative-text';
 import { useTranslations } from 'next-intl';
 import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
-import { watchSearchSymbol } from '@/redux/slices/search';
 import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
 import {
@@ -39,7 +38,6 @@ export const StrategySignal = ({
 }: StrategySignalProps) => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const symbol = useAppSelector(watchSearchSymbol);
   const { setWatchList, resFromWS } = useContext(SocketContext);
 
   const strategyData = useAppSelector(watchSignalByStrategyId);
@@ -108,11 +106,10 @@ export const StrategySignal = ({
   );
 
   useEffect(() => {
-    setFilter((prev) => ({ ...prev, symbol }));
     if (strategyId) {
-      fetchSignalByStrategy({ filter: { symbol } });
+      fetchSignalByStrategy();
     }
-  }, [symbol, fetchSignalByStrategy, strategyId]);
+  }, [fetchSignalByStrategy, strategyId]);
 
   useEffect(() => {
     strategyData[`${strategyId}`]?.forEach((row) => {

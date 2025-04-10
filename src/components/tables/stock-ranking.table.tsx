@@ -371,7 +371,7 @@ export const StockRankingTable = () => {
   return (
     <div css={rootStyles}>
       <div css={tableTopStyles}>
-        <TableTitle>{t('stockRankingTitle')}</TableTitle>
+        <TableTitle customStyles={titleStyles}>{t('stockRankingTitle')}</TableTitle>
         <div css={actionStyles}>
           <StockRankingFilter onFilter={handleFilter} />
           <Button
@@ -452,22 +452,30 @@ const tableStyles = css`
   }
 `;
 
+const titleStyles = css`
+  min-width: 30%;
+`
+
 const tableTopStyles = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   padding: 1.2rem 1.4rem;
+  gap: 1.4rem;
 `;
 
 const actionStyles = css`
   display: flex;
   justify-content: flex-end;
   gap: 1.2rem;
+  flex: 1;
 `;
 
 const legendStatusStyles = css`
   border-top: 1px solid var(--border-table-color);
   padding: 1.2rem 1.4rem;
+  justify-content: flex-end;
 `;
 
 const emptyStyles = (height: number) => css`

@@ -20,6 +20,7 @@ import News from '@/assets/svg/news.svg';
 import Recent from '@/assets/svg/recent.svg';
 import ArrowRight from '@/assets/svg/arrow-right.svg';
 import AISentiment from '@/assets/svg/ai-sentiment.svg';
+import Notes from '@/assets/svg/notes.svg';
 
 type IconProps = {
   width?: number | string;
@@ -49,7 +50,8 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   news: News,
   recent: Recent,
   arrowRight: ArrowRight,
-  AISentiment: AISentiment
+  AISentiment: AISentiment,
+  notes: Notes
 };
 
 export const Icon = ({
