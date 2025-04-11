@@ -5,6 +5,8 @@ import { Button, Tooltip } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details.drawer';
+import Link from 'next/link';
+import { PageURLs } from '@/utils/navigate';
 
 enum ContentType {
   NEWS = 'news',
@@ -46,7 +48,9 @@ export const SymbolCell = ({
   return (
     <div css={symbolCellStyles}>
       <div css={symbolStyles}>
-        <span>{symbol}</span>
+        <Link css={stockLinkStyles} href={PageURLs.ofStockDetail(symbol)}>
+          {symbol}
+        </Link>
         {isNews && (
           <Tooltip title={t('news')}>
             <Button
@@ -110,13 +114,17 @@ export const SymbolCell = ({
 const symbolCellStyles = css``;
 
 const symbolStyles = css`
-  span {
-    margin-right: 0.6rem;
-  }
   display: flex;
   align-items: center;
   font-weight: bold;
+`;
+
+const stockLinkStyles = css`
+  margin-right: 0.6rem;
   color: var(--symbol-color);
+  &:hover {
+    color: var(--primary-color);
+  }
 `;
 
 const buttonStyles = css`

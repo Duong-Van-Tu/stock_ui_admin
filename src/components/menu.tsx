@@ -13,7 +13,8 @@ import {
 } from '@/helpers/menus.helper';
 import { Icon } from './icons';
 import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 type MenuProps = {
   collapsed: boolean;
@@ -21,7 +22,6 @@ type MenuProps = {
 export const Menu = ({ collapsed }: MenuProps) => {
   const t = useTranslations();
   const pathname = usePathname();
-  const router = useRouter();
   const [selectedKey, setSelectedKey] = useState<string>(
     getPathnameSegment(pathname, 1)
   );
@@ -43,15 +43,27 @@ export const Menu = ({ collapsed }: MenuProps) => {
     );
   };
 
-  const createMenuItems = (items: typeof menuStructure): MenuItem[] =>
-    items.map((item) =>
-      getItem(
-        item.label,
-        item.key,
-        item.iconType ? getMenuIcon(item.iconType, item.key) : undefined,
-        item.children ? createMenuItems(item.children) : undefined
-      )
-    );
+  const createMenuItems = (items: typeof menuStructure): MenuItem[] => {
+    return items.map((item) => {
+      const labelContent = item.link ? (
+        <Link href={item.link}>{item.label}</Link>
+      ) : (
+        item.label
+      );
+
+      let iconContent: React.ReactNode | undefined;
+      if (item.iconType) {
+        const icon = getMenuIcon(item.iconType, item.key);
+        iconContent = item.link ? <Link href={item.link}>{icon}</Link> : icon;
+      }
+
+      const children = item.children
+        ? createMenuItems(item.children)
+        : undefined;
+
+      return getItem(labelContent, item.key, iconContent, children);
+    });
+  };
 
   const menuItems: MenuItem[] = createMenuItems(menuStructure);
 
@@ -78,7 +90,6 @@ export const Menu = ({ collapsed }: MenuProps) => {
 
   const handleMenuItemClick = (path: string) => {
     setSelectedKey(path);
-    router.push(path);
   };
 
   useEffect(() => {

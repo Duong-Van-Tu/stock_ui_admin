@@ -38,4 +38,8 @@ export namespace PageURLs {
   export function ofHighActivity() {
     return withPrefix('/high-activity');
   }
+
+  export function ofStockDetail(symbol: string) {
+    return withPrefix(`/symbol/${symbol}`);
+  }
 }

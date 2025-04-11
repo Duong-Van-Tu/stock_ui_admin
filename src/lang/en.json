@@ -145,5 +145,6 @@
   "listHighActivity": "List High Activity",
   "listHighActivityDesc": "List High Activity page",
   "noSignalsForSymbol": "No available signals for symbol",
-  "reloadData": "Reload Data"
+  "reloadData": "Reload Data",
+  "stockDetailDesc": "Stock Details Page"
 }
