@@ -524,7 +524,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
     }
   ];
 
-  return alertLogsData.length === 0 ? (
+  return alertLogsData.length === 0 && !loading ? (
     <NotFoundSearchResult
       title={`${t('noSignalsForSymbol')}: "${symbol}"`}
       onReload={handleReload}
