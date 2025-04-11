@@ -9,7 +9,6 @@ import { AuthProvider } from './auth.provider';
 import { antdLocales, Locale } from '@/constants/locale.constant';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import SocketProvider from './socket.provider';
-import { useLocale } from 'next-intl';
 import 'dayjs/locale/en';
 import 'dayjs/locale/vi';
 import dayjs from 'dayjs';
@@ -17,6 +16,8 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import isoWeek from 'dayjs/plugin/isoWeek';
+import { usePathname } from 'next/navigation';
+import { getPathnameSegment } from '@/utils/common';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -29,8 +30,8 @@ const theme = {
 };
 
 export default function Providers({ children }: { children: ReactNode }) {
-  const locale = (useLocale() || 'en') as Locale;
-
+  const pathname = usePathname();
+  const locale = (getPathnameSegment(pathname, 0) || 'en') as Locale;
   const antdLocale = antdLocales[locale] || enUS;
 
   return (

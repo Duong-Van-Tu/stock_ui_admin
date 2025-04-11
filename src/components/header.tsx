@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 
 import { useEffect, useState } from 'react';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { searchSymbol, watchSearchSymbol } from '@/redux/slices/search';
@@ -12,6 +12,7 @@ import { Icon } from './icons';
 import { MenuItemType } from 'antd/es/menu/interface';
 import { logoutUser, watchUser } from '@/redux/slices/auth.slice';
 import { PageURLs } from '@/utils/navigate';
+import { getPathnameSegment } from '@/utils/common';
 
 enum UserMenu {
   PROFILE,
@@ -30,8 +31,8 @@ export default function Header({ collapsed }: HeaderProps) {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const locale = useLocale();
   const pathname = usePathname();
+  const locale = getPathnameSegment(pathname, 0) || 'en';
   const symbol = useAppSelector(watchSearchSymbol);
   const user = useAppSelector(watchUser);
   const searchParams = useSearchParams();
