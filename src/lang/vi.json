@@ -145,5 +145,6 @@
   "listHighActivity": "Danh sách cổ phiếu giao dịch cao",
   "listHighActivityDesc": "Tramh danh sách cổ phiếu giao dịch cao",
   "noSignalsForSymbol": "Không tìm thấy tín hiệu nào với mã",
-  "reloadData": "Tải lại dữ liệu"
+  "reloadData": "Tải lại dữ liệu",
+  "stockDetailDesc": "Trang chi tiết cổ phiếu"
 }
