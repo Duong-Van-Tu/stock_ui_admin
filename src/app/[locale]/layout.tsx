@@ -4,7 +4,7 @@ import '../../assets/css/globals.scss';
 
 import Providers from '@/providers';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
-import { Locale, locales } from '@/constants/locale';
+import { Locale, locales } from '@/constants/locale.constant';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await import('next-intl/server').then((m) => m.getTranslations());

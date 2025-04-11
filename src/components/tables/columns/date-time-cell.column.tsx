@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { TimeZone } from '@/constants/timezone';
+import { TimeZone } from '@/constants/timezone.constant';
 
 type DateTimeCellProps = {
   value: string | number | Date;

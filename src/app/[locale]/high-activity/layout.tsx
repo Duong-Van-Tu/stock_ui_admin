@@ -1,7 +1,7 @@
 import { WithGuard } from '@/guards';
 import { Metadata } from 'next';
-import AlertLogs from './page';
 import { AuthGuard } from '@/guards/auth.guard';
+import HighActivity from './page';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await import('next-intl/server').then((m) => m.getTranslations());
@@ -13,5 +13,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function AlertLogsLayout() {
-  return <WithGuard Page={AlertLogs} Guard={AuthGuard} />;
+  return <WithGuard Page={HighActivity} Guard={AuthGuard} />;
 }

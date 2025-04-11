@@ -37,7 +37,7 @@ import {
 import { ListWatcherFilter } from '../filters/AI-sentiment.filter';
 import { useSearchParams } from 'next/navigation';
 
-export const ListWatcherTable = () => {
+export const ListHighActivity = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const symbol = useAppSelector(watchSearchSymbol);
@@ -147,9 +147,9 @@ export const ListWatcherTable = () => {
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'symbol' ? sortType : null,
+      sortOrder: sortField === 'groupStock' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('symbol')
+        onClick: () => handleSortOrder('groupStock')
       }),
       render: (_, record) => <SymbolCell symbol={record.symbol} />
     },

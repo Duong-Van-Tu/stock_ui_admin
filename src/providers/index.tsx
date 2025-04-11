@@ -6,7 +6,7 @@ import { store } from '@/redux/store';
 import { ConfigProvider } from 'antd';
 import enUS from 'antd/es/locale/en_US';
 import { AuthProvider } from './auth.provider';
-import { antdLocales, Locale } from '@/constants/locale';
+import { antdLocales, Locale } from '@/constants/locale.constant';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import SocketProvider from './socket.provider';
 import { useLocale } from 'next-intl';
