@@ -147,7 +147,7 @@
   "noSignalsForSymbol": "Không tìm thấy tín hiệu nào với mã",
   "reloadData": "Tải lại dữ liệu",
   "stockDetailDesc": "Trang chi tiết cổ phiếu",
-  "otFoundTitle": "Không tìm thấy dữ liệu",
+  "notFoundTitle": "Không tìm thấy dữ liệu",
   "stockNotFoundSubtitle": "Hiện tại chưa có thông tin chi tiết cho mã cổ phiếu này.",
   "stockNotFoundBack": "Quay lại"
 }
