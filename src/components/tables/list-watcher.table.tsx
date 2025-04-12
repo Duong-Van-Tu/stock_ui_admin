@@ -31,6 +31,7 @@ import EllipsisText from '../ellipsis-text';
 import { TableTitle } from './title.table';
 import {
   getImpactColor,
+  getSentimentText,
   isNegativeSentiment,
   isPositiveSentiment
 } from '@/helpers/sentiment.helper';
@@ -235,7 +236,7 @@ export const ListWatcherTable = () => {
           isPositive={isPositiveSentiment(value)}
           isNegative={isNegativeSentiment(value)}
         >
-          <span>{value}</span>
+          <span>{getSentimentText(value, t)}</span>
         </PositiveNegativeText>
       )
     },
