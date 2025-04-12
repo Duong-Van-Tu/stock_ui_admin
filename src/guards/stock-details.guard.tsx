@@ -9,8 +9,6 @@ import {
   watchStockDetailsLoading
 } from '@/redux/slices/stock-details.slice';
 import StockNotFound from '@/components/stock-not-found';
-import Loading from '@/components/loading';
-import MainLayout from '@/layout/main.layout';
 
 type StockDetailGuardProps = {
   children: ReactNode;
