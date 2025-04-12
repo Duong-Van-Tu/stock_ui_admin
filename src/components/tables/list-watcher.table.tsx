@@ -178,7 +178,7 @@ export const ListWatcherTable = () => {
       title: t('publishingTime'),
       dataIndex: 'publishingTime',
       key: 'publishingTime',
-      width: 158,
+      width: 162,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
