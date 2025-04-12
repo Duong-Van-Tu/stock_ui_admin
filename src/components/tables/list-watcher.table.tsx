@@ -47,7 +47,7 @@ export const ListWatcherTable = () => {
   const pagination = useAppSelector(watchListWatcherPagination);
   const searchParams = useSearchParams();
 
-  const [sortField, setSortField] = useState<string>('totalScore');
+  const [sortField, setSortField] = useState<string>('publishingTime');
   const [sortType, setSortType] = useState<SortOrder>('descend');
   const [filter, setFilter] = useState<SentimentFilter>({});
 
