@@ -89,7 +89,7 @@ export const StatisticCard = () => {
           value={
             marketCap ? (
               <>
-                {formatMarketCap(marketCap)}&nbsp; ({marketCapTitle || '--'})
+                {formatMarketCap(marketCap)}&nbsp;({marketCapTitle || '--'})
               </>
             ) : (
               '--'
@@ -113,15 +113,15 @@ export const StatisticCard = () => {
         />
         <StatRow
           label='Performance YTD'
-          value={renderValue(ytd, { suffix: '$' })}
+          value={renderValue(ytd, { suffix: '%' })}
         />
         <StatRow
           label='Performance Month'
-          value={renderValue(lm, { suffix: '$' })}
+          value={renderValue(lm, { suffix: '%' })}
         />
         <StatRow
           label='Performance Week'
-          value={renderValue(lw, { suffix: '$' })}
+          value={renderValue(lw, { suffix: '%' })}
         />
         <StatRow
           label='52 Week Range'
