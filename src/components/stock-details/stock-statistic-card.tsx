@@ -40,7 +40,7 @@ const renderValue = (
 };
 
 const renderDate = (value?: string) =>
-  value ? dayjs(value).format('MM/DD/YYYY HH:mm:ss') : '--';
+  value ? dayjs(value).format('MM/DD/YYYY HH:mm') : '--';
 
 const StatRow = ({
   label,
@@ -174,6 +174,7 @@ const colLeftStyles = css`
 
 const colRightStyles = css`
   text-align: right;
+  font-weight: 500;
 `;
 
 const dividerStyles = css`
