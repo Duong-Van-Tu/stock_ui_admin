@@ -1,12 +1,12 @@
 'use client';
 
-import { UnderDevelopment } from '@/components/under-development';
+import StockDetail from '@/components/stock-details';
 import MainLayout from '@/layout/main.layout';
 
 export default function StockDetailPage() {
   return (
     <MainLayout>
-      <UnderDevelopment />
+      <StockDetail />
     </MainLayout>
   );
 }

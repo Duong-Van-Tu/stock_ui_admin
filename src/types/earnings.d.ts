@@ -18,7 +18,7 @@ type Earning = {
   epsEstimate: number;
   epsSurprise: number;
   epsSurprisePercent: number;
-  isAddWatchListEarnings: boolean;
+  isAddWatchList: boolean;
   marketCap?: number;
   revenueActual: number;
   revenueEstimate: number;

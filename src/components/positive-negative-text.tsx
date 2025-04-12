@@ -5,18 +5,24 @@ import { ReactNode } from 'react';
 type PositiveNegativeTextProps = {
   isPositive?: boolean;
   isNegative?: boolean;
+  size?: string;
   children: ReactNode;
 };
 
 export const PositiveNegativeText = ({
   isPositive,
   isNegative,
+  size = '1.4rem',
   children
 }: PositiveNegativeTextProps) => {
-  return <span css={textStyle(isPositive, isNegative)}>{children}</span>;
+  return <span css={textStyle(isPositive, isNegative, size)}>{children}</span>;
 };
 
-const textStyle = (isPositive?: boolean, isNegative?: boolean) => {
+const textStyle = (
+  isPositive?: boolean,
+  isNegative?: boolean,
+  size?: string
+) => {
   const color = isPositive
     ? 'var(--positive-color)'
     : isNegative
@@ -25,7 +31,7 @@ const textStyle = (isPositive?: boolean, isNegative?: boolean) => {
 
   return css`
     color: ${color};
-    font-size: 1.4rem;
+    font-size: ${size};
     font-weight: 500;
   `;
 };

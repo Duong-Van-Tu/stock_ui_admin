@@ -4,6 +4,7 @@ import { earningsSlice } from './slices/earnings.slice';
 import { searchSlice } from './slices/search';
 import { SentimentSlice } from './slices/sentiment.slice';
 import { signalSlice } from './slices/signals.slice';
+import { stockDetailsSlice } from './slices/stock-details.slice';
 import { stockScoreSlice } from './slices/stock-score.slice';
 
 export const slices = [
@@ -13,5 +14,6 @@ export const slices = [
   stockScoreSlice,
   signalSlice,
   earningsSlice,
-  SentimentSlice
+  SentimentSlice,
+  stockDetailsSlice
 ];

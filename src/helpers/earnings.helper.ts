@@ -21,7 +21,7 @@ export const transformEarnings = (earnings: any[]): Earning[] => {
     epsEstimate: earning.epsEstimate,
     epsSurprise: earning.epssurprise,
     epsSurprisePercent: earning.epssurprisepercent,
-    isAddWatchListEarnings: earning.isAddWL,
+    isAddWatchList: earning.isAddWL,
     marketCap: earning.marketCap ? Number(earning.marketCap) : undefined,
     revenueActual: earning.revenueActual,
     revenueEstimate: earning.revenueEstimate,

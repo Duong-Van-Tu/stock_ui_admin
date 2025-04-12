@@ -1,14 +1,20 @@
 import { ComponentType, ReactNode } from 'react';
 
+type GuardComponent = ComponentType<
+  { children: ReactNode } & Record<string, any>
+>;
+
 type WithGuardProps = {
   Page: ComponentType;
-  Guard: ComponentType<{ children: ReactNode } & Record<string, any>>;
+  Guard: GuardComponent | GuardComponent[];
 };
 
 export function WithGuard({ Page, Guard }: WithGuardProps) {
-  return (
-    <Guard>
-      <Page />
-    </Guard>
-  );
+  const guards = Array.isArray(Guard) ? Guard : [Guard];
+
+  const WrappedPage = guards.reduceRight((children, GuardComponent) => {
+    return <GuardComponent>{children}</GuardComponent>;
+  }, <Page />);
+
+  return WrappedPage;
 }

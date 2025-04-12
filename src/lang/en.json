@@ -146,5 +146,8 @@
   "listHighActivityDesc": "List High Activity page",
   "noSignalsForSymbol": "No available signals for symbol",
   "reloadData": "Reload Data",
-  "stockDetailDesc": "Stock Details Page"
+  "stockDetailDesc": "Stock Details Page",
+  "notFoundTitle": "Data Not Found",
+  "stockNotFoundSubtitle": "There is currently no detailed information for this stock symbol.",
+  "stockNotFoundBack": "Go Back"
 }

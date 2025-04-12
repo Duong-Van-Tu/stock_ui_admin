@@ -28,7 +28,6 @@ export const fieldMapping: Record<string, string> = {
   atrPercent: 'atrpercent',
   epsSurprise: 'epssurprise',
   epsSurprisePercent: 'epssurprisepercent',
-  isAddWatchListEarnings: 'isAddWL',
   revenueSurprise: 'revenuesurprise',
   revenueSurprisePercent: 'revenuesurprisepercent',
   isNewsNegative: 'isnews_negative',
@@ -45,5 +44,11 @@ export const fieldMapping: Record<string, string> = {
   weekHigh52: 'week_high52',
   marketCapListWatcher: 'market_cap',
   subIndustry: 'subindustry',
-  dateTime: 'datetime'
+  dateTime: 'datetime',
+  last2Days: 'last2days',
+  marketCapTitle: 'marketcaptitle',
+  week52High: '_52WeekHigh',
+  week52HighDate: '_52WeekHighDate',
+  week52Low: '_52WeekLow',
+  week52LowDate: '_52WeekLowDate'
 };

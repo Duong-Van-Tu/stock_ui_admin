@@ -1,6 +1,7 @@
 import { WithGuard } from '@/guards';
 import { Metadata } from 'next';
 import { AuthGuard } from '@/guards/auth.guard';
+import { StockDetailGuard } from '@/guards/stock-details.guard';
 import StockDetailPage from './page';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -13,5 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function AlertLogsLayout() {
-  return <WithGuard Page={StockDetailPage} Guard={AuthGuard} />;
+  return (
+    <WithGuard Page={StockDetailPage} Guard={[AuthGuard, StockDetailGuard]} />
+  );
 }
