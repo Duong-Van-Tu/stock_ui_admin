@@ -29,3 +29,19 @@ type StockDetails = {
   week52Low: number;
   week52LowDate: string;
 };
+
+type FundamentalDetails = {
+  year: string;
+  ebit: number;
+  grossIncome: number;
+  netIncome: number;
+  revenue: number;
+};
+
+type FundamentalScore = {
+  detailFundamentalScore: number;
+  ebitScore: number;
+  grossIncomeScore: number;
+  netIncomeScore: number;
+  revenueScore: number;
+};

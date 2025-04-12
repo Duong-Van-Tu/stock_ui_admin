@@ -155,5 +155,14 @@
   "performanceYTD": "Hiệu suất từ đầu năm",
   "performanceMonth": "Hiệu suất theo tháng",
   "performanceWeek": "Hiệu suất theo tuần",
-  "week52Range": "Biên độ 52 tuần"
+  "week52Range": "Biên độ 52 tuần",
+  "fundamentalDetailTitle": "Chi tiết Fundamental",
+  "ebit": "Lợi nhuận trước lãi vay và thuế (EBIT)",
+  "grossIncome": "Tổng thu nhập",
+  "netIncome": "Thu nhập ròng",
+  "revenue": "Doanh thu",
+  "ebitScore": "Điểm ebit",
+  "netIncomeScore": "Điểm net income",
+  "grossIncomeScore": "Điểm gross income Score",
+  "revenueScore": "Điểm revenue"
 }

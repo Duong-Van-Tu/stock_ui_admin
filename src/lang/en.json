@@ -157,5 +157,14 @@
   "performanceYTD": "Performance YTD",
   "performanceMonth": "Performance Month",
   "performanceWeek": "Performance Week",
-  "week52Range": "52 Week Range"
+  "week52Range": "52 Week Range",
+  "fundamentalDetailTitle": "Fundamental Detail",
+  "ebit": "EBIT",
+  "grossIncome": "Gross Income",
+  "netIncome": "Net Income",
+  "revenue": "Revenue",
+  "ebitScore": "Ebit score",
+  "netIncomeScore": "Net income score",
+  "grossIncomeScore": "Gross income score",
+  "revenueScore": "Revenue score"
 }

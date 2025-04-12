@@ -39,3 +39,13 @@ export const transformStockDetails = (stock: any): StockDetails | null => {
     week52LowDate: stock[fieldMapping.week52LowDate]
   };
 };
+
+export const transformFundamentalScore = (score: any): FundamentalScore => {
+  const result: Partial<FundamentalScore> = {};
+
+  for (const [key, mappedKey] of Object.entries(fieldMapping)) {
+    result[key as keyof FundamentalScore] = Number(score?.[mappedKey]) || 0;
+  }
+
+  return result as FundamentalScore;
+};

@@ -11,6 +11,7 @@ import { watchSectorLoading } from '@/redux/slices/stock-score.slice';
 import { Spin } from 'antd';
 import { StockDetailHeader } from './stock-details-header';
 import { StatisticCard } from './stock-statistic-card';
+import { StockDetailTabs } from './stock-detail-tabs';
 
 export default function StockDetail() {
   const params = useParams();
@@ -37,6 +38,9 @@ export default function StockDetail() {
             <StatisticCard />
           </div>
         </div>
+        <div css={tabWrapperStyles}>
+          <StockDetailTabs symbol={symbol} />
+        </div>
       </div>
     </Spin>
   );
@@ -59,4 +63,8 @@ const chartWrapperStyles = css`
 
 const statisticCardWrapperStyles = css`
   width: 38rem;
+`;
+
+const tabWrapperStyles = css`
+  margin-top: 3rem;
 `;

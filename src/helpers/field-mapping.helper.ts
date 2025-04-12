@@ -50,5 +50,10 @@ export const fieldMapping: Record<string, string> = {
   week52High: '_52WeekHigh',
   week52HighDate: '_52WeekHighDate',
   week52Low: '_52WeekLow',
-  week52LowDate: '_52WeekLowDate'
+  week52LowDate: '_52WeekLowDate',
+  ebitScore: 'ebit_score',
+  grossIncomeScore: 'gross_income_score',
+  netIncomeScore: 'net_income_score',
+  revenueScore: 'revenue_score',
+  detailFundamentalScore: 'fundamental_scrore'
 };
