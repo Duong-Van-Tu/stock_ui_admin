@@ -11,6 +11,7 @@ import {
 } from '@/utils/common';
 import { PositiveNegativeText } from '../positive-negative-text';
 import dayjs from 'dayjs';
+import { useTranslations } from 'next-intl';
 
 const { Text } = Typography;
 
@@ -61,8 +62,8 @@ const StatRow = ({
 );
 
 export const StatisticCard = () => {
+  const t = useTranslations();
   const stockDetails = useAppSelector(watchStockDetails);
-
   const {
     marketCap,
     marketCapTitle,
@@ -82,10 +83,10 @@ export const StatisticCard = () => {
   } = stockDetails || {};
 
   return (
-    <Card title='Statistic' bordered size='small' css={cardStyle}>
+    <Card title={t('statistic')} bordered size='small' css={cardStyle}>
       <Row gutter={[8, 8]}>
         <StatRow
-          label='Market Cap (intraday)'
+          label={t('marketCapIntraday')}
           value={
             marketCap ? (
               <>
@@ -97,34 +98,34 @@ export const StatisticCard = () => {
           }
         />
         <StatRow
-          label='Volume'
+          label={t('volume')}
           value={volume ? formatNumberShort(volume) : '--'}
         />
-        <StatRow label='ATR' value={renderValue(atr)} />
-        <StatRow label='Beta' value={renderValue(beta)} />
+        <StatRow label={t('atr')} value={renderValue(atr)} />
+        <StatRow label={t('beta')} value={renderValue(beta)} />
 
         <Col span={24}>
           <Divider css={dividerStyles} />
         </Col>
 
         <StatRow
-          label='Forward Dividend & Yield'
+          label={t('forwardDividendYield')}
           value={renderValue(dividendYieldIndicatedAnnual, { isPercent: true })}
         />
         <StatRow
-          label='Performance YTD'
+          label={t('performanceYTD')}
           value={renderValue(ytd, { suffix: '%' })}
         />
         <StatRow
-          label='Performance Month'
+          label={t('performanceMonth')}
           value={renderValue(lm, { suffix: '%' })}
         />
         <StatRow
-          label='Performance Week'
+          label={t('performanceWeek')}
           value={renderValue(lw, { suffix: '%' })}
         />
         <StatRow
-          label='52 Week Range'
+          label={t('week52Range')}
           value={
             week52Low && week52High
               ? `${roundToDecimals(week52Low)}$ - ${roundToDecimals(
@@ -138,14 +139,14 @@ export const StatisticCard = () => {
           <Divider css={dividerStyles} />
         </Col>
 
-        <StatRow label='Entry date' value={renderDate(entryDate)} />
+        <StatRow label={t('entryDate')} value={renderDate(entryDate)} />
         <StatRow
-          label='Entry price'
+          label={t('entryPrice')}
           value={renderValue(entryPrice, { suffix: '$' })}
         />
-        <StatRow label='Exit date' value={renderDate(exitDate)} />
+        <StatRow label={t('exitDate')} value={renderDate(exitDate)} />
         <StatRow
-          label='Exit price'
+          label={t('exitPrice')}
           value={
             exitPrice && entryPrice
               ? renderValue(exitPrice, {

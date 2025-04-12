@@ -148,5 +148,12 @@
   "stockDetailDesc": "Trang chi tiết cổ phiếu",
   "notFoundTitle": "Không tìm thấy dữ liệu",
   "stockNotFoundSubtitle": "Hiện tại chưa có thông tin chi tiết cho mã cổ phiếu này.",
-  "stockNotFoundBack": "Quay lại"
+  "stockNotFoundBack": "Quay lại",
+  "statistic": "Thống kê",
+  "marketCapIntraday": "Vốn hóa thị trường (trong ngày)",
+  "forwardDividendYield": "Cổ tức & Lợi suất dự kiến",
+  "performanceYTD": "Hiệu suất từ đầu năm",
+  "performanceMonth": "Hiệu suất theo tháng",
+  "performanceWeek": "Hiệu suất theo tuần",
+  "week52Range": "Biên độ 52 tuần"
 }

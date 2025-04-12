@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 
 import { Typography, Button, Row, Col, Divider } from 'antd';
 import { StarOutlined, StarFilled } from '@ant-design/icons';
+import { useTranslations } from 'next-intl';
 import { useAppSelector } from '@/redux/hooks';
 import { watchStockDetails } from '@/redux/slices/stock-details.slice';
 import { PositiveNegativeText } from '../positive-negative-text';
@@ -11,6 +12,7 @@ import { roundToDecimals } from '@/utils/common';
 const { Text } = Typography;
 
 export const StockDetailHeader = () => {
+  const t = useTranslations();
   const stockDetail = useAppSelector(watchStockDetails);
 
   return (
@@ -36,7 +38,7 @@ export const StockDetailHeader = () => {
               }
               shape='round'
             >
-              {stockDetail?.isAddWatchList ? 'Following' : 'Follow'}
+              {stockDetail?.isAddWatchList ? t('following') : t('follow')}
             </Button>
           </div>
         </Col>
@@ -44,17 +46,23 @@ export const StockDetailHeader = () => {
         <Col flex={1}>
           <div css={scoreWrapperStyles}>
             <ScoreItem
-              label='Total score'
+              label={t('totalScore')}
               value={stockDetail?.totalScore}
               size='1.8rem'
             />
             <Divider type='vertical' css={dividerStyles} />
             <ScoreItem
-              label='Fundamental'
+              label={t('fundamentalScore')}
               value={stockDetail?.fundamentalScore}
             />
-            <ScoreItem label='Sentiment' value={stockDetail?.sentimentScore} />
-            <ScoreItem label='Earnings' value={stockDetail?.earningsScore} />
+            <ScoreItem
+              label={t('sentimentScore')}
+              value={stockDetail?.sentimentScore}
+            />
+            <ScoreItem
+              label={t('earningsScore')}
+              value={stockDetail?.earningsScore}
+            />
           </div>
         </Col>
       </Row>

@@ -148,5 +148,14 @@
   "stockDetailDesc": "Stock Details Page",
   "notFoundTitle": "Data Not Found",
   "stockNotFoundSubtitle": "There is currently no detailed information for this stock symbol.",
-  "stockNotFoundBack": "Go Back"
+  "stockNotFoundBack": "Go Back",
+  "follow": "Follow",
+  "following": "Following",
+  "statistic": "Statistic",
+  "marketCapIntraday": "Market Cap (intraday)",
+  "forwardDividendYield": "Forward Dividend & Yield",
+  "performanceYTD": "Performance YTD",
+  "performanceMonth": "Performance Month",
+  "performanceWeek": "Performance Week",
+  "week52Range": "52 Week Range"
 }
