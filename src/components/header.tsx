@@ -60,7 +60,8 @@ export default function Header({ collapsed }: HeaderProps) {
     },
     {
       label: t('vietnamese'),
-      key: 'vi'
+      key: 'vi',
+      disabled: true
     }
   ];
 
