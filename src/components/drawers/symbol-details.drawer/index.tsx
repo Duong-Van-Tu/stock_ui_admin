@@ -33,8 +33,6 @@ export const SymbolDetailsDrawer = ({
         return `${t('newDetail')} (${symbol})`;
       case ContentType.EARNINGS:
         return `${t('earningsDetail')} (${symbol})`;
-      case ContentType.RECENT:
-        return `${t('newsAndEarningsLast14Days')} (${symbol})`;
       default:
         return '';
     }
@@ -46,8 +44,6 @@ export const SymbolDetailsDrawer = ({
         return <NewDetails symbol={symbol} />;
       case ContentType.EARNINGS:
         return <EarningsDetails symbol={symbol} />;
-      case ContentType.RECENT:
-        return <div>News & Earnings</div>;
       default:
         return null;
     }
