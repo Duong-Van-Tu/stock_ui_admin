@@ -31,7 +31,7 @@ export default function RootLayout({
   }
 
   return (
-    <html lang={locale}>
+    <html lang={locale || 'en'}>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>
