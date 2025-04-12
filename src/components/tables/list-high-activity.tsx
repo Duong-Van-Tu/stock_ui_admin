@@ -49,7 +49,7 @@ export const ListHighActivity = () => {
 
   const [sortField, setSortField] = useState<string>('totalScore');
   const [sortType, setSortType] = useState<SortOrder>('descend');
-  const [filter, setFilter] = useState<SentimentFilter>({});
+  const [filter, setFilter] = useState<ListHighActivityFilter>({});
 
   const handleSortOrder = (field: string) => {
     let newSortType: SortOrder;
@@ -83,7 +83,7 @@ export const ListHighActivity = () => {
     });
   };
 
-  const handleFilter = (values: SentimentFilter) => {
+  const handleFilter = (values: ListHighActivityFilter) => {
     const newFilter = {
       ...filter,
       ...values
@@ -127,7 +127,7 @@ export const ListHighActivity = () => {
     fetchListWatcher({ filter: { symbol, ...initialValues } });
   }, [symbol, searchParams, fetchListWatcher]);
 
-  const columns: TableColumnsType<ListWatcher> = [
+  const columns: TableColumnsType<ListHighActivity> = [
     {
       title: t('no'),
       dataIndex: 'index',
@@ -497,29 +497,9 @@ export const ListHighActivity = () => {
   return (
     <div css={rootStyles}>
       <ListWatcherFilter onFilter={handleFilter} />
-      <div css={groupDescStyles}>
-        <div css={groupItemStyles}>
-          <strong>{t('group')} 1:</strong>
-          <Tag color={filter.group === 'group_1' ? 'blue' : ''}>
-            {t('group1')}
-          </Tag>
-        </div>
-        <div css={groupItemStyles}>
-          <strong>{t('group')} 2:</strong>
-          <Tag color={filter.group === 'group_2' ? 'blue' : ''}>
-            {t('group2')}
-          </Tag>
-        </div>
-        <div css={groupItemStyles}>
-          <strong>{t('group')} 3:</strong>
-          <Tag color={filter.group === 'group_3' ? 'blue' : ''}>
-            {t('group3')}
-          </Tag>
-        </div>
-      </div>
       <div css={tableWrapperStyles}>
         <TableTitle customStyles={titleStyles}>{t('AISentiment')}</TableTitle>
-        <Table<ListWatcher>
+        <Table<ListHighActivity>
           css={tableStyles}
           rowKey={(record) => record.key}
           columns={columns}
@@ -590,18 +570,4 @@ const emptyStyles = (height: number) => css`
 
 const titleStyles = css`
   padding: 1.2rem 1.6rem;
-`;
-
-const groupDescStyles = css`
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-`;
-
-const groupItemStyles = css`
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-  flex-wrap: wrap;
 `;
