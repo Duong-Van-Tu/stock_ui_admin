@@ -2,10 +2,8 @@
 import { css } from '@emotion/react';
 import { Tabs, TabsProps } from 'antd';
 import { StockDetailTabKey } from '@/constants/tabs.constant';
-import FundamentalDetailChart from '../charts/fundamental-charts/fundamental-detail.chart';
-import FundamentalScoreChart from '../charts/fundamental-charts/fundamental-score.chart';
 import { UnderDevelopment } from '../under-development';
-import FundamentalScoreDetailChart from '../charts/fundamental-charts/fundamental-score-detail.chart';
+import FundamentalCharts from '../charts/fundamental-charts';
 
 type StockDetailTabsProps = {
   symbol: string;
@@ -20,13 +18,7 @@ export const StockDetailTabs = ({ symbol }: StockDetailTabsProps) => {
     {
       key: StockDetailTabKey.Fundamental,
       label: <span css={tabLabelStyles}>Fundamental</span>,
-      children: (
-        <div css={fundamentalContentStyles}>
-          <FundamentalScoreChart symbol={symbol} />
-          <FundamentalDetailChart symbol={symbol} />
-          <FundamentalScoreDetailChart symbol={symbol} />
-        </div>
-      )
+      children: <FundamentalCharts symbol={symbol} />
     },
     {
       key: StockDetailTabKey.Earnings,
@@ -46,10 +38,4 @@ export const StockDetailTabs = ({ symbol }: StockDetailTabsProps) => {
 const tabLabelStyles = css`
   text-transform: uppercase;
   font-weight: 500;
-`;
-
-const fundamentalContentStyles = css`
-  display: flex;
-  flex-direction: column;
-  gap: 2.6rem;
 `;

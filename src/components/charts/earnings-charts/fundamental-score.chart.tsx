@@ -16,7 +16,9 @@ type FundamentalScoreProps = {
   symbol: string;
 };
 
-export function FundamentalScoreChart({ symbol }: FundamentalScoreProps) {
+export default function FundamentalScoreChart({
+  symbol
+}: FundamentalScoreProps) {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const fundamentalScore = useAppSelector(watchFundamentalScore);

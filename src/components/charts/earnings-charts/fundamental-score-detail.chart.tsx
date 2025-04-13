@@ -15,7 +15,7 @@ type FundamentalDetailProps = {
   symbol: string;
 };
 
-export function FundamentalScoreDetailChart({
+export default function FundamentalScoreDetailChart({
   symbol
 }: FundamentalDetailProps) {
   const t = useTranslations();

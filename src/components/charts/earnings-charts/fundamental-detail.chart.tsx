@@ -15,7 +15,9 @@ type FundamentalDetailProps = {
   symbol: string;
 };
 
-export function FundamentalDetailChart({ symbol }: FundamentalDetailProps) {
+export default function FundamentalDetailChart({
+  symbol
+}: FundamentalDetailProps) {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const fundamentalDetails = useAppSelector(watchFundamentalDetails);
