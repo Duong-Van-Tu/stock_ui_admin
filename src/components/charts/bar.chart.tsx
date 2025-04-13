@@ -11,6 +11,7 @@ import {
   DatasetComponent
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
+import { useEffect, useState } from 'react';
 
 echarts.use([
   TooltipComponent,
@@ -49,6 +50,7 @@ export default function BarChart({
   height,
   width
 }: BarChartProps) {
+  const [isChartReady, setIsChartReady] = useState(false);
   const option = {
     legend: {
       orient: 'horizontal',
@@ -89,13 +91,23 @@ export default function BarChart({
       : height || '100%'} !important;
   `;
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsChartReady(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <ReactEChartsCore
-      css={chartStyle}
-      echarts={echarts}
-      option={option}
-      notMerge={true}
-      lazyUpdate={true}
-    />
+    isChartReady && (
+      <ReactEChartsCore
+        css={chartStyle}
+        echarts={echarts}
+        option={option}
+        notMerge={true}
+        lazyUpdate={true}
+      />
+    )
   );
 }
