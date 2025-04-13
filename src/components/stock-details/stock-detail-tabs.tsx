@@ -21,8 +21,8 @@ export const StockDetailTabs = ({ symbol }: StockDetailTabsProps) => {
       label: <span css={tabLabelStyles}>Fundamental</span>,
       children: (
         <div css={fundamentalContentStyles}>
-          <FundamentalDetailChart symbol={symbol} />{' '}
           <FundamentalScore symbol={symbol} />
+          <FundamentalDetailChart symbol={symbol} />{' '}
         </div>
       )
     },

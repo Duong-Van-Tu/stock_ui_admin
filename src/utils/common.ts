@@ -124,6 +124,7 @@ export const roundToDecimals = (
   decimals: number = 2
 ): number | null | undefined => {
   if (!value && value !== 0) return value;
+  if (value === 0) return 0;
 
   const extraDecimals =
     value > 0.1

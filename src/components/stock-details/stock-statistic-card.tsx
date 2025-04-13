@@ -23,7 +23,7 @@ const renderValue = (
     compareTo
   }: { suffix?: string; isPercent?: boolean; compareTo?: number } = {}
 ) => {
-  if (value === undefined || value === null) return '--';
+  if (!value) return '--';
 
   const display = isPercent
     ? formatPercent(value)
@@ -114,15 +114,15 @@ export const StatisticCard = () => {
         />
         <StatRow
           label={t('performanceYTD')}
-          value={renderValue(ytd, { suffix: '%' })}
+          value={renderValue(ytd, { isPercent: true })}
         />
         <StatRow
           label={t('performanceMonth')}
-          value={renderValue(lm, { suffix: '%' })}
+          value={renderValue(lm, { isPercent: true })}
         />
         <StatRow
           label={t('performanceWeek')}
-          value={renderValue(lw, { suffix: '%' })}
+          value={renderValue(lw, { isPercent: true })}
         />
         <StatRow
           label={t('week52Range')}
