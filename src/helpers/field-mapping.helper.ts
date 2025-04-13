@@ -55,5 +55,15 @@ export const fieldMapping: Record<string, string> = {
   grossIncomeScore: 'gross_income_score',
   netIncomeScore: 'net_income_score',
   revenueScore: 'revenue_score',
-  detailFundamentalScore: 'fundamental_scrore'
+  detailFundamentalScore: 'fundamental_scrore',
+  ebitMomentumScore: 'ebit_momentum_score',
+  ebitRecentScore: 'ebit_recent_score',
+  grossIncomeMomentumScore: 'gross_income_momentum_score',
+  grossIncomeRecentScore: 'gross_income_recent_score',
+  netIncomeMomentumScore: 'net_income_momentum_score',
+  netIncomeRecentScore: 'net_income_recent_score',
+  revenueMomentumScore: 'revenue_momentum_score',
+  revenueRecentScore: 'revenue_recent_score',
+  netMarginMomentumScore: 'net_margin_momentum_score',
+  netMarginRecentScore: 'net_margin_recent_score'
 };

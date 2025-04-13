@@ -26,21 +26,37 @@ type SeriesItem = {
   color: string;
 };
 
+type GridConfig = {
+  top?: number;
+  left?: number;
+  right?: number;
+  bottom?: number;
+  containLabel?: boolean;
+};
+
 type BarChartProps = {
   data: any[];
   series: SeriesItem[];
+  grid?: GridConfig;
+  height?: string | number;
+  width?: string | number;
 };
 
-export default function BarChart({ data, series }: BarChartProps) {
+export default function BarChart({
+  data,
+  series,
+  grid,
+  height,
+  width
+}: BarChartProps) {
   const option = {
     legend: {
       orient: 'horizontal',
-      left: 10,
+      left: 0,
       bottom: 0,
       itemGap: 16,
       textStyle: { color: '#1e1e1e' }
     },
-    tooltip: {},
     dataset: {
       source: data
     },
@@ -52,11 +68,10 @@ export default function BarChart({ data, series }: BarChartProps) {
       axisLabel: { color: '#1e1e1e' }
     },
     grid: {
-      top: '20px',
-      left: '10px',
-      right: '10px',
-      bottom: '40px',
-      containLabel: true
+      top: 20,
+      left: 0,
+      right: 0,
+      ...grid
     },
     series: series.map((item) => ({
       type: 'bar',
@@ -65,9 +80,18 @@ export default function BarChart({ data, series }: BarChartProps) {
     }))
   };
 
+  const chartStyle = css`
+    width: ${typeof width === 'number'
+      ? `${width}px`
+      : width || '100%'} !important;
+    height: ${typeof height === 'number'
+      ? `${height}px`
+      : height || '100%'} !important;
+  `;
+
   return (
     <ReactEChartsCore
-      css={rootStyle}
+      css={chartStyle}
       echarts={echarts}
       option={option}
       notMerge={true}
@@ -75,8 +99,3 @@ export default function BarChart({ data, series }: BarChartProps) {
     />
   );
 }
-
-const rootStyle = css`
-  width: 100%;
-  height: 100%;
-`;

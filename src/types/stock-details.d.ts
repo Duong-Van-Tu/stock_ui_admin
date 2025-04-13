@@ -45,3 +45,17 @@ type FundamentalScore = {
   netIncomeScore: number;
   revenueScore: number;
 };
+
+type FundamentalDetailScore = {
+  year: number;
+  ebitMomentumScore: number;
+  ebitRecentScore: number;
+  grossIncomeMomentumScore: number;
+  grossIncomeRecentScore: number;
+  netIncomeMomentumScore: number;
+  netIncomeRecentScore: number;
+  revenueMomentumScore: number;
+  revenueRecentScore: number;
+  netMarginMomentumScore: number;
+  netMarginRecentScore: number;
+};

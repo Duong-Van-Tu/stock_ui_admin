@@ -149,6 +149,8 @@
   "notFoundTitle": "Không tìm thấy dữ liệu",
   "stockNotFoundSubtitle": "Hiện tại chưa có thông tin chi tiết cho mã cổ phiếu này.",
   "stockNotFoundBack": "Quay lại",
+  "follow": "Theo dõi",
+  "following": "Đang theo dõi",
   "statistic": "Thống kê",
   "marketCapIntraday": "Vốn hóa thị trường (trong ngày)",
   "forwardDividendYield": "Cổ tức & Lợi suất dự kiến",
@@ -157,6 +159,7 @@
   "performanceWeek": "Hiệu suất theo tuần",
   "week52Range": "Biên độ 52 tuần",
   "fundamentalDetailTitle": "Chi tiết Fundamental",
+  "fundamentalDetailScoreTitle": "Điểm chi tiết Fundamental",
   "ebit": "Lợi nhuận trước lãi vay và thuế (EBIT)",
   "grossIncome": "Tổng thu nhập",
   "netIncome": "Thu nhập ròng",
@@ -164,5 +167,15 @@
   "ebitScore": "Điểm ebit",
   "netIncomeScore": "Điểm net income",
   "grossIncomeScore": "Điểm gross income Score",
-  "revenueScore": "Điểm revenue"
+  "revenueScore": "Điểm revenue",
+  "ebitMomentum": "Động lượng EBIT",
+  "ebitRecent": "EBIT gần đây",
+  "grossIncomeMomentum": "Động lượng lợi nhuận gộp",
+  "grossIncomeRecent": "Lợi nhuận gộp gần đây",
+  "netIncomeMomentum": "Động lượng thu nhập ròng",
+  "netIncomeRecent": "Thu nhập ròng gần đây",
+  "revenueMomentum": "Động lượng doanh thu",
+  "revenueRecent": "Doanh thu gần đây",
+  "netMarginMomentum": "Động lượng biên lợi nhuận ròng",
+  "netMarginRecent": "Biên lợi nhuận ròng gần đây"
 }

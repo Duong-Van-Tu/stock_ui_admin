@@ -1,17 +1,20 @@
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import {
+  transformFundamentalDetailScore,
   transformFundamentalScore,
   transformStockDetails
 } from '@/helpers/stock-details.helper';
 
 export type StockDetailsState = {
   loading: boolean;
+  stockDetails: StockDetails | null;
   fundamentalDetailLoading: boolean;
   fundamentalDetails: FundamentalDetails[];
   fundamentalScoreLoading: boolean;
   fundamentalScore: FundamentalScore;
-  stockDetails: StockDetails | null;
+  fundamentalDetailScoreLoading: boolean;
+  fundamentalDetailScore: FundamentalDetailScore[];
 };
 
 const initFundamentalScore = {
@@ -34,7 +37,9 @@ const initialState: StockDetailsState = {
     revenueScore: 0,
     detailFundamentalScore: 0
   },
-  fundamentalDetails: []
+  fundamentalDetails: [],
+  fundamentalDetailScoreLoading: false,
+  fundamentalDetailScore: []
 };
 
 export const stockDetailsSlice = createAppSlice({
@@ -78,7 +83,7 @@ export const stockDetailsSlice = createAppSlice({
           state.fundamentalDetails = action.payload;
         },
         rejected: (state) => {
-          state.loading = false;
+          state.fundamentalDetailLoading = false;
           state.fundamentalDetails = [];
         }
       }
@@ -99,8 +104,32 @@ export const stockDetailsSlice = createAppSlice({
           state.fundamentalScore = transformFundamentalScore(action.payload);
         },
         rejected: (state) => {
-          state.loading = false;
+          state.fundamentalDetailLoading = false;
           state.fundamentalScore = initFundamentalScore;
+        }
+      }
+    ),
+    getFundamentalDetailScore: create.asyncThunk(
+      async (symbol: string) => {
+        const response = await defaultApiFetcher.get(
+          `stock-scores/fundamental-score-detail/${symbol}`
+        );
+
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.fundamentalDetailScoreLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.fundamentalDetailScoreLoading = false;
+          state.fundamentalDetailScore = transformFundamentalDetailScore(
+            action.payload
+          );
+        },
+        rejected: (state) => {
+          state.fundamentalDetailScoreLoading = false;
+          state.fundamentalDetailScore = [];
         }
       }
     )
@@ -112,7 +141,10 @@ export const stockDetailsSlice = createAppSlice({
     watchFundamentalDetailLoading: (stock) => stock.fundamentalDetailLoading,
     watchFundamentalDetails: (stock) => stock.fundamentalDetails,
     watchFundamentalScoreLoading: (stock) => stock.fundamentalScoreLoading,
-    watchFundamentalScore: (stock) => stock.fundamentalScore
+    watchFundamentalScore: (stock) => stock.fundamentalScore,
+    watchFundamentalDetailScoreLoading: (stock) =>
+      stock.fundamentalDetailScoreLoading,
+    watchFundamentalDetailScore: (stock) => stock.fundamentalDetailScore
   }
 });
 
@@ -122,8 +154,14 @@ export const {
   watchFundamentalDetailLoading,
   watchFundamentalDetails,
   watchFundamentalScoreLoading,
-  watchFundamentalScore
+  watchFundamentalScore,
+  watchFundamentalDetailScoreLoading,
+  watchFundamentalDetailScore
 } = stockDetailsSlice.selectors;
 
-export const { getStockDetails, getFundamentalDetails, getFundamentalScore } =
-  stockDetailsSlice.actions;
+export const {
+  getStockDetails,
+  getFundamentalDetails,
+  getFundamentalScore,
+  getFundamentalDetailScore
+} = stockDetailsSlice.actions;

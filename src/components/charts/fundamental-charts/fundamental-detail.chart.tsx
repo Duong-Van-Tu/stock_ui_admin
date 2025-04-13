@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+
 import { Card } from 'antd';
 import BarChart from '../bar.chart';
 import { useTranslations } from 'next-intl';
@@ -35,8 +38,17 @@ export default function FundamentalDetailChart({
   }, [fetchFundamentalDetails]);
 
   return (
-    <Card title={t('fundamentalDetailTitle')} size='small'>
-      <BarChart data={fundamentalDetails} series={series} />
+    <Card title={<span css={titleStyles}>{t('fundamentalDetailTitle')}</span>}>
+      <BarChart
+        data={fundamentalDetails}
+        series={series}
+        height={350}
+        grid={{ left: 60 }}
+      />
     </Card>
   );
 }
+
+const titleStyles = css`
+  font-size: 2rem;
+`;

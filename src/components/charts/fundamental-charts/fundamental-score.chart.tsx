@@ -16,7 +16,9 @@ type FundamentalScoreProps = {
   symbol: string;
 };
 
-export default function FundamentalScore({ symbol }: FundamentalScoreProps) {
+export default function FundamentalScoreChart({
+  symbol
+}: FundamentalScoreProps) {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const fundamentalScore = useAppSelector(watchFundamentalScore);
@@ -30,7 +32,7 @@ export default function FundamentalScore({ symbol }: FundamentalScoreProps) {
   }, [fetchFundamentalScore]);
 
   return (
-    <Card title={t('fundamentalScore')} size='small'>
+    <Card title={<span css={titleStyles}>{t('fundamentalScore')}</span>}>
       <div css={chartsContainerStyle}>
         {[
           fundamentalScore.detailFundamentalScore,
@@ -65,4 +67,8 @@ const chartsContainerStyle = css`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+`;
+
+const titleStyles = css`
+  font-size: 2rem;
 `;

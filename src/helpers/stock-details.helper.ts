@@ -49,3 +49,21 @@ export const transformFundamentalScore = (score: any): FundamentalScore => {
 
   return result as FundamentalScore;
 };
+
+export const transformFundamentalDetailScore = (
+  scoreDetails: any[]
+): FundamentalDetailScore[] => {
+  return scoreDetails.map((detail) => ({
+    year: detail.year,
+    ebitMomentumScore: detail[fieldMapping.ebitMomentumScore],
+    ebitRecentScore: detail[fieldMapping.ebitRecentScore],
+    grossIncomeMomentumScore: detail[fieldMapping.grossIncomeMomentumScore],
+    grossIncomeRecentScore: detail[fieldMapping.grossIncomeRecentScore],
+    netIncomeMomentumScore: detail[fieldMapping.netIncomeMomentumScore],
+    netIncomeRecentScore: detail[fieldMapping.netIncomeRecentScore],
+    revenueMomentumScore: detail[fieldMapping.revenueMomentumScore],
+    revenueRecentScore: detail[fieldMapping.revenueRecentScore],
+    netMarginMomentumScore: detail[fieldMapping.netMarginMomentumScore],
+    netMarginRecentScore: detail[fieldMapping.netMarginRecentScore]
+  }));
+};

@@ -3,8 +3,9 @@ import { css } from '@emotion/react';
 import { Tabs, TabsProps } from 'antd';
 import { StockDetailTabKey } from '@/constants/tabs.constant';
 import FundamentalDetailChart from '../charts/fundamental-charts/fundamental-detail.chart';
-import FundamentalScore from '../charts/fundamental-charts/fundamental-score.chart';
+import FundamentalScoreChart from '../charts/fundamental-charts/fundamental-score.chart';
 import { UnderDevelopment } from '../under-development';
+import FundamentalScoreDetailChart from '../charts/fundamental-charts/fundamental-score-detail.chart';
 
 type StockDetailTabsProps = {
   symbol: string;
@@ -21,8 +22,9 @@ export const StockDetailTabs = ({ symbol }: StockDetailTabsProps) => {
       label: <span css={tabLabelStyles}>Fundamental</span>,
       children: (
         <div css={fundamentalContentStyles}>
-          <FundamentalScore symbol={symbol} />
-          <FundamentalDetailChart symbol={symbol} />{' '}
+          <FundamentalScoreChart symbol={symbol} />
+          <FundamentalDetailChart symbol={symbol} />
+          <FundamentalScoreDetailChart symbol={symbol} />
         </div>
       )
     },
@@ -49,5 +51,5 @@ const tabLabelStyles = css`
 const fundamentalContentStyles = css`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.6rem;
 `;

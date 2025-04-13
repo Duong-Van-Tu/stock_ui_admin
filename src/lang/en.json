@@ -158,7 +158,8 @@
   "performanceMonth": "Performance Month",
   "performanceWeek": "Performance Week",
   "week52Range": "52 Week Range",
-  "fundamentalDetailTitle": "Fundamental Detail",
+  "fundamentalDetailTitle": "Fundamental Details",
+  "fundamentalDetailScoreTitle": "Fundamental Details Score",
   "ebit": "EBIT",
   "grossIncome": "Gross Income",
   "netIncome": "Net Income",
@@ -166,5 +167,15 @@
   "ebitScore": "Ebit score",
   "netIncomeScore": "Net income score",
   "grossIncomeScore": "Gross income score",
-  "revenueScore": "Revenue score"
+  "revenueScore": "Revenue score",
+  "ebitMomentum": "Ebit momentum",
+  "ebitRecent": "Ebit recent",
+  "grossIncomeMomentum": "Gross income momentum",
+  "grossIncomeRecent": "Gross income recent",
+  "netIncomeMomentum": "Net income momentum",
+  "netIncomeRecent": "Net income recent",
+  "revenueMomentum": "Revenue momentum",
+  "revenueRecent": "Revenue recent",
+  "netMarginMomentum": "Net margin momentum",
+  "netMarginRecent": "Net margin recent"
 }
