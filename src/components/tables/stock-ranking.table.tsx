@@ -371,10 +371,12 @@ export const StockRankingTable = () => {
   return (
     <div css={rootStyles}>
       <div css={tableTopStyles}>
-        <TableTitle customStyles={titleStyles}>{t('stockRankingTitle')}</TableTitle>
+        <TableTitle customStyles={titleStyles}>
+          {t('stockRankingTitle')}
+        </TableTitle>
         <div css={actionStyles}>
           <StockRankingFilter onFilter={handleFilter} />
-          <Button
+          {/* <Button
             icon={
               <Icon
                 icon='exportExcel'
@@ -386,7 +388,7 @@ export const StockRankingTable = () => {
             type='primary'
           >
             {t('exportExcel')}
-          </Button>
+          </Button> */}
         </div>
       </div>
       <LegendStatus customStyles={legendStatusStyles} />
@@ -454,7 +456,7 @@ const tableStyles = css`
 
 const titleStyles = css`
   min-width: 30%;
-`
+`;
 
 const tableTopStyles = css`
   display: flex;

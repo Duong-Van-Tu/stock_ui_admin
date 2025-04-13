@@ -551,7 +551,7 @@ export const AlertLogsTable = () => {
             onChange={(value) => handleChangeView(value)}
           />
           <div css={actionStyles}>
-            <Button
+            {/* <Button
               icon={
                 <Icon
                   icon='exportExcel'
@@ -563,7 +563,7 @@ export const AlertLogsTable = () => {
               type='primary'
             >
               {t('exportExcel')}
-            </Button>
+            </Button> */}
           </div>
         </div>
         <Table<Signal>
