@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 
 import { Key, useCallback, useContext, useEffect, useState } from 'react';
-import { Button, Table, TableColumnsType } from 'antd';
+import { Table, TableColumnsType } from 'antd';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
@@ -27,7 +27,7 @@ import { watchSearchSymbol } from '@/redux/slices/search';
 import { TableTitle } from './title.table';
 import { LegendStatus } from '../legend-status';
 import { StockRankingFilter } from '../filters/stock-ranking.filter';
-import { Icon } from '../icons';
+// import { Icon } from '../icons';
 import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
 import { StockChangeCell } from './columns/stock-change-cell.column';

@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Button, Segmented, Table, TableColumnsType } from 'antd';
+import { Segmented, Table, TableColumnsType } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   calculatePercentage,
@@ -19,7 +19,7 @@ import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { watchSearchSymbol } from '@/redux/slices/search';
 import { TableTitle } from './title.table';
-import { Icon } from '../icons';
+// import { Icon } from '../icons';
 import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
 import {
