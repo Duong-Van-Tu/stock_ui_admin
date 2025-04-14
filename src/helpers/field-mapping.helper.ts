@@ -65,5 +65,8 @@ export const fieldMapping: Record<string, string> = {
   revenueMomentumScore: 'revenue_momentum_score',
   revenueRecentScore: 'revenue_recent_score',
   netMarginMomentumScore: 'net_margin_momentum_score',
-  netMarginRecentScore: 'net_margin_recent_score'
+  netMarginRecentScore: 'net_margin_recent_score',
+  score3m: 'score_3m',
+  score1m: 'score_1m',
+  score1w: 'score_1w'
 };

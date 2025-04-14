@@ -22,19 +22,6 @@ echarts.use([
   CanvasRenderer
 ]);
 
-type SeriesItem = {
-  name: string;
-  color: string;
-};
-
-type GridConfig = {
-  top?: number;
-  left?: number;
-  right?: number;
-  bottom?: number;
-  containLabel?: boolean;
-};
-
 type BarChartProps = {
   data: any[];
   series: SeriesItem[];
@@ -71,7 +58,7 @@ export default function BarChart({
     },
     grid: {
       top: 20,
-      left: 0,
+      left: 20,
       right: 0,
       ...grid
     },

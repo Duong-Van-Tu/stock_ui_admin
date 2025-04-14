@@ -23,17 +23,27 @@ export function FundamentalScoreDetailChart({
   const fundamentalDetailSCore = useAppSelector(watchFundamentalDetailScore);
 
   const series = [
-    { name: t('ebitMomentum'), color: '#2e7d32' },
-    { name: t('ebitRecent'), color: '#FFBF00' },
-    { name: t('grossIncomeMomentum'), color: '#2196f3' },
-    { name: t('grossIncomeRecent'), color: '#e91e63' },
-    { name: t('netIncomeMomentum'), color: '#9c27b0' },
-    { name: t('netIncomeRecent'), color: '#ff5722' },
-    { name: t('revenueMomentum'), color: '#795548' },
-    { name: t('revenueRecent'), color: '#00bcd4' },
-    { name: t('netMarginMomentum'), color: '#3f51b5' },
-    { name: t('netMarginRecent'), color: '#009688' }
+    // EBIT
+    { name: t('ebitMomentum'), color: '#1ba622' },
+    { name: t('ebitRecent'), color: '#77dd7d' },
+
+    // Gross Income
+    { name: t('grossIncomeMomentum'), color: '#1976d2' },
+    { name: t('grossIncomeRecent'), color: '#64b0ef' },
+
+    // Net Income
+    { name: t('netIncomeMomentum'), color: '#fc4689' },
+    { name: t('netIncomeRecent'), color: '#ff8bb9' },
+
+    // Revenue
+    { name: t('revenueMomentum'), color: '#f57c00' },
+    { name: t('revenueRecent'), color: '#f8b95b' },
+
+    // Net Margin
+    { name: t('netMarginMomentum'), color: '#017c6e' },
+    { name: t('netMarginRecent'), color: '#12bcab' }
   ];
+
   const fetchFundamentalScoreDetails = useCallback(() => {
     dispatch(getFundamentalDetailScore(symbol));
   }, [dispatch, symbol]);

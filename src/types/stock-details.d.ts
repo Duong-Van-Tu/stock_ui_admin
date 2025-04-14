@@ -59,3 +59,22 @@ type FundamentalDetailScore = {
   netMarginMomentumScore: number;
   netMarginRecentScore: number;
 };
+
+type SentimentScore = {
+  score3m: number;
+  score1m: number;
+  score1w: number;
+};
+
+type MovingSentimentScore = {
+  timestamp: string;
+  score1w: number;
+  score1m: number;
+  score3m: number;
+};
+
+type StockDetailFilter = Filter & {
+  symbol: string;
+  fromDate?: string;
+  toDate?: string;
+};

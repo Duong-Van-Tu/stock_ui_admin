@@ -92,7 +92,7 @@
   "previousWeek": "Previous Week",
   "nextWeek": "Next Week",
   "recentNewsAndEarnings": "Recent News & Earnings (14 days)",
-  "newDetail": "News Details",
+  "newsDetail": "News Details",
   "earningsDetail": "Earnings Report",
   "positiveTitle": "POSITIVE",
   "veryPositiveTitle": "VERY POSITIVE",
@@ -177,5 +177,9 @@
   "revenueMomentum": "Revenue momentum",
   "revenueRecent": "Revenue recent",
   "netMarginMomentum": "Net margin momentum",
-  "netMarginRecent": "Net margin recent"
+  "netMarginRecent": "Net margin recent",
+  "score1w": "Score 1 Week",
+  "score1m": "Score 1 Month",
+  "score3m": "Score 3 Months",
+  "movingSentimentScore": "Moving Sentiment Scores"
 }

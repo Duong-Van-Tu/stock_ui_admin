@@ -41,13 +41,22 @@ export const transformStockDetails = (stock: any): StockDetails | null => {
 };
 
 export const transformFundamentalScore = (score: any): FundamentalScore => {
-  const result: Partial<FundamentalScore> = {};
-
-  for (const [key, mappedKey] of Object.entries(fieldMapping)) {
-    result[key as keyof FundamentalScore] = Number(score?.[mappedKey]) || 0;
+  if (!score) {
+    return {
+      ebitScore: 0,
+      grossIncomeScore: 0,
+      netIncomeScore: 0,
+      revenueScore: 0,
+      detailFundamentalScore: 0
+    };
   }
-
-  return result as FundamentalScore;
+  return {
+    ebitScore: score[fieldMapping.ebitScore],
+    grossIncomeScore: score[fieldMapping.grossIncomeScore],
+    netIncomeScore: score[fieldMapping.netIncomeScore],
+    revenueScore: score[fieldMapping.revenueScore],
+    detailFundamentalScore: score[fieldMapping.detailFundamentalScore]
+  };
 };
 
 export const transformFundamentalDetailScore = (
@@ -65,5 +74,33 @@ export const transformFundamentalDetailScore = (
     revenueRecentScore: detail[fieldMapping.revenueRecentScore],
     netMarginMomentumScore: detail[fieldMapping.netMarginMomentumScore],
     netMarginRecentScore: detail[fieldMapping.netMarginRecentScore]
+  }));
+};
+
+export const transformSentimentScore = (score: any): SentimentScore => {
+  if (!score) {
+    return {
+      score1w: 0,
+      score1m: 0,
+      score3m: 0
+    };
+  }
+  return {
+    score1w: score[fieldMapping.score1w],
+    score1m: score[fieldMapping.score1m],
+    score3m: score[fieldMapping.score3m]
+  };
+};
+
+export const transformMovingSentimentScore = (
+  scores: any[]
+): MovingSentimentScore[] => {
+  if (scores.length <= 0) return [];
+
+  return scores.map((score) => ({
+    timestamp: score.timestamp,
+    score1w: score[fieldMapping.score1w],
+    score1m: score[fieldMapping.score1m],
+    score3m: score[fieldMapping.score3m]
   }));
 };

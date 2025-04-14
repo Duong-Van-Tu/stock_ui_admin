@@ -12,7 +12,7 @@ import {
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { useEffect, useState } from 'react';
-import { useWindowSize } from '@/hooks/useWindowSize';
+import dayjs from 'dayjs';
 
 echarts.use([
   TooltipComponent,
@@ -23,31 +23,30 @@ echarts.use([
   CanvasRenderer
 ]);
 
-interface SeriesItem {
-  name: string;
-  color: string;
-}
-
-interface LineChartProps {
+type LineChartProps = {
   data: any[];
   series: SeriesItem[];
-}
+  grid?: GridConfig;
+  height?: string | number;
+  width?: string | number;
+};
 
-export default function LineChart({ data, series }: LineChartProps) {
-  const { width } = useWindowSize();
+export default function LineChart({
+  data,
+  series,
+  grid,
+  height,
+  width
+}: LineChartProps) {
   const [isChartReady, setIsChartReady] = useState(false);
-
-  const maxSeriesPerRow = 4;
-  const legendRowCount = Math.ceil(series.length / maxSeriesPerRow);
-  const gridBottom = width <= 820 && legendRowCount >= 3 ? '25%' : '15%';
 
   const option = {
     legend: {
       orient: 'horizontal',
-      left: 10,
+      left: 0,
       bottom: 0,
       itemGap: 16,
-      textStyle: { color: '#333' }
+      textStyle: { color: '#1e1e1e' }
     },
     tooltip: {
       trigger: 'axis'
@@ -58,19 +57,29 @@ export default function LineChart({ data, series }: LineChartProps) {
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      axisLabel: { color: '#333' },
-      axisLine: { lineStyle: { color: '#ccc' } }
+      axisLabel: {
+        color: '#1e1e1e',
+        margin: 10,
+        formatter: (value: string) =>
+          dayjs(value).isValid() ? dayjs(value).format('YYYY-DD-MM') : value,
+        hideOverlap: true
+      },
+      axisLine: {
+        lineStyle: {
+          color: '#ccc'
+        }
+      }
     },
     yAxis: {
-      axisLabel: { color: '#333' },
+      axisLabel: { color: '#1e1e1e' },
       axisLine: { lineStyle: { color: '#ccc' } },
       splitLine: { lineStyle: { color: '#e0e0e0' } }
     },
     grid: {
-      left: '10px',
-      right: '10px',
-      bottom: gridBottom,
-      containLabel: true
+      top: 20,
+      left: 20,
+      right: 0,
+      ...grid
     },
     series: series.map((item) => ({
       type: 'line',
@@ -81,10 +90,19 @@ export default function LineChart({ data, series }: LineChartProps) {
     }))
   };
 
+  const chartStyle = css`
+    width: ${typeof width === 'number'
+      ? `${width}px`
+      : width || '100%'} !important;
+    height: ${typeof height === 'number'
+      ? `${height}px`
+      : height || '100%'} !important;
+  `;
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsChartReady(true);
-    }, 100);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, []);
@@ -92,7 +110,7 @@ export default function LineChart({ data, series }: LineChartProps) {
   return (
     isChartReady && (
       <ReactEChartsCore
-        css={rootStyle}
+        css={chartStyle}
         echarts={echarts}
         option={option}
         notMerge={true}
@@ -101,8 +119,3 @@ export default function LineChart({ data, series }: LineChartProps) {
     )
   );
 }
-
-const rootStyle = css`
-  width: 100%;
-  height: 100%;
-`;

@@ -3,6 +3,8 @@ import { defaultApiFetcher } from '@/utils/api-instances';
 import {
   transformFundamentalDetailScore,
   transformFundamentalScore,
+  transformMovingSentimentScore,
+  transformSentimentScore,
   transformStockDetails
 } from '@/helpers/stock-details.helper';
 
@@ -15,6 +17,10 @@ export type StockDetailsState = {
   fundamentalScore: FundamentalScore;
   fundamentalDetailScoreLoading: boolean;
   fundamentalDetailScore: FundamentalDetailScore[];
+  sentimentScoreLoading: boolean;
+  sentimentScore: SentimentScore;
+  movingSentimentScoreLoading: boolean;
+  movingSentimentScore: MovingSentimentScore[];
 };
 
 const initFundamentalScore = {
@@ -23,6 +29,12 @@ const initFundamentalScore = {
   netIncomeScore: 0,
   revenueScore: 0,
   detailFundamentalScore: 0
+};
+
+const initSentimentScore = {
+  score1w: 0,
+  score1m: 0,
+  score3m: 0
 };
 
 const initialState: StockDetailsState = {
@@ -39,7 +51,11 @@ const initialState: StockDetailsState = {
   },
   fundamentalDetails: [],
   fundamentalDetailScoreLoading: false,
-  fundamentalDetailScore: []
+  fundamentalDetailScore: [],
+  sentimentScoreLoading: false,
+  sentimentScore: initSentimentScore,
+  movingSentimentScoreLoading: false,
+  movingSentimentScore: []
 };
 
 export const stockDetailsSlice = createAppSlice({
@@ -132,6 +148,56 @@ export const stockDetailsSlice = createAppSlice({
           state.fundamentalDetailScore = [];
         }
       }
+    ),
+    getSentimentScore: create.asyncThunk(
+      async (symbol: string) => {
+        const response = await defaultApiFetcher.get(
+          `stock-scores/sentiment-score/${symbol}`
+        );
+        return response.data[0];
+      },
+      {
+        pending: (state) => {
+          state.sentimentScoreLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.sentimentScoreLoading = false;
+          state.sentimentScore = transformSentimentScore(action.payload);
+        },
+        rejected: (state) => {
+          state.sentimentScoreLoading = false;
+          state.sentimentScore = initSentimentScore;
+        }
+      }
+    ),
+    getMovingSentimentScore: create.asyncThunk(
+      async ({ symbol, fromDate, toDate }: StockDetailFilter) => {
+        const response = await defaultApiFetcher.get(
+          `stock-scores/moving-sentiment-detail/${symbol}`,
+          {
+            query: {
+              fromDate,
+              toDate
+            }
+          }
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.movingSentimentScoreLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.movingSentimentScoreLoading = false;
+          state.movingSentimentScore = transformMovingSentimentScore(
+            action.payload
+          );
+        },
+        rejected: (state) => {
+          state.movingSentimentScoreLoading = false;
+          state.movingSentimentScore = [];
+        }
+      }
     )
   }),
 
@@ -144,7 +210,12 @@ export const stockDetailsSlice = createAppSlice({
     watchFundamentalScore: (stock) => stock.fundamentalScore,
     watchFundamentalDetailScoreLoading: (stock) =>
       stock.fundamentalDetailScoreLoading,
-    watchFundamentalDetailScore: (stock) => stock.fundamentalDetailScore
+    watchFundamentalDetailScore: (stock) => stock.fundamentalDetailScore,
+    watchSentimentScoreLoading: (stock) => stock.sentimentScoreLoading,
+    watchSentimentScore: (stock) => stock.sentimentScore,
+    watchMovingSentimentScoreLoading: (stock) =>
+      stock.movingSentimentScoreLoading,
+    watchMovingSentimentScore: (stock) => stock.movingSentimentScore
   }
 });
 
@@ -156,12 +227,18 @@ export const {
   watchFundamentalScoreLoading,
   watchFundamentalScore,
   watchFundamentalDetailScoreLoading,
-  watchFundamentalDetailScore
+  watchFundamentalDetailScore,
+  watchSentimentScoreLoading,
+  watchSentimentScore,
+  watchMovingSentimentScoreLoading,
+  watchMovingSentimentScore
 } = stockDetailsSlice.selectors;
 
 export const {
   getStockDetails,
   getFundamentalDetails,
   getFundamentalScore,
-  getFundamentalDetailScore
+  getFundamentalDetailScore,
+  getSentimentScore,
+  getMovingSentimentScore
 } = stockDetailsSlice.actions;

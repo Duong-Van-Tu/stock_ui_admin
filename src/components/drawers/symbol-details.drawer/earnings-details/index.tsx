@@ -39,8 +39,7 @@ export const EarningsDetails = ({ symbol }: EarningsDetailsProps) => {
             { value: 5, label: t('5Days') },
             { value: 6, label: t('6Days') },
             { value: 7, label: t('1Week') },
-            { value: 14, label: t('2Weeks') },
-            { value: 21, label: '3 Weeks' }
+            { value: 14, label: t('2Weeks') }
           ]}
         />
       </div>

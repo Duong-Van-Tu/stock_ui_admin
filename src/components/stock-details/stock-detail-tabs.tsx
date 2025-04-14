@@ -4,6 +4,7 @@ import { Tabs, TabsProps } from 'antd';
 import { StockDetailTabKey } from '@/constants/tabs.constant';
 import { UnderDevelopment } from '../under-development';
 import FundamentalCharts from '../charts/fundamental-charts';
+import SentimentCharts from '../charts/sentiment-charts';
 
 type StockDetailTabsProps = {
   symbol: string;
@@ -28,7 +29,7 @@ export const StockDetailTabs = ({ symbol }: StockDetailTabsProps) => {
     {
       key: StockDetailTabKey.Sentiment,
       label: <span css={tabLabelStyles}>Sentiment</span>,
-      children: <UnderDevelopment />
+      children: <SentimentCharts symbol={symbol} />
     }
   ];
 

@@ -92,7 +92,7 @@
   "previousWeek": "Tuần trước",
   "nextWeek": "Tuần sau",
   "recentNewsAndEarnings": "Tin tức và Earnings (14 ngày)",
-  "newDetail": "Tin tức chi tiết",
+  "newsDetail": "Tin tức chi tiết",
   "earningsDetail": "Báo cáo tài chính",
   "positiveTitle": "TÍCH CỰC",
   "veryPositiveTitle": "RẤT TÍCH CỰC",
@@ -177,5 +177,9 @@
   "revenueMomentum": "Động lượng doanh thu",
   "revenueRecent": "Doanh thu gần đây",
   "netMarginMomentum": "Động lượng biên lợi nhuận ròng",
-  "netMarginRecent": "Biên lợi nhuận ròng gần đây"
+  "netMarginRecent": "Biên lợi nhuận ròng gần đây",
+  "score1w": "Điểm Sentiment 1 Tuần",
+  "score1m": "Điểm Sentiment 1 Tháng",
+  "score3m": "Điểm Sentiment 3 Tháng",
+  "movingSentimentScore": "Điểm Sentiment Xu Hướng"
 }
