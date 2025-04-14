@@ -42,7 +42,7 @@ export function MovingSentimentScoreChart({ symbol }: FundamentalDetailProps) {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const movingSentimentScores = useAppSelector(watchMovingSentimentScore);
-  console.log({ movingSentimentScores });
+
   const [range, setRange] = useState<number>(DEFAULT_RANGE);
 
   const toDate = dayjs().format('YYYY-MM-DD');
