@@ -6,11 +6,11 @@ import { MovingSentimentScoreChart } from './moving-sentiment-score.chart';
 // import { Card } from 'antd';
 // import { useTranslations } from 'next-intl';
 
-type FundamentalChartsProps = {
+type SentimentChartsProps = {
   symbol: string;
 };
 
-export default function SentimentCharts({ symbol }: FundamentalChartsProps) {
+export default function SentimentCharts({ symbol }: SentimentChartsProps) {
   // const t = useTranslations();
   return (
     <div css={rootStyles}>

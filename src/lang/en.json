@@ -86,6 +86,8 @@
   "epsEstimate": "EPS Estimate",
   "epsActual": "EPS Actual",
   "epsSurprise": "EPS Surprise",
+  "epsEstimateScore": "EPS Estimate Score",
+  "epsActualScore": "EPS Actual Score",
   "revenueActual": "Revenue Actual",
   "revenueEstimate": "Revenue Estimate",
   "revenueSurprise": "Revenue Surprise",
@@ -181,5 +183,11 @@
   "score1w": "Score 1 Week",
   "score1m": "Score 1 Month",
   "score3m": "Score 3 Months",
-  "movingSentimentScore": "Moving Sentiment Scores"
+  "movingSentimentScore": "Moving Sentiment Scores",
+  "epsActualMomentum": "EPS actual momentum",
+  "epsActualRecent": "EPS actual recent",
+  "epsEstimateMomentum": "EPS estimate momentum",
+  "epsEstimateRecent": "EPS estimate recent",
+  "surpriseRecent": "Surprise recent",
+  "earningsDetailScoreTitle": "Earnings Score Details"
 }

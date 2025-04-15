@@ -12,6 +12,7 @@ import {
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 
 echarts.use([
   TooltipComponent,
@@ -51,7 +52,16 @@ export default function BarChart({
     },
     xAxis: {
       type: 'category',
-      axisLabel: { color: '#1e1e1e' }
+      axisLabel: {
+        color: '#1e1e1e',
+        formatter: (value: string) => {
+          if (/^\d{4}$/.test(value)) return value;
+          return dayjs(value).isValid()
+            ? dayjs(value).format('MM-DD-YYYY')
+            : value;
+        },
+        hideOverlap: true
+      }
     },
     yAxis: {
       axisLabel: { color: '#1e1e1e' }

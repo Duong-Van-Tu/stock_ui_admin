@@ -142,19 +142,26 @@ export const StatisticCard = () => {
         <StatRow label={t('entryDate')} value={renderDate(entryDate)} />
         <StatRow
           label={t('entryPrice')}
-          value={renderValue(entryPrice, { suffix: '$' })}
+          value={entryPrice ? `${roundToDecimals(entryPrice)}$` : '--'}
         />
         <StatRow label={t('exitDate')} value={renderDate(exitDate)} />
         <StatRow
           label={t('exitPrice')}
           value={
-            exitPrice && entryPrice
-              ? renderValue(exitPrice, {
-                  suffix: '$',
-                  isPercent: false,
-                  compareTo: entryPrice
-                })
-              : '--'
+            exitPrice && entryPrice ? (
+              <PositiveNegativeText
+                isPositive={exitPrice >= entryPrice}
+                isNegative={exitPrice < entryPrice}
+              >
+                <span>
+                  {`${roundToDecimals(exitPrice)}$ `}(
+                  {formatPercent(((exitPrice - entryPrice) / entryPrice) * 100)}
+                  )
+                </span>
+              </PositiveNegativeText>
+            ) : (
+              '--'
+            )
           }
         />
       </Row>

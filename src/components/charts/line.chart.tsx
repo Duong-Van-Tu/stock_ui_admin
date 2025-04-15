@@ -61,7 +61,7 @@ export default function LineChart({
         color: '#1e1e1e',
         margin: 10,
         formatter: (value: string) =>
-          dayjs(value).isValid() ? dayjs(value).format('YYYY-DD-MM') : value,
+          dayjs(value).isValid() ? dayjs(value).format('MM-DD-YYYY') : value,
         hideOverlap: true
       },
       axisLine: {

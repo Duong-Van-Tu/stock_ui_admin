@@ -68,5 +68,12 @@ export const fieldMapping: Record<string, string> = {
   netMarginRecentScore: 'net_margin_recent_score',
   score3m: 'score_3m',
   score1m: 'score_1m',
-  score1w: 'score_1w'
+  score1w: 'score_1w',
+  epsActualScore: 'epsActual_score',
+  epsEstimateScore: 'epsEstimate_score',
+  epsActualMomentumScore: 'epsActual_momentum_score',
+  epsActualRecentScore: 'epsActual_recent_score',
+  epsEstimateMomentumScore: 'epsEstimate_momentum_score',
+  epsEstimateRecentScore: 'epsEstimate_recent_score',
+  surpriseRecentScore: 'surprise_recent_score'
 };

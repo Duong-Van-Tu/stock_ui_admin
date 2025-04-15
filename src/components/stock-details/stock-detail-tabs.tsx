@@ -2,9 +2,9 @@
 import { css } from '@emotion/react';
 import { Tabs, TabsProps } from 'antd';
 import { StockDetailTabKey } from '@/constants/tabs.constant';
-import { UnderDevelopment } from '../under-development';
 import FundamentalCharts from '../charts/fundamental-charts';
 import SentimentCharts from '../charts/sentiment-charts';
+import EarningsCharts from '../charts/earnings-charts';
 
 type StockDetailTabsProps = {
   symbol: string;
@@ -24,7 +24,7 @@ export const StockDetailTabs = ({ symbol }: StockDetailTabsProps) => {
     {
       key: StockDetailTabKey.Earnings,
       label: <span css={tabLabelStyles}>Earnings</span>,
-      children: <UnderDevelopment />
+      children: <EarningsCharts symbol={symbol} />
     },
     {
       key: StockDetailTabKey.Sentiment,

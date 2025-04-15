@@ -78,3 +78,18 @@ type StockDetailFilter = Filter & {
   fromDate?: string;
   toDate?: string;
 };
+
+type EarningsScore = {
+  earningsScore: number;
+  epsActualScore: number;
+  epsEstimateScore: number;
+};
+
+type EarningsDetailScore = {
+  date: string;
+  epsActualMomentumScore: number;
+  epsActualRecentScore: number;
+  epsEstimateMomentumScore: number;
+  epsEstimateMomentumScore: number;
+  surpriseRecentScore: number;
+};

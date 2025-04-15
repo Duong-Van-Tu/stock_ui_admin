@@ -1,5 +1,25 @@
 import { fieldMapping } from './field-mapping.helper';
 
+export const initFundamentalScore = {
+  ebitScore: 0,
+  grossIncomeScore: 0,
+  netIncomeScore: 0,
+  revenueScore: 0,
+  detailFundamentalScore: 0
+};
+
+export const initSentimentScore = {
+  score1w: 0,
+  score1m: 0,
+  score3m: 0
+};
+
+export const initEarningsScore = {
+  earningsScore: 0,
+  epsActualScore: 0,
+  epsEstimateScore: 0
+};
+
 export const transformStockDetails = (stock: any): StockDetails | null => {
   if (!stock) return null;
 
@@ -42,13 +62,7 @@ export const transformStockDetails = (stock: any): StockDetails | null => {
 
 export const transformFundamentalScore = (score: any): FundamentalScore => {
   if (!score) {
-    return {
-      ebitScore: 0,
-      grossIncomeScore: 0,
-      netIncomeScore: 0,
-      revenueScore: 0,
-      detailFundamentalScore: 0
-    };
+    return initFundamentalScore;
   }
   return {
     ebitScore: score[fieldMapping.ebitScore],
@@ -62,6 +76,8 @@ export const transformFundamentalScore = (score: any): FundamentalScore => {
 export const transformFundamentalDetailScore = (
   scoreDetails: any[]
 ): FundamentalDetailScore[] => {
+  if (scoreDetails.length <= 0) return [];
+
   return scoreDetails.map((detail) => ({
     year: detail.year,
     ebitMomentumScore: detail[fieldMapping.ebitMomentumScore],
@@ -79,11 +95,7 @@ export const transformFundamentalDetailScore = (
 
 export const transformSentimentScore = (score: any): SentimentScore => {
   if (!score) {
-    return {
-      score1w: 0,
-      score1m: 0,
-      score3m: 0
-    };
+    return initSentimentScore;
   }
   return {
     score1w: score[fieldMapping.score1w],
@@ -102,5 +114,32 @@ export const transformMovingSentimentScore = (
     score1w: score[fieldMapping.score1w],
     score1m: score[fieldMapping.score1m],
     score3m: score[fieldMapping.score3m]
+  }));
+};
+
+export const transformEarningsScore = (score: any): EarningsScore => {
+  if (!score) {
+    return initEarningsScore;
+  }
+
+  return {
+    earningsScore: score[fieldMapping.earningsScore],
+    epsActualScore: score[fieldMapping.epsActualScore],
+    epsEstimateScore: score[fieldMapping.epsEstimateScore]
+  };
+};
+
+export const transformEarningsDetailScore = (
+  scoreDetails: any[]
+): EarningsDetailScore[] => {
+  if (scoreDetails.length <= 0) return [];
+
+  return scoreDetails.map((detail) => ({
+    date: detail.date,
+    epsActualMomentumScore: detail[fieldMapping.epsActualMomentumScore],
+    epsActualRecentScore: detail[fieldMapping.epsActualRecentScore],
+    epsEstimateMomentumScore: detail[fieldMapping.epsEstimateMomentumScore],
+    epsEstimateRecentScore: detail[fieldMapping.epsEstimateRecentScore],
+    surpriseRecentScore: detail[fieldMapping.surpriseRecentScore]
   }));
 };

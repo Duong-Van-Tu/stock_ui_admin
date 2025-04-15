@@ -1,6 +1,11 @@
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import {
+  initEarningsScore,
+  initFundamentalScore,
+  initSentimentScore,
+  transformEarningsDetailScore,
+  transformEarningsScore,
   transformFundamentalDetailScore,
   transformFundamentalScore,
   transformMovingSentimentScore,
@@ -21,20 +26,10 @@ export type StockDetailsState = {
   sentimentScore: SentimentScore;
   movingSentimentScoreLoading: boolean;
   movingSentimentScore: MovingSentimentScore[];
-};
-
-const initFundamentalScore = {
-  ebitScore: 0,
-  grossIncomeScore: 0,
-  netIncomeScore: 0,
-  revenueScore: 0,
-  detailFundamentalScore: 0
-};
-
-const initSentimentScore = {
-  score1w: 0,
-  score1m: 0,
-  score3m: 0
+  earningsScoreLoading: boolean;
+  earningsScore: EarningsScore;
+  earningsDetailScoreLoading: boolean;
+  earningsDetailScore: EarningsDetailScore[];
 };
 
 const initialState: StockDetailsState = {
@@ -42,20 +37,18 @@ const initialState: StockDetailsState = {
   fundamentalDetailLoading: false,
   stockDetails: null,
   fundamentalScoreLoading: false,
-  fundamentalScore: {
-    ebitScore: 0,
-    grossIncomeScore: 0,
-    netIncomeScore: 0,
-    revenueScore: 0,
-    detailFundamentalScore: 0
-  },
+  fundamentalScore: initFundamentalScore,
   fundamentalDetails: [],
   fundamentalDetailScoreLoading: false,
   fundamentalDetailScore: [],
   sentimentScoreLoading: false,
   sentimentScore: initSentimentScore,
   movingSentimentScoreLoading: false,
-  movingSentimentScore: []
+  movingSentimentScore: [],
+  earningsScoreLoading: false,
+  earningsScore: initEarningsScore,
+  earningsDetailScoreLoading: false,
+  earningsDetailScore: []
 };
 
 export const stockDetailsSlice = createAppSlice({
@@ -198,6 +191,51 @@ export const stockDetailsSlice = createAppSlice({
           state.movingSentimentScore = [];
         }
       }
+    ),
+    getEarningsScore: create.asyncThunk(
+      async (symbol: string) => {
+        const response = await defaultApiFetcher.get(
+          `stock-scores/earning-score/${symbol}`
+        );
+        return response.data[0];
+      },
+      {
+        pending: (state) => {
+          state.earningsScoreLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.earningsScoreLoading = false;
+          state.earningsScore = transformEarningsScore(action.payload);
+        },
+        rejected: (state) => {
+          state.earningsScoreLoading = false;
+          state.earningsScore = initEarningsScore;
+        }
+      }
+    ),
+    getEarningsDetailScore: create.asyncThunk(
+      async (symbol: string) => {
+        const response = await defaultApiFetcher.get(
+          `stock-scores/earning-score-detail/${symbol}`
+        );
+
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.earningsDetailScoreLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.earningsDetailScoreLoading = false;
+          state.earningsDetailScore = transformEarningsDetailScore(
+            action.payload
+          );
+        },
+        rejected: (state) => {
+          state.earningsDetailScoreLoading = false;
+          state.earningsDetailScore = [];
+        }
+      }
     )
   }),
 
@@ -215,7 +253,12 @@ export const stockDetailsSlice = createAppSlice({
     watchSentimentScore: (stock) => stock.sentimentScore,
     watchMovingSentimentScoreLoading: (stock) =>
       stock.movingSentimentScoreLoading,
-    watchMovingSentimentScore: (stock) => stock.movingSentimentScore
+    watchMovingSentimentScore: (stock) => stock.movingSentimentScore,
+    watchEarningsScoreLoading: (stock) => stock.earningsScoreLoading,
+    watchEarningsScore: (stock) => stock.earningsScore,
+    watchEarningsDetailScoreLoading: (stock) =>
+      stock.earningsDetailScoreLoading,
+    watchEarningsDetailScore: (stock) => stock.earningsDetailScore
   }
 });
 
@@ -231,7 +274,11 @@ export const {
   watchSentimentScoreLoading,
   watchSentimentScore,
   watchMovingSentimentScoreLoading,
-  watchMovingSentimentScore
+  watchMovingSentimentScore,
+  watchEarningsScoreLoading,
+  watchEarningsScore,
+  watchEarningsDetailScoreLoading,
+  watchEarningsDetailScore
 } = stockDetailsSlice.selectors;
 
 export const {
@@ -240,5 +287,7 @@ export const {
   getFundamentalScore,
   getFundamentalDetailScore,
   getSentimentScore,
-  getMovingSentimentScore
+  getMovingSentimentScore,
+  getEarningsScore,
+  getEarningsDetailScore
 } = stockDetailsSlice.actions;

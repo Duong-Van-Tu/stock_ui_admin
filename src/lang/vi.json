@@ -86,6 +86,8 @@
   "epsEstimate": "EPS ước tính",
   "epsActual": "EPS thực tế",
   "epsSurprise": "Chênh lệch EPS",
+  "epsEstimateScore": "Điểm EPS Estimate",
+  "epsActualScore": "Điểm EPS Actual",
   "revenueActual": "Revenue thực tế",
   "revenueEstimate": "Revenue ước tính",
   "revenueSurprise": "Chênh lệch Revenue",
@@ -181,5 +183,11 @@
   "score1w": "Điểm Sentiment 1 Tuần",
   "score1m": "Điểm Sentiment 1 Tháng",
   "score3m": "Điểm Sentiment 3 Tháng",
-  "movingSentimentScore": "Điểm Sentiment Xu Hướng"
+  "movingSentimentScore": "Điểm Sentiment Xu Hướng",
+  "epsActualMomentum": "EPS actual momentum",
+  "epsActualRecent": "EPS actual recent",
+  "epsEstimateMomentum": "EPS estimate momentum",
+  "epsEstimateRecent": "EPS estimate recent",
+  "surpriseRecent": "Surprise recent",
+  "earningsDetailScoreTitle": "Điểm Earnings Chi Tiết"
 }

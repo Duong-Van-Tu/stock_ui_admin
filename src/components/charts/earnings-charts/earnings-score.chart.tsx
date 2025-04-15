@@ -6,54 +6,46 @@ import { useTranslations } from 'next-intl';
 import GaugeChart from '../gauge.chart';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  getFundamentalScore,
-  watchFundamentalScore
+  getEarningsScore,
+  watchEarningsScore
 } from '@/redux/slices/stock-details.slice';
 import { useCallback, useEffect } from 'react';
 import { roundToDecimals } from '@/utils/common';
 
-type FundamentalScoreProps = {
+type EarningsScoreProps = {
   symbol: string;
 };
 
-export default function FundamentalScoreChart({
-  symbol
-}: FundamentalScoreProps) {
+export function EarningsScore({ symbol }: EarningsScoreProps) {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const fundamentalScore = useAppSelector(watchFundamentalScore);
+  const EarningsScore = useAppSelector(watchEarningsScore);
 
-  const fetchFundamentalScore = useCallback(() => {
-    dispatch(getFundamentalScore(symbol));
+  const fetchEarningsScore = useCallback(() => {
+    dispatch(getEarningsScore(symbol));
   }, [dispatch, symbol]);
 
   useEffect(() => {
-    fetchFundamentalScore();
-  }, [fetchFundamentalScore]);
+    fetchEarningsScore();
+  }, [fetchEarningsScore]);
 
   return (
-    <Card title={<span css={titleStyles}>{t('fundamentalScore')}</span>}>
+    <Card title={<span css={titleStyles}>{t('earningsScore')}</span>}>
       <div css={chartsContainerStyle}>
         {[
-          fundamentalScore.detailFundamentalScore,
-          fundamentalScore.ebitScore,
-          fundamentalScore.grossIncomeScore,
-          fundamentalScore.netIncomeScore,
-          fundamentalScore.revenueScore
+          EarningsScore.earningsScore,
+          EarningsScore.epsActualScore,
+          EarningsScore.epsEstimateScore
         ].map((score, index) => (
           <GaugeChart
             key={index}
             value={roundToDecimals(score)!}
             label={
               index === 0
-                ? t('fundamentalScore')
+                ? t('earningsScore')
                 : index === 1
-                ? t('ebitScore')
-                : index === 2
-                ? t('netIncomeScore')
-                : index === 3
-                ? t('grossIncomeScore')
-                : t('grossIncomeScore')
+                ? t('epsActualScore')
+                : t('epsEstimateScore')
             }
           />
         ))}
