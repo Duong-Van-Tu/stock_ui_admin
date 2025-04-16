@@ -30,7 +30,7 @@ export const SymbolDetailsDrawer = ({
   const getDrawerTitle = (contentType: ContentType | null) => {
     switch (contentType) {
       case ContentType.NEWS:
-        return `${t('newDetails')} (${symbol})`;
+        return `${t('newsDetail')} (${symbol})`;
       case ContentType.EARNINGS:
         return `${t('earningsDetail')} (${symbol})`;
       default:
