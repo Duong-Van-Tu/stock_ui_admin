@@ -65,11 +65,11 @@ export const transformFundamentalScore = (score: any): FundamentalScore => {
     return initFundamentalScore;
   }
   return {
-    ebitScore: score[fieldMapping.ebitScore],
-    grossIncomeScore: score[fieldMapping.grossIncomeScore],
-    netIncomeScore: score[fieldMapping.netIncomeScore],
-    revenueScore: score[fieldMapping.revenueScore],
-    detailFundamentalScore: score[fieldMapping.detailFundamentalScore]
+    ebitScore: score[fieldMapping.ebitScore] || 0,
+    grossIncomeScore: score[fieldMapping.grossIncomeScore] || 0,
+    netIncomeScore: score[fieldMapping.netIncomeScore] || 0,
+    revenueScore: score[fieldMapping.revenueScore] || 0,
+    detailFundamentalScore: score[fieldMapping.detailFundamentalScore] || 0
   };
 };
 

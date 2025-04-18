@@ -1,25 +1,26 @@
 import { v4 as uuid } from 'uuid';
+import { fieldMapping } from './field-mapping.helper';
 
 export const transformStockScoreData = (stocksScore: any[]): StockScore[] => {
   return stocksScore.map((stock) => ({
     id: stock.id,
     key: uuid(),
     symbol: stock.symbol,
-    companyName: stock.companyname,
-    earningDate: stock.earning_date,
-    isAdd: stock.isadd,
-    isAddWatchList: stock.isaddwl,
-    isNews: stock.isnews,
-    totalScore: stock.totalscore,
-    fundamentalScore: stock.fund_score,
-    sentimentScore: stock.sentiment_score,
-    earningsScore: stock.earnings_score,
-    ytd: stock.perf_ytd_value,
-    dayChangePercent: stock.daychangepercent,
+    companyName: stock[fieldMapping.companyName],
+    earningDate: stock[fieldMapping.earningDate],
+    isAdd: stock[fieldMapping.isAdd],
+    isAddWatchList: stock[fieldMapping.isAddWatchList],
+    isNews: stock[fieldMapping.isNews],
+    totalScore: stock[fieldMapping.totalScore],
+    fundamentalScore: stock[fieldMapping.fundamentalScore],
+    sentimentScore: stock[fieldMapping.sentimentScore],
+    earningsScore: stock[fieldMapping.earningsScore],
+    ytd: stock[fieldMapping.ytd],
+    dayChangePercent: stock[fieldMapping.dayChangePercent],
     price: stock.price,
     volume: stock.volume,
     beta: stock.beta,
     atr: stock.atr,
-    isNewsNegative: stock.isnews_negative
+    isNewsNegative: stock[fieldMapping.isNewsNegative]
   }));
 };

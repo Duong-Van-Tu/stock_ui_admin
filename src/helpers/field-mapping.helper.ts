@@ -75,5 +75,6 @@ export const fieldMapping: Record<string, string> = {
   epsActualRecentScore: 'epsActual_recent_score',
   epsEstimateMomentumScore: 'epsEstimate_momentum_score',
   epsEstimateRecentScore: 'epsEstimate_recent_score',
-  surpriseRecentScore: 'surprise_recent_score'
+  surpriseRecentScore: 'surprise_recent_score',
+  tickerName: 'ticker_name'
 };

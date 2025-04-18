@@ -1,19 +1,20 @@
 import { Impact, Sentiment } from '@/constants/common.constant';
 import { v4 as uuid } from 'uuid';
+import { fieldMapping } from './field-mapping.helper';
 
 export const transformCountSentiment = (sentiment: any): CountSentiment => {
   return {
-    countNegative: sentiment.count_negative
-      ? Number(sentiment.count_negative)
+    countNegative: sentiment[fieldMapping.countNegative]
+      ? Number(sentiment[fieldMapping.countNegative])
       : 0,
-    countPositive: sentiment.count_positive
-      ? Number(sentiment.count_positive)
+    countPositive: sentiment[fieldMapping.countPositive]
+      ? Number(sentiment[fieldMapping.countPositive])
       : 0,
-    countVeryNegative: sentiment.count_very_negative
-      ? Number(sentiment.count_very_negative)
+    countVeryNegative: sentiment[fieldMapping.countVeryNegative]
+      ? Number(sentiment[fieldMapping.countVeryNegative])
       : 0,
-    countVeryPositive: sentiment.count_very_negative
-      ? Number(sentiment.count_very_negative)
+    countVeryPositive: sentiment[fieldMapping.countVeryPositive]
+      ? Number(sentiment[fieldMapping.countVeryPositive])
       : 0
   };
 };
@@ -26,8 +27,8 @@ export const transformCompanyNews = (companyNews: any[]): CompanyNews[] => {
     source: news.source,
     sentiment: news.sentiment,
     impact: news.impact,
-    sentimentScore: news.sentiment_score,
-    sentimentScore1w: news.sentiment_score_1w,
+    sentimentScore: news[fieldMapping.sentimentScore],
+    sentimentScore1w: news[fieldMapping.sentimentScore1w],
     url: news.url
   }));
 };
@@ -36,29 +37,29 @@ export const transformListWatcher = (listWatcher: any[]): ListWatcher[] => {
   return listWatcher.map((item) => ({
     key: uuid(),
     symbol: item.symbol,
-    groupStock: item.groupstock,
-    publishingTime: item.publishing_time,
+    groupStock: item[fieldMapping.groupStock],
+    publishingTime: item[fieldMapping.publishingTime],
     headline: item.headline,
     source: item.source,
     sentiment: item.sentiment,
     impact: item.impact,
     url: item.url,
     beta: item.beta,
-    avgVolume: item.avg_volume,
+    avgVolume: item[fieldMapping.avgVolume],
     atr: item.atr,
-    atrPercent: item.atrpercent,
-    fundamentalScore: item.fund_score,
-    sentimentScore: item.sentiment_score,
-    earningsScore: item.earnings_score,
-    weekLow52: item.week_low52,
-    weekHigh52: item.week_high52,
-    marketCapListWatcher: item.market_cap,
+    atrPercent: item[fieldMapping.atrPercent],
+    fundamentalScore: item[fieldMapping.fundamentalScore],
+    sentimentScore: item[fieldMapping.sentimentScore],
+    earningsScore: item[fieldMapping.earningsScore],
+    weekLow52: item[fieldMapping.weekLow52],
+    weekHigh52: item[fieldMapping.weekHigh52],
+    marketCapListWatcher: item[fieldMapping.marketCapListWatcher],
     industry: item.industry,
     sector: item.sector,
     subIndustry: item.subindustry,
     dateTime: item.datetime,
-    earningDate: item.earning_date,
-    totalScore: item.totalscore
+    earningDate: item.item[fieldMapping.earningDate],
+    totalScore: item.item[fieldMapping.totalScore]
   }));
 };
 
