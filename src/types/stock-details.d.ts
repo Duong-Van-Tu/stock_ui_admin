@@ -93,3 +93,10 @@ type EarningsDetailScore = {
   epsEstimateMomentumScore: number;
   surpriseRecentScore: number;
 };
+
+type EarningsDetails = {
+  date: string;
+  epsActual: number;
+  epsEstimate: number;
+  surprise: number;
+};

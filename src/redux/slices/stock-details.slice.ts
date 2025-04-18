@@ -4,6 +4,7 @@ import {
   initEarningsScore,
   initFundamentalScore,
   initSentimentScore,
+  transformEarningsDetails,
   transformEarningsDetailScore,
   transformEarningsScore,
   transformFundamentalDetailScore,
@@ -30,6 +31,8 @@ export type StockDetailsState = {
   earningsScore: EarningsScore;
   earningsDetailScoreLoading: boolean;
   earningsDetailScore: EarningsDetailScore[];
+  earningsDetailLoading: boolean;
+  earningsDetails: EarningsDetails[];
 };
 
 const initialState: StockDetailsState = {
@@ -48,7 +51,9 @@ const initialState: StockDetailsState = {
   earningsScoreLoading: false,
   earningsScore: initEarningsScore,
   earningsDetailScoreLoading: false,
-  earningsDetailScore: []
+  earningsDetailScore: [],
+  earningsDetailLoading: false,
+  earningsDetails: []
 };
 
 export const stockDetailsSlice = createAppSlice({
@@ -236,6 +241,28 @@ export const stockDetailsSlice = createAppSlice({
           state.earningsDetailScore = [];
         }
       }
+    ),
+    getEarningsDetails: create.asyncThunk(
+      async (symbol: string) => {
+        const response = await defaultApiFetcher.get(
+          `stock-scores/earning-detail/${symbol}`
+        );
+
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.earningsDetailLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.earningsDetailLoading = false;
+          state.earningsDetails = transformEarningsDetails(action.payload);
+        },
+        rejected: (state) => {
+          state.earningsDetailLoading = false;
+          state.earningsDetails = [];
+        }
+      }
     )
   }),
 
@@ -258,7 +285,9 @@ export const stockDetailsSlice = createAppSlice({
     watchEarningsScore: (stock) => stock.earningsScore,
     watchEarningsDetailScoreLoading: (stock) =>
       stock.earningsDetailScoreLoading,
-    watchEarningsDetailScore: (stock) => stock.earningsDetailScore
+    watchEarningsDetailScore: (stock) => stock.earningsDetailScore,
+    watchEarningsDetailLoading: (stock) => stock.earningsDetailLoading,
+    watchEarningsDetails: (stock) => stock.earningsDetails
   }
 });
 
@@ -278,7 +307,9 @@ export const {
   watchEarningsScoreLoading,
   watchEarningsScore,
   watchEarningsDetailScoreLoading,
-  watchEarningsDetailScore
+  watchEarningsDetailScore,
+  watchEarningsDetailLoading,
+  watchEarningsDetails
 } = stockDetailsSlice.selectors;
 
 export const {
@@ -289,5 +320,6 @@ export const {
   getSentimentScore,
   getMovingSentimentScore,
   getEarningsScore,
-  getEarningsDetailScore
+  getEarningsDetailScore,
+  getEarningsDetails
 } = stockDetailsSlice.actions;

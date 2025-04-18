@@ -143,3 +143,14 @@ export const transformEarningsDetailScore = (
     surpriseRecentScore: detail[fieldMapping.surpriseRecentScore]
   }));
 };
+
+export const transformEarningsDetails = (details: any[]): EarningsDetails[] => {
+  if (details.length <= 0) return [];
+
+  return details.map((detail) => ({
+    date: detail.date,
+    epsActual: detail.epsActual ?? 0,
+    epsEstimate: detail.epsEstimate ?? 0,
+    surprise: detail.surprise ?? 0
+  }));
+};
