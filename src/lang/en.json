@@ -190,5 +190,20 @@
   "epsEstimateRecent": "EPS estimate recent",
   "surpriseRecent": "Surprise recent",
   "earningsDetailScoreTitle": "Earnings Score Details",
-  "earningsDetailsTitle": "Earnings Details"
+  "earningsDetailsTitle": "Earnings Details",
+  "datetime": "Date Time",
+  "timeframe": "Timeframe",
+  "underWillrMinus80": "William ≤ -80",
+  "underSma50": "≤ SMA(50)",
+  "underSma200": "≤ SMA(200)",
+  "dropPct": "Drop(%)",
+  "drop1_5Pct": "Drop 1.5%",
+  "drop3Pct": "Drop 3%",
+  "drop5Pct": "Drop 5%",
+  "dropPct2prev": "Drop(%) 2prev",
+  "drop3Pct2prev": "Drop 3% 2prev",
+  "drop5Pct2prev": "Drop 5% 2prev",
+  "drop10Pct2prev": "Drop 10% 2prev",
+  "criticalNews": "Critical news",
+  "nextEarnings": "Next earnings"
 }

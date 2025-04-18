@@ -2,6 +2,8 @@ import { v4 as uuid } from 'uuid';
 import { fieldMapping } from './field-mapping.helper';
 
 export const transformStockScoreData = (stocksScore: any[]): StockScore[] => {
+  if (stocksScore.length <= 0) return [];
+
   return stocksScore.map((stock) => ({
     id: stock.id,
     key: uuid(),

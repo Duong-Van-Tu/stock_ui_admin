@@ -190,5 +190,20 @@
   "epsEstimateRecent": "EPS estimate recent",
   "surpriseRecent": "Surprise recent",
   "earningsDetailScoreTitle": "Điểm Earnings Chi Tiết",
-  "earningsDetailsTitle": "Chi tiết Earnings"
+  "earningsDetailsTitle": "Chi tiết Earnings",
+  "datetime": "Ngày giờ",
+  "timeframe": "Khung thời gian",
+  "underWillrMinus80": "William ≤ -80",
+  "underSma50": "≤ SMA(50)",
+  "underSma200": "≤ SMA(200)",
+  "dropPct": "Giảm (%)",
+  "drop1_5Pct": "Giảm 1.5%",
+  "drop3Pct": "Giảm 3%",
+  "drop5Pct": "Giảm 5%",
+  "dropPct2prev": "Giảm (%) 2 phiên trước",
+  "drop3Pct2prev": "Giảm 3% 2 phiên trước",
+  "drop5Pct2prev": "Giảm 5% 2 phiên trước",
+  "drop10Pct2prev": "Giảm 10% 2 phiên trước",
+  "criticalNews": "Tin tức quan trọng",
+  "nextEarnings": "Lợi nhuận sắp tới"
 }

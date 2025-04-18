@@ -2,13 +2,7 @@
 import { css } from '@emotion/react';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import {
-  getListWatcher,
-  watchListWatcher,
-  watchListWatcherLoading,
-  watchListWatcherPagination
-} from '@/redux/slices/sentiment.slice';
-import { Table, TableColumnsType, Tag } from 'antd';
+import { Table, TableColumnsType } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
@@ -18,36 +12,34 @@ import {
   cleanFalsyValues,
   formatMarketCap,
   formatNumberShort,
+  formatPercent,
   roundToDecimals
 } from '@/utils/common';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { EmptyDataTable } from './empty.table';
 import { watchSearchSymbol } from '@/redux/slices/search';
 import { SymbolCell } from './columns/symbol-cell.column';
+import { useSearchParams } from 'next/navigation';
+import {
+  getListHighActivity,
+  watchListHighActivity,
+  watchListHighActivityLoading,
+  watchListHighActivityPagination
+} from '@/redux/slices/high-activity.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
-import { StockChangeCell } from './columns/stock-change-cell.column';
-import EllipsisText from '../ellipsis-text';
-import { TableTitle } from './title.table';
-import {
-  getImpactColor,
-  isNegativeSentiment,
-  isPositiveSentiment
-} from '@/helpers/sentiment.helper';
-import { ListWatcherFilter } from '../filters/AI-sentiment.filter';
-import { useSearchParams } from 'next/navigation';
 
 export const ListHighActivity = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const symbol = useAppSelector(watchSearchSymbol);
   const { height } = useWindowSize();
-  const loading = useAppSelector(watchListWatcherLoading);
-  const listWatcher = useAppSelector(watchListWatcher);
-  const pagination = useAppSelector(watchListWatcherPagination);
+  const loading = useAppSelector(watchListHighActivityLoading);
+  const listHighActivity = useAppSelector(watchListHighActivity);
+  const pagination = useAppSelector(watchListHighActivityPagination);
   const searchParams = useSearchParams();
 
-  const [sortField, setSortField] = useState<string>('totalScore');
+  const [sortField, setSortField] = useState<string>('datetime');
   const [sortType, setSortType] = useState<SortOrder>('descend');
   const [filter, setFilter] = useState<ListHighActivityFilter>({});
 
@@ -76,23 +68,23 @@ export const ListHighActivity = () => {
 
     setFilter((prev) => ({ ...prev, ...newFilter }));
 
-    fetchListWatcher({
+    fetchListHighActivity({
       page: PAGINATION.currentPage,
       pageSize: pagination.pageSize,
       filter: newFilter
     });
   };
 
-  const handleFilter = (values: ListHighActivityFilter) => {
-    const newFilter = {
-      ...filter,
-      ...values
-    };
-    setFilter(newFilter);
-    fetchListWatcher({ filter: newFilter });
-  };
+  // const handleFilter = (values: ListHighActivityFilter) => {
+  //   const newFilter = {
+  //     ...filter,
+  //     ...values
+  //   };
+  //   setFilter(newFilter);
+  //   fetchListHighActivity({ filter: newFilter });
+  // };
 
-  const fetchListWatcher = useCallback(
+  const fetchListHighActivity = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
       pageSize = PAGINATION_PARAMS.limit,
@@ -100,12 +92,14 @@ export const ListHighActivity = () => {
     }: PageChangeParams = {}) => {
       const filteredFilter = cleanFalsyValues(filter);
       dispatch(
-        getListWatcher({
+        getListHighActivity({
           page,
           limit: pageSize,
           sortField: fieldMapping[sortField],
           sortType: convertSortType(sortType),
-          ...filteredFilter
+          ...filteredFilter,
+          [fieldMapping.drop1_5Pct]: true,
+          fromVolume: 2000000
         })
       );
     },
@@ -124,8 +118,8 @@ export const ListHighActivity = () => {
       impact: params.get('impact') || undefined
     };
     setFilter((prev) => ({ ...prev, symbol, ...initialValues }));
-    fetchListWatcher({ filter: { symbol, ...initialValues } });
-  }, [symbol, searchParams, fetchListWatcher]);
+    fetchListHighActivity({ filter: { symbol, ...initialValues } });
+  }, [symbol, searchParams, fetchListHighActivity]);
 
   const columns: TableColumnsType<ListHighActivity> = [
     {
@@ -147,129 +141,44 @@ export const ListHighActivity = () => {
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'groupStock' ? sortType : null,
+      sortOrder: sortField === 'symbol' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('groupStock')
+        onClick: () => handleSortOrder('symbol')
       }),
       render: (_, record) => <SymbolCell symbol={record.symbol} />
     },
     {
-      title: t('group'),
-      dataIndex: 'groupStock',
-      key: 'groupStock',
-      width: 100,
-      fixed: 'left',
+      title: t('datetime'),
+      dataIndex: 'datetime',
+      key: 'datetime',
+      width: 134,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'groupStock' ? sortType : null,
+      sortOrder: sortField === 'datetime' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('groupStock')
+        onClick: () => handleSortOrder('datetime')
       }),
       align: 'center',
-      render: (value) =>
-        value === 'group_1'
-          ? `${t('group')} 1`
-          : value === 'group_2'
-          ? `${t('group')} 2`
-          : `${t('group')} 3`
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
-      title: t('publishingTime'),
-      dataIndex: 'publishingTime',
-      key: 'publishingTime',
-      width: 158,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'publishingTime' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('publishingTime')
-      }),
-      align: 'center',
-      render: (value) => <DateTimeCell value={value} />
-    },
-    {
-      title: t('headline'),
-      dataIndex: 'headline',
-      key: 'headline',
-      width: 160,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'headline' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('headline')
-      }),
-      render: (value) => <EllipsisText text={value} maxLines={1} />
-    },
-    {
-      title: t('source'),
-      dataIndex: 'source',
-      key: 'source',
+      title: t('timeframe'),
+      dataIndex: 'timeframe',
+      key: 'timeframe',
       width: 120,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'source' ? sortType : null,
+      sortOrder: sortField === 'timeframe' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('source')
-      }),
-      align: 'center'
-    },
-    {
-      title: t('sentiment'),
-      dataIndex: 'sentiment',
-      key: 'sentiment',
-      width: 130,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'sentiment' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('sentiment')
+        onClick: () => handleSortOrder('timeframe')
       }),
       align: 'center',
-      render: (value) => (
-        <PositiveNegativeText
-          isPositive={isPositiveSentiment(value)}
-          isNegative={isNegativeSentiment(value)}
-        >
-          <span>{value}</span>
-        </PositiveNegativeText>
-      )
+      render: (value) => (value ? formatNumberShort(value) : '-')
     },
     {
-      title: t('impact'),
-      dataIndex: 'impact',
-      key: 'impact',
-      width: 120,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'impact' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('impact')
-      }),
-      align: 'center',
-      render: (value) => <Tag color={getImpactColor(value)}>{value}</Tag>
-    },
-    {
-      title: t('beta'),
-      dataIndex: 'beta',
-      key: 'beta',
-      width: 100,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'beta' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('beta')
-      }),
-      align: 'center'
-    },
-    {
-      title: 'Avg volume',
+      title: t('volume'),
       dataIndex: 'avgVolume',
       key: 'avgVolume',
       width: 130,
@@ -284,10 +193,10 @@ export const ListHighActivity = () => {
       render: (value) => (value ? formatNumberShort(value) : '-')
     },
     {
-      title: 'ATR(%)',
+      title: t('atr'),
       dataIndex: 'atr',
       key: 'atr',
-      width: 120,
+      width: 90,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
@@ -296,75 +205,276 @@ export const ListHighActivity = () => {
         onClick: () => handleSortOrder('atr')
       }),
       align: 'center',
-      render: (value, record) =>
-        value ? (
-          <StockChangeCell value={value} percentage={record.atrPercent} />
-        ) : (
-          '-'
-        )
+      render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
-      title: t('totalScore'),
-      dataIndex: 'totalScore',
-      key: 'totalScore',
+      title: t('beta'),
+      dataIndex: 'beta',
+      key: 'beta',
+      width: 90,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'beta' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('beta')
+      }),
+      align: 'center',
+      render: (value) => (value ? roundToDecimals(value) : '-')
+    },
+    {
+      title: t('marketCap'),
+      dataIndex: 'marketCapHighActivity',
+      key: 'marketCapHighActivity',
       width: 130,
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'totalScore' ? sortType : null,
+      sortOrder: sortField === 'marketCapHighActivity' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('totalScore')
+        onClick: () => handleSortOrder('marketCapHighActivity')
+      }),
+      align: 'center',
+      render: (value) => (value ? formatMarketCap(value) : '-')
+    },
+    {
+      title: t('underWillrMinus80'),
+      dataIndex: 'underWillrMinus80',
+      key: 'underWillrMinus80',
+      width: 140,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'underWillrMinus80' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('underWillrMinus80')
+      }),
+      align: 'center',
+      render: (value) => (
+        <PositiveNegativeText isPositive={value} isNegative={!value}>
+          <span>{value ? 'Yes' : 'No'}</span>
+        </PositiveNegativeText>
+      )
+    },
+    {
+      title: t('underSma50'),
+      dataIndex: 'underSma50',
+      key: 'underSma50',
+      width: 110,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'underSma50' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('underSma50')
+      }),
+      align: 'center',
+      render: (value) => (
+        <PositiveNegativeText isPositive={value} isNegative={!value}>
+          <span>{value ? 'Yes' : 'No'}</span>
+        </PositiveNegativeText>
+      )
+    },
+    {
+      title: t('underSma200'),
+      dataIndex: 'underSma200',
+      key: 'underSma200',
+      width: 120,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'underSma200' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('underSma200')
+      }),
+      align: 'center',
+      render: (value) => (
+        <PositiveNegativeText isPositive={value} isNegative={!value}>
+          <span>{value ? 'Yes' : 'No'}</span>
+        </PositiveNegativeText>
+      )
+    },
+    {
+      title: t('dropPct'),
+      dataIndex: 'dropPct',
+      key: 'dropPct',
+      width: 120,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'dropPct' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('dropPct')
       }),
       align: 'center',
       render: (value) =>
         value ? (
-          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
-            <span>{roundToDecimals(value, 2)}</span>
+          <PositiveNegativeText isPositive={value >= 0} isNegative={value < 0}>
+            <span>{formatPercent(value)}</span>
           </PositiveNegativeText>
         ) : (
           '-'
         )
     },
     {
-      title: t('fundamentalScore'),
-      dataIndex: 'fundamentalScore',
-      key: 'fundamentalScore',
-      width: 170,
-      align: 'center',
+      title: t('drop1_5Pct'),
+      dataIndex: 'drop1_5Pct',
+      key: 'drop1_5Pct',
+      width: 110,
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'fundamentalScore' ? sortType : null,
+      sortOrder: sortField === 'drop1_5Pct' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('fundamentalScore')
+        onClick: () => handleSortOrder('drop1_5Pct')
       }),
+      align: 'center',
+      render: (value) => (
+        <PositiveNegativeText isPositive={value} isNegative={!value}>
+          <span>{value ? 'Yes' : 'No'}</span>
+        </PositiveNegativeText>
+      )
+    },
+    {
+      title: t('drop3Pct'),
+      dataIndex: 'drop3Pct',
+      key: 'drop3Pct',
+      width: 110,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'drop3Pct' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('drop3Pct')
+      }),
+      align: 'center',
+      render: (value) => (
+        <PositiveNegativeText isPositive={value} isNegative={!value}>
+          <span>{value ? 'Yes' : 'No'}</span>
+        </PositiveNegativeText>
+      )
+    },
+    {
+      title: t('drop5Pct'),
+      dataIndex: 'drop5Pct',
+      key: 'drop5Pct',
+      width: 110,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'drop5Pct' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('drop5Pct')
+      }),
+      align: 'center',
+      render: (value) => (
+        <PositiveNegativeText isPositive={value} isNegative={!value}>
+          <span>{value ? 'Yes' : 'No'}</span>
+        </PositiveNegativeText>
+      )
+    },
+    {
+      title: t('dropPct2prev'),
+      dataIndex: 'dropPct2prev',
+      key: 'dropPct2prev',
+      width: 140,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'dropPct2prev' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('dropPct2prev')
+      }),
+      align: 'center',
       render: (value) =>
         value ? (
-          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
-            <span>{roundToDecimals(value, 2)}</span>
+          <PositiveNegativeText isPositive={value >= 0} isNegative={value < 0}>
+            <span>{formatPercent(value)}</span>
           </PositiveNegativeText>
         ) : (
-          <span>-</span>
+          '-'
         )
     },
     {
-      title: t('sentimentScore'),
-      dataIndex: 'sentimentScore',
-      key: 'sentimentScore',
-      width: 150,
+      title: t('drop3Pct2prev'),
+      dataIndex: 'drop3Pct2prev',
+      key: 'drop3Pct2prev',
+      width: 140,
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'sentimentScore' ? sortType : null,
+      sortOrder: sortField === 'drop3Pct2prev' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('sentimentScore')
+        onClick: () => handleSortOrder('drop3Pct2prev')
       }),
       align: 'center',
-      render: (value) =>
-        value ? (
-          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
-            <span>{roundToDecimals(value, 2)}</span>
-          </PositiveNegativeText>
-        ) : (
-          <span>-</span>
-        )
+      render: (value) => (
+        <PositiveNegativeText isPositive={value} isNegative={!value}>
+          <span>{value ? 'Yes' : 'No'}</span>
+        </PositiveNegativeText>
+      )
+    },
+    {
+      title: t('drop5Pct2prev'),
+      dataIndex: 'drop5Pct2prev',
+      key: 'drop5Pct2prev',
+      width: 140,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'drop5Pct2prev' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('drop5Pct2prev')
+      }),
+      align: 'center',
+      render: (value) => (
+        <PositiveNegativeText isPositive={value} isNegative={!value}>
+          <span>{value ? 'Yes' : 'No'}</span>
+        </PositiveNegativeText>
+      )
+    },
+    {
+      title: t('drop10Pct2prev'),
+      dataIndex: 'drop10Pct2prev',
+      key: 'drop10Pct2prev',
+      width: 146,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'drop10Pct2prev' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('drop10Pct2prev')
+      }),
+      align: 'center',
+      render: (value) => (
+        <PositiveNegativeText isPositive={value} isNegative={!value}>
+          <span>{value ? 'Yes' : 'No'}</span>
+        </PositiveNegativeText>
+      )
+    },
+    {
+      title: t('criticalNews'),
+      dataIndex: 'drop10Pct2prev',
+      key: 'drop10Pct2prev',
+      width: 130,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'drop10Pct2prev' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('drop10Pct2prev')
+      }),
+      align: 'center',
+      render: (value) => (
+        <PositiveNegativeText isPositive={value} isNegative={!value}>
+          <span>{value ? 'Yes' : 'No'}</span>
+        </PositiveNegativeText>
+      )
+    },
+    {
+      title: t('nextEarnings'),
+      dataIndex: 'nextEarning',
+      key: 'nextEarning',
+      width: 134,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'nextEarning' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('nextEarning')
+      }),
+      align: 'center',
+      render: (value) => (
+        <PositiveNegativeText isPositive={value} isNegative={!value}>
+          <span>{value ? 'Yes' : 'No'}</span>
+        </PositiveNegativeText>
+      )
     },
     {
       title: t('earningsScore'),
@@ -388,126 +498,61 @@ export const ListHighActivity = () => {
         )
     },
     {
-      title: t('52WeekLow'),
-      dataIndex: 'weekLow52',
-      key: 'weekLow52',
-      width: 140,
-      defaultSortOrder: 'descend',
+      title: t('sentimentScore'),
+      dataIndex: 'sentimentScore',
+      key: 'sentimentScore',
+      width: 160,
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'weekLow52' ? sortType : null,
+      sortOrder: sortField === 'sentimentScore' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('weekLow52')
-      }),
-      align: 'center'
-    },
-    {
-      title: t('52WeekHigh'),
-      dataIndex: 'weekHigh52',
-      key: 'weekHigh52',
-      width: 140,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'weekHigh52' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('weekHigh52')
-      }),
-      align: 'center'
-    },
-    {
-      title: t('marketCap'),
-      dataIndex: 'marketCapListWatcher',
-      key: 'marketCapListWatcher',
-      width: 130,
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'marketCapListWatcher' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('marketCapListWatcher')
+        onClick: () => handleSortOrder('sentimentScore')
       }),
       align: 'center',
-      render: (value) => (value ? formatMarketCap(value) : '-')
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
     },
     {
-      title: t('industry'),
-      dataIndex: 'industry',
-      key: 'industry',
-      width: 180,
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'industry' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('industry')
-      }),
-      align: 'left',
-      render: (value) => <EllipsisText text={value} maxLines={1} />
-    },
-    {
-      title: t('subIndustry'),
-      dataIndex: 'subIndustry',
-      key: 'subIndustry',
-      width: 180,
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'subIndustry' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('subIndustry')
-      }),
-      align: 'left',
-      render: (value) => <EllipsisText text={value} maxLines={1} />
-    },
-    {
-      title: t('sector'),
-      dataIndex: 'sector',
-      key: 'sector',
-      width: 200,
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'sector' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('sector')
-      }),
-      align: 'left',
-      render: (value) => <EllipsisText text={value} maxLines={1} />
-    },
-    {
-      title: 'Link',
-      dataIndex: 'url',
-      key: 'url',
-      width: 140,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'url' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('url')
-      }),
+      title: t('fundamentalScore'),
+      dataIndex: 'fundamentalScore',
+      key: 'fundamentalScore',
+      width: 170,
       align: 'center',
-      fixed: 'right',
-      render: (value) => (
-        <a href={value} target='_blank'>
-          {' '}
-          {t('viewDetails')}
-        </a>
-      )
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'fundamentalScore' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('fundamentalScore')
+      }),
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
     }
   ];
 
   return (
     <div css={rootStyles}>
-      <ListWatcherFilter onFilter={handleFilter} />
       <div css={tableWrapperStyles}>
-        <TableTitle customStyles={titleStyles}>{t('AISentiment')}</TableTitle>
         <Table<ListHighActivity>
           css={tableStyles}
           rowKey={(record) => record.key}
           columns={columns}
-          dataSource={listWatcher}
+          dataSource={listHighActivity}
           loading={loading}
           scroll={{
             x: 1200,
-            y: listWatcher.length > 0 ? height - 370 : undefined
+            y: listHighActivity.length > 0 ? height - 210 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -535,7 +580,7 @@ export const ListHighActivity = () => {
             pageSize: pagination.pageSize,
             total: pagination.total,
             onChange: (page, pageSize) => {
-              fetchListWatcher({ page, pageSize, filter });
+              fetchListHighActivity({ page, pageSize, filter });
             }
           }}
         />
@@ -566,8 +611,4 @@ const emptyStyles = (height: number) => css`
   display: flex;
   flex-direction: column;
   justify-content: center;
-`;
-
-const titleStyles = css`
-  padding: 1.2rem 1.6rem;
 `;
