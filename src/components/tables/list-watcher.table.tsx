@@ -35,7 +35,7 @@ import {
   isNegativeSentiment,
   isPositiveSentiment
 } from '@/helpers/sentiment.helper';
-import { ListWatcherFilter } from '../filters/AI-sentiment.filter';
+import { ListWatcherFilter } from '../filters/list-watcher.filter';
 import { useSearchParams } from 'next/navigation';
 
 export const ListWatcherTable = () => {
