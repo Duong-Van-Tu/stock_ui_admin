@@ -58,8 +58,8 @@ export const transformListWatcher = (listWatcher: any[]): ListWatcher[] => {
     sector: item.sector,
     subIndustry: item.subindustry,
     dateTime: item.datetime,
-    earningDate: item.item[fieldMapping.earningDate],
-    totalScore: item.item[fieldMapping.totalScore]
+    earningDate: item[fieldMapping.earningDate],
+    totalScore: item[fieldMapping.totalScore]
   }));
 };
 
