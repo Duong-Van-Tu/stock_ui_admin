@@ -37,8 +37,8 @@ export const SelectFilter = ({
 };
 
 const labelStyles = css`
-  font-size: 1.6rem;
-  font-weight: 500;
+  font-size: 1.4rem;
+  font-weight: 600;
   line-height: 1.8rem;
 `;
 
