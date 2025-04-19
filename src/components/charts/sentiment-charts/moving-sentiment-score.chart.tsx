@@ -19,7 +19,7 @@ type FundamentalDetailProps = {
 
 const DEFAULT_RANGE = 7;
 const CHART_HEIGHT = 400;
-const CHART_GRID = { bottom: 80, left: 30, right: 30 };
+const CHART_GRID = { bottom: 80, left: 32, right: 30 };
 
 const getRangeOptions = (t: (key: string) => string) => [
   { value: 1, label: t('1Day') },
