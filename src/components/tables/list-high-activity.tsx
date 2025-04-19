@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Table, TableColumnsType } from 'antd';
 import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
@@ -17,9 +17,7 @@ import {
 } from '@/utils/common';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { EmptyDataTable } from './empty.table';
-import { watchSearchSymbol } from '@/redux/slices/search';
 import { SymbolCell } from './columns/symbol-cell.column';
-import { useSearchParams } from 'next/navigation';
 import {
   getListHighActivity,
   watchListHighActivity,
@@ -29,12 +27,11 @@ import {
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { useSortOrder } from '@/hooks/sort-order.hook';
+import { ListHighActivityFilter } from '../filters/list-high-activity.filter';
 
 export const ListHighActivity = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const symbol = useAppSelector(watchSearchSymbol);
   const { height } = useWindowSize();
   const loading = useAppSelector(watchListHighActivityLoading);
   const listHighActivity = useAppSelector(watchListHighActivity);
@@ -57,14 +54,14 @@ export const ListHighActivity = () => {
       }
     });
 
-  // const handleFilter = (values: ListHighActivityFilter) => {
-  //   const newFilter = {
-  //     ...filter,
-  //     ...values
-  //   };
-  //   setFilter(newFilter);
-  //   fetchListHighActivity({ filter: newFilter });
-  // };
+  const handleFilter = (values: ListHighActivityFilter) => {
+    const newFilter = {
+      ...filter,
+      ...values
+    };
+    setFilter(newFilter);
+    fetchListHighActivity({ filter: newFilter });
+  };
 
   const fetchListHighActivity = useCallback(
     ({
@@ -77,11 +74,9 @@ export const ListHighActivity = () => {
         getListHighActivity({
           page,
           limit: pageSize,
-          sortField: fieldMapping[sortField],
+          sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
-          ...filteredFilter,
-          [fieldMapping.drop1_5Pct]: true,
-          fromVolume: 2000000
+          ...filteredFilter
         })
       );
     },
@@ -89,23 +84,9 @@ export const ListHighActivity = () => {
     []
   );
 
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    const initialValues = {
-      lastHours: params.get('lastHours')
-        ? Number(params.get('lastHours'))
-        : 168, // 168 hours = 7days
-      group: params.get('group') || undefined,
-      sentiment: params.get('sentiment') || undefined,
-      impact: params.get('impact') || undefined
-    };
-    setFilter((prev) => ({ ...prev, symbol, ...initialValues }));
-    fetchListHighActivity({ filter: { symbol, ...initialValues } });
-  }, [symbol, searchParams, fetchListHighActivity]);
-
   const columns: TableColumnsType<ListHighActivity> = [
     {
-      title: t('no'),
+      title: t('stt'),
       dataIndex: 'index',
       key: 'index',
       width: 60,
@@ -232,7 +213,7 @@ export const ListHighActivity = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value} isNegative={!value}>
-          <span>{value ? 'Yes' : 'No'}</span>
+          <span>{value ? t('yes') : t('no')}</span>
         </PositiveNegativeText>
       )
     },
@@ -250,7 +231,7 @@ export const ListHighActivity = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value} isNegative={!value}>
-          <span>{value ? 'Yes' : 'No'}</span>
+          <span>{value ? t('yes') : t('no')}</span>
         </PositiveNegativeText>
       )
     },
@@ -268,7 +249,7 @@ export const ListHighActivity = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value} isNegative={!value}>
-          <span>{value ? 'Yes' : 'No'}</span>
+          <span>{value ? t('yes') : t('no')}</span>
         </PositiveNegativeText>
       )
     },
@@ -307,7 +288,7 @@ export const ListHighActivity = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value} isNegative={!value}>
-          <span>{value ? 'Yes' : 'No'}</span>
+          <span>{value ? t('yes') : t('no')}</span>
         </PositiveNegativeText>
       )
     },
@@ -325,7 +306,7 @@ export const ListHighActivity = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value} isNegative={!value}>
-          <span>{value ? 'Yes' : 'No'}</span>
+          <span>{value ? t('yes') : t('no')}</span>
         </PositiveNegativeText>
       )
     },
@@ -343,7 +324,7 @@ export const ListHighActivity = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value} isNegative={!value}>
-          <span>{value ? 'Yes' : 'No'}</span>
+          <span>{value ? t('yes') : t('no')}</span>
         </PositiveNegativeText>
       )
     },
@@ -382,7 +363,7 @@ export const ListHighActivity = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value} isNegative={!value}>
-          <span>{value ? 'Yes' : 'No'}</span>
+          <span>{value ? t('yes') : t('no')}</span>
         </PositiveNegativeText>
       )
     },
@@ -400,7 +381,7 @@ export const ListHighActivity = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value} isNegative={!value}>
-          <span>{value ? 'Yes' : 'No'}</span>
+          <span>{value ? t('yes') : t('no')}</span>
         </PositiveNegativeText>
       )
     },
@@ -418,7 +399,7 @@ export const ListHighActivity = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value} isNegative={!value}>
-          <span>{value ? 'Yes' : 'No'}</span>
+          <span>{value ? t('yes') : t('no')}</span>
         </PositiveNegativeText>
       )
     },
@@ -436,7 +417,7 @@ export const ListHighActivity = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value} isNegative={!value}>
-          <span>{value ? 'Yes' : 'No'}</span>
+          <span>{value ? t('yes') : t('no')}</span>
         </PositiveNegativeText>
       )
     },
@@ -454,7 +435,7 @@ export const ListHighActivity = () => {
       align: 'center',
       render: (value) => (
         <PositiveNegativeText isPositive={value} isNegative={!value}>
-          <span>{value ? 'Yes' : 'No'}</span>
+          <span>{value ? t('yes') : t('no')}</span>
         </PositiveNegativeText>
       )
     },
@@ -525,6 +506,7 @@ export const ListHighActivity = () => {
 
   return (
     <div css={rootStyles}>
+      <ListHighActivityFilter onFilter={handleFilter} />
       <div css={tableWrapperStyles}>
         <Table<ListHighActivity>
           css={tableStyles}

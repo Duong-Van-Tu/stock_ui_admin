@@ -1,5 +1,5 @@
 export const getAvgVolumeOptions = (t: (key: string) => string) => [
-  { label: t('any'), value: '' },
+  { label: t('any'), value: 'any' },
   { label: t('under500k'), value: 'u500000' },
   { label: t('under1m'), value: 'u1000000' },
   { label: t('under2m'), value: 'u2000000' },
@@ -26,7 +26,7 @@ export const getAvgVolumeOptions = (t: (key: string) => string) => [
 ];
 
 export const getATROptions = (t: (key: string) => string) => [
-  { label: t('any'), value: '' },
+  { label: t('any'), value: 'any' },
   { label: t('under1'), value: 'u1' },
   { label: t('under2'), value: 'u2' },
   { label: t('under5'), value: 'u5' },
@@ -45,7 +45,7 @@ export const getATROptions = (t: (key: string) => string) => [
 ];
 
 export const getBetaOptions = (t: (key: string) => string) => [
-  { label: t('any'), value: '' },
+  { label: t('any'), value: 'any' },
   { label: t('under1'), value: 'u1' },
   { label: t('under2'), value: 'u2' },
   { label: t('under3'), value: 'u3' },
@@ -59,4 +59,10 @@ export const getBetaOptions = (t: (key: string) => string) => [
   { label: t('from2To3'), value: '2to3' },
   { label: t('from3To4'), value: '3to4' },
   { label: t('from4To5'), value: '4to5' }
+];
+
+export const getBooleanOptions = (t: (key: string) => string) => [
+  { label: t('any'), value: 'any' },
+  { label: t('yes'), value: 'true' },
+  { label: t('no'), value: 'false' }
 ];
