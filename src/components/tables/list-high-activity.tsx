@@ -54,15 +54,6 @@ export const ListHighActivity = () => {
       }
     });
 
-  const handleFilter = (values: ListHighActivityFilter) => {
-    const newFilter = {
-      ...filter,
-      ...values
-    };
-    setFilter(newFilter);
-    fetchListHighActivity({ filter: newFilter });
-  };
-
   const fetchListHighActivity = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
@@ -76,12 +67,28 @@ export const ListHighActivity = () => {
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
+          fromDate: '2025-04-16',
+          toDate: '2025-04-19',
           ...filteredFilter
         })
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
+  );
+
+  const handleFilter = useCallback(
+    (values: ListHighActivityFilter) => {
+      setFilter((prev) => {
+        const newFilter = {
+          ...prev,
+          ...values
+        };
+        fetchListHighActivity({ filter: newFilter });
+        return newFilter;
+      });
+    },
+    [fetchListHighActivity]
   );
 
   const columns: TableColumnsType<ListHighActivity> = [

@@ -56,7 +56,7 @@ export const useSortOrder = <TFilter = any>({
 
       onChange?.(field, newSortType, newFilter as TFilter);
     },
-    [sortField, sortType, fieldMapping, currentFilter, onChange]
+    [sortField, sortType, currentFilter, onChange]
   );
 
   return {

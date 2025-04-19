@@ -4,7 +4,7 @@ import { css, SerializedStyles } from '@emotion/react';
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Button, Col, Form, Row, Select, Space } from 'antd';
+import { Button, Col, Form, Row, Space } from 'antd';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
 import {
   getATROptions,
@@ -16,6 +16,7 @@ import { parseRangeValue } from '@/utils/common';
 import { useAppSelector } from '@/redux/hooks';
 import { watchSearchSymbol } from '@/redux/slices/search';
 import { SelectFilter } from './select-filter';
+import { fieldMapping } from '@/helpers/field-mapping.helper';
 
 type ListHighActivityFilterProps = {
   customStyles?: SerializedStyles;
@@ -78,9 +79,9 @@ export const ListHighActivityFilter = ({
     onFilter({
       symbol,
       ...buildFilterData(initialValues),
-      drop1_5Pct
+      [fieldMapping.drop1_5Pct]: drop1_5Pct
     });
-  }, [searchParams, symbol]);
+  }, [searchParams, symbol, form, onFilter]);
 
   return (
     <div css={[rootStyles, customStyles]}>
@@ -146,14 +147,6 @@ export const ListHighActivityFilter = ({
       </Form>
     </div>
   );
-};
-
-type SelectFilterProps = {
-  name: string;
-  label: string;
-  options: { label: string; value: string }[];
-  onSelect: (value: string) => void;
-  onClear: () => void;
 };
 
 const rootStyles = css`
