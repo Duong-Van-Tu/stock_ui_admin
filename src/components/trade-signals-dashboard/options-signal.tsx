@@ -65,7 +65,7 @@ export const OptionSignal = () => {
         getAlertLogs({
           page,
           limit: pageSize,
-          sortField: fieldMapping[sortField],
+          sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           isOptions: true,
           ...filteredFilter

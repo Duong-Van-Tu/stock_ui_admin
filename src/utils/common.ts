@@ -201,3 +201,22 @@ export const calculatePercentage = (
 
   return ((finalValue - initialValue) / initialValue) * 100;
 };
+
+export const parseRangeValue = (
+  value: string
+): { from: number | undefined; to: number | undefined } => {
+  if (!value || value === 'Any') return { from: undefined, to: undefined };
+
+  if (value.startsWith('u'))
+    return { from: undefined, to: parseInt(value.slice(1)) };
+
+  if (value.startsWith('o'))
+    return { from: parseInt(value.slice(1)), to: undefined };
+
+  if (value.includes('to')) {
+    const [from, to] = value.split('to').map((num) => parseInt(num));
+    return { from, to };
+  }
+
+  return { from: undefined, to: undefined };
+};

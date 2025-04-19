@@ -86,7 +86,7 @@ export const ListWatcherTable = () => {
         getListWatcher({
           page,
           limit: pageSize,
-          sortField: fieldMapping[sortField],
+          sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           ...filteredFilter
         })
@@ -112,7 +112,7 @@ export const ListWatcherTable = () => {
 
   const columns: TableColumnsType<ListWatcher> = [
     {
-      title: t('no'),
+      title: t('stt'),
       dataIndex: 'index',
       key: 'index',
       width: 60,

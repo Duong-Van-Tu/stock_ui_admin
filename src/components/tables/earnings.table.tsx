@@ -99,7 +99,7 @@ export const EarningsTable = () => {
 
   const columns: TableColumnsType<Earning> = [
     {
-      title: t('no'),
+      title: t('stt'),
       dataIndex: 'index',
       key: 'index',
       width: 60,

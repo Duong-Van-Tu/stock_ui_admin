@@ -2,6 +2,8 @@ type ListHighActivityFilter = Filter & {
   fromDate?: string;
   toDate?: string;
   fromVolume?: number;
+  toVolume?: number;
+  fromAtr?: number;
   toAtr?: number;
   drop1_5Pct?: boolean;
   underWillrMinus80?: boolean;
@@ -14,7 +16,8 @@ type ListHighActivityFilter = Filter & {
   drop10Pct2Prev?: boolean;
   criticalNews?: boolean;
   nextEarning?: boolean;
-  beta?: string;
+  fromBeta?: number;
+  toBeta?: number;
 };
 
 type ListHighActivity = {

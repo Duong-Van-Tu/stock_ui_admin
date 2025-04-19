@@ -75,7 +75,7 @@ export const StrategySignal = ({
         getSignalStrategyId({
           page,
           limit: pageSize,
-          sortField: fieldMapping[sortField],
+          sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           strategyId,
           ...filteredFilter

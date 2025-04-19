@@ -87,7 +87,7 @@ export const AlertLogsTable = () => {
         getAlertLogs({
           page,
           limit: pageSize,
-          sortField: fieldMapping[sortField],
+          sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           ...filteredFilter
         })
@@ -143,7 +143,7 @@ export const AlertLogsTable = () => {
 
   const columns: TableColumnsType<Signal> = [
     {
-      title: t('no'),
+      title: t('stt'),
       dataIndex: 'index',
       key: 'index',
       width: 60,

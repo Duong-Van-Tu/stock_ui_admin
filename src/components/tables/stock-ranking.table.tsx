@@ -108,7 +108,7 @@ export const StockRankingTable = () => {
         getStockScore({
           page,
           limit: pageSize,
-          sortField: fieldMapping[sortField],
+          sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           ...filteredFilter
         })
@@ -131,7 +131,7 @@ export const StockRankingTable = () => {
 
   const columns: TableColumnsType<StockScore> = [
     {
-      title: t('no'),
+      title: t('stt'),
       dataIndex: 'index',
       key: 'index',
       width: 60,

@@ -89,7 +89,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
         getAlertLogs({
           page,
           limit: pageSize,
-          sortField: fieldMapping[sortField],
+          sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           ...filteredFilter
         })
@@ -140,7 +140,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
 
   const columns: TableColumnsType<Signal> = [
     {
-      title: t('no'),
+      title: t('stt'),
       dataIndex: 'index',
       key: 'index',
       width: 60,
