@@ -33,6 +33,7 @@ import { getCurrentPrice } from '@/helpers/socket.helper';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { EmptyDataTable } from './empty.table';
+import { useSortOrder } from '@/hooks/sort-order.hook';
 
 export const StockRankingTable = () => {
   const t = useTranslations();
@@ -46,9 +47,22 @@ export const StockRankingTable = () => {
   const loading = useAppSelector(watchStockScoreLoading);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<Set<Key>>(new Set());
-  const [sortField, setSortField] = useState<string>('totalScore');
-  const [sortType, setSortType] = useState<SortOrder>('descend');
   const [filter, setFilter] = useState<StockScoreFilter>({});
+
+  const { sortField, sortType, handleSortOrder } =
+    useSortOrder<StockScoreFilter>({
+      defaultField: 'totalScore',
+      defaultOrder: 'descend',
+      currentFilter: filter,
+      onChange: (_field, _order, newFilter) => {
+        setFilter(newFilter);
+        fetchDataStockScore({
+          page: PAGINATION.currentPage,
+          pageSize: pagination.pageSize,
+          filter: newFilter
+        });
+      }
+    });
 
   const onSelectChange = (newSelectedRowKeys: Key[]) => {
     setSelectedRowKeys((prevKeys) => {
@@ -72,38 +86,6 @@ export const StockRankingTable = () => {
     getCheckboxProps: (record) => ({
       disabled: record.isAdd
     })
-  };
-
-  const handleSortOrder = (field: string) => {
-    let newSortType: SortOrder;
-
-    if (field === sortField) {
-      newSortType =
-        sortType === 'descend'
-          ? 'ascend'
-          : sortType === 'ascend'
-          ? undefined
-          : 'descend';
-    } else {
-      newSortType = 'descend';
-    }
-
-    setSortField(field);
-    setSortType(newSortType);
-
-    const newFilter = {
-      ...filter,
-      sortField: newSortType ? fieldMapping[field] ?? field : undefined,
-      sortType: newSortType ? convertSortType(newSortType) : undefined
-    };
-
-    setFilter((prev) => ({ ...prev, ...newFilter }));
-
-    fetchDataStockScore({
-      page: PAGINATION.currentPage,
-      pageSize: pagination.pageSize,
-      filter: newFilter
-    });
   };
 
   const handleFilter = (values: StockScoreFilter) => {

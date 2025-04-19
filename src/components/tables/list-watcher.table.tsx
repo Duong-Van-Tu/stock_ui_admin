@@ -37,6 +37,7 @@ import {
 } from '@/helpers/sentiment.helper';
 import { ListWatcherFilter } from '../filters/list-watcher.filter';
 import { useSearchParams } from 'next/navigation';
+import { useSortOrder } from '@/hooks/sort-order.hook';
 
 export const ListWatcherTable = () => {
   const t = useTranslations();
@@ -48,41 +49,22 @@ export const ListWatcherTable = () => {
   const pagination = useAppSelector(watchListWatcherPagination);
   const searchParams = useSearchParams();
 
-  const [sortField, setSortField] = useState<string>('publishingTime');
-  const [sortType, setSortType] = useState<SortOrder>('descend');
   const [filter, setFilter] = useState<SentimentFilter>({});
 
-  const handleSortOrder = (field: string) => {
-    let newSortType: SortOrder;
-
-    if (field === sortField) {
-      newSortType =
-        sortType === 'descend'
-          ? 'ascend'
-          : sortType === 'ascend'
-          ? undefined
-          : 'descend';
-    } else {
-      newSortType = 'descend';
-    }
-
-    setSortField(field);
-    setSortType(newSortType);
-
-    const newFilter = {
-      ...filter,
-      sortField: newSortType ? fieldMapping[field] ?? field : undefined,
-      sortType: newSortType ? convertSortType(newSortType) : undefined
-    };
-
-    setFilter((prev) => ({ ...prev, ...newFilter }));
-
-    fetchListWatcher({
-      page: PAGINATION.currentPage,
-      pageSize: pagination.pageSize,
-      filter: newFilter
+  const { sortField, sortType, handleSortOrder } =
+    useSortOrder<SentimentFilter>({
+      defaultField: 'publishingTime',
+      defaultOrder: 'descend',
+      currentFilter: filter,
+      onChange: (_field, _order, newFilter) => {
+        setFilter(newFilter);
+        fetchListWatcher({
+          page: PAGINATION.currentPage,
+          pageSize: pagination.pageSize,
+          filter: newFilter
+        });
+      }
     });
-  };
 
   const handleFilter = (values: SentimentFilter) => {
     const newFilter = {

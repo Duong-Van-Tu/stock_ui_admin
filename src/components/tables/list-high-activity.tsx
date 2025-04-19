@@ -28,52 +28,34 @@ import {
 } from '@/redux/slices/high-activity.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
+import { useSortOrder } from '@/hooks/sort-order.hook';
 
 export const ListHighActivity = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
   const symbol = useAppSelector(watchSearchSymbol);
   const { height } = useWindowSize();
   const loading = useAppSelector(watchListHighActivityLoading);
   const listHighActivity = useAppSelector(watchListHighActivity);
   const pagination = useAppSelector(watchListHighActivityPagination);
-  const searchParams = useSearchParams();
 
-  const [sortField, setSortField] = useState<string>('datetime');
-  const [sortType, setSortType] = useState<SortOrder>('descend');
   const [filter, setFilter] = useState<ListHighActivityFilter>({});
 
-  const handleSortOrder = (field: string) => {
-    let newSortType: SortOrder;
-
-    if (field === sortField) {
-      newSortType =
-        sortType === 'descend'
-          ? 'ascend'
-          : sortType === 'ascend'
-          ? undefined
-          : 'descend';
-    } else {
-      newSortType = 'descend';
-    }
-
-    setSortField(field);
-    setSortType(newSortType);
-
-    const newFilter = {
-      ...filter,
-      sortField: newSortType ? fieldMapping[field] ?? field : undefined,
-      sortType: newSortType ? convertSortType(newSortType) : undefined
-    };
-
-    setFilter((prev) => ({ ...prev, ...newFilter }));
-
-    fetchListHighActivity({
-      page: PAGINATION.currentPage,
-      pageSize: pagination.pageSize,
-      filter: newFilter
+  const { sortField, sortType, handleSortOrder } =
+    useSortOrder<ListHighActivityFilter>({
+      defaultField: 'datetime',
+      defaultOrder: 'descend',
+      currentFilter: filter,
+      onChange: (_field, _order, newFilter) => {
+        setFilter(newFilter);
+        fetchListHighActivity({
+          page: PAGINATION.currentPage,
+          pageSize: pagination.pageSize,
+          filter: newFilter
+        });
+      }
     });
-  };
 
   // const handleFilter = (values: ListHighActivityFilter) => {
   //   const newFilter = {

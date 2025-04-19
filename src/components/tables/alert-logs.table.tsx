@@ -35,6 +35,7 @@ import { AlertLogsView } from '@/constants/common.constant';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { EmptyDataTable } from './empty.table';
+import { useSortOrder } from '@/hooks/sort-order.hook';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -58,41 +59,22 @@ export const AlertLogsTable = () => {
   const pagination = useAppSelector(watchAlertLogsPagination);
   const loading = useAppSelector(watchAlertLogsLoading);
 
-  const [sortField, setSortField] = useState<string>('entryDate');
-  const [sortType, setSortType] = useState<SortOrder>('descend');
   const [filter, setFilter] = useState<AlertLogsFilter>({});
 
-  const handleSortOrder = (field: string) => {
-    let newSortType: SortOrder;
-
-    if (field === sortField) {
-      newSortType =
-        sortType === 'descend'
-          ? 'ascend'
-          : sortType === 'ascend'
-          ? undefined
-          : 'descend';
-    } else {
-      newSortType = 'descend';
-    }
-
-    setSortField(field);
-    setSortType(newSortType);
-
-    const newFilter = {
-      ...filter,
-      sortField: newSortType ? fieldMapping[field] ?? field : undefined,
-      sortType: newSortType ? convertSortType(newSortType) : undefined
-    };
-
-    setFilter((prev) => ({ ...prev, ...newFilter }));
-
-    fetchDataAlertLogs({
-      page: PAGINATION.currentPage,
-      pageSize: pagination.pageSize,
-      filter: newFilter
+  const { sortField, sortType, handleSortOrder } =
+    useSortOrder<ListHighActivityFilter>({
+      defaultField: 'entryDate',
+      defaultOrder: 'descend',
+      currentFilter: filter,
+      onChange: (_field, _order, newFilter) => {
+        setFilter(newFilter);
+        fetchDataAlertLogs({
+          page: PAGINATION.currentPage,
+          pageSize: pagination.pageSize,
+          filter: newFilter
+        });
+      }
     });
-  };
 
   const fetchDataAlertLogs = useCallback(
     ({

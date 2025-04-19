@@ -17,8 +17,7 @@ import { EmptyDataTable } from './empty.table';
 import dayjs from 'dayjs';
 import { watchSearchSymbol } from '@/redux/slices/search';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
-import { fieldMapping } from '@/helpers/field-mapping.helper';
-import { convertSortType } from '@/utils/sort-table';
+
 import {
   cleanFalsyValues,
   formatNumberShort,
@@ -27,6 +26,7 @@ import {
 import { SymbolCell } from './columns/symbol-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { StockChangeCell } from './columns/stock-change-cell.column';
+import { useSortOrder } from '@/hooks/sort-order.hook';
 
 export const EarningsTable = () => {
   const t = useTranslations();
@@ -40,8 +40,6 @@ export const EarningsTable = () => {
   const [filter, setFilter] = useState<EarningFilter>({
     date: dayjs().format('YYYY-MM-DD')
   });
-  const [sortField, setSortField] = useState<string>('epsEstimate');
-  const [sortType, setSortType] = useState<SortOrder>('descend');
 
   const earningDate = useMemo(
     () =>
@@ -51,37 +49,19 @@ export const EarningsTable = () => {
     [filter.date]
   );
 
-  const handleSortOrder = (field: string) => {
-    let newSortType: SortOrder;
-
-    if (field === sortField) {
-      newSortType =
-        sortType === 'descend'
-          ? 'ascend'
-          : sortType === 'ascend'
-          ? undefined
-          : 'descend';
-    } else {
-      newSortType = 'descend';
+  const { sortField, sortType, handleSortOrder } = useSortOrder<EarningFilter>({
+    defaultField: 'epsEstimate',
+    defaultOrder: 'descend',
+    currentFilter: filter,
+    onChange: (_field, _order, newFilter) => {
+      setFilter(newFilter);
+      fetchEarnings({
+        page: PAGINATION.currentPage,
+        pageSize: pagination.pageSize,
+        filter: newFilter
+      });
     }
-
-    setSortField(field);
-    setSortType(newSortType);
-
-    const newFilter = {
-      ...filter,
-      sortField: newSortType ? fieldMapping[field] ?? field : undefined,
-      sortType: newSortType ? convertSortType(newSortType) : undefined
-    };
-
-    setFilter((prev) => ({ ...prev, ...newFilter }));
-
-    fetchEarnings({
-      page: PAGINATION.currentPage,
-      pageSize: pagination.pageSize,
-      filter: newFilter
-    });
-  };
+  });
 
   const handleFilter = (values: EarningFilter) => {
     const newFilter = {

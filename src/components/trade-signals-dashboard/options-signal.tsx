@@ -29,6 +29,7 @@ import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
 import { EmptyDataTable } from '../tables/empty.table';
 import { StockChangeCell } from '../tables/columns/stock-change-cell.column';
+import { useSortOrder } from '@/hooks/sort-order.hook';
 
 export const OptionSignal = () => {
   const t = useTranslations();
@@ -39,39 +40,19 @@ export const OptionSignal = () => {
   const loading = useAppSelector(watchAlertLogsLoading);
   const pagination = useAppSelector(watchAlertLogsPagination);
 
-  const [sortField, setSortField] = useState<string>('entryDate');
-  const [sortType, setSortType] = useState<SortOrder>('descend');
   const [filter, setFilter] = useState<Filter>({});
 
-  const handleSortOrder = (field: string) => {
-    let newSortType: SortOrder;
-
-    if (field === sortField) {
-      newSortType =
-        sortType === 'descend'
-          ? 'ascend'
-          : sortType === 'ascend'
-          ? undefined
-          : 'descend';
-    } else {
-      newSortType = 'descend';
+  const { sortField, sortType, handleSortOrder } = useSortOrder<Filter>({
+    defaultField: 'entryDate',
+    defaultOrder: 'descend',
+    currentFilter: filter,
+    onChange: (_field, _order, newFilter) => {
+      setFilter(newFilter);
+      fetchSignalByStrategy({
+        filter: newFilter
+      });
     }
-
-    setSortField(field);
-    setSortType(newSortType);
-
-    const newFilter = {
-      ...filter,
-      sortField: newSortType ? fieldMapping[field] ?? field : undefined,
-      sortType: newSortType ? convertSortType(newSortType) : undefined
-    };
-
-    setFilter((prev) => ({ ...prev, ...newFilter }));
-
-    fetchSignalByStrategy({
-      filter: newFilter
-    });
-  };
+  });
 
   const fetchSignalByStrategy = useCallback(
     ({
