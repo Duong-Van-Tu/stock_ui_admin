@@ -40,6 +40,12 @@ export default function BarChart({
 }: BarChartProps) {
   const [isChartReady, setIsChartReady] = useState(false);
   const option = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      }
+    },
     legend: {
       orient: 'horizontal',
       left: 0,
