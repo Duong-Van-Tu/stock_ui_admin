@@ -110,7 +110,7 @@ export const ListWatcherFilter = ({
         <Row gutter={[16, 12]} align='bottom' justify='end'>
           <Col>
             <Form.Item css={formItemStyles} name='lastHours' initialValue={168}>
-              <InputNumber css={inputStyles} addonAfter='Hours' />
+              <InputNumber css={inputStyles} addonAfter={t('hours')} />
             </Form.Item>
           </Col>
           <Col>
