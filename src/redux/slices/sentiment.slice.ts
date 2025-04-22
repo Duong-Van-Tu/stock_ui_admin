@@ -1,6 +1,7 @@
 import {
   transformCompanyNews,
   transformCountSentiment,
+  transformListNewsLatest,
   transformListWatcher
 } from '@/helpers/sentiment.helper';
 import { createAppSlice } from '../createAppSlice';
@@ -11,17 +12,21 @@ export type SentimentState = {
   loading: boolean;
   loadingCountSentiment: boolean;
   loadingListWatcher: boolean;
+  loadingNewsLatest: boolean;
   countSentiment: CountSentiment;
   companyNews: CompanyNews[];
   listWatcher: ListWatcher[];
+  newLatest: NewsLatest[];
   pagination: Pagination;
   listWatcherPagination: Pagination;
+  newsLatestPagination: Pagination;
 };
 
 const initialState: SentimentState = {
   loading: false,
   loadingCountSentiment: false,
   loadingListWatcher: false,
+  loadingNewsLatest: false,
   countSentiment: {
     countPositive: 0,
     countVeryPositive: 0,
@@ -30,8 +35,10 @@ const initialState: SentimentState = {
   },
   companyNews: [],
   listWatcher: [],
+  newLatest: [],
   pagination: PAGINATION,
-  listWatcherPagination: PAGINATION
+  listWatcherPagination: PAGINATION,
+  newsLatestPagination: PAGINATION
 };
 
 export const SentimentSlice = createAppSlice({
@@ -119,6 +126,36 @@ export const SentimentSlice = createAppSlice({
           state.listWatcherPagination = PAGINATION;
         }
       }
+    ),
+    getNewsLatest: create.asyncThunk(
+      async (query?: SentimentFilter) => {
+        const response = await defaultApiFetcher.get(
+          'stock-scores/list-news-latest',
+          {
+            query
+          }
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loadingNewsLatest = true;
+        },
+        fulfilled: (state, action) => {
+          state.loadingNewsLatest = false;
+          state.newLatest = transformListNewsLatest(action.payload.result);
+          state.newsLatestPagination = {
+            currentPage: action.payload.offset,
+            pageSize: action.payload.limit,
+            total: Number(action.payload.total)
+          };
+        },
+        rejected: (state) => {
+          state.loadingNewsLatest = false;
+          state.newLatest = [];
+          state.newsLatestPagination = PAGINATION;
+        }
+      }
     )
   }),
 
@@ -130,7 +167,9 @@ export const SentimentSlice = createAppSlice({
     watchCompanyNewsPagination: (sentiment) => sentiment.pagination,
     watchListWatcherLoading: (sentiment) => sentiment.loadingListWatcher,
     watchListWatcher: (sentiment) => sentiment.listWatcher,
-    watchListWatcherPagination: (sentiment) => sentiment.listWatcherPagination
+    watchListWatcherPagination: (sentiment) => sentiment.listWatcherPagination,
+    watchListNewsLatest: (sentiment) => sentiment.newLatest,
+    watchListNewsLatestPagination: (sentiment) => sentiment.newsLatestPagination
   }
 });
 
@@ -142,8 +181,14 @@ export const {
   watchCompanyNewsPagination,
   watchListWatcher,
   watchListWatcherPagination,
-  watchListWatcherLoading
+  watchListWatcherLoading,
+  watchListNewsLatest,
+  watchListNewsLatestPagination
 } = SentimentSlice.selectors;
 
-export const { getCountSentiment, getCompanyNews, getListWatcher } =
-  SentimentSlice.actions;
+export const {
+  getCountSentiment,
+  getCompanyNews,
+  getListWatcher,
+  getNewsLatest
+} = SentimentSlice.actions;

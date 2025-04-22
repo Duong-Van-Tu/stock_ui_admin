@@ -10,13 +10,15 @@ import {
   getATROptions,
   getAvgVolumeOptions,
   getBetaOptions,
-  getBooleanOptions
+  getBooleanOptions,
+  getRangeDateOptions
 } from '@/utils/stock-filter';
 import { parseRangeValue } from '@/utils/common';
 import { useAppSelector } from '@/redux/hooks';
 import { watchSearchSymbol } from '@/redux/slices/search';
 import { SelectFilter } from './select-filter';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
+import { usePastDateRange } from '@/hooks/date-range.hook';
 
 type ListHighActivityFilterProps = {
   customStyles?: SerializedStyles;
@@ -24,7 +26,8 @@ type ListHighActivityFilterProps = {
 };
 
 const DEFAULT_AVG_VOLUME = 'o2000000';
-const DROP_1_5_PCT = 'true';
+const DEFAULT_DROP_1_5_PCT = 'true';
+const DEFAULT_DATE_RANGE = 3;
 
 const buildFilterData = (fields: Record<string, string>) => ({
   fromVolume: parseRangeValue(fields.avgVolume).from,
@@ -45,10 +48,16 @@ export const ListHighActivityFilter = ({
   const symbol = useAppSelector(watchSearchSymbol);
   const [form] = Form.useForm();
 
-  const avgVolumeOptions = getAvgVolumeOptions(t);
+  const params = new URLSearchParams(searchParams.toString());
+  const dateRange = Number(params.get('dateRange') ?? DEFAULT_DATE_RANGE);
 
+  const { fromDate, toDate } = usePastDateRange(dateRange);
+
+  const avgVolumeOptions = getAvgVolumeOptions(t);
   const atrOptions = getATROptions(t);
   const betaOptions = getBetaOptions(t);
+  const booleanOptions = getBooleanOptions(t);
+  const rangeDateOptions = getRangeDateOptions(t);
 
   const updateSearchParams = (key: string, value?: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -67,21 +76,24 @@ export const ListHighActivityFilter = ({
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
     const avgVolume = params.get('avgVolume') ?? DEFAULT_AVG_VOLUME;
     const atr = params.get('atr') ?? 'any';
     const beta = params.get('beta') ?? 'any';
-    const drop1_5Pct = params.get('drop1_5Pct') ?? DROP_1_5_PCT;
-
+    const drop1_5Pct = params.get('drop1_5Pct') ?? DEFAULT_DROP_1_5_PCT;
+    const rangeDate = params.get('rangeDate')
+      ? Number(params.get('rangeDate'))
+      : DEFAULT_DATE_RANGE;
     const initialValues = { avgVolume, atr, beta, drop1_5Pct };
-    form.setFieldsValue(initialValues);
+    form.setFieldsValue({ ...initialValues, drop1_5Pct, rangeDate });
 
     onFilter({
       symbol,
       ...buildFilterData(initialValues),
-      [fieldMapping.drop1_5Pct]: drop1_5Pct
+      [fieldMapping.drop1_5Pct]: drop1_5Pct,
+      fromDate,
+      toDate
     });
-  }, [searchParams, symbol, form, onFilter]);
+  }, [searchParams, symbol, form, onFilter, fromDate, toDate]);
 
   return (
     <div css={[rootStyles, customStyles]}>
@@ -124,9 +136,17 @@ export const ListHighActivityFilter = ({
             <SelectFilter
               name='drop1_5Pct'
               label={t('drop1_5Pct')}
-              options={getBooleanOptions(t)}
+              options={booleanOptions}
               onSelect={(value) => updateSearchParams('drop1_5Pct', value)}
               onClear={() => updateSearchParams('drop1_5Pct')}
+            />
+          </Col>
+          <Col>
+            <SelectFilter
+              name='rangeDate'
+              options={rangeDateOptions}
+              onSelect={(value) => updateSearchParams('rangeDate', value)}
+              onClear={() => updateSearchParams('rangeDate')}
             />
           </Col>
           <Col>

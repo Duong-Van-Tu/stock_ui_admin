@@ -60,3 +60,18 @@ type ListWatcher = {
   earningDate: string | null;
   totalScore: number;
 };
+
+type NewsLatest = {
+  key: string;
+  timestamp: string;
+  symbol: string;
+  headline: string;
+  source: string;
+  sentiment: string;
+  impact: string;
+  sentimentScore1w: number;
+  sentimentScore: number;
+  sentimentScore1m: number;
+  sentimentScore3m: number;
+  url: string;
+};

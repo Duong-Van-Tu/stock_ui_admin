@@ -34,6 +34,10 @@ export const transformCompanyNews = (companyNews: any[]): CompanyNews[] => {
 };
 
 export const transformListWatcher = (listWatcher: any[]): ListWatcher[] => {
+  if (listWatcher.length <= 0) {
+    return [];
+  }
+
   return listWatcher.map((item) => ({
     key: uuid(),
     symbol: item.symbol,
@@ -97,4 +101,25 @@ export const getImpactColor = (impact: Impact): string => {
     default:
       return 'cyan';
   }
+};
+
+export const transformListNewsLatest = (listNews: any[]): NewsLatest[] => {
+  if (listNews.length === 0) {
+    return [];
+  }
+
+  return listNews.map((item) => ({
+    key: uuid(),
+    timestamp: item.timestamp,
+    symbol: item.symbol,
+    headline: item.headline,
+    source: item.source,
+    sentiment: item.sentiment,
+    impact: item.impact,
+    sentimentScore1w: item.sentimentScore1w,
+    sentimentScore: item.sentimentScore,
+    sentimentScore1m: item.sentimentScore1m,
+    sentimentScore3m: item.sentimentScore3m,
+    url: item.url
+  }));
 };

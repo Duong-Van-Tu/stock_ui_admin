@@ -1,16 +1,19 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Tabs, TabsProps } from 'antd';
+import { Card, Tabs, TabsProps } from 'antd';
 import { StockDetailTabKey } from '@/constants/tabs.constant';
 import FundamentalCharts from '../charts/fundamental-charts';
 import SentimentCharts from '../charts/sentiment-charts';
 import EarningsCharts from '../charts/earnings-charts';
+import { NewDetails } from '../news-details';
+import { useTranslations } from 'next-intl';
 
 type StockDetailTabsProps = {
   symbol: string;
 };
 
 export const StockDetailTabs = ({ symbol }: StockDetailTabsProps) => {
+  const t = useTranslations();
   const handleChangeTab = (key: string) => {
     console.log(key);
   };
@@ -29,7 +32,14 @@ export const StockDetailTabs = ({ symbol }: StockDetailTabsProps) => {
     {
       key: StockDetailTabKey.Sentiment,
       label: <span css={tabLabelStyles}>Sentiment</span>,
-      children: <SentimentCharts symbol={symbol} />
+      children: (
+        <div css={sentimentContainerStyles}>
+          <SentimentCharts symbol={symbol} />
+          <Card title={<span css={titleStyles}>{t('newsDetail')}</span>}>
+            <NewDetails symbol={symbol} />
+          </Card>
+        </div>
+      )
     }
   ];
 
@@ -39,4 +49,14 @@ export const StockDetailTabs = ({ symbol }: StockDetailTabsProps) => {
 const tabLabelStyles = css`
   text-transform: uppercase;
   font-weight: 500;
+`;
+
+const sentimentContainerStyles = css`
+  display: flex;
+  flex-direction: column;
+  gap: 2.6rem;
+`;
+
+const titleStyles = css`
+  font-size: 2rem;
 `;

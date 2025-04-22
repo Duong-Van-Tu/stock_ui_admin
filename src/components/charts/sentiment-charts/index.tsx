@@ -2,16 +2,12 @@
 import { css } from '@emotion/react';
 import { SentimentScoreChart } from './sentiment-score.chart';
 import { MovingSentimentScoreChart } from './moving-sentiment-score.chart';
-// import { NewDetails } from '@/components/drawers/symbol-details.drawer/news-details';
-// import { Card } from 'antd';
-// import { useTranslations } from 'next-intl';
 
 type SentimentChartsProps = {
   symbol: string;
 };
 
 export default function SentimentCharts({ symbol }: SentimentChartsProps) {
-  // const t = useTranslations();
   return (
     <div css={rootStyles}>
       <div css={containerStyles}>
@@ -22,10 +18,6 @@ export default function SentimentCharts({ symbol }: SentimentChartsProps) {
           <MovingSentimentScoreChart symbol={symbol} />
         </div>
       </div>
-      {/* <Card
-        css={cardStyles}
-        title={<span css={titleStyles}>{t('newsDetail')}</span>}
-      ></Card> */}
     </div>
   );
 }
@@ -46,9 +38,3 @@ const chartWrapperStyles = css`
   flex: 1 1 calc(50% - 1rem);
   min-width: 550px;
 `;
-
-// const cardStyles = css``;
-
-// const titleStyles = css`
-//   font-size: 2rem;
-// `;

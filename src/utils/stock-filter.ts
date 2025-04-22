@@ -66,3 +66,14 @@ export const getBooleanOptions = (t: (key: string) => string) => [
   { label: t('yes'), value: 'true' },
   { label: t('no'), value: 'false' }
 ];
+
+export const getRangeDateOptions = (t: (key: string) => string) => [
+  { value: 1, label: t('1Day') },
+  { value: 2, label: t('2Days') },
+  { value: 3, label: t('3Days') },
+  { value: 4, label: t('4Days') },
+  { value: 5, label: t('5Days') },
+  { value: 6, label: t('6Days') },
+  { value: 7, label: t('1Week') },
+  { value: 14, label: t('2Weeks') }
+];

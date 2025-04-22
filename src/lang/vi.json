@@ -253,5 +253,7 @@
   "from5To10": "Từ 5 đến 10",
   "from10To20": "Từ 10 đến 20",
   "from20To50": "Từ 20 đến 50",
-  "yes": "Yes"
+  "yes": "Có",
+  "no": "Không",
+  "selectPlaceholderDefault": "Vui lòng chọn"
 }

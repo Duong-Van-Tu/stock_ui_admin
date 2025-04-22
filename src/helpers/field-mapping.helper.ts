@@ -99,5 +99,7 @@ export const fieldMapping: Record<string, string> = {
   toAtr: 'to_atr',
   drop3Pct2Prev: 'drop_3_pct_2prev',
   drop5Pct2Prev: 'drop_5_pct_2prev',
-  drop10Pct2Prev: 'drop_10_pct_2prev'
+  drop10Pct2Prev: 'drop_10_pct_2prev',
+  sentimentScore1m: 'sentiment_score_1m',
+  sentimentScore3m: 'sentiment_score_3m'
 };

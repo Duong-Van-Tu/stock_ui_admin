@@ -7,6 +7,7 @@ import { Select } from 'antd';
 import { useTranslations } from 'next-intl';
 import { SymbolEarningsDetail } from './symbol-earnings-detail';
 import { NewsSentiment } from '@/components/news-sentiment';
+import { getRangeDateOptions } from '@/utils/stock-filter';
 
 type EarningsDetailsProps = { symbol: string };
 
@@ -31,16 +32,7 @@ export const EarningsDetails = ({ symbol }: EarningsDetailsProps) => {
           css={selectStyles}
           value={range}
           onChange={(value) => setRange(Number(value))}
-          options={[
-            { value: 1, label: t('1Day') },
-            { value: 2, label: t('2Days') },
-            { value: 3, label: t('3Days') },
-            { value: 4, label: t('4Days') },
-            { value: 5, label: t('5Days') },
-            { value: 6, label: t('6Days') },
-            { value: 7, label: t('1Week') },
-            { value: 14, label: t('2Weeks') }
-          ]}
+          options={getRangeDateOptions(t)}
         />
       </div>
 

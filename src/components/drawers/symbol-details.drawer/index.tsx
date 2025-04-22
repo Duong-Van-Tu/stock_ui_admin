@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 
 import { Drawer } from 'antd';
 import { useTranslations } from 'next-intl';
-import { NewDetails } from './news-details';
+import { NewDetails } from '../../news-details';
 import { EarningsDetails } from './earnings-details';
 
 enum ContentType {

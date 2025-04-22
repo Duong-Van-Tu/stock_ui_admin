@@ -67,8 +67,6 @@ export const ListHighActivity = () => {
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
-          fromDate: '2025-04-16',
-          toDate: '2025-04-19',
           ...filteredFilter
         })
       );

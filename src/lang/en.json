@@ -254,5 +254,6 @@
   "from10To20": "10 to 20",
   "from20To50": "20 to 50",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "selectPlaceholderDefault": "Please select"
 }

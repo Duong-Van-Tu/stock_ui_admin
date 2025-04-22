@@ -2,11 +2,12 @@
 import { css } from '@emotion/react';
 
 import { Form, Select } from 'antd';
+import { useTranslations } from 'next-intl';
 
 type SelectFilterProps = {
   name: string;
-  label: string;
-  options: { label: string; value: string }[];
+  label?: string;
+  options: { label: string; value: string | number }[];
   onSelect: (value: string) => void;
   onClear: () => void;
 };
@@ -18,16 +19,17 @@ export const SelectFilter = ({
   onSelect,
   onClear
 }: SelectFilterProps) => {
+  const t = useTranslations();
   return (
     <Form.Item
-      label={<span css={labelStyles}>{label}</span>}
+      label={label ? <span css={labelStyles}>{label}</span> : undefined}
       css={formItemStyles}
       name={name}
     >
       <Select
         css={inputStyles}
         options={options}
-        placeholder={label}
+        placeholder={label || t('selectPlaceholderDefault')}
         allowClear
         onSelect={onSelect}
         onClear={onClear}

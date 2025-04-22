@@ -12,6 +12,7 @@ import {
 } from '@/redux/slices/stock-details.slice';
 
 import LineChart from '../line.chart';
+import { getRangeDateOptions } from '@/utils/stock-filter';
 
 type FundamentalDetailProps = {
   symbol: string;
@@ -20,17 +21,6 @@ type FundamentalDetailProps = {
 const DEFAULT_RANGE = 7;
 const CHART_HEIGHT = 400;
 const CHART_GRID = { bottom: 80, left: 32, right: 30 };
-
-const getRangeOptions = (t: (key: string) => string) => [
-  { value: 1, label: t('1Day') },
-  { value: 2, label: t('2Days') },
-  { value: 3, label: t('3Days') },
-  { value: 4, label: t('4Days') },
-  { value: 5, label: t('5Days') },
-  { value: 6, label: t('6Days') },
-  { value: 7, label: t('1Week') },
-  { value: 14, label: t('2Weeks') }
-];
 
 const series = [
   { name: 'Score 1 week', color: '#4caf50' },
@@ -69,7 +59,7 @@ export function MovingSentimentScoreChart({ symbol }: FundamentalDetailProps) {
             defaultValue={DEFAULT_RANGE}
             onChange={handleRangeChange}
             css={selectStyles}
-            options={getRangeOptions(t)}
+            options={getRangeDateOptions(t)}
           />
         </div>
       }
