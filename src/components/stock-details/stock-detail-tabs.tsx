@@ -1,6 +1,9 @@
+'use client';
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Card, Tabs, TabsProps } from 'antd';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
 import { StockDetailTabKey } from '@/constants/tabs.constant';
 import FundamentalCharts from '../charts/fundamental-charts';
 import SentimentCharts from '../charts/sentiment-charts';
@@ -14,36 +17,46 @@ type StockDetailTabsProps = {
 
 export const StockDetailTabs = ({ symbol }: StockDetailTabsProps) => {
   const t = useTranslations();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const tabParam = searchParams.get('tab') || StockDetailTabKey.Fundamental;
+
   const handleChangeTab = (key: string) => {
-    console.log(key);
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    current.set('tab', key);
+    router.replace(`?${current.toString()}`);
   };
 
-  const items: TabsProps['items'] = [
-    {
-      key: StockDetailTabKey.Fundamental,
-      label: <span css={tabLabelStyles}>Fundamental</span>,
-      children: <FundamentalCharts symbol={symbol} />
-    },
-    {
-      key: StockDetailTabKey.Earnings,
-      label: <span css={tabLabelStyles}>Earnings</span>,
-      children: <EarningsCharts symbol={symbol} />
-    },
-    {
-      key: StockDetailTabKey.Sentiment,
-      label: <span css={tabLabelStyles}>Sentiment</span>,
-      children: (
-        <div css={sentimentContainerStyles}>
-          <SentimentCharts symbol={symbol} />
-          <Card title={<span css={titleStyles}>{t('newsDetail')}</span>}>
-            <NewDetails symbol={symbol} />
-          </Card>
-        </div>
-      )
-    }
-  ];
+  const items: TabsProps['items'] = useMemo(
+    () => [
+      {
+        key: StockDetailTabKey.Fundamental,
+        label: <span css={tabLabelStyles}>Fundamental</span>,
+        children: <FundamentalCharts symbol={symbol} />
+      },
+      {
+        key: StockDetailTabKey.Earnings,
+        label: <span css={tabLabelStyles}>Earnings</span>,
+        children: <EarningsCharts symbol={symbol} />
+      },
+      {
+        key: StockDetailTabKey.Sentiment,
+        label: <span css={tabLabelStyles}>Sentiment</span>,
+        children: (
+          <div css={sentimentContainerStyles}>
+            <SentimentCharts symbol={symbol} />
+            <Card title={<span css={titleStyles}>{t('newsDetail')}</span>}>
+              <NewDetails symbol={symbol} />
+            </Card>
+          </div>
+        )
+      }
+    ],
+    [symbol, t]
+  );
 
-  return <Tabs defaultActiveKey='1' items={items} onChange={handleChangeTab} />;
+  return <Tabs activeKey={tabParam} items={items} onChange={handleChangeTab} />;
 };
 
 const tabLabelStyles = css`

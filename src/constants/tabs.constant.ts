@@ -1,5 +1,5 @@
 export enum StockDetailTabKey {
-  Fundamental = '1',
-  Earnings = '2',
-  Sentiment = '3'
+  Fundamental = 'fundamental',
+  Earnings = 'earnings',
+  Sentiment = 'sentiment'
 }
