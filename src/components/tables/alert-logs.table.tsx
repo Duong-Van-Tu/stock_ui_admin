@@ -311,6 +311,48 @@ export const AlertLogsTable = () => {
       render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
+      title: t('highestPrice3Days'),
+      dataIndex: 'highestPrice3Days',
+      key: 'highestPrice3Days',
+      width: 178,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highestPrice3Days' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highestPrice3Days')
+      }),
+      align: 'center',
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-     '
+        );
+      }
+    },
+    {
+      title: t('highestPrice7Days'),
+      dataIndex: 'highestPrice7Days',
+      key: 'highestPrice7Days',
+      width: 178,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highestPrice7Days' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highestPrice7Days')
+      }),
+      align: 'center',
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-     '
+        );
+      }
+    },
+    {
       title: t('lowestPrice'),
       dataIndex: 'lowestPrice',
       key: 'lowestPrice',
@@ -340,6 +382,48 @@ export const AlertLogsTable = () => {
       }),
       align: 'center',
       render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
+      title: t('lowestPrice3Days'),
+      dataIndex: 'lowestPrice3Days',
+      key: 'lowestPrice3Days',
+      width: 174,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'lowestPrice3Days' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('lowestPrice3Days')
+      }),
+      align: 'center',
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
+      title: t('lowestPrice7Days'),
+      dataIndex: 'lowestPrice7Days',
+      key: 'lowestPrice7Days',
+      width: 174,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'lowestPrice7Days' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('lowestPrice7Days')
+      }),
+      align: 'center',
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
+      }
     },
     {
       title: t('marketCap'),
@@ -502,6 +586,27 @@ export const AlertLogsTable = () => {
         value ? (
           <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
             <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: t('recommendation'),
+      dataIndex: 'recommendation',
+      key: 'recommendation',
+      width: 154,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'recommendation' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('recommendation')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 70} isNegative={value < 40}>
+            <span>{roundToDecimals(value, 2)}%</span>
           </PositiveNegativeText>
         ) : (
           '-'

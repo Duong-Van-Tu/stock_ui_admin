@@ -101,5 +101,9 @@ export const fieldMapping: Record<string, string> = {
   drop5Pct2Prev: 'drop_5_pct_2prev',
   drop10Pct2Prev: 'drop_10_pct_2prev',
   sentimentScore1m: 'sentiment_score_1m',
-  sentimentScore3m: 'sentiment_score_3m'
+  sentimentScore3m: 'sentiment_score_3m',
+  lowestPrice3Days: 'lowest_3_days_price',
+  lowestPrice7Days: 'lowest_7_days_price',
+  highestPrice3Days: 'lowest_3_days_price',
+  highestPrice7Days: 'lowest_7_days_price'
 };

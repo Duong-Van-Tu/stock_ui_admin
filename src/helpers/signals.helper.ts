@@ -41,6 +41,11 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     plPercent: Number(stock[fieldMapping.plPercent] ?? 0),
     atrPercent: stock[fieldMapping.atrPercent],
     isNewsNegative: stock[fieldMapping.isNewsNegative],
-    recentNewsEarnings: stock[fieldMapping.recentNewsEarnings]
+    recentNewsEarnings: stock[fieldMapping.recentNewsEarnings],
+    lowestPrice3Days: stock[fieldMapping.lowestPrice3Days],
+    lowestPrice7Days: stock[fieldMapping.lowestPrice7Days],
+    highestPrice3Days: stock[fieldMapping.highestPrice3Days],
+    highestPrice7Days: stock[fieldMapping.highestPrice7Days],
+    recommendation: stock.recommendation
   }));
 };

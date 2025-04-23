@@ -29,6 +29,11 @@ type Signal = {
   atrPercent: number;
   isNewsNegative: boolean;
   recentNewsEarnings: boolean;
+  lowestPrice3Days: number;
+  lowestPrice7Days: number;
+  highestPrice3Days: number;
+  highestPrice7Days: number;
+  recommendation: number;
 };
 
 type AlertLogsFilter = Filter & {
