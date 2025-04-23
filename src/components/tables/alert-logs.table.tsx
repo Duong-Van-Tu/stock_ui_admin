@@ -33,7 +33,7 @@ import { StockChangeCell } from './columns/stock-change-cell.column';
 import { AlertLogsFilter } from '../filters/alert-logs.filter';
 import { AlertLogsView } from '@/constants/common.constant';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useWindowSize } from '@/hooks/useWindowSize';
+import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 

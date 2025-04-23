@@ -38,8 +38,8 @@ const cardStyles = css`
 
 const valueStyles = css`
   display: block;
-  font-size: 4rem;
-  line-height: 4.2rem;
+  font-size: 4.4rem;
+  line-height: 8rem;
   text-align: center;
   font-weight: 600;
 `;

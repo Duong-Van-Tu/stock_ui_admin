@@ -31,7 +31,7 @@ import { StockRankingFilter } from '../filters/stock-ranking.filter';
 import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
 import { StockChangeCell } from './columns/stock-change-cell.column';
-import { useWindowSize } from '@/hooks/useWindowSize';
+import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 

@@ -30,7 +30,7 @@ import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { AlertLogsView } from '@/constants/common.constant';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useWindowSize } from '@/hooks/useWindowSize';
+import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { NotFoundSearchResult } from '../not-found-search-result';
 import { searchSymbol } from '@/redux/slices/search';

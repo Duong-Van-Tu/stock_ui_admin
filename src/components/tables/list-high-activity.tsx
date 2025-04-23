@@ -15,7 +15,7 @@ import {
   formatPercent,
   roundToDecimals
 } from '@/utils/common';
-import { useWindowSize } from '@/hooks/useWindowSize';
+import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { SymbolCell } from './columns/symbol-cell.column';
 import {

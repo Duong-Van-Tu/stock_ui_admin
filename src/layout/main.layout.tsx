@@ -11,7 +11,7 @@ import {
   setSideBarCollapsed,
   watchSideBarCollapsed
 } from '@/redux/slices/app.slice';
-import { useWindowSize } from '@/hooks/useWindowSize';
+import { useWindowSize } from '@/hooks/window-size.hook';
 
 const { Content, Sider } = Layout;
 

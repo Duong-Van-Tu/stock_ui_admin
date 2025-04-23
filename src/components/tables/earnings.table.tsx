@@ -12,7 +12,7 @@ import {
   watchEarningsLoading
 } from '@/redux/slices/earnings.slice';
 import { TableTitle } from './title.table';
-import { useWindowSize } from '@/hooks/useWindowSize';
+import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import dayjs from 'dayjs';
 import { watchSearchSymbol } from '@/redux/slices/search';

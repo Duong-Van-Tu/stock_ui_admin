@@ -4,7 +4,7 @@
 import { css } from '@emotion/react';
 import { Typography } from 'antd';
 import { Icon } from '@/components/icons';
-import { useWindowSize } from '@/hooks/useWindowSize';
+import { useWindowSize } from '@/hooks/window-size.hook';
 
 const { Title } = Typography;
 
