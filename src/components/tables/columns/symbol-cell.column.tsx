@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Icon } from '@/components/icons';
-import { Button, Tooltip } from 'antd';
+import { Button, Popover, Tooltip } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details.drawer';
+import MiniStockChart from '@/components/charts/stock-mini.chart';
 import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
 
@@ -48,9 +49,16 @@ export const SymbolCell = ({
   return (
     <div css={symbolCellStyles}>
       <div css={symbolStyles}>
-        <Link css={stockLinkStyles} href={PageURLs.ofStockDetail(symbol)}>
-          {symbol}
-        </Link>
+        <Popover
+          content={<MiniStockChart symbol={symbol} />}
+          trigger='hover'
+          placement='rightTop'
+          overlayStyle={{ padding: 0 }}
+        >
+          <Link css={stockLinkStyles} href={PageURLs.ofStockDetail(symbol)}>
+            {symbol}
+          </Link>
+        </Popover>
         {isNews && (
           <Tooltip title={t('news')}>
             <Button

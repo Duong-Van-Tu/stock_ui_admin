@@ -93,6 +93,7 @@ export const ListHighActivityFilter = ({
       fromDate,
       toDate
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, symbol, form, onFilter, fromDate, toDate]);
 
   return (
