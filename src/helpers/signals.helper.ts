@@ -46,6 +46,8 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     lowestPrice7Days: stock[fieldMapping.lowestPrice7Days],
     highestPrice3Days: stock[fieldMapping.highestPrice3Days],
     highestPrice7Days: stock[fieldMapping.highestPrice7Days],
-    recommendation: stock.recommendation
+    recommendation: stock.recommendation,
+    isImport: stock[fieldMapping.isImport],
+    earningDate3days: stock[fieldMapping.earningDate3days]
   }));
 };

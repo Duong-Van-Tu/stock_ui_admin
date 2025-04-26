@@ -34,6 +34,8 @@ type Signal = {
   highestPrice3Days: number;
   highestPrice7Days: number;
   recommendation: number;
+  isImport: 0 | 1;
+  earningDate3days: string;
 };
 
 type AlertLogsFilter = Filter & {

@@ -36,6 +36,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
+import { ExportExcelLog } from '../export-excel-signals';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -426,6 +427,24 @@ export const AlertLogsTable = () => {
       }
     },
     {
+      title: t('earningsNext3Days'),
+      dataIndex: 'earningDate3days',
+      key: 'earningDate3days',
+      width: 180,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'earningDate3days' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('earningDate3days')
+      }),
+      align: 'center',
+      render: (value) =>
+          <PositiveNegativeText isPositive={!!value} isNegative={!value}>
+            <span>{value ? t('yes') : t('no')}</span>
+          </PositiveNegativeText>
+        
+    },
+    {
       title: t('marketCap'),
       dataIndex: 'marketCap',
       key: 'marketCap',
@@ -638,19 +657,7 @@ export const AlertLogsTable = () => {
             onChange={(value) => handleChangeView(value)}
           />
           <div css={actionStyles}>
-            {/* <Button
-              icon={
-                <Icon
-                  icon='exportExcel'
-                  width={18}
-                  height={18}
-                  fill='var(--white-color)'
-                />
-              }
-              type='primary'
-            >
-              {t('exportExcel')}
-            </Button> */}
+            <ExportExcelLog />
           </div>
         </div>
         <Table<Signal>
