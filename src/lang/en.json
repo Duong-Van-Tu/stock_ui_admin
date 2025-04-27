@@ -261,5 +261,7 @@
   "yes": "Yes",
   "no": "No",
   "selectPlaceholderDefault": "Please select",
-  "earningsNext3Days": "Earnings next 3 days"
+  "earningsNext3Days": "Earnings next 3 days",
+  "actions": "Actions",
+  "exit": "Exit"
 }

@@ -261,5 +261,7 @@
   "yes": "Có",
   "no": "Không",
   "selectPlaceholderDefault": "Vui lòng chọn",
-  "earningsNext3Days": "Earnings 3 ngày tới"
+  "earningsNext3Days": "Earnings 3 ngày tới",
+  "actions": "Hành động",
+  "exit": "Thoát lệnh"
 }

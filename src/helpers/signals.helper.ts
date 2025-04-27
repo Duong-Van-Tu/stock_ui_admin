@@ -11,6 +11,9 @@ export const transformStrategyData = (strategies: any[]): Strategies => {
 };
 
 export const transformSignalsData = (signals: any[]): Signal[] => {
+  if (signals.length <= 0) {
+    return [];
+  }
   return signals.map((stock) => ({
     id: stock.id,
     key: uuid(),
@@ -48,6 +51,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     highestPrice7Days: stock[fieldMapping.highestPrice7Days],
     recommendation: stock.recommendation,
     isImport: stock[fieldMapping.isImport],
-    earningDate3days: stock[fieldMapping.earningDate3days]
+    earningDate3days: stock[fieldMapping.earningDate3days],
+    isNotes: stock[fieldMapping.isNotes]
   }));
 };

@@ -2,7 +2,14 @@
 import { css } from '@emotion/react';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Segmented, Table, TableColumnsType } from 'antd';
+import {
+  Button,
+  Segmented,
+  Space,
+  Table,
+  TableColumnsType,
+  Tooltip
+} from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   calculatePercentage,
@@ -19,7 +26,6 @@ import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { watchSearchSymbol } from '@/redux/slices/search';
 import { TableTitle } from './title.table';
-// import { Icon } from '../icons';
 import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
 import {
@@ -37,6 +43,9 @@ import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { ExportExcelLog } from '../export-excel-signals';
+import { Icon } from '../icons';
+import { useModal } from '@/hooks/modal.hook';
+import { NotesSignal } from '../forms/note-signal.form';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -46,6 +55,7 @@ export const AlertLogsTable = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { height } = useWindowSize();
+  const modal = useModal();
 
   const isOption = searchParams.get('isOption')
     ? Number(searchParams.get('isOption'))
@@ -438,11 +448,11 @@ export const AlertLogsTable = () => {
         onClick: () => handleSortOrder('earningDate3days')
       }),
       align: 'center',
-      render: (value) =>
-          <PositiveNegativeText isPositive={!!value} isNegative={!value}>
-            <span>{value ? t('yes') : t('no')}</span>
-          </PositiveNegativeText>
-        
+      render: (value) => (
+        <PositiveNegativeText isPositive={!!value} isNegative={!value}>
+          <span>{value ? t('yes') : t('no')}</span>
+        </PositiveNegativeText>
+      )
     },
     {
       title: t('marketCap'),
@@ -630,6 +640,46 @@ export const AlertLogsTable = () => {
         ) : (
           '-'
         )
+    },
+    {
+      title: t('actions'),
+      dataIndex: 'action',
+      key: 'action',
+      fixed: 'right',
+      align: 'center',
+      width: 100,
+      render: (_, record) => (
+        <Space size={'small'}>
+          <Tooltip title={t('notes')}>
+            <Button
+              onClick={() =>
+                modal.openModal(<NotesSignal symbol={record.symbol} />, {
+                  width: 500
+                })
+              }
+              icon={
+                <Icon
+                  icon='notes'
+                  fill={
+                    record.isNotes
+                      ? 'var(--success-color)'
+                      : 'var(--gray-color)'
+                  }
+                  width={22}
+                  height={22}
+                />
+              }
+              css={notesBtnStyles}
+            />
+          </Tooltip>
+          <Tooltip title={t('exit')}>
+            <Button
+              css={exitBtnStyles}
+              icon={<Icon icon='exit' width={22} height={22} />}
+            />
+          </Tooltip>
+        </Space>
+      )
     }
   ];
 
@@ -754,3 +804,11 @@ const emptyStyles = (height: number) => css`
   flex-direction: column;
   justify-content: center;
 `;
+
+const notesBtnStyles = css`
+  display: flex;
+  align-items: center;
+  padding: 0 !important;
+`;
+
+const exitBtnStyles = css``;

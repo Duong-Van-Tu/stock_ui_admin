@@ -2,6 +2,7 @@ import { appSlice } from './slices/app.slice';
 import { authSlice } from './slices/auth.slice';
 import { earningsSlice } from './slices/earnings.slice';
 import { highActivitySlice } from './slices/high-activity.slice';
+import { notesSlice } from './slices/notes.slice';
 import { searchSlice } from './slices/search';
 import { SentimentSlice } from './slices/sentiment.slice';
 import { signalSlice } from './slices/signals.slice';
@@ -17,5 +18,6 @@ export const slices = [
   earningsSlice,
   SentimentSlice,
   stockDetailsSlice,
-  highActivitySlice
+  highActivitySlice,
+  notesSlice
 ];

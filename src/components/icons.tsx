@@ -22,6 +22,7 @@ import ArrowRight from '@/assets/svg/arrow-right.svg';
 import AISentiment from '@/assets/svg/ai-sentiment.svg';
 import Notes from '@/assets/svg/notes.svg';
 import ListHighActivity from '@/assets/svg/high-activity.svg';
+import Exit from '@/assets/svg/exit.svg';
 
 type IconProps = {
   width?: number | string;
@@ -53,7 +54,8 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   arrowRight: ArrowRight,
   AISentiment: AISentiment,
   notes: Notes,
-  listHighActivity: ListHighActivity
+  listHighActivity: ListHighActivity,
+  exit: Exit
 };
 
 export const Icon = ({

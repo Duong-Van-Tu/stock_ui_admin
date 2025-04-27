@@ -36,6 +36,7 @@ type Signal = {
   recommendation: number;
   isImport: 0 | 1;
   earningDate3days: string;
+  isNotes: boolean;
 };
 
 type AlertLogsFilter = Filter & {

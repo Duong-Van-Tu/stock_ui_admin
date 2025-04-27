@@ -1,25 +1,43 @@
-import { useContext } from 'react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+
+import { useContext, useState } from 'react';
 import { Button } from 'antd';
 import * as ExcelJS from 'exceljs';
 import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
 import { formatPercent, roundToDecimals } from '@/utils/common';
 import { SocketContext } from '@/providers/socket.provider';
-import { useAppSelector } from '@/redux/hooks';
-import {
-  watchAlertLogsData,
-  watchAlertLogsLoading
-} from '@/redux/slices/signals.slice';
 import { Icon } from './icons';
+import { defaultApiFetcher } from '@/utils/api-instances';
+import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
+import { fieldMapping } from '@/helpers/field-mapping.helper';
+import { transformSignalsData } from '@/helpers/signals.helper';
 
 export const ExportExcelLog = () => {
   const { setWatchList, resFromWS } = useContext(SocketContext);
-  const alertLogsData = useAppSelector(watchAlertLogsData);
-  const loading = useAppSelector(watchAlertLogsLoading);
+  const [loading, setLoading] = useState(false);
 
-  const handleExport = async () => {
-    if (alertLogsData.length > 0) {
-      alertLogsData.forEach((row: Signal) => {
+  const fetchSignals = async () => {
+    setLoading(true);
+    const response = await defaultApiFetcher.get(
+      'tickers/get-stock-alert-log',
+      {
+        query: {
+          page: 1,
+          limit: PAGINATION_PARAMS.unLimit,
+          sortField: fieldMapping.entryDate,
+          sortType: 'desc'
+        }
+      }
+    );
+    handleExport(transformSignalsData(response.data.result));
+    setLoading(false);
+  };
+
+  const handleExport = async (signals: Signal[]) => {
+    if (signals.length > 0) {
+      signals.forEach((row: Signal) => {
         setWatchList(row.symbol);
       });
       const workbook = new ExcelJS.Workbook();
@@ -111,7 +129,7 @@ export const ExportExcelLog = () => {
         return 'FF0000';
       };
 
-      alertLogsData.forEach((log: Signal) => {
+      signals.forEach((log: Signal) => {
         const realtime = resFromWS.realtime.find(
           (r: any) => r.symbol === log.symbol
         );
@@ -279,7 +297,9 @@ export const ExportExcelLog = () => {
 
   return (
     <Button
+      css={buttonStyles}
       type='primary'
+      loading={loading}
       icon={
         <Icon
           icon='exportExcel'
@@ -288,10 +308,18 @@ export const ExportExcelLog = () => {
           fill='var(--white-color)'
         />
       }
-      onClick={handleExport}
+      onClick={fetchSignals}
       disabled={loading}
     >
       Export Excel
     </Button>
   );
 };
+
+const buttonStyles = css`
+  background: var(--green-color);
+  &:hover {
+    background: var(--green-color) !important;
+    opacity: 0.85;
+  }
+`;
