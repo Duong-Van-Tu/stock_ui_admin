@@ -6,7 +6,7 @@ export type SignalsState = {};
 const initialState: SignalsState = {};
 
 export const notesSlice = createAppSlice({
-  name: 'signals',
+  name: 'notes',
   initialState,
   reducers: (create) => ({
     getNoteBySignal: create.asyncThunk(
