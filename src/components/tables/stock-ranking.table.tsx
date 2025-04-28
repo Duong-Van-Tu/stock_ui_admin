@@ -127,7 +127,8 @@ export const StockRankingTable = () => {
     stockScoreData.forEach((row) => {
       setWatchList(row.symbol);
     });
-  }, [stockScoreData, setWatchList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stockScoreData]);
 
   const columns: TableColumnsType<StockScore> = [
     {

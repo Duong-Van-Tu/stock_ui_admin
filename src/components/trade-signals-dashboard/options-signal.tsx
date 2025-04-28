@@ -84,7 +84,8 @@ export const OptionSignal = () => {
     strategyData.forEach((row) => {
       setWatchList(row.symbol);
     });
-  }, [strategyData, setWatchList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [strategyData]);
 
   const columns: TableColumnsType<Signal> = [
     {

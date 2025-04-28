@@ -150,7 +150,10 @@ export const AlertLogsTable = () => {
     alertLogsData.forEach((row) => {
       setWatchList(row.symbol);
     });
-  }, [alertLogsData, setWatchList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [alertLogsData]);
+
+  console.log(resFromWS);
 
   const columns: TableColumnsType<Signal> = [
     {

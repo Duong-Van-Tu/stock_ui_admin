@@ -96,7 +96,8 @@ export const StrategySignal = ({
     strategyData[`${strategyId}`]?.forEach((row) => {
       setWatchList(row.symbol);
     });
-  }, [strategyData, strategyId, setWatchList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [strategyData, strategyId]);
 
   const columns: TableColumnsType<Signal> = [
     {

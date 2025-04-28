@@ -136,7 +136,8 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
     alertLogsData.forEach((row) => {
       setWatchList(row.symbol);
     });
-  }, [alertLogsData, setWatchList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [alertLogsData]);
 
   const columns: TableColumnsType<Signal> = [
     {
