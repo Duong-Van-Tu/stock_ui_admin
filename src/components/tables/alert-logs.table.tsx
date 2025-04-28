@@ -656,7 +656,7 @@ export const AlertLogsTable = () => {
                 modal.openModal(
                   <NotesSignal
                     symbol={record.symbol}
-                    pageName={fieldMapping['stockAlertLog']}
+                    pageName={fieldMapping['stockAlertLogs']}
                     title={t('NoteSignalForSymbol')}
                   />,
                   {

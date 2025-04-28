@@ -31,7 +31,6 @@ export const NotesSignal = ({ symbol, pageName, title }: NotesSignalProps) => {
   const { notifySuccess } = useNotification();
   const note = useAppSelector(watchNote);
   const loading = useAppSelector(watchNodeLoading);
-
   const fetchNotes = useCallback(() => {
     dispatch(getNoteBySignal({ symbol, pageName }));
   }, [dispatch, symbol, pageName]);

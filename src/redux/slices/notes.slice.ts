@@ -42,7 +42,7 @@ export const notesSlice = createAppSlice({
       async (params: NoteParams) => {
         const data = await defaultApiFetcher.post(
           'page-notes/upsert-note',
-          params
+          convertParamsByMapping(params)
         );
         return data;
       },
