@@ -109,10 +109,10 @@ export const authSlice = createAppSlice({
   }),
 
   selectors: {
-    watchAuthLoading: (auth) => auth.loading,
-    watchProfileLoading: (auth) => auth.profileLoading,
-    watchLoggedIn: (auth) => auth.isAuthenticated,
-    watchUser: (auth) => auth.user
+    watchAuthLoading: (state) => state.loading,
+    watchProfileLoading: (state) => state.profileLoading,
+    watchLoggedIn: (state) => state.isAuthenticated,
+    watchUser: (state) => state.user
   }
 });
 

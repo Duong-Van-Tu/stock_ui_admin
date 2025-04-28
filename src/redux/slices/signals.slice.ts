@@ -130,17 +130,17 @@ export const signalSlice = createAppSlice({
   }),
 
   selectors: {
-    watchStrategies: (signals) => signals.strategies,
-    watchStrategyLoading: (signals) => signals.loading,
-    watchSignalStrategyLoading: (signals) => (strategyId: number) =>
-      signals.signalStrategyLoading[strategyId] || false,
-    watchAlertLogsLoading: (signals) => signals.alertLogsLoading,
-    watchAlertLogsData: (signals) => signals.alertLogsData,
-    watchSignalOptions: (signals) => signals.signalOptions,
-    watchAlertLogsPagination: (signals) => signals.pagination,
-    watchSignalByStrategyId: (signals) => signals.signalByStrategyId,
-    watchSignalPaginationByStrategyId: (signals) => (strategyId: number) =>
-      signals.paginationByStrategyId[strategyId] || PAGINATION
+    watchStrategies: (state) => state.strategies,
+    watchStrategyLoading: (state) => state.loading,
+    watchSignalStrategyLoading: (state) => (strategyId: number) =>
+      state.signalStrategyLoading[strategyId] || false,
+    watchAlertLogsLoading: (state) => state.alertLogsLoading,
+    watchAlertLogsData: (state) => state.alertLogsData,
+    watchSignalOptions: (state) => state.signalOptions,
+    watchAlertLogsPagination: (state) => state.pagination,
+    watchSignalByStrategyId: (state) => state.signalByStrategyId,
+    watchSignalPaginationByStrategyId: (state) => (strategyId: number) =>
+      state.paginationByStrategyId[strategyId] || PAGINATION
   }
 });
 

@@ -19,7 +19,7 @@ export const appSlice = createSlice({
     )
   }),
   selectors: {
-    watchSideBarCollapsed: (app) => app.sideBarCollapsed
+    watchSideBarCollapsed: (state) => state.sideBarCollapsed
   }
 });
 

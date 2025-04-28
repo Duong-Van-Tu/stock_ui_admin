@@ -19,6 +19,7 @@ import isoWeek from 'dayjs/plugin/isoWeek';
 import { usePathname } from 'next/navigation';
 import { getPathnameSegment } from '@/utils/common';
 import ModalProvider from './modal.provider';
+import { NotificationProvider } from './notification-provider';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -39,11 +40,13 @@ export default function Providers({ children }: { children: ReactNode }) {
     <AntdRegistry>
       <ConfigProvider locale={antdLocale} theme={theme}>
         <Provider store={store}>
-          <AuthProvider>
-            <SocketProvider>
-              <ModalProvider>{children}</ModalProvider>
-            </SocketProvider>
-          </AuthProvider>
+          <NotificationProvider>
+            <AuthProvider>
+              <SocketProvider>
+                <ModalProvider>{children}</ModalProvider>
+              </SocketProvider>
+            </AuthProvider>
+          </NotificationProvider>
         </Provider>
       </ConfigProvider>
     </AntdRegistry>

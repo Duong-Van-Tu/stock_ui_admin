@@ -99,13 +99,13 @@ export const stockScoreSlice = createAppSlice({
   }),
 
   selectors: {
-    watchStockScoreLoading: (stockScore) => stockScore.loading,
-    watchStockScoreData: (stockScore) => stockScore.stockScoresData,
-    watchStockScorePagination: (stockScore) => stockScore.pagination,
-    watchIndustriesLoading: (industry) => industry.industryLoading,
-    watchIndustries: (industry) => industry.industries,
-    watchSectorLoading: (sector) => sector.sectorLoading,
-    watchSectors: (sector) => sector.sectors
+    watchStockScoreLoading: (state) => state.loading,
+    watchStockScoreData: (state) => state.stockScoresData,
+    watchStockScorePagination: (state) => state.pagination,
+    watchIndustriesLoading: (state) => state.industryLoading,
+    watchIndustries: (state) => state.industries,
+    watchSectorLoading: (state) => state.sectorLoading,
+    watchSectors: (state) => state.sectors
   }
 });
 

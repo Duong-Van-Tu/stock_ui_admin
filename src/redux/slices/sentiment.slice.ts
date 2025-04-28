@@ -160,16 +160,16 @@ export const SentimentSlice = createAppSlice({
   }),
 
   selectors: {
-    watchCompanyNewsLoading: (sentiment) => sentiment.loading,
-    watchCountSentimentLoading: (sentiment) => sentiment.loadingCountSentiment,
-    watchCountSentiment: (sentiment) => sentiment.countSentiment,
-    watchCompanyNews: (sentiment) => sentiment.companyNews,
-    watchCompanyNewsPagination: (sentiment) => sentiment.pagination,
-    watchListWatcherLoading: (sentiment) => sentiment.loadingListWatcher,
-    watchListWatcher: (sentiment) => sentiment.listWatcher,
-    watchListWatcherPagination: (sentiment) => sentiment.listWatcherPagination,
-    watchListNewsLatest: (sentiment) => sentiment.newLatest,
-    watchListNewsLatestPagination: (sentiment) => sentiment.newsLatestPagination
+    watchCompanyNewsLoading: (state) => state.loading,
+    watchCountSentimentLoading: (state) => state.loadingCountSentiment,
+    watchCountSentiment: (state) => state.countSentiment,
+    watchCompanyNews: (state) => state.companyNews,
+    watchCompanyNewsPagination: (state) => state.pagination,
+    watchListWatcherLoading: (state) => state.loadingListWatcher,
+    watchListWatcher: (state) => state.listWatcher,
+    watchListWatcherPagination: (state) => state.listWatcherPagination,
+    watchListNewsLatest: (state) => state.newLatest,
+    watchListNewsLatestPagination: (state) => state.newsLatestPagination
   }
 });
 

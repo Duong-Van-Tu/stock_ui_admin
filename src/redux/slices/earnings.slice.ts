@@ -105,12 +105,12 @@ export const earningsSlice = createAppSlice({
   }),
 
   selectors: {
-    watchEarningsLoading: (earning) => earning.loading,
-    watchEarningSummaryLoading: (earning) => earning.loadingEarningsSummary,
-    watchEarningsSummary: (earning) => earning.earningsSummary,
-    watchEarnings: (earning) => earning.earnings,
-    watchEarningsFilter: (earning) => earning.earningsFilter,
-    watchEarningPagination: (earning) => earning.pagination
+    watchEarningsLoading: (state) => state.loading,
+    watchEarningSummaryLoading: (state) => state.loadingEarningsSummary,
+    watchEarningsSummary: (state) => state.earningsSummary,
+    watchEarnings: (state) => state.earnings,
+    watchEarningsFilter: (state) => state.earningsFilter,
+    watchEarningPagination: (state) => state.pagination
   }
 });
 

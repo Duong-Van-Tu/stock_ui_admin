@@ -267,27 +267,27 @@ export const stockDetailsSlice = createAppSlice({
   }),
 
   selectors: {
-    watchStockDetailsLoading: (stock) => stock.loading,
-    watchStockDetails: (stock) => stock.stockDetails,
-    watchFundamentalDetailLoading: (stock) => stock.fundamentalDetailLoading,
-    watchFundamentalDetails: (stock) => stock.fundamentalDetails,
-    watchFundamentalScoreLoading: (stock) => stock.fundamentalScoreLoading,
-    watchFundamentalScore: (stock) => stock.fundamentalScore,
-    watchFundamentalDetailScoreLoading: (stock) =>
-      stock.fundamentalDetailScoreLoading,
-    watchFundamentalDetailScore: (stock) => stock.fundamentalDetailScore,
-    watchSentimentScoreLoading: (stock) => stock.sentimentScoreLoading,
-    watchSentimentScore: (stock) => stock.sentimentScore,
-    watchMovingSentimentScoreLoading: (stock) =>
-      stock.movingSentimentScoreLoading,
-    watchMovingSentimentScore: (stock) => stock.movingSentimentScore,
-    watchEarningsScoreLoading: (stock) => stock.earningsScoreLoading,
-    watchEarningsScore: (stock) => stock.earningsScore,
-    watchEarningsDetailScoreLoading: (stock) =>
-      stock.earningsDetailScoreLoading,
-    watchEarningsDetailScore: (stock) => stock.earningsDetailScore,
-    watchEarningsDetailLoading: (stock) => stock.earningsDetailLoading,
-    watchEarningsDetails: (stock) => stock.earningsDetails
+    watchStockDetailsLoading: (state) => state.loading,
+    watchStockDetails: (state) => state.stockDetails,
+    watchFundamentalDetailLoading: (state) => state.fundamentalDetailLoading,
+    watchFundamentalDetails: (state) => state.fundamentalDetails,
+    watchFundamentalScoreLoading: (state) => state.fundamentalScoreLoading,
+    watchFundamentalScore: (state) => state.fundamentalScore,
+    watchFundamentalDetailScoreLoading: (state) =>
+      state.fundamentalDetailScoreLoading,
+    watchFundamentalDetailScore: (state) => state.fundamentalDetailScore,
+    watchSentimentScoreLoading: (state) => state.sentimentScoreLoading,
+    watchSentimentScore: (state) => state.sentimentScore,
+    watchMovingSentimentScoreLoading: (state) =>
+      state.movingSentimentScoreLoading,
+    watchMovingSentimentScore: (state) => state.movingSentimentScore,
+    watchEarningsScoreLoading: (state) => state.earningsScoreLoading,
+    watchEarningsScore: (state) => state.earningsScore,
+    watchEarningsDetailScoreLoading: (state) =>
+      state.earningsDetailScoreLoading,
+    watchEarningsDetailScore: (state) => state.earningsDetailScore,
+    watchEarningsDetailLoading: (state) => state.earningsDetailLoading,
+    watchEarningsDetails: (state) => state.earningsDetails
   }
 });
 

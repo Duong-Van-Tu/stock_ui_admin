@@ -653,9 +653,16 @@ export const AlertLogsTable = () => {
           <Tooltip title={t('notes')}>
             <Button
               onClick={() =>
-                modal.openModal(<NotesSignal symbol={record.symbol} />, {
-                  width: 500
-                })
+                modal.openModal(
+                  <NotesSignal
+                    symbol={record.symbol}
+                    pageName={fieldMapping['stockAlertLog']}
+                    title={t('NoteSignalForSymbol')}
+                  />,
+                  {
+                    width: 450
+                  }
+                )
               }
               icon={
                 <Icon

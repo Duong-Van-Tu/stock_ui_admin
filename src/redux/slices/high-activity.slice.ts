@@ -54,9 +54,9 @@ export const highActivitySlice = createAppSlice({
   }),
 
   selectors: {
-    watchListHighActivityLoading: (highActivity) => highActivity.loading,
-    watchListHighActivity: (highActivity) => highActivity.listHighActivity,
-    watchListHighActivityPagination: (highActivity) => highActivity.pagination
+    watchListHighActivityLoading: (state) => state.loading,
+    watchListHighActivity: (state) => state.listHighActivity,
+    watchListHighActivityPagination: (state) => state.pagination
   }
 });
 

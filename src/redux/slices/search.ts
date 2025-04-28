@@ -17,7 +17,7 @@ export const searchSlice = createSlice({
     })
   }),
   selectors: {
-    watchSearchSymbol: (search) => search.symbol
+    watchSearchSymbol: (state) => state.symbol
   }
 });
 

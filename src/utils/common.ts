@@ -1,3 +1,4 @@
+import { fieldMapping } from '@/helpers/field-mapping.helper';
 import dayjs from 'dayjs';
 
 export function toBoolean(input: any) {
@@ -219,4 +220,27 @@ export const parseRangeValue = (
   }
 
   return { from: undefined, to: undefined };
+};
+
+export const convertParamsByMapping = <T extends Record<string, unknown>>(
+  params: T
+): Record<string, any> => {
+  return Object.entries(params).reduce((acc, [key, value]) => {
+    const mappedKey = fieldMapping[key];
+
+    const newKey = mappedKey !== undefined ? mappedKey : key;
+
+    if (
+      value &&
+      typeof value === 'object' &&
+      !Array.isArray(value) &&
+      value !== null
+    ) {
+      acc[newKey] = convertParamsByMapping(value as Record<string, unknown>);
+    } else {
+      acc[newKey] = value;
+    }
+
+    return acc;
+  }, {} as Record<string, any>);
 };

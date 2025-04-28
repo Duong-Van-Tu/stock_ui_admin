@@ -263,5 +263,11 @@
   "selectPlaceholderDefault": "Vui lòng chọn",
   "earningsNext3Days": "Earnings 3 ngày tới",
   "actions": "Hành động",
-  "exit": "Thoát lệnh"
+  "exit": "Thoát lệnh",
+  "NoteSignalForSymbol": "Ghi chú",
+  "SaveNote": "Lưu",
+  "EnterYourNotesHere": "Nhập ghi chú...",
+  "PleaseEnterYourNotes": "Vui lòng nhập ghi chú!",
+  "cancel": "Hủy",
+  "noteUpdatedSuccessfully": "Cập nhật ghi chú thành công!"
 }

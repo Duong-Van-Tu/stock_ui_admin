@@ -108,5 +108,9 @@ export const fieldMapping: Record<string, string> = {
   highestPrice7Days: 'lowest_7_days_price',
   isImport: 'is_import',
   earningDate3days: 'earning_date_3days',
-  isNotes: 'is_notes'
+  isNotes: 'is_notes',
+  pageName: 'page_name',
+  upTo: 'up_to',
+  createdDate: 'created_date',
+  stockAlertLogs: 'stock_alert_logs'
 };
