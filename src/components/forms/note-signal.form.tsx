@@ -14,16 +14,23 @@ import { ReactNode, useCallback, useEffect } from 'react';
 import { useModal } from '@/hooks/modal.hook';
 import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
+import { updateAlertLogsData } from '@/redux/slices/signals.slice';
 
 const { Title } = Typography;
 
 type NotesSignalProps = {
+  signalId: number;
   symbol: string;
   pageName: string;
   title?: string | ReactNode;
 };
 
-export const NotesSignal = ({ symbol, pageName, title }: NotesSignalProps) => {
+export const NotesSignal = ({
+  symbol,
+  pageName,
+  title,
+  signalId
+}: NotesSignalProps) => {
   const dispatch = useAppDispatch();
   const t = useTranslations();
   const [form] = Form.useForm();
@@ -59,6 +66,7 @@ export const NotesSignal = ({ symbol, pageName, title }: NotesSignalProps) => {
 
     if (isRequestSuccess(res)) {
       notifySuccess(t('noteUpdatedSuccessfully'));
+      dispatch(updateAlertLogsData({ id: signalId, isNotes: true }));
       closeModal();
     }
   };
@@ -87,7 +95,7 @@ export const NotesSignal = ({ symbol, pageName, title }: NotesSignalProps) => {
             <div css={buttonGroupStyles}>
               <Button onClick={handleCancel}>{t('cancel')}</Button>
               <Button type='primary' htmlType='submit'>
-                {t('SaveNote')}
+                {t('Save')}
               </Button>
             </div>
           </Form.Item>
@@ -104,8 +112,11 @@ const formFooterStyles = css`
 
 const buttonGroupStyles = css`
   display: flex;
-  justify-content: flex-end;
-  gap: 8px;
+  justify-content: center;
+  gap: 1rem;
+  button {
+    width: 8rem;
+  }
 `;
 
 const titleStyles = css`

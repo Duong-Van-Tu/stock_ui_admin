@@ -153,8 +153,6 @@ export const AlertLogsTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alertLogsData]);
 
-  console.log(resFromWS);
-
   const columns: TableColumnsType<Signal> = [
     {
       title: t('stt'),
@@ -658,6 +656,7 @@ export const AlertLogsTable = () => {
               onClick={() =>
                 modal.openModal(
                   <NotesSignal
+                    signalId={record.id}
                     symbol={record.symbol}
                     pageName={fieldMapping['stockAlertLogs']}
                     title={t('NoteSignalForSymbol')}

@@ -5,6 +5,7 @@ import {
   transformSignalsData,
   transformStrategyData
 } from '@/helpers/signals.helper';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 export type SignalsState = {
   loading: boolean;
@@ -126,6 +127,15 @@ export const signalSlice = createAppSlice({
           state.paginationByStrategyId[strategyId] = PAGINATION;
         }
       }
+    ),
+    updateAlertLogsData: create.reducer(
+      (state, action: PayloadAction<{ id: number } & Partial<Signal>>) => {
+        const { id, ...updates } = action.payload;
+
+        state.alertLogsData = state.alertLogsData.map((signal) =>
+          signal.id === id ? { ...signal, ...updates } : signal
+        );
+      }
     )
   }),
 
@@ -156,5 +166,9 @@ export const {
   watchSignalOptions
 } = signalSlice.selectors;
 
-export const { getAlertLogs, getStrategies, getSignalStrategyId } =
-  signalSlice.actions;
+export const {
+  getAlertLogs,
+  getStrategies,
+  getSignalStrategyId,
+  updateAlertLogsData
+} = signalSlice.actions;

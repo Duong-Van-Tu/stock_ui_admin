@@ -1,4 +1,5 @@
 type NoteParams = {
+  signalId?: number;
   symbol: string;
   pageName: string;
   notes?: string;
