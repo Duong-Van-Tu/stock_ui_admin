@@ -23,6 +23,7 @@ import AISentiment from '@/assets/svg/ai-sentiment.svg';
 import Notes from '@/assets/svg/notes.svg';
 import ListHighActivity from '@/assets/svg/high-activity.svg';
 import Exit from '@/assets/svg/exit.svg';
+import Watchlist50Days from '@/assets/svg/Watchlist50Days.svg';
 
 type IconProps = {
   width?: number | string;
@@ -55,7 +56,8 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   AISentiment: AISentiment,
   notes: Notes,
   listHighActivity: ListHighActivity,
-  exit: Exit
+  exit: Exit,
+  watchlist50Days: Watchlist50Days
 };
 
 export const Icon = ({

@@ -42,4 +42,8 @@ export namespace PageURLs {
   export function ofStockDetail(symbol: string) {
     return withPrefix(`/symbol/${symbol}`);
   }
+
+  export function ofWatchListIn50days() {
+    return withPrefix(`/watchlist-50-days`);
+  }
 }

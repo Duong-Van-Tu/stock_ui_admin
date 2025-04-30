@@ -76,5 +76,11 @@ export const getMenuStructure = (
     key: 'high-activity',
     iconType: 'listHighActivity',
     link: PageURLs.ofHighActivity()
+  },
+  {
+    label: t('watchlistIn50Days'),
+    key: 'watchlist-50-days',
+    iconType: 'watchlist50Days',
+    link: PageURLs.ofWatchListIn50days()
   }
 ];
