@@ -61,7 +61,12 @@ export const signalSlice = createAppSlice({
       }: { isOptions?: boolean } & Record<string, any>) => {
         const response = await defaultApiFetcher.get(
           'tickers/get-stock-alert-log',
-          { query: { isImport: isOptions ? 1 : 0, ...query } }
+          {
+            query: {
+              isImport: isOptions === undefined ? undefined : isOptions ? 1 : 0,
+              ...query
+            }
+          }
         );
         return { data: response.data, isOptions };
       },

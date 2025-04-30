@@ -22,7 +22,6 @@ import {
 } from '@/utils/common';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
-import { watchSearchSymbol } from '@/redux/slices/search';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
@@ -42,12 +41,12 @@ import { useSortOrder } from '@/hooks/sort-order.hook';
 export const ListWatcherTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const symbol = useAppSelector(watchSearchSymbol);
+  const searchParams = useSearchParams();
+  const symbol = searchParams.get('symbol');
   const { height } = useWindowSize();
   const loading = useAppSelector(watchListWatcherLoading);
   const listWatcher = useAppSelector(watchListWatcher);
   const pagination = useAppSelector(watchListWatcherPagination);
-  const searchParams = useSearchParams();
 
   const [filter, setFilter] = useState<SentimentFilter>({});
 
@@ -88,12 +87,13 @@ export const ListWatcherTable = () => {
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
+          symbol: symbol ? symbol : undefined,
           ...filteredFilter
         })
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [symbol]
   );
 
   useEffect(() => {
@@ -106,9 +106,9 @@ export const ListWatcherTable = () => {
       sentiment: params.get('sentiment') || undefined,
       impact: params.get('impact') || undefined
     };
-    setFilter((prev) => ({ ...prev, symbol, ...initialValues }));
-    fetchListWatcher({ filter: { symbol, ...initialValues } });
-  }, [symbol, searchParams, fetchListWatcher]);
+    setFilter((prev) => ({ ...prev, ...initialValues }));
+    fetchListWatcher({ filter: { ...initialValues } });
+  }, [searchParams, fetchListWatcher]);
 
   const columns: TableColumnsType<ListWatcher> = [
     {

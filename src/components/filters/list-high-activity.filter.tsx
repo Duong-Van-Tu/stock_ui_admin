@@ -14,8 +14,6 @@ import {
   getRangeDateOptions
 } from '@/utils/stock-filter';
 import { parseRangeValue } from '@/utils/common';
-import { useAppSelector } from '@/redux/hooks';
-import { watchSearchSymbol } from '@/redux/slices/search';
 import { SelectFilter } from './select-filter';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { usePastDateRange } from '@/hooks/date-range.hook';
@@ -45,7 +43,6 @@ export const ListHighActivityFilter = ({
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const symbol = useAppSelector(watchSearchSymbol);
   const [form] = Form.useForm();
 
   const params = new URLSearchParams(searchParams.toString());
@@ -87,14 +84,13 @@ export const ListHighActivityFilter = ({
     form.setFieldsValue({ ...initialValues, drop1_5Pct, rangeDate });
 
     onFilter({
-      symbol,
       ...buildFilterData(initialValues),
       [fieldMapping.drop1_5Pct]: drop1_5Pct,
       fromDate,
       toDate
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, symbol, form, onFilter, fromDate, toDate]);
+  }, [searchParams, form, onFilter, fromDate, toDate]);
 
   return (
     <div css={[rootStyles, customStyles]}>

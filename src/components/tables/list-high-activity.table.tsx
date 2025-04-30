@@ -28,11 +28,14 @@ import { DateTimeCell } from './columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { ListHighActivityFilter } from '../filters/list-high-activity.filter';
+import { useSearchParams } from 'next/navigation';
 
 export const ListHighActivity = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const { height } = useWindowSize();
+  const searchParams = useSearchParams();
+  const symbol = searchParams.get('symbol');
   const loading = useAppSelector(watchListHighActivityLoading);
   const listHighActivity = useAppSelector(watchListHighActivity);
   const pagination = useAppSelector(watchListHighActivityPagination);
@@ -67,12 +70,13 @@ export const ListHighActivity = () => {
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
+          symbol: symbol ? symbol : undefined,
           ...filteredFilter
         })
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [symbol]
   );
 
   const handleFilter = useCallback(

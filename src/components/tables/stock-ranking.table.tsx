@@ -23,7 +23,6 @@ import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
 import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
-import { watchSearchSymbol } from '@/redux/slices/search';
 import { TableTitle } from './title.table';
 import { LegendStatus } from '../legend-status';
 import { StockRankingFilter } from '../filters/stock-ranking.filter';
@@ -34,13 +33,16 @@ import { StockChangeCell } from './columns/stock-change-cell.column';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
+import { useSearchParams } from 'next/navigation';
 
 export const StockRankingTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const symbol = useAppSelector(watchSearchSymbol);
   const { setWatchList, resFromWS } = useContext(SocketContext);
   const { height } = useWindowSize();
+
+  const searchParams = useSearchParams();
+  const symbol = searchParams.get('symbol');
 
   const stockScoreData = useAppSelector(watchStockScoreData);
   const pagination = useAppSelector(watchStockScorePagination);
@@ -112,18 +114,18 @@ export const StockRankingTable = () => {
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
+          symbol: symbol ? symbol : undefined,
           ...filteredFilter
         })
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [symbol]
   );
 
   useEffect(() => {
-    setFilter((prev) => ({ ...prev, symbol }));
-    fetchDataStockScore({ filter: { symbol } });
-  }, [symbol, fetchDataStockScore]);
+    fetchDataStockScore();
+  }, [fetchDataStockScore]);
 
   useEffect(() => {
     stockScoreData.forEach((row) => {

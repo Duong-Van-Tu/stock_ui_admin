@@ -28,13 +28,11 @@ import {
 } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
-import { AlertLogsView } from '@/constants/common.constant';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { NotFoundSearchResult } from '../not-found-search-result';
-import { searchSymbol } from '@/redux/slices/search';
 import { useSortOrder } from '@/hooks/sort-order.hook';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 type SearchSignalTable = {
   symbol: string;
@@ -44,18 +42,10 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const { setWatchList, resFromWS } = useContext(SocketContext);
+  const { height } = useWindowSize();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { height } = useWindowSize();
-
-  const isOption = searchParams.get('isOption')
-    ? Number(searchParams.get('isOption'))
-    : 0;
-
-  const strategyId = searchParams.get('strategyId')
-    ? Number(searchParams.get('strategyId'))
-    : undefined;
 
   const alertLogsData = useAppSelector(watchAlertLogsData);
   const pagination = useAppSelector(watchAlertLogsPagination);
@@ -91,6 +81,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
+          symbol,
           ...filteredFilter
         })
       );
@@ -99,38 +90,15 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
     []
   );
 
-  const handleChangeView = useCallback(
-    (view: AlertLogsView) => {
-      const params = new URLSearchParams(searchParams.toString());
-
-      if (view === AlertLogsView.STOCKS) {
-        params.delete('isOption');
-      } else {
-        params.set('isOption', '1');
-      }
-
-      router.replace(`${pathname}?${params.toString()}`);
-    },
-    [pathname, searchParams, router]
-  );
-
   const handleReload = () => {
-    dispatch(searchSymbol(''));
+    const params = new URLSearchParams(searchParams);
+    params.delete('symbol');
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   useEffect(() => {
-    setFilter((prev) => ({
-      ...prev,
-      symbol,
-      isImport: isOption as AlertLogsView,
-      strategyId
-    }));
-    fetchDataAlertLogs({ filter: { symbol, isImport: isOption, strategyId } });
-
-    if (isOption === AlertLogsView.OPTIONS) {
-      handleChangeView(AlertLogsView.OPTIONS);
-    }
-  }, [symbol, isOption, strategyId, fetchDataAlertLogs, handleChangeView]);
+    fetchDataAlertLogs({});
+  }, [fetchDataAlertLogs]);
 
   useEffect(() => {
     alertLogsData.forEach((row) => {

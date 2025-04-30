@@ -4,13 +4,13 @@ import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { searchSymbol, watchSearchSymbol } from '@/redux/slices/search';
+import { searchSymbol } from '@/redux/slices/search';
 import { Button, Dropdown, Input, Layout, Space, theme } from 'antd';
 import type { MenuProps } from 'antd';
 import { Icon } from './icons';
 import { MenuItemType } from 'antd/es/menu/interface';
 import { logoutUser, watchUser } from '@/redux/slices/auth.slice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { PageURLs } from '@/utils/navigate';
 import { getPathnameSegment } from '@/utils/common';
 
@@ -18,11 +18,13 @@ enum UserMenu {
   PROFILE,
   LOGOUT
 }
+
 const { Search } = Input;
 
 type HeaderProps = {
   collapsed: boolean;
 };
+
 export default function Header({ collapsed }: HeaderProps) {
   const {
     token: { colorBgContainer }
@@ -33,11 +35,15 @@ export default function Header({ collapsed }: HeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const locale = getPathnameSegment(pathname, 0) || 'en';
-  const symbol = useAppSelector(watchSearchSymbol);
   const user = useAppSelector(watchUser);
   const searchParams = useSearchParams();
 
   const [searchValue, setSearchValue] = useState('');
+
+  useEffect(() => {
+    const urlSymbol = searchParams.get('symbol')?.toUpperCase() || '';
+    setSearchValue(urlSymbol);
+  }, [searchParams]);
 
   const handleUserMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === UserMenu.LOGOUT.toString()) {
@@ -86,13 +92,25 @@ export default function Header({ collapsed }: HeaderProps) {
 
   const handleSearch = (value: string) => {
     const upperCaseValue = value.trim().toUpperCase();
+    const params = new URLSearchParams(searchParams);
+
+    if (!upperCaseValue) {
+      params.delete('symbol');
+      router.push(`${pathname}?${params.toString()}`);
+      setSearchValue('');
+      return;
+    }
+
+    params.set('symbol', upperCaseValue);
+    router.push(`${pathname}?${params.toString()}`);
     dispatch(searchSymbol(upperCaseValue));
   };
 
   const handleClear = () => {
-    if (symbol) {
-      dispatch(searchSymbol(''));
-    }
+    const params = new URLSearchParams(searchParams);
+    params.delete('symbol');
+    router.push(`${pathname}?${params.toString()}`);
+    setSearchValue('');
   };
 
   useEffect(() => {

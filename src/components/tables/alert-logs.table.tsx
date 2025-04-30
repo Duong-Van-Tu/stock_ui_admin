@@ -24,7 +24,6 @@ import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
 import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
-import { watchSearchSymbol } from '@/redux/slices/search';
 import { TableTitle } from './title.table';
 import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
@@ -65,7 +64,7 @@ export const AlertLogsTable = () => {
     ? Number(searchParams.get('strategyId'))
     : undefined;
 
-  const symbol = useAppSelector(watchSearchSymbol);
+  const symbol = searchParams.get('symbol');
   const alertLogsData = useAppSelector(watchAlertLogsData);
   const pagination = useAppSelector(watchAlertLogsPagination);
   const loading = useAppSelector(watchAlertLogsLoading);
@@ -100,12 +99,13 @@ export const AlertLogsTable = () => {
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
+          symbol: symbol ?? undefined,
           ...filteredFilter
         })
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [symbol]
   );
 
   const handleFilter = (values: AlertLogsFilter) => {
@@ -135,16 +135,15 @@ export const AlertLogsTable = () => {
   useEffect(() => {
     setFilter((prev) => ({
       ...prev,
-      symbol,
       isImport: isOption as AlertLogsView,
       strategyId
     }));
-    fetchDataAlertLogs({ filter: { symbol, isImport: isOption, strategyId } });
+    fetchDataAlertLogs({ filter: { isImport: isOption, strategyId } });
 
     if (isOption === AlertLogsView.OPTIONS) {
       handleChangeView(AlertLogsView.OPTIONS);
     }
-  }, [symbol, isOption, strategyId, fetchDataAlertLogs, handleChangeView]);
+  }, [isOption, strategyId, fetchDataAlertLogs, handleChangeView]);
 
   useEffect(() => {
     alertLogsData.forEach((row) => {

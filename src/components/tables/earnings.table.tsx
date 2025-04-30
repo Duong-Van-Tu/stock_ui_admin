@@ -15,7 +15,6 @@ import { TableTitle } from './title.table';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import dayjs from 'dayjs';
-import { watchSearchSymbol } from '@/redux/slices/search';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 
 import {
@@ -27,6 +26,7 @@ import { SymbolCell } from './columns/symbol-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { useSortOrder } from '@/hooks/sort-order.hook';
+import { useSearchParams } from 'next/navigation';
 
 export const EarningsTable = () => {
   const t = useTranslations();
@@ -35,7 +35,8 @@ export const EarningsTable = () => {
   const { height } = useWindowSize();
   const pagination = useAppSelector(watchEarningPagination);
   const earnings = useAppSelector(watchEarnings);
-  const symbol = useAppSelector(watchSearchSymbol);
+  const searchParams = useSearchParams();
+  const symbol = searchParams.get('symbol');
   const loading = useAppSelector(watchEarningsLoading);
   const [filter, setFilter] = useState<EarningFilter>({
     date: dayjs().format('YYYY-MM-DD')
@@ -84,18 +85,19 @@ export const EarningsTable = () => {
         getEarnings({
           page,
           limit: pageSize,
+          symbol: symbol ? symbol : undefined,
           ...filteredFilter
         })
       );
     },
-    [dispatch]
+    [dispatch, symbol]
   );
 
   useEffect(() => {
-    setFilter((prev) => ({ ...prev, symbol, date: earningDate }));
-    fetchEarnings({ filter: { symbol, date: earningDate } });
+    setFilter((prev) => ({ ...prev, date: earningDate }));
+    fetchEarnings({ filter: { date: earningDate } });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchEarnings, symbol]);
+  }, [fetchEarnings]);
 
   const columns: TableColumnsType<Earning> = [
     {
