@@ -46,7 +46,10 @@ export const StockRankingTable = () => {
   const pagination = useAppSelector(watchStockScorePagination);
   const loading = useAppSelector(watchStockScoreLoading);
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<Set<Key>>(new Set());
+  const [selectedSymbols, setSelectedSymbols] = useState<Set<string>>(
+    new Set()
+  );
+
   const [filter, setFilter] = useState<StockScoreFilter>({});
 
   const { sortField, sortType, handleSortOrder } =
@@ -64,25 +67,24 @@ export const StockRankingTable = () => {
       }
     });
 
-  const onSelectChange = (newSelectedRowKeys: Key[]) => {
-    setSelectedRowKeys((prevKeys) => {
-      const updatedKeys = new Set(prevKeys);
+  const onSelectChange = (
+    _selectedRowKeys: Key[],
+    selectedRows: StockScore[]
+  ) => {
+    const newSymbols = selectedRows.map((row) => row.symbol);
 
-      newSelectedRowKeys.forEach((key) => updatedKeys.add(key));
-
-      stockScoreData.forEach((item) => {
-        if (!newSelectedRowKeys.includes(item.key)) {
-          updatedKeys.delete(item.key);
-        }
-      });
-
-      return new Set(updatedKeys);
+    setSelectedSymbols((prev) => {
+      return new Set([...prev, ...newSymbols]);
     });
   };
 
   const rowSelection: TableRowSelection<StockScore> = {
-    selectedRowKeys: Array.from(selectedRowKeys),
+    selectedRowKeys: stockScoreData
+      .filter(({ symbol }) => selectedSymbols.has(symbol))
+      .map(({ key }) => key),
+
     onChange: onSelectChange,
+
     getCheckboxProps: (record) => ({
       disabled: record.isAdd
     })
@@ -383,7 +385,7 @@ export const StockRankingTable = () => {
           ]).join(' ')
         }
         css={tableStyles}
-        rowKey={(record) => record.key}
+        rowKey='key'
         rowSelection={rowSelection}
         columns={columns}
         dataSource={stockScoreData}

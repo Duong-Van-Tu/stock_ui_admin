@@ -12,6 +12,7 @@ import {
 import { PositiveNegativeText } from '../positive-negative-text';
 import dayjs from 'dayjs';
 import { useTranslations } from 'next-intl';
+import { TimeZone } from '@/constants/timezone.constant';
 
 const { Text } = Typography;
 
@@ -40,7 +41,7 @@ const renderValue = (
 };
 
 const renderDate = (value?: string) =>
-  value ? dayjs(value).format('MM/DD/YYYY HH:mm') : '--';
+  value ? dayjs(value).tz(TimeZone.NEW_YORK).format('MM/DD/YYYY HH:mm') : '--';
 
 const StatRow = ({
   label,
