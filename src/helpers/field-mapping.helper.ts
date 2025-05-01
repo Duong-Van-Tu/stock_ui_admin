@@ -112,5 +112,12 @@ export const fieldMapping: Record<string, string> = {
   pageName: 'page_name',
   upTo: 'up_to',
   createdDate: 'created_date',
-  stockAlertLogs: 'stock_alert_logs'
+  stockAlertLogs: 'stock_alert_logs',
+  sma50: 'sma_50',
+  suggestHighBuy: 'suggest_high_buy',
+  suggestLowBuy: 'suggest_low_buy',
+  yahooPriceTargetMean: 'yahoo_price_target_mean',
+  yahooPriceTargetHigh: 'yahoo_price_target_high',
+  yahooPriceTargetLow: 'yahoo_price_target_low',
+  recommendPercent: 'recoment_percent'
 };

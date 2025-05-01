@@ -30,9 +30,7 @@ import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
-import { NotFoundSearchResult } from '../not-found-search-result';
 import { useSortOrder } from '@/hooks/sort-order.hook';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 type SearchSignalTable = {
   symbol: string;
@@ -43,9 +41,6 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
   const dispatch = useAppDispatch();
   const { setWatchList, resFromWS } = useContext(SocketContext);
   const { height } = useWindowSize();
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const alertLogsData = useAppSelector(watchAlertLogsData);
   const pagination = useAppSelector(watchAlertLogsPagination);
@@ -87,14 +82,8 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [symbol]
   );
-
-  const handleReload = () => {
-    const params = new URLSearchParams(searchParams);
-    params.delete('symbol');
-    router.push(`${pathname}?${params.toString()}`);
-  };
 
   useEffect(() => {
     fetchDataAlertLogs({});
@@ -475,15 +464,10 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
     }
   ];
 
-  return alertLogsData.length === 0 && !loading ? (
-    <NotFoundSearchResult
-      title={`${t('noSignalsForSymbol')}: "${symbol}"`}
-      onReload={handleReload}
-    />
-  ) : (
+  return (
     <div css={rootStyles}>
       <div css={tableWrapperStyles}>
-        <TableTitle customStyles={titleStyles}>
+        <TableTitle customStyles={titleStyles(alertLogsData.length === 0)}>
           {t('searchResult')} {`"${symbol}"`}
         </TableTitle>
         <Table<Signal>
@@ -492,8 +476,9 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
           columns={columns}
           dataSource={alertLogsData}
           loading={loading}
+          showHeader={alertLogsData.length > 0}
           scroll={{
-            x: 1200,
+            x: alertLogsData.length > 0 ? 1200 : undefined,
             y: alertLogsData.length > 0 ? height - 260 : undefined
           }}
           sortDirections={['descend', 'ascend']}
@@ -548,8 +533,11 @@ const tableStyles = css`
   }
 `;
 
-const titleStyles = css`
+const titleStyles = (isBorderBottom: boolean) => css`
   padding: 1.2rem 1.6rem;
+  border-bottom: ${isBorderBottom
+    ? '1px solid var(--border-table-color)'
+    : 'unset'};
 `;
 
 const emptyStyles = (height: number) => css`

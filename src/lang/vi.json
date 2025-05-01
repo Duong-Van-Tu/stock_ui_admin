@@ -271,5 +271,18 @@
   "EnterYourNotesHere": "Nhập ghi chú...",
   "PleaseEnterYourNotes": "Vui lòng nhập ghi chú!",
   "cancel": "Hủy",
-  "noteUpdatedSuccessfully": "Cập nhật ghi chú thành công!"
+  "noteUpdatedSuccessfully": "Cập nhật ghi chú thành công!",
+  "averagePrice": "Giá trung bình",
+  "medianPrice": "Giá trung vị",
+  "sma50Days": "SMA 50 ngày",
+  "suggestedHighBuy": "Giá mua cao",
+  "suggestedLowBuy": "Giá mua thấp",
+  "yahooPriceTargetMean": "Giá trung bình Yahoo",
+  "yahooPriceTargetHigh": "Giá cao Yahoo",
+  "yahooPriceTargetLow": "Giá thấp Yahoo",
+  "buy": "Mua",
+  "strongBuy": "Mua mạnh",
+  "sell": "Bán",
+  "strongSell": "Bán mạnh",
+  "watchlistIn50DaysTitle": "Danh sách theo dõi (trong 50 ngày)"
 }

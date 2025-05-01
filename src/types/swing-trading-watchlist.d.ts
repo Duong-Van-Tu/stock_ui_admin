@@ -1,0 +1,20 @@
+type WatchlistIn50Days = {
+  symbol: string;
+  current: number;
+  average: number;
+  median: number;
+  sma50: number;
+  highest: number;
+  lowest: number;
+  suggestHighBuy: number;
+  suggestLowBuy: number;
+  yahooPriceTargetMean: number;
+  yahooPriceTargetHigh: number;
+  yahooPriceTargetLow: number;
+  buy: number;
+  strongBuy: number;
+  sell: number;
+  strongSell: number;
+  hold: number;
+  recommendPercent: number;
+};

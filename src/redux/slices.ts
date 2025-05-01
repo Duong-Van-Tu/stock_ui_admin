@@ -8,6 +8,7 @@ import { SentimentSlice } from './slices/sentiment.slice';
 import { signalSlice } from './slices/signals.slice';
 import { stockDetailsSlice } from './slices/stock-details.slice';
 import { stockScoreSlice } from './slices/stock-score.slice';
+import { swingTradingWatchlistSlice } from './slices/swing-trading-watchlist.slice';
 
 export const slices = [
   appSlice,
@@ -19,5 +20,6 @@ export const slices = [
   SentimentSlice,
   stockDetailsSlice,
   highActivitySlice,
-  notesSlice
+  notesSlice,
+  swingTradingWatchlistSlice
 ];

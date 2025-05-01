@@ -271,5 +271,18 @@
   "EnterYourNotesHere": "Enter your notes here...",
   "PleaseEnterYourNotes": "Please enter your notes!",
   "cancel": "Cancel",
-  "noteUpdatedSuccessfully": "Note updated successfully!"
+  "noteUpdatedSuccessfully": "Note updated successfully!",
+  "averagePrice": "Average Price",
+  "medianPrice": "Median Price",
+  "sma50Days": "SMA 50 Days",
+  "suggestedHighBuy": "Suggested High Buy",
+  "suggestedLowBuy": "Suggested Low Buy",
+  "yahooPriceTargetMean": "Yahoo Price Target Mean",
+  "yahooPriceTargetHigh": "Yahoo Price Target High",
+  "yahooPriceTargetLow": "Yahoo Price Target Low",
+  "buy": "Buy",
+  "strongBuy": "Strong Buy",
+  "sell": "Sell",
+  "strongSell": "Strong Sell",
+  "watchlistIn50DaysTitle": "Watchlist (in 50 days)"
 }

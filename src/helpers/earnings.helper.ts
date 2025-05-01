@@ -4,6 +4,10 @@ import { fieldMapping } from './field-mapping.helper';
 export const transformEarningsSummary = (
   earningsSummary: any[]
 ): EarningsSummary[] => {
+  if (earningsSummary.length <= 0) {
+    return [];
+  }
+
   return earningsSummary.map((earning) => ({
     date: earning.date,
     total: earning.total ? Number(earning.total) : 0
@@ -11,6 +15,9 @@ export const transformEarningsSummary = (
 };
 
 export const transformEarnings = (earnings: any[]): Earning[] => {
+  if (earnings.length <= 0) {
+    return [];
+  }
   return earnings.map((earning) => ({
     id: earning.id,
     key: uuid(),
