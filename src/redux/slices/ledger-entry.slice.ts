@@ -1,4 +1,3 @@
-import { PAGINATION } from '@/constants/pagination.constant';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { transformLedgerEntry } from '@/helpers/ledger-entry.helper';
