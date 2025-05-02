@@ -46,4 +46,8 @@ export namespace PageURLs {
   export function ofWatchListIn50days() {
     return withPrefix(`/watchlist-50-days`);
   }
+
+  export function ofLedgerEntry() {
+    return withPrefix(`/ledger-entry`);
+  }
 }

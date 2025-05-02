@@ -1,0 +1,23 @@
+type LedgerEntry = {
+  id: number;
+  symbol: string;
+  entryDate: string;
+  exitDate: string;
+  strategy: string;
+  period: string;
+  action: string;
+  strike: number;
+  expiration: string;
+  premiumPay: number;
+  premiumReceive: number;
+  contracts: number;
+  investCashOut: number;
+  investCashIn: number;
+  commission: number;
+  exitPrice: number;
+  entryPrice: number;
+  priceChange: number;
+  sector: string;
+  notes: string;
+  createDate: string;
+};

@@ -2,6 +2,7 @@ import { appSlice } from './slices/app.slice';
 import { authSlice } from './slices/auth.slice';
 import { earningsSlice } from './slices/earnings.slice';
 import { highActivitySlice } from './slices/high-activity.slice';
+import { ledgerEntrySlice } from './slices/ledger-entry.slice';
 import { notesSlice } from './slices/notes.slice';
 import { searchSlice } from './slices/search';
 import { SentimentSlice } from './slices/sentiment.slice';
@@ -21,5 +22,6 @@ export const slices = [
   stockDetailsSlice,
   highActivitySlice,
   notesSlice,
-  swingTradingWatchlistSlice
+  swingTradingWatchlistSlice,
+  ledgerEntrySlice
 ];

@@ -284,5 +284,7 @@
   "strongBuy": "Mua mạnh",
   "sell": "Bán",
   "strongSell": "Bán mạnh",
-  "watchlistIn50DaysTitle": "Danh sách theo dõi (trong 50 ngày)"
+  "watchlistIn50DaysTitle": "Danh sách theo dõi (trong 50 ngày)",
+  "LedgerEntry": "Giao dịch sổ tay",
+  "LedgerEntryDesc": "Trang quản lý giao dịch sổ tay"
 }

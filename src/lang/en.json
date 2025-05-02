@@ -284,5 +284,7 @@
   "strongBuy": "Strong Buy",
   "sell": "Sell",
   "strongSell": "Strong Sell",
-  "watchlistIn50DaysTitle": "Watchlist (in 50 days)"
+  "watchlistIn50DaysTitle": "Watchlist (in 50 days)",
+  "LedgerEntry": "Ledger Entry",
+  "LedgerEntryDesc": "Ledger Entry Page"
 }

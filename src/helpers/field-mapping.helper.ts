@@ -15,7 +15,6 @@ export const fieldMapping: Record<string, string> = {
   entryDate: 'entry_date',
   entryPrice: 'entry_price',
   exitDate: 'exit_date',
-  exitPrice: 'exit_price',
   highestPrice: 'highest_price',
   highestUpdateAt: 'highest_update_at',
   lowestPrice: 'lowest_price',
@@ -119,5 +118,13 @@ export const fieldMapping: Record<string, string> = {
   yahooPriceTargetMean: 'yahoo_price_target_mean',
   yahooPriceTargetHigh: 'yahoo_price_target_high',
   yahooPriceTargetLow: 'yahoo_price_target_low',
-  recommendPercent: 'recoment_percent'
+  recommendPercent: 'recoment_percent',
+  premiumPay: 'premium_pay',
+  premiumReceive: 'premium_receive',
+  investCashOut: 'invest_cash_out',
+  investCashIn: 'invest_cash_in',
+  priceChange: 'prive_change',
+  createDate: 'createdate',
+  contracts: 'constracts',
+  exitPrice: 'exit_price'
 };

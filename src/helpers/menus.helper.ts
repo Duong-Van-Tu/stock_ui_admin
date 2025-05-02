@@ -82,5 +82,11 @@ export const getMenuStructure = (
     key: 'watchlist-50-days',
     iconType: 'watchlist50Days',
     link: PageURLs.ofWatchListIn50days()
+  },
+  {
+    label: t('LedgerEntry'),
+    key: 'ledger-entry',
+    iconType: 'ledgerEntry',
+    link: PageURLs.ofLedgerEntry()
   }
 ];
