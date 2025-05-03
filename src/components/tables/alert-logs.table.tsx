@@ -660,7 +660,7 @@ export const AlertLogsTable = () => {
                     title={t('NoteSignalForSymbol')}
                   />,
                   {
-                    width: 450
+                    width: 500
                   }
                 )
               }

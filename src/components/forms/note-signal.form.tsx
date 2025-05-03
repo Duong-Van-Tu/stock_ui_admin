@@ -8,13 +8,14 @@ import {
   watchNodeLoading,
   watchNote
 } from '@/redux/slices/notes.slice';
-import { Form, Input, Button, Spin, Typography } from 'antd';
+import { Form, Button, Spin, Typography } from 'antd';
 import { useTranslations } from 'next-intl';
-import { ReactNode, useCallback, useEffect } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { useModal } from '@/hooks/modal.hook';
 import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
 import { updateAlertLogsData } from '@/redux/slices/signals.slice';
+import { ReactQuillEditor } from '../react-quill-editor';
 
 const { Title } = Typography;
 
@@ -38,6 +39,8 @@ export const NotesSignal = ({
   const { notifySuccess } = useNotification();
   const note = useAppSelector(watchNote);
   const loading = useAppSelector(watchNodeLoading);
+  const [editorValue, setEditorValue] = useState('');
+
   const fetchNotes = useCallback(() => {
     dispatch(getNoteBySignal({ symbol, pageName }));
   }, [dispatch, symbol, pageName]);
@@ -49,13 +52,15 @@ export const NotesSignal = ({
   useEffect(() => {
     if (note?.notes) {
       form.setFieldsValue({ notes: note.notes });
+      setEditorValue(note.notes);
     } else {
       form.resetFields();
+      setEditorValue('');
     }
   }, [note?.notes, form]);
 
   const onFinish = async (values: { notes: string }) => {
-    if (!values.notes.trim()) return;
+    if (!values.notes || !values.notes.trim()) return;
     const res = await dispatch(
       updateNoteBySignal({
         symbol,
@@ -88,7 +93,14 @@ export const NotesSignal = ({
             label={<strong>{t('notes')}</strong>}
             rules={[{ required: true, message: t('PleaseEnterYourNotes') }]}
           >
-            <Input.TextArea placeholder={t('EnterYourNotesHere')} rows={4} />
+            <ReactQuillEditor
+              value={editorValue}
+              onChange={(val) => {
+                setEditorValue(val);
+                form.setFieldsValue({ notes: val });
+              }}
+              placeholder={t('EnterYourNotesHere')}
+            />
           </Form.Item>
 
           <Form.Item css={formFooterStyles}>
