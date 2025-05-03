@@ -285,6 +285,19 @@
   "sell": "Bán",
   "strongSell": "Bán mạnh",
   "watchlistIn50DaysTitle": "Danh sách theo dõi (trong 50 ngày)",
-  "LedgerEntry": "Giao dịch sổ tay",
-  "LedgerEntryDesc": "Trang quản lý giao dịch sổ tay"
+  "LedgerEntry": "Sổ tay giao dịch",
+  "LedgerEntryDesc": "Trang quản lý giao dịch sổ tay",
+  "strike": "Giá thực hiện",
+  "expiration": "Ngày đáo hạn",
+  "premiumPaidReceived": "Phí quyền chọn\nĐã trả\nĐã nhận",
+  "investmentCash": "Đầu tư\nTiền ra\nTiền vào",
+  "contracts": "Số hợp đồng",
+  "commission": "Phí hoa hồng",
+  "plAmount": "Lãi/Lỗ (Số tiền)\nLãi/Lỗ (%)",
+  "cumulativeGainLoss": "Lãi/Lỗ tích lũy",
+  "balance": "Số dư\n5000$",
+  "ledgerEntryTitle": "Bảng ghi sổ",
+  "update": "Cập nhật",
+  "delete": "Xóa",
+  "action": "Action"
 }

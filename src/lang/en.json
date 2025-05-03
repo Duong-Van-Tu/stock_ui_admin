@@ -286,5 +286,18 @@
   "strongSell": "Strong Sell",
   "watchlistIn50DaysTitle": "Watchlist (in 50 days)",
   "LedgerEntry": "Ledger Entry",
-  "LedgerEntryDesc": "Ledger Entry Page"
+  "LedgerEntryDesc": "Ledger Entry Page",
+  "strike": "Strike",
+  "expiration": "Expiration",
+  "premiumPaidReceived": "Premium<br/>Paid<br/>Received",
+  "investmentCash": "Investment<br/>Cash Out<br/>Cash In",
+  "contracts": "No. of Contracts",
+  "commission": "Commission",
+  "plAmount": "P/L (Amount)<br/>P/L (%)",
+  "cumulativeGainLoss": "Cumulative<br/>Gain/Loss",
+  "balance": "Balance<br/>5000$",
+  "ledgerEntryTitle": "Ledger Entry",
+  "update": "Update",
+  "delete": "Delete",
+  "action": "Action"
 }
