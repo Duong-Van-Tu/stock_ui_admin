@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { Key, useCallback, useContext, useEffect, useState } from 'react';
 import {
   Button,
   Segmented,
@@ -45,6 +45,8 @@ import { ExportExcelLog } from '../export-excel-signals';
 import { Icon } from '../icons';
 import { useModal } from '@/hooks/modal.hook';
 import { NotesSignal } from '../forms/note-signal.form';
+import { ExitSignal } from '../forms/exit-signal.form';
+import { TableRowSelection } from 'antd/es/table/interface';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -70,6 +72,7 @@ export const AlertLogsTable = () => {
   const loading = useAppSelector(watchAlertLogsLoading);
 
   const [filter, setFilter] = useState<AlertLogsFilter>({});
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
   const { sortField, sortType, handleSortOrder } =
     useSortOrder<ListHighActivityFilter>({
@@ -85,6 +88,26 @@ export const AlertLogsTable = () => {
         });
       }
     });
+
+  const onSelectChange = (_selectedRowKeys: Key[], selectedRows: Signal[]) => {
+    const alertLogId = selectedRows.map((row) => row.id);
+
+    setSelectedIds((prev) => {
+      return new Set([...prev, ...alertLogId]);
+    });
+  };
+
+  const rowSelection: TableRowSelection<Signal> = {
+    selectedRowKeys: alertLogsData
+      .filter(({ id }) => selectedIds.has(id))
+      .map(({ key }) => key),
+
+    onChange: onSelectChange,
+
+    getCheckboxProps: (record) => ({
+      disabled: !!record.exitDate
+    })
+  };
 
   const fetchDataAlertLogs = useCallback(
     ({
@@ -185,7 +208,6 @@ export const AlertLogsTable = () => {
       key: 'strategyName',
       width: 180,
       align: 'center',
-      fixed: 'left',
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'strategyName' ? sortType : null,
@@ -647,66 +669,97 @@ export const AlertLogsTable = () => {
       fixed: 'right',
       align: 'center',
       width: 100,
-      render: (_, record) => (
-        <Space size={'small'}>
-          <Tooltip title={t('notes')}>
-            <Button
-              onClick={() =>
-                modal.openModal(
-                  <NotesSignal
-                    signalId={record.id}
-                    symbol={record.symbol}
-                    pageName={fieldMapping['stockAlertLogs']}
-                    title={t('NoteSignalForSymbol')}
-                  />,
-                  {
-                    width: 500
-                  }
-                )
-              }
-              icon={
-                <Icon
-                  icon='notes'
-                  fill={
-                    record.isNotes
-                      ? 'var(--success-color)'
-                      : 'var(--gray-color)'
-                  }
-                  width={22}
-                  height={22}
-                />
-              }
-              css={notesBtnStyles}
-            />
-          </Tooltip>
-          <Tooltip title={t('exit')}>
-            <Button
-              disabled={!!record.exitDate}
-              css={exitBtnStyles}
-              icon={<Icon icon='exit' width={22} height={22} />}
-              onClick={() =>
-                modal.openModal(
-                  <NotesSignal
-                    signalId={record.id}
-                    symbol={record.symbol}
-                    pageName={fieldMapping['stockAlertLogs']}
-                    title={t('NoteSignalForSymbol')}
-                  />,
-                  {
-                    width: 450
-                  }
-                )
-              }
-            />
-          </Tooltip>
-        </Space>
-      )
+      render: (_, record) => {
+        const isExit = !!record.exitDate;
+        return (
+          <Space size={'small'}>
+            <Tooltip title={t('notes')}>
+              <Button
+                onClick={() =>
+                  modal.openModal(
+                    <NotesSignal
+                      signalId={record.id}
+                      symbol={record.symbol}
+                      pageName={fieldMapping['stockAlertLogs']}
+                      title={t('NoteSignalForSymbol')}
+                    />,
+                    {
+                      width: 500
+                    }
+                  )
+                }
+                icon={
+                  <Icon
+                    icon='notes'
+                    fill={
+                      record.isNotes
+                        ? 'var(--success-color)'
+                        : 'var(--gray-color)'
+                    }
+                    width={22}
+                    height={22}
+                  />
+                }
+                css={notesBtnStyles}
+              />
+            </Tooltip>
+            <Tooltip title={t('exit')}>
+              <Button
+                disabled={isExit}
+                css={exitBtnStyles}
+                icon={
+                  <Icon
+                    icon='exit'
+                    width={22}
+                    height={22}
+                    fill={
+                      isExit ? 'var(--gray-light-color)' : 'var(--orange-color)'
+                    }
+                  />
+                }
+                onClick={() =>
+                  modal.openModal(
+                    <ExitSignal
+                      ids={[record.id]}
+                      title={`${t('exitScheduleFor')} (${record.symbol})`}
+                    />,
+                    {
+                      width: 400
+                    }
+                  )
+                }
+              />
+            </Tooltip>
+          </Space>
+        );
+      }
     }
   ];
 
   return (
     <div css={rootStyles}>
       <AlertLogsFilter defaultStrategyId={strategyId} onFilter={handleFilter} />
+      {selectedIds.size > 0 && (
+        <Button
+          onClick={() =>
+            modal.openModal(
+              <ExitSignal
+                ids={Array.from(selectedIds)}
+                setSelectedIds={setSelectedIds}
+                title={t('exitSelectedSignals')}
+              />,
+              {
+                width: 400
+              }
+            )
+          }
+          icon={<Icon icon='exit' width={18} height={18} />}
+          css={exitBtnStyles}
+          danger
+        >
+          {t('exitSelected')}
+        </Button>
+      )}
       <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
           <TableTitle>{t('alertLogs')}</TableTitle>
@@ -734,6 +787,7 @@ export const AlertLogsTable = () => {
         <Table<Signal>
           css={tableStyles}
           rowKey={(record) => record.key}
+          rowSelection={rowSelection}
           columns={columns}
           dataSource={alertLogsData}
           loading={loading}
@@ -832,4 +886,7 @@ const notesBtnStyles = css`
   padding: 0 !important;
 `;
 
-const exitBtnStyles = css``;
+const exitBtnStyles = css`
+  display: flex;
+  margin-right: auto;
+`;

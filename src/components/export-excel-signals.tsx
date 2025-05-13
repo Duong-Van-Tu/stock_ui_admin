@@ -13,8 +13,10 @@ import { defaultApiFetcher } from '@/utils/api-instances';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { transformSignalsData } from '@/helpers/signals.helper';
+import { useTranslations } from 'next-intl';
 
 export const ExportExcelLog = () => {
+  const t = useTranslations();
   const { setWatchList, resFromWS } = useContext(SocketContext);
   const [loading, setLoading] = useState(false);
 
@@ -311,7 +313,7 @@ export const ExportExcelLog = () => {
       onClick={fetchSignals}
       disabled={loading}
     >
-      Export Excel
+      {t('exportExcel')}
     </Button>
   );
 };

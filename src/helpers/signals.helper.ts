@@ -52,6 +52,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     recommendation: stock.recommendation,
     isImport: stock[fieldMapping.isImport],
     earningDate3days: stock[fieldMapping.earningDate3days],
-    isNotes: stock[fieldMapping.isNotes]
+    isNotes: stock[fieldMapping.isNotes],
+    scheduleExitDate: stock[fieldMapping.scheduleExitDate]
   }));
 };

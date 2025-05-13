@@ -14,3 +14,13 @@ type WatchListItem = {
   symbol: string;
   isWatching: boolean;
 };
+
+type IMessageProps = {
+  info: object[];
+  realtime: StockWithPrice[];
+};
+
+type IWatchListItem = {
+  symbol: string;
+  isWatching: boolean;
+};

@@ -6,11 +6,13 @@ import {
   transformStrategyData
 } from '@/helpers/signals.helper';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { convertParamsByMapping } from '@/utils/common';
 
 export type SignalsState = {
   loading: boolean;
   alertLogsLoading: boolean;
   signalStrategyLoading: Record<number, boolean>;
+  exitLoading: boolean;
   pagination: Pagination;
   paginationByStrategyId: Record<number, Pagination>;
   alertLogsData: Signal[];
@@ -22,6 +24,7 @@ export type SignalsState = {
 const initialState: SignalsState = {
   loading: false,
   alertLogsLoading: false,
+  exitLoading: false,
   signalStrategyLoading: {},
   strategies: [],
   alertLogsData: [],
@@ -133,13 +136,40 @@ export const signalSlice = createAppSlice({
         }
       }
     ),
-    updateAlertLogsData: create.reducer(
-      (state, action: PayloadAction<{ id: number } & Partial<Signal>>) => {
-        const { id, ...updates } = action.payload;
-
-        state.alertLogsData = state.alertLogsData.map((signal) =>
-          signal.id === id ? { ...signal, ...updates } : signal
+    updateScheduleExitDate: create.asyncThunk(
+      async (params: { ids: number[]; scheduleExitDate: string }) => {
+        await defaultApiFetcher.post(
+          'tickers/update-schedule-exit-date',
+          convertParamsByMapping(params)
         );
+      },
+      {
+        pending: (state) => {
+          state.exitLoading = true;
+        },
+        fulfilled: (state) => {
+          state.exitLoading = false;
+        },
+        rejected: (state) => {
+          state.exitLoading = false;
+        }
+      }
+    ),
+    updateAlertLogsData: create.reducer(
+      (
+        state,
+        action: PayloadAction<Array<{ id: number } & Partial<Signal>>>
+      ) => {
+        const updatesMap = new Map(
+          action.payload.map(({ id, ...updates }) => [id, updates])
+        );
+
+        state.alertLogsData = state.alertLogsData.map((signal) => {
+          if (updatesMap.has(signal.id)) {
+            return { ...signal, ...updatesMap.get(signal.id)! };
+          }
+          return signal;
+        });
       }
     )
   }),
@@ -155,7 +185,8 @@ export const signalSlice = createAppSlice({
     watchAlertLogsPagination: (state) => state.pagination,
     watchSignalByStrategyId: (state) => state.signalByStrategyId,
     watchSignalPaginationByStrategyId: (state) => (strategyId: number) =>
-      state.paginationByStrategyId[strategyId] || PAGINATION
+      state.paginationByStrategyId[strategyId] || PAGINATION,
+    watchExitLoading: (state) => state.exitLoading
   }
 });
 
@@ -168,12 +199,14 @@ export const {
   watchAlertLogsPagination,
   watchSignalStrategyLoading,
   watchSignalPaginationByStrategyId,
-  watchSignalOptions
+  watchSignalOptions,
+  watchExitLoading
 } = signalSlice.selectors;
 
 export const {
   getAlertLogs,
   getStrategies,
   getSignalStrategyId,
-  updateAlertLogsData
+  updateAlertLogsData,
+  updateScheduleExitDate
 } = signalSlice.actions;

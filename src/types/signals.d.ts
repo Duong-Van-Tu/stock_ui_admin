@@ -37,6 +37,7 @@ type Signal = {
   isImport: 0 | 1;
   earningDate3days: string;
   isNotes: boolean;
+  scheduleExitDate: string;
 };
 
 type AlertLogsFilter = Filter & {

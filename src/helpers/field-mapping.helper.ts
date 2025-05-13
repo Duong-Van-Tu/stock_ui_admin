@@ -126,5 +126,6 @@ export const fieldMapping: Record<string, string> = {
   priceChange: 'prive_change',
   createDate: 'createdate',
   contracts: 'constracts',
-  exitPrice: 'exit_price'
+  exitPrice: 'exit_price',
+  scheduleExitDate: 'schedule_exit_date'
 };

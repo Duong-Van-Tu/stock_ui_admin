@@ -71,7 +71,7 @@ export const NotesSignal = ({
 
     if (isRequestSuccess(res)) {
       notifySuccess(t('noteUpdatedSuccessfully'));
-      dispatch(updateAlertLogsData({ id: signalId, isNotes: true }));
+      dispatch(updateAlertLogsData([{ id: signalId, isNotes: true }]));
       closeModal();
     }
   };

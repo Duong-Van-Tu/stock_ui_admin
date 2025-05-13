@@ -299,5 +299,11 @@
   "ledgerEntryTitle": "Bảng ghi sổ",
   "update": "Cập nhật",
   "delete": "Xóa",
-  "action": "Action"
+  "action": "Action",
+  "updateExitScheduleSuccess": "Cập nhật thời gian thoát lệnh thành công",
+  "scheduleExitDateLabel": "Schedule Exit Date",
+  "requiredDate": "Please select a date",
+  "exitScheduleFor": "Lịch thoát cho",
+  "exitSelectedSignals": "Thoát các tín hiệu đã chọn",
+  "exitSelected": "Thoát đã chọn"
 }

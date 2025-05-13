@@ -299,5 +299,11 @@
   "ledgerEntryTitle": "Ledger Entry",
   "update": "Update",
   "delete": "Delete",
-  "action": "Action"
+  "action": "Action",
+  "updateExitScheduleSuccess": "Successfully updated exit schedule",
+  "scheduleExitDateLabel": "Schedule Exit Date",
+  "requiredDate": "Please select a date",
+  "exitScheduleFor": "Thời gian thoát lệnh cho",
+  "exitSelectedSignals": "Exit Selected Signals",
+  "exitSelected": "Exit Selected"
 }
