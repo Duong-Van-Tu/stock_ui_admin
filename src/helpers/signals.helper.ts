@@ -53,6 +53,10 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     isImport: stock[fieldMapping.isImport],
     earningDate3days: stock[fieldMapping.earningDate3days],
     isNotes: stock[fieldMapping.isNotes],
-    scheduleExitDate: stock[fieldMapping.scheduleExitDate]
+    scheduleExitDate: stock[fieldMapping.scheduleExitDate],
+    lowest3DaysUpdateAt: stock[fieldMapping.lowest3DaysUpdateAt],
+    lowest7DaysUpdateAt: stock[fieldMapping.lowest7DaysUpdateAt],
+    highest3DaysUpdateAt: stock[fieldMapping.highest3DaysUpdateAt],
+    highest7DaysUpdateAt: stock[fieldMapping.highest7DaysUpdateAt]
   }));
 };

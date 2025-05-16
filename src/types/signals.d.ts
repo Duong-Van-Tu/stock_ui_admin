@@ -38,6 +38,10 @@ type Signal = {
   earningDate3days: string;
   isNotes: boolean;
   scheduleExitDate: string;
+  lowest3DaysUpdateAt: string;
+  lowest7DaysUpdateAt: string;
+  highest3DaysUpdateAt: string;
+  highest7DaysUpdateAt: string;
 };
 
 type AlertLogsFilter = Filter & {

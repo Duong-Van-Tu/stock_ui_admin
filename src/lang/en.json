@@ -305,5 +305,9 @@
   "requiredDate": "Please select a date",
   "exitScheduleFor": "Thời gian thoát lệnh cho",
   "exitSelectedSignals": "Exit Selected Signals",
-  "exitSelected": "Exit Selected"
+  "exitSelected": "Exit Selected",
+  "highest3DaysUpdateAt": "Highest price date 3 days",
+  "highest7DaysUpdateAt": "Highest price date 7 days",
+  "lowest7DaysUpdateAt": "Lowest price date 7 days",
+  "lowest3DaysUpdateAt": "Lowest price date 3 days"
 }

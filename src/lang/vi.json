@@ -305,5 +305,9 @@
   "requiredDate": "Please select a date",
   "exitScheduleFor": "Lịch thoát cho",
   "exitSelectedSignals": "Thoát các tín hiệu đã chọn",
-  "exitSelected": "Thoát đã chọn"
+  "exitSelected": "Thoát đã chọn",
+  "highest3DaysUpdateAt": "Thời gian giá cao nhất 3 ngày",
+  "highest7DaysUpdateAt": "Thời gian giá cao nhất 7 ngày",
+  "lowest7DaysUpdateAt": "Thời gian giá thất thất 7 ngày",
+  "lowest3DaysUpdateAt": "Thời gian giá thất thất 3 ngày"
 }

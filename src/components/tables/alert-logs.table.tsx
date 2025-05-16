@@ -229,6 +229,27 @@ export const AlertLogsTable = () => {
       })
     },
     {
+      title: t('recommendation'),
+      dataIndex: 'recommendation',
+      key: 'recommendation',
+      width: 154,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'recommendation' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('recommendation')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isPositive={value > 70} isNegative={value < 40}>
+            <span>{roundToDecimals(value, 2)}%</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
+    },
+    {
       title: t('entryDate'),
       dataIndex: 'entryDate',
       key: 'entryDate',
@@ -364,6 +385,20 @@ export const AlertLogsTable = () => {
       }
     },
     {
+      title: t('highest3DaysUpdateAt'),
+      dataIndex: 'highest3DaysUpdateAt',
+      key: 'highest3DaysUpdateAt',
+      width: 164,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highest3DaysUpdateAt' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highest3DaysUpdateAt')
+      }),
+      align: 'center',
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
       title: t('highestPrice7Days'),
       dataIndex: 'highestPrice7Days',
       key: 'highestPrice7Days',
@@ -383,6 +418,20 @@ export const AlertLogsTable = () => {
           '-     '
         );
       }
+    },
+    {
+      title: t('highest7DaysUpdateAt'),
+      dataIndex: 'highest7DaysUpdateAt',
+      key: 'highest7DaysUpdateAt',
+      width: 164,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highest7DaysUpdateAt' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highest7DaysUpdateAt')
+      }),
+      align: 'center',
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
       title: t('lowestPrice'),
@@ -437,6 +486,20 @@ export const AlertLogsTable = () => {
       }
     },
     {
+      title: t('lowest3DaysUpdateAt'),
+      dataIndex: 'lowest3DaysUpdateAt',
+      key: 'lowest3DaysUpdateAt',
+      width: 160,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'lowest3DaysUpdateAt' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('lowest3DaysUpdateAt')
+      }),
+      align: 'center',
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
       title: t('lowestPrice7Days'),
       dataIndex: 'lowestPrice7Days',
       key: 'lowestPrice7Days',
@@ -456,6 +519,20 @@ export const AlertLogsTable = () => {
           '-'
         );
       }
+    },
+    {
+      title: t('lowest7DaysUpdateAt'),
+      dataIndex: 'lowest7DaysUpdateAt',
+      key: 'lowest7DaysUpdateAt',
+      width: 160,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'lowest7DaysUpdateAt' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('lowest7DaysUpdateAt')
+      }),
+      align: 'center',
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
       title: t('earningsNext3Days'),

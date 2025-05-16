@@ -50,28 +50,35 @@ export const ExportExcelLog = () => {
         'Strategy',
         'STOCK/OPTIONS',
         'Period',
+        'Recommendation',
         'Entry date',
         'Entry price',
         'Exit date',
         'Exit price',
-        'Win/Loss (%)',
+        'Exit price (%)',
+        'Win/Loss',
         'Current price',
         'Current %',
         'Highest price',
         'Highest %',
+        'Highest price date',
         'Lowest price',
         'Lowest %',
-        'Highest price after 3 days',
-        'Highest % after 3 days',
-        'Lowest price after 3 days',
-        'Lowest % after 3 days',
-        'Highest price after 7 days',
-        'Highest % after 7 days',
-        'Lowest price after 7 days',
-        'Lowest % after 7 days',
+        'Lowest price date',
+        'Highest price 3 days',
+        'Highest % 3 days',
+        'Highest price date 3 days',
+        'Lowest price 3 days',
+        'Lowest % 3 days',
+        'Lowest price date 3 days',
+        'Highest price 7 days',
+        'Highest % 7 days',
+        'Highest price date 7 days',
+        'Lowest price 7 days',
+        'Lowest % 7 days',
+        'Lowest price date 7 days',
         'Negative News price',
         'Earnings next 3 days',
-        'Recommendation',
         'Total score',
         'Fundamental score',
         'Earnings score',
@@ -116,6 +123,7 @@ export const ExportExcelLog = () => {
         }
         const change = price - entryPrice;
         const percentChange = entryPrice ? (change / entryPrice) * 100 : 0;
+        // Color calculation kept for future use, no styling applied now
         const color = change > 0 ? '008000' : change < 0 ? 'FF0000' : '000000';
 
         return {
@@ -125,12 +133,7 @@ export const ExportExcelLog = () => {
         };
       };
 
-      const getScoreColor = (score: number) => {
-        if (score > 7) return '008000';
-        if (score > 4) return 'FFD700';
-        return 'FF0000';
-      };
-
+      // Removed getScoreColor because not used for styling now
       signals.forEach((log: Signal) => {
         const realtime = resFromWS.realtime.find(
           (r: any) => r.symbol === log.symbol
@@ -147,11 +150,14 @@ export const ExportExcelLog = () => {
         const low7dPL = calculatePLValues(log.lowestPrice7Days, baseEntry);
         const negativeNews = !!log.isNewsNegative ? 'Yes' : 'No';
 
-        const row = worksheet.addRow([
+        worksheet.addRow([
           log.symbol,
           log.strategyName,
           log.isImport === 0 ? 'STOCK' : 'OPTIONS',
           log.timeFrame,
+          log.recommendation
+            ? `${roundToDecimals(log.recommendation, 2)}%`
+            : '-',
           log.entryDate
             ? dayjs(log.entryDate)
                 .tz(TimeZone.NEW_YORK)
@@ -165,120 +171,59 @@ export const ExportExcelLog = () => {
             : '-',
           log.exitPrice ? roundToDecimals(log.exitPrice, 2) : '-',
           log.plPercent ? formatPercent(log.plPercent) : '-',
+          log.plPercent > 0 ? 'Win' : log.plPercent < 0 ? 'Loss' : '-',
           currentPL.price,
           currentPL.percent,
           highestPL.price,
           highestPL.percent,
+          log.highestUpdateAt
+            ? dayjs(log.highestUpdateAt)
+                .tz(TimeZone.NEW_YORK)
+                .format('YYYY-MM-DD HH:mm')
+            : '-',
           lowestPL.price,
           lowestPL.percent,
+          log.lowestUpdateAt
+            ? dayjs(log.lowestUpdateAt)
+                .tz(TimeZone.NEW_YORK)
+                .format('YYYY-MM-DD HH:mm')
+            : '-',
           high3dPL.price,
           high3dPL.percent,
+          log.highest3DaysUpdateAt
+            ? dayjs(log.highest3DaysUpdateAt)
+                .tz(TimeZone.NEW_YORK)
+                .format('YYYY-MM-DD HH:mm')
+            : '-',
           low3dPL.price,
           low3dPL.percent,
+          log.lowest3DaysUpdateAt
+            ? dayjs(log.lowest3DaysUpdateAt)
+                .tz(TimeZone.NEW_YORK)
+                .format('YYYY-MM-DD HH:mm')
+            : '-',
           high7dPL.price,
           high7dPL.percent,
+          log.highest7DaysUpdateAt
+            ? dayjs(log.highest7DaysUpdateAt)
+                .tz(TimeZone.NEW_YORK)
+                .format('YYYY-MM-DD HH:mm')
+            : '-',
           low7dPL.price,
           low7dPL.percent,
+          log.lowest7DaysUpdateAt
+            ? dayjs(log.lowest7DaysUpdateAt)
+                .tz(TimeZone.NEW_YORK)
+                .format('YYYY-MM-DD HH:mm')
+            : '-',
           negativeNews,
           !!log.earningDate3days ? 'Yes' : 'No',
-          log.recommendation
-            ? `${roundToDecimals(log.recommendation, 2)}%`
-            : '-',
           log.totalScore ? roundToDecimals(log.totalScore, 2) : '-',
           log.fundamentalScore ? roundToDecimals(log.fundamentalScore, 2) : '-',
           log.earningsScore ? roundToDecimals(log.earningsScore, 2) : '-',
           log.sentimentScore ? roundToDecimals(log.sentimentScore, 2) : '-',
           log.ytd ? roundToDecimals(log.ytd, 2) : '-'
         ]);
-
-        const entryPriceCell = row.getCell(6);
-        const exitPriceCell = row.getCell(8);
-        const winLossCell = row.getCell(9);
-
-        if (baseEntry !== undefined && !isNaN(baseEntry)) {
-          entryPriceCell.font = { color: { argb: '000000' } };
-        }
-
-        if (log.exitPrice !== undefined && !isNaN(log.exitPrice)) {
-          const exitColor =
-            log.exitPrice > baseEntry
-              ? '008000'
-              : log.exitPrice < baseEntry
-              ? 'FF0000'
-              : '000000';
-          exitPriceCell.font = { color: { argb: exitColor } };
-        }
-
-        if (log.plPercent !== undefined && !isNaN(log.plPercent)) {
-          const plColor =
-            log.plPercent > 0
-              ? '008000'
-              : log.plPercent < 0
-              ? 'FF0000'
-              : '000000';
-          winLossCell.font = { color: { argb: plColor } };
-        }
-
-        const pricePercentIndexes = [
-          10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
-        ];
-        const colorMap = [
-          currentPL.color,
-          currentPL.color,
-          highestPL.color,
-          highestPL.color,
-          lowestPL.color,
-          lowestPL.color,
-          high3dPL.color,
-          high3dPL.color,
-          low3dPL.color,
-          low3dPL.color,
-          high7dPL.color,
-          high7dPL.color,
-          low7dPL.color,
-          low7dPL.color
-        ];
-
-        pricePercentIndexes.forEach((cellIndex, i) => {
-          row.getCell(cellIndex).font = { color: { argb: colorMap[i] } };
-        });
-
-        const totalScore = Number(log.totalScore ?? -1);
-        const fundamentalScore = Number(log.fundamentalScore ?? -1);
-        const earningsScore = Number(log.earningsScore ?? -1);
-        const sentimentScore = Number(log.sentimentScore ?? -1);
-
-        if (!isNaN(totalScore))
-          row.getCell(27).font = { color: { argb: getScoreColor(totalScore) } };
-        if (!isNaN(fundamentalScore))
-          row.getCell(28).font = {
-            color: { argb: getScoreColor(fundamentalScore) }
-          };
-        if (!isNaN(earningsScore))
-          row.getCell(29).font = {
-            color: { argb: getScoreColor(earningsScore) }
-          };
-        if (!isNaN(sentimentScore))
-          row.getCell(30).font = {
-            color: { argb: getScoreColor(sentimentScore) }
-          };
-
-        const ytdValue = Number(log.ytd ?? 0);
-        if (!isNaN(ytdValue)) {
-          const ytdColor =
-            ytdValue > 0 ? '008000' : ytdValue < 0 ? 'FF0000' : '000000';
-          row.getCell(31).font = { color: { argb: ytdColor } };
-        }
-
-        const negativeNewsCell = row.getCell(24);
-        const earningDate3DaysCell = row.getCell(25);
-
-        negativeNewsCell.font = {
-          color: { argb: log.isNewsNegative ? '008000' : 'FF0000' }
-        };
-        earningDate3DaysCell.font = {
-          color: { argb: log.earningDate3days ? '008000' : 'FF0000' }
-        };
       });
 
       const buffer = await workbook.xlsx.writeBuffer();
@@ -322,6 +267,6 @@ const buttonStyles = css`
   background: var(--green-color);
   &:hover {
     background: var(--green-color) !important;
-    opacity: 0.85;
+    opacity: 0.9;
   }
 `;

@@ -127,5 +127,9 @@ export const fieldMapping: Record<string, string> = {
   createDate: 'createdate',
   contracts: 'constracts',
   exitPrice: 'exit_price',
-  scheduleExitDate: 'schedule_exit_date'
+  scheduleExitDate: 'schedule_exit_date',
+  lowest3DaysUpdateAt: 'lowest_3_days_update_at',
+  lowest7DaysUpdateAt: 'lowest_7_days_update_at',
+  highest3DaysUpdateAt: 'highest_3_days_update_at',
+  highest7DaysUpdateAt: 'highest_7_days_update_at'
 };
