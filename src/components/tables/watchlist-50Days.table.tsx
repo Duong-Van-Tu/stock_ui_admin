@@ -42,8 +42,8 @@ export const WatchlistIn50DaysTable = () => {
   const [filter, setFilter] = useState<Filter>({});
 
   const { sortField, sortType, handleSortOrder } = useSortOrder<Filter>({
-    defaultField: 'symbol',
-    defaultOrder: 'descend',
+    defaultField: 'AIRecommendation',
+    defaultOrder: 'ascend',
     currentFilter: filter,
     onChange: (_field, _order, newFilter) => {
       setFilter(newFilter);
