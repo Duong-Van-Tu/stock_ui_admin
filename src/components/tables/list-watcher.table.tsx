@@ -470,7 +470,6 @@ export const ListWatcherTable = () => {
       fixed: 'right',
       render: (value) => (
         <a href={value} target='_blank'>
-          {' '}
           {t('viewDetails')}
         </a>
       )

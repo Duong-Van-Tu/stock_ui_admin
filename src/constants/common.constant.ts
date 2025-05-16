@@ -17,3 +17,9 @@ export enum Impact {
   Moderate = 'moderate',
   Low = 'low'
 }
+
+export enum Recommendation {
+  HOLD = 'hold',
+  BUY = 'buy',
+  SELL = 'sell'
+}

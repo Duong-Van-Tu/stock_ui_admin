@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { Table, TableColumnsType } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
+import { Button, Table, TableColumnsType } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { cleanFalsyValues, roundToDecimals } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -12,7 +12,6 @@ import {
   watchWatchlistIn50DaysPagination,
   getWatchlistIn50Days
 } from '@/redux/slices/swing-trading-watchlist.slice';
-import { PositiveNegativeText } from '../positive-negative-text';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
 import { convertSortType } from '@/utils/sort-table';
@@ -22,14 +21,16 @@ import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { useSearchParams } from 'next/navigation';
-import { getCurrentPrice } from '@/helpers/socket.helper';
-import { SocketContext } from '@/providers/socket.provider';
+import { PositiveNegativeText } from '../positive-negative-text';
+import { Recommendation } from '@/constants/common.constant';
+import { useModal } from '@/hooks/modal.hook';
+import { StockChangeCell } from './columns/stock-change-cell.column';
 
 export const WatchlistIn50DaysTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const { setWatchList, resFromWS } = useContext(SocketContext);
   const { height } = useWindowSize();
+  const modal = useModal();
 
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
@@ -41,7 +42,7 @@ export const WatchlistIn50DaysTable = () => {
   const [filter, setFilter] = useState<Filter>({});
 
   const { sortField, sortType, handleSortOrder } = useSortOrder<Filter>({
-    defaultField: 'recommendPercent',
+    defaultField: 'symbol',
     defaultOrder: 'descend',
     currentFilter: filter,
     onChange: (_field, _order, newFilter) => {
@@ -80,13 +81,6 @@ export const WatchlistIn50DaysTable = () => {
     fetchDataStockScore();
   }, [fetchDataStockScore]);
 
-  useEffect(() => {
-    watchlistIn50Days.forEach((row) => {
-      setWatchList(row.symbol);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watchlistIn50Days]);
-
   const columns: TableColumnsType<WatchlistIn50Days> = [
     {
       title: t('stt'),
@@ -107,36 +101,173 @@ export const WatchlistIn50DaysTable = () => {
       render: (_, record) => <SymbolCell symbol={record.symbol} />
     },
     {
-      title: t('sma50Days'),
-      dataIndex: 'sma50',
-      key: 'sma50',
-      width: 130,
+      title: t('period'),
+      dataIndex: 'period',
+      key: 'period',
+      width: 80,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'sma50' ? sortType : null,
+      sortOrder: sortField === 'period' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('sma50')
+        onClick: () => handleSortOrder('period')
+      }),
+      align: 'center'
+    },
+    {
+      title: 'AI Rating',
+      dataIndex: 'AIRating',
+      key: 'AIRating',
+      width: 100,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'AIRating' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('AIRating')
+      }),
+      align: 'center'
+    },
+    {
+      title: 'AI Recommendation',
+      dataIndex: 'AIRecommendation',
+      key: 'AIRecommendation',
+      width: 180,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'AIRecommendation' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('AIRecommendation')
       }),
       align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText
+            isPositive={value === Recommendation.BUY}
+            isNegative={value === Recommendation.SELL}
+          >
+            <span css={recommendationStyles}>{value}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
+      title: 'AI Explain',
+      dataIndex: 'AIExplain',
+      key: 'AIExplain',
+      width: 110,
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <Button
+            onClick={() =>
+              modal.openModal(
+                <div css={AIExplainStyles}>
+                  <h3>AI Explain</h3>
+                  <p>{value}</p>
+                </div>
+              )
+            }
+            type='link'
+            block
+          >
+            {t('viewDetails')}
+          </Button>
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: 'Previous Close',
+      dataIndex: 'previousClose',
+      key: 'previousClose',
+      width: 140,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'previousClose' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('previousClose')
+      }),
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
-      title: t('currentPrice'),
-      dataIndex: 'current',
-      key: 'current',
-      width: 130,
+      title: 'Lowest 50',
+      dataIndex: 'lowest50',
+      key: 'lowest50',
+      width: 110,
+      align: 'center',
+      defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'current' ? sortType : null,
+      sortOrder: sortField === 'changeLowest50' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('current')
+        onClick: () => handleSortOrder('changeLowest50')
       }),
-      align: 'center',
       render: (value, record) => {
-        const currPrice = getCurrentPrice(resFromWS, record.symbol);
-        const price = currPrice ?? value;
-        return price ? roundToDecimals(price) : '-';
+        return value ? (
+          <StockChangeCell value={value} percentage={-record.changeLowest50} />
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
+      title: 'Highest 50',
+      dataIndex: 'highest50',
+      key: 'highest50',
+      width: 120,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highest50' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highest50')
+      }),
+      render: (value) => {
+        return value ? roundToDecimals(value) : '-';
+      }
+    },
+    {
+      title: 'Lowest 20',
+      dataIndex: 'lowest20',
+      key: 'lowest20',
+      width: 110,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'changeLowest20' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('changeLowest20')
+      }),
+      render: (value, record) => {
+        return value ? (
+          <StockChangeCell value={value} percentage={-record.changeLowest20} />
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
+      title: 'Highest 20',
+      dataIndex: 'highest20',
+      key: 'highest20',
+      width: 120,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highest20' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highest20')
+      }),
+      render: (value) => {
+        return value ? roundToDecimals(value) : '-';
       }
     },
     {
@@ -170,61 +301,31 @@ export const WatchlistIn50DaysTable = () => {
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
-      title: t('highestPrice'),
-      dataIndex: 'highest',
-      key: 'highest',
+      title: t('sma50Days'),
+      dataIndex: 'sma50',
+      key: 'sma50',
       width: 130,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'highest' ? sortType : null,
+      sortOrder: sortField === 'sma50' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('highest')
+        onClick: () => handleSortOrder('sma50')
       }),
       align: 'center',
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
-      title: t('lowestPrice'),
-      dataIndex: 'lowest',
-      key: 'lowest',
+      title: 'SMA 20 Days',
+      dataIndex: 'sma20',
+      key: 'sma20',
       width: 130,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'lowest' ? sortType : null,
+      sortOrder: sortField === 'sma20' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('lowest')
-      }),
-      align: 'center',
-      render: (value) => (value ? roundToDecimals(value) : '-')
-    },
-    {
-      title: t('suggestedHighBuy'),
-      dataIndex: 'suggestHighBuy',
-      key: 'suggestHighBuy',
-      width: 120,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'suggestHighBuy' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('suggestHighBuy')
-      }),
-      align: 'center',
-      render: (value) => (value ? roundToDecimals(value) : '-')
-    },
-    {
-      title: t('suggestedLowBuy'),
-      dataIndex: 'suggestLowBuy',
-      key: 'suggestLowBuy',
-      width: 120,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'suggestLowBuy' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('suggestLowBuy')
+        onClick: () => handleSortOrder('sma20')
       }),
       align: 'center',
       render: (value) => (value ? roundToDecimals(value) : '-')
@@ -273,28 +374,6 @@ export const WatchlistIn50DaysTable = () => {
       }),
       align: 'center',
       render: (value) => (value ? roundToDecimals(value) : '-')
-    },
-    {
-      title: t('recommendation'),
-      dataIndex: 'recommendPercent',
-      key: 'recommendPercent',
-      width: 156,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'recommendPercent' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('recommendPercent')
-      }),
-      align: 'center',
-      render: (value) =>
-        value ? (
-          <PositiveNegativeText isPositive={value > 70} isNegative={value < 40}>
-            <span>{roundToDecimals(value, 2)}%</span>
-          </PositiveNegativeText>
-        ) : (
-          '-'
-        )
     },
     {
       title: t('buy'),
@@ -438,4 +517,19 @@ const emptyStyles = (height: number) => css`
   display: flex;
   flex-direction: column;
   justify-content: center;
+`;
+
+const recommendationStyles = css`
+  text-transform: uppercase;
+`;
+
+const AIExplainStyles = css`
+  h3 {
+    text-align: center;
+    font-weight: 600;
+    font-size: 2.2rem;
+  }
+  p {
+    margin-bottom: 0;
+  }
 `;

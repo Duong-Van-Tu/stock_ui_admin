@@ -113,8 +113,7 @@ export const fieldMapping: Record<string, string> = {
   createdDate: 'created_date',
   stockAlertLogs: 'stock_alert_logs',
   sma50: 'sma_50',
-  suggestHighBuy: 'suggest_high_buy',
-  suggestLowBuy: 'suggest_low_buy',
+  sma20: 'sma_20',
   yahooPriceTargetMean: 'yahoo_price_target_mean',
   yahooPriceTargetHigh: 'yahoo_price_target_high',
   yahooPriceTargetLow: 'yahoo_price_target_low',
@@ -130,5 +129,15 @@ export const fieldMapping: Record<string, string> = {
   lowest3DaysUpdateAt: 'lowest_3_days_update_at',
   lowest7DaysUpdateAt: 'lowest_7_days_update_at',
   highest3DaysUpdateAt: 'highest_3_days_update_at',
-  highest7DaysUpdateAt: 'highest_7_days_update_at'
+  highest7DaysUpdateAt: 'highest_7_days_update_at',
+  AIRating: 'ai_rating',
+  AIRecommendation: 'ai_rec',
+  AIExplain: 'ai_explain',
+  previousClose: 'prev_close',
+  lowest50: 'lowest_50',
+  changeLowest50: 'change_pct_lowest_50',
+  highest50: 'highest_50',
+  lowest20: 'lowest_20',
+  changeLowest20: 'change_pct_lowest_20',
+  highest20: 'highest_20'
 };
