@@ -798,7 +798,12 @@ export const AlertLogsTable = () => {
                   modal.openModal(
                     <ExitSignal
                       ids={[record.id]}
-                      title={`${t('exitScheduleFor')} (${record.symbol})`}
+                      title={
+                        <>
+                          {t('exitScheduleFor')}&nbsp;
+                          <span css={exitTitleStyles}>"{record.symbol}"</span>
+                        </>
+                      }
                     />,
                     {
                       width: 400
@@ -966,4 +971,8 @@ const notesBtnStyles = css`
 const exitBtnStyles = css`
   display: flex;
   margin-right: auto;
+`;
+
+const exitTitleStyles = css`
+  font-style: italic;
 `;

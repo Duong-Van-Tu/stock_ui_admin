@@ -83,7 +83,7 @@ export const NotesSignal = ({
   return (
     <div>
       <Title css={titleStyles} level={4}>
-        {title} ({symbol})
+        {title}&nbsp;<span>"{symbol}"</span>
       </Title>
 
       <Spin spinning={loading}>
@@ -136,4 +136,7 @@ const titleStyles = css`
   text-align: center;
   display: flex;
   justify-content: center;
+  span {
+    font-style: italic;
+  }
 `;

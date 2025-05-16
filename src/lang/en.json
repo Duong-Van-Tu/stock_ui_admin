@@ -303,7 +303,7 @@
   "updateExitScheduleSuccess": "Successfully updated exit schedule",
   "scheduleExitDateLabel": "Schedule Exit Date",
   "requiredDate": "Please select a date",
-  "exitScheduleFor": "Thời gian thoát lệnh cho",
+  "exitScheduleFor": "Exit Schedule For",
   "exitSelectedSignals": "Exit Selected Signals",
   "exitSelected": "Exit Selected",
   "highest3DaysUpdateAt": "Highest price date 3 days",

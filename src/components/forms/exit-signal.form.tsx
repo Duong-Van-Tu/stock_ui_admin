@@ -14,11 +14,11 @@ import {
 } from '@/redux/slices/signals.slice';
 import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, ReactNode, SetStateAction } from 'react';
 
 type ExitSignalProps = {
   ids: number[];
-  title: string;
+  title: string | ReactNode;
   setSelectedIds?: Dispatch<SetStateAction<Set<number>>>;
 };
 
