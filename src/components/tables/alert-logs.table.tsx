@@ -90,11 +90,8 @@ export const AlertLogsTable = () => {
     });
 
   const onSelectChange = (_selectedRowKeys: Key[], selectedRows: Signal[]) => {
-    const alertLogId = selectedRows.map((row) => row.id);
-
-    setSelectedIds((prev) => {
-      return new Set([...prev, ...alertLogId]);
-    });
+    const alertLogIds = new Set(selectedRows.map((row) => row.id));
+    setSelectedIds(alertLogIds);
   };
 
   const rowSelection: TableRowSelection<Signal> = {

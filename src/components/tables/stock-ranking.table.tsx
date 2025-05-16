@@ -73,11 +73,9 @@ export const StockRankingTable = () => {
     _selectedRowKeys: Key[],
     selectedRows: StockScore[]
   ) => {
-    const newSymbols = selectedRows.map((row) => row.symbol);
+    const newSymbols = new Set(selectedRows.map((row) => row.symbol));
 
-    setSelectedSymbols((prev) => {
-      return new Set([...prev, ...newSymbols]);
-    });
+    setSelectedSymbols(newSymbols);
   };
 
   const rowSelection: TableRowSelection<StockScore> = {
