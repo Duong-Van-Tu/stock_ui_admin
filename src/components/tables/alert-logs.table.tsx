@@ -36,7 +36,7 @@ import {
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { AlertLogsFilter } from '../filters/alert-logs.filter';
-import { AlertLogsView } from '@/constants/common.constant';
+import { AlertLogsView, Recommendation } from '@/constants/common.constant';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
@@ -229,24 +229,42 @@ export const AlertLogsTable = () => {
       })
     },
     {
-      title: t('recommendation'),
-      dataIndex: 'recommendation',
-      key: 'recommendation',
-      width: 154,
+      title: t('aiRating'),
+      dataIndex: 'AIRating',
+      key: 'AIRating',
+      width: 100,
+      defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'recommendation' ? sortType : null,
+      sortOrder: sortField === 'AIRating' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('recommendation')
+        onClick: () => handleSortOrder('AIRating')
+      }),
+      align: 'center'
+    },
+    {
+      title: t('aiRecommendation'),
+      dataIndex: 'AIRecommendationSignal',
+      key: 'AIRecommendationSignal',
+      width: 180,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'AIRecommendationSignal' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('AIRecommendationSignal')
       }),
       align: 'center',
       render: (value) =>
         value ? (
-          <PositiveNegativeText isPositive={value > 70} isNegative={value < 40}>
-            <span>{roundToDecimals(value, 2)}%</span>
+          <PositiveNegativeText
+            isPositive={value === Recommendation.BUY}
+            isNegative={value === Recommendation.SELL}
+          >
+            <span css={recommendationStyles}>{value}</span>
           </PositiveNegativeText>
         ) : (
-          '-'
+          <span>-</span>
         )
     },
     {
@@ -719,27 +737,6 @@ export const AlertLogsTable = () => {
         )
     },
     {
-      title: t('recommendation'),
-      dataIndex: 'recommendation',
-      key: 'recommendation',
-      width: 154,
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'recommendation' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('recommendation')
-      }),
-      align: 'center',
-      render: (value) =>
-        value ? (
-          <PositiveNegativeText isPositive={value > 70} isNegative={value < 40}>
-            <span>{roundToDecimals(value, 2)}%</span>
-          </PositiveNegativeText>
-        ) : (
-          '-'
-        )
-    },
-    {
       title: t('actions'),
       dataIndex: 'action',
       key: 'action',
@@ -975,4 +972,8 @@ const exitBtnStyles = css`
 
 const exitTitleStyles = css`
   font-style: italic;
+`;
+
+const recommendationStyles = css`
+  text-transform: uppercase;
 `;

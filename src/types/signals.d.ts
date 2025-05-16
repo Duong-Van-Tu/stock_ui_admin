@@ -42,6 +42,8 @@ type Signal = {
   lowest7DaysUpdateAt: string;
   highest3DaysUpdateAt: string;
   highest7DaysUpdateAt: string;
+  AIRating: number;
+  AIRecommendationSignal: string;
 };
 
 type AlertLogsFilter = Filter & {

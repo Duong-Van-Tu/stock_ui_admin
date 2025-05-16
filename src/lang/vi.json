@@ -309,5 +309,15 @@
   "highest3DaysUpdateAt": "Thời gian giá cao nhất 3 ngày",
   "highest7DaysUpdateAt": "Thời gian giá cao nhất 7 ngày",
   "lowest7DaysUpdateAt": "Thời gian giá thất thất 7 ngày",
-  "lowest3DaysUpdateAt": "Thời gian giá thất thất 3 ngày"
+  "lowest3DaysUpdateAt": "Thời gian giá thất thất 3 ngày",
+  "aiRating": "Xếp hạng AI",
+  "aiRecommendation": "Khuyến nghị AI",
+  "aiExplain": "Giải thích AI",
+  "previousClose": "Giá đóng cửa trước đó",
+  "lowest50": "Thấp nhất 50 ngày",
+  "highest50": "Cao nhất 50 ngày",
+  "lowest20": "Thấp nhất 20 ngày",
+  "highest20": "Cao nhất 20 ngày",
+  "sma20Days": "Trung bình động 20 ngày",
+  "updatedAt": "Ngày cập nhật"
 }

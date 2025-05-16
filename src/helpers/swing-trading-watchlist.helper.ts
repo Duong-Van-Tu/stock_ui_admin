@@ -27,6 +27,7 @@ export const transformWatchlist50Days = (data: any[]): WatchlistIn50Days[] => {
     yahooPriceTargetMean: item[fieldMapping.yahooPriceTargetMean],
     yahooPriceTargetHigh: item[fieldMapping.yahooPriceTargetHigh],
     yahooPriceTargetLow: item[fieldMapping.yahooPriceTargetLow],
+    createdAt: item[fieldMapping.createdAt],
     buy: item.buy,
     strongBuy: item.strongBuy,
     sell: item.sell,

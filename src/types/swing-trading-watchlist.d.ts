@@ -24,4 +24,5 @@ type WatchlistIn50Days = {
   sell: number;
   strongSell: number;
   hold: number;
+  createdAt: string;
 };

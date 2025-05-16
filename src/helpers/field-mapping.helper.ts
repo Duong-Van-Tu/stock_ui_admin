@@ -132,6 +132,7 @@ export const fieldMapping: Record<string, string> = {
   highest7DaysUpdateAt: 'highest_7_days_update_at',
   AIRating: 'ai_rating',
   AIRecommendation: 'ai_rec',
+  AIRecommendationSignal: 'ai_recommendation',
   AIExplain: 'ai_explain',
   previousClose: 'prev_close',
   lowest50: 'lowest_50',
@@ -139,5 +140,6 @@ export const fieldMapping: Record<string, string> = {
   highest50: 'highest_50',
   lowest20: 'lowest_20',
   changeLowest20: 'change_pct_lowest_20',
-  highest20: 'highest_20'
+  highest20: 'highest_20',
+  createdAt: 'created_at'
 };

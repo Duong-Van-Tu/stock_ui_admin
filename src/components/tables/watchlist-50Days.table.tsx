@@ -25,6 +25,8 @@ import { PositiveNegativeText } from '../positive-negative-text';
 import { Recommendation } from '@/constants/common.constant';
 import { useModal } from '@/hooks/modal.hook';
 import { StockChangeCell } from './columns/stock-change-cell.column';
+import dayjs from 'dayjs';
+import { TimeZone } from '@/constants/timezone.constant';
 
 export const WatchlistIn50DaysTable = () => {
   const t = useTranslations();
@@ -115,7 +117,7 @@ export const WatchlistIn50DaysTable = () => {
       align: 'center'
     },
     {
-      title: 'AI Rating',
+      title: t('aiRating'),
       dataIndex: 'AIRating',
       key: 'AIRating',
       width: 100,
@@ -129,7 +131,7 @@ export const WatchlistIn50DaysTable = () => {
       align: 'center'
     },
     {
-      title: 'AI Recommendation',
+      title: t('aiRecommendation'),
       dataIndex: 'AIRecommendation',
       key: 'AIRecommendation',
       width: 180,
@@ -154,7 +156,7 @@ export const WatchlistIn50DaysTable = () => {
         )
     },
     {
-      title: 'AI Explain',
+      title: t('aiExplain'),
       dataIndex: 'AIExplain',
       key: 'AIExplain',
       width: 110,
@@ -180,7 +182,7 @@ export const WatchlistIn50DaysTable = () => {
         )
     },
     {
-      title: 'Previous Close',
+      title: t('previousClose'),
       dataIndex: 'previousClose',
       key: 'previousClose',
       width: 140,
@@ -195,7 +197,7 @@ export const WatchlistIn50DaysTable = () => {
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
-      title: 'Lowest 50',
+      title: t('lowest50'),
       dataIndex: 'lowest50',
       key: 'lowest50',
       width: 110,
@@ -216,7 +218,7 @@ export const WatchlistIn50DaysTable = () => {
       }
     },
     {
-      title: 'Highest 50',
+      title: t('highest50'),
       dataIndex: 'highest50',
       key: 'highest50',
       width: 120,
@@ -233,7 +235,7 @@ export const WatchlistIn50DaysTable = () => {
       }
     },
     {
-      title: 'Lowest 20',
+      title: t('lowest20'),
       dataIndex: 'lowest20',
       key: 'lowest20',
       width: 110,
@@ -254,7 +256,7 @@ export const WatchlistIn50DaysTable = () => {
       }
     },
     {
-      title: 'Highest 20',
+      title: t('highest20'),
       dataIndex: 'highest20',
       key: 'highest20',
       width: 120,
@@ -316,7 +318,7 @@ export const WatchlistIn50DaysTable = () => {
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
-      title: 'SMA 20 Days',
+      title: t('sma20Days'),
       dataIndex: 'sma20',
       key: 'sma20',
       width: 130,
@@ -443,6 +445,17 @@ export const WatchlistIn50DaysTable = () => {
         <TableTitle customStyles={titleStyles}>
           {t('watchlistIn50DaysTitle')}
         </TableTitle>
+        <div css={updatedAtStyles}>
+          {watchlistIn50Days.length > 0 && (
+            <>
+              <strong>{t('updatedAt')}:</strong>&nbsp;
+              {dayjs(watchlistIn50Days[0].createdAt)
+                .tz(TimeZone.NEW_YORK)
+                .format('MMM D, YYYY h:mm A')}
+              &nbsp; (New York)
+            </>
+          )}
+        </div>
       </div>
       <Table<WatchlistIn50Days>
         css={tableStyles}
@@ -532,4 +545,8 @@ const AIExplainStyles = css`
   p {
     margin-bottom: 0;
   }
+`;
+
+const updatedAtStyles = css`
+  font-size: 1.6rem;
 `;
