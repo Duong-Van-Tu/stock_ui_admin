@@ -50,7 +50,8 @@ export const ExportExcelLog = () => {
         'Strategy',
         'STOCK/OPTIONS',
         'Period',
-        'Recommendation',
+        'AI Rating',
+        'AI Recommendation',
         'Entry date',
         'Entry price',
         'Exit date',
@@ -155,9 +156,8 @@ export const ExportExcelLog = () => {
           log.strategyName,
           log.isImport === 0 ? 'STOCK' : 'OPTIONS',
           log.timeFrame,
-          log.recommendation
-            ? `${roundToDecimals(log.recommendation, 2)}%`
-            : '-',
+          log.AIRating,
+          log.AIRecommendationSignal ?? '-',
           log.entryDate
             ? dayjs(log.entryDate)
                 .tz(TimeZone.NEW_YORK)
