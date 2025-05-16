@@ -1,5 +1,5 @@
 import { useEffect, useRef, memo } from 'react';
-import { useLocale } from 'next-intl';
+import { TimeZone } from '@/constants/timezone.constant';
 
 interface StockChartOverviewProps {
   symbol: string;
@@ -7,10 +7,9 @@ interface StockChartOverviewProps {
 
 const StockChartOverview = ({ symbol }: StockChartOverviewProps) => {
   const container = useRef<HTMLDivElement>(null);
-  const locale = useLocale();
-
   useEffect(() => {
     if (container.current) {
+      container.current.innerHTML = '';
       const script = document.createElement('script');
       script.src =
         'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
@@ -21,10 +20,10 @@ const StockChartOverview = ({ symbol }: StockChartOverviewProps) => {
           "autosize": true,
           "symbol": "${symbol}",
           "interval": "D",
-          "timezone": "Etc/UTC",
+           "timezone": "${TimeZone.NEW_YORK}",
           "theme": "light",
           "style": "1.5",
-          "locale": "${locale}",
+          "locale": "en",
           "allow_symbol_change": true,
           "studies": [],  
           "hide_side_toolbar": false,
@@ -36,7 +35,7 @@ const StockChartOverview = ({ symbol }: StockChartOverviewProps) => {
         }`;
       container.current.appendChild(script);
     }
-  }, [symbol, locale]);
+  }, [symbol]);
 
   return (
     <div

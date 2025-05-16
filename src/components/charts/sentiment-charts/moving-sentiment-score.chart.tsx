@@ -23,10 +23,11 @@ const CHART_HEIGHT = 400;
 const CHART_GRID = { bottom: 80, left: 32, right: 30 };
 
 const series = [
-  { name: 'Score 1 week', color: '#4caf50' },
-  { name: 'Score 1 month', color: '#ffeb3b' },
-  { name: 'Score 3 months', color: '#2196f3' }
+  { name: 'Score 1 week', color: '#4caf50', key: 'score1w' },
+  { name: 'Score 1 month', color: '#ffeb3b', key: 'score1m' },
+  { name: 'Score 3 months', color: '#2196f3', key: 'score3m' }
 ];
+
 
 export function MovingSentimentScoreChart({ symbol }: FundamentalDetailProps) {
   const t = useTranslations();

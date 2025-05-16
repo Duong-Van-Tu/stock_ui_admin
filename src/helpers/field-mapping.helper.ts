@@ -118,7 +118,6 @@ export const fieldMapping: Record<string, string> = {
   yahooPriceTargetMean: 'yahoo_price_target_mean',
   yahooPriceTargetHigh: 'yahoo_price_target_high',
   yahooPriceTargetLow: 'yahoo_price_target_low',
-  recommendPercent: 'recoment_percent',
   premiumPay: 'premium_pay',
   premiumReceive: 'premium_receive',
   investCashOut: 'invest_cash_out',

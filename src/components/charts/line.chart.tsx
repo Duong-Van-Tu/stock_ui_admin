@@ -86,7 +86,11 @@ export default function LineChart({
       name: item.name,
       color: item.color,
       smooth: true,
-      showSymbol: false
+      showSymbol: false,
+      encode: {
+        x: 'date', 
+        y: item.key 
+      }
     }))
   };
 
