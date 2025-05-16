@@ -25,6 +25,9 @@ import ListHighActivity from '@/assets/svg/high-activity.svg';
 import Exit from '@/assets/svg/exit.svg';
 import Watchlist50Days from '@/assets/svg/Watchlist50Days.svg';
 import LedgerEntry from '@/assets/svg/ledgerEntry.svg';
+import Save from '@/assets/svg/save.svg';
+import Edit from '@/assets/svg/edit.svg';
+import Trash from '@/assets/svg/trash.svg';
 
 type IconProps = {
   width?: number | string;
@@ -59,7 +62,10 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   listHighActivity: ListHighActivity,
   exit: Exit,
   watchlist50Days: Watchlist50Days,
-  ledgerEntry: LedgerEntry
+  ledgerEntry: LedgerEntry,
+  save: Save,
+  edit: Edit,
+  trash: Trash
 };
 
 export const Icon = ({

@@ -2,13 +2,15 @@
 import { css } from '@emotion/react';
 
 import { useCallback, useContext, useEffect } from 'react';
-import { Button, Space, Table, TableColumnsType } from 'antd';
+import { Button, Space, Table, TableColumnsType, Tooltip } from 'antd';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   watchLedgerEntryLoading,
   watchLedgerEntry,
-  getLedgerEntry
+  getLedgerEntry,
+  watchCumulativeMap,
+  watchBalanceMap
 } from '@/redux/slices/ledger-entry.slice';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
@@ -26,6 +28,10 @@ import {
   roundToDecimals
 } from '@/utils/common';
 import { getCurrentPrice } from '@/helpers/socket.helper';
+import { Icon } from '../icons';
+import EllipsisText from '../ellipsis-text';
+
+const initialBalance = 5000;
 
 export const LedgerEntryTable = () => {
   const t = useTranslations();
@@ -38,6 +44,8 @@ export const LedgerEntryTable = () => {
 
   const LedgerEntry = useAppSelector(watchLedgerEntry);
   const loading = useAppSelector(watchLedgerEntryLoading);
+  const cumulativeMap = useAppSelector(watchCumulativeMap);
+  const balanceMap = useAppSelector(watchBalanceMap);
 
   const handleUpdate = (record: LedgerEntry) => {
     // TODO: implement update logic
@@ -52,13 +60,15 @@ export const LedgerEntryTable = () => {
   const fetchDataStockScore = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
-      pageSize = PAGINATION_PARAMS.limit
+      pageSize = PAGINATION_PARAMS.unLimit
     }: PageChangeParams = {}) => {
       dispatch(
         getLedgerEntry({
           page,
           limit: pageSize,
-          symbol: symbol ? symbol : undefined
+          symbol: symbol ? symbol : undefined,
+          sortField: 'exit_date',
+          sortType: 'asc'
         })
       );
     },
@@ -67,7 +77,7 @@ export const LedgerEntryTable = () => {
   );
 
   useEffect(() => {
-    fetchDataStockScore();
+    fetchDataStockScore({});
   }, [fetchDataStockScore]);
 
   useEffect(() => {
@@ -103,12 +113,38 @@ export const LedgerEntryTable = () => {
       align: 'center'
     },
     {
+      title: t('winOrLoss'),
+      dataIndex: 'winOrLoss',
+      key: 'winOrLoss',
+      width: 90,
+      align: 'center',
+      render: (_, record) => {
+        const { investCashIn = 0, investCashOut = 0, commission = 0 } = record;
+        const hasValidData = investCashIn && investCashOut;
+
+        if (!hasValidData) return '-';
+
+        const netResult = investCashIn - investCashOut - commission;
+        const isPositive = netResult >= 0;
+
+        return (
+          <PositiveNegativeText
+            isPositive={isPositive}
+            isNegative={!isPositive}
+          >
+            <span>{t(isPositive ? 'win' : 'loss')}</span>
+          </PositiveNegativeText>
+        );
+      }
+    },
+    {
       title: t('entryDate'),
       dataIndex: 'entryDate',
       key: 'entryDate',
       align: 'center',
       width: 130,
-      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+      render: (value) =>
+        value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
     },
     {
       title: t('entryPrice'),
@@ -125,7 +161,8 @@ export const LedgerEntryTable = () => {
       key: 'exitDate',
       width: 140,
       align: 'center',
-      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+      render: (value) =>
+        value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
     },
     {
       title: t('exitPrice'),
@@ -143,29 +180,7 @@ export const LedgerEntryTable = () => {
       }
     },
     {
-      title: t('winOrLoss'),
-      dataIndex: 'winOrLoss',
-      key: 'winOrLoss',
-      width: 90,
-      align: 'center',
-      render: (_, record) =>
-        record.entryPrice && record.exitPrice ? (
-          <PositiveNegativeText
-            isPositive={record.entryPrice <= record.exitPrice}
-            isNegative={record.entryPrice > record.entryPrice}
-          >
-            {record.entryPrice <= record.exitPrice ? (
-              <span>{t('win')}</span>
-            ) : (
-              <span>{t('loss')}</span>
-            )}
-          </PositiveNegativeText>
-        ) : (
-          '-'
-        )
-    },
-    {
-      title: 'Stock P/L',
+      title: t('StockP/L'),
       dataIndex: 'priceChange',
       key: 'priceChange',
       width: 140,
@@ -188,7 +203,7 @@ export const LedgerEntryTable = () => {
       }
     },
     {
-      title: t('action'),
+      title: t('actions'),
       dataIndex: 'action',
       key: 'action',
       width: 180,
@@ -207,7 +222,16 @@ export const LedgerEntryTable = () => {
       key: 'expiration',
       width: 124,
       align: 'center',
-      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+      render: (value) =>
+        value ? (
+          <DateTimeCell
+            convertTimeZone={false}
+            showTime={false}
+            value={value}
+          />
+        ) : (
+          '-'
+        )
     },
     {
       title: (
@@ -262,7 +286,7 @@ export const LedgerEntryTable = () => {
       width: 130,
       align: 'center',
       render: (_, record) => {
-        const { investCashIn, investCashOut } = record;
+        const { investCashIn = 0, investCashOut = 0 } = record;
         if (!(investCashIn && investCashOut)) return '-';
         const plAmount = investCashIn - investCashOut;
         const plAmountPercent = (plAmount / investCashIn) * 100;
@@ -283,25 +307,14 @@ export const LedgerEntryTable = () => {
       width: 130,
       align: 'center',
       render: (_, record) => {
-        const initialBalance = 5000;
-        const { investCashOut, investCashIn, commission } = record;
-        if (
-          LedgerEntry.length === 0 ||
-          !investCashOut ||
-          !investCashIn ||
-          !commission
-        )
+        const cumulative = cumulativeMap[record.id];
+        if (!cumulative) {
           return '-';
-        const cumulativeGainLoss =
-          record.investCashIn - record.investCashOut - record.commission;
+        }
 
-        const cumulativeGainLossPercent =
-          (cumulativeGainLoss / initialBalance) * 100;
+        const cumulativePercent = (cumulative / initialBalance) * 100;
         return (
-          <StockChangeCell
-            value={cumulativeGainLoss}
-            percentage={cumulativeGainLossPercent}
-          />
+          <StockChangeCell value={cumulative} percentage={cumulativePercent} />
         );
       }
     },
@@ -312,19 +325,17 @@ export const LedgerEntryTable = () => {
       width: 130,
       align: 'center',
       render: (_, record) => {
-        const initialBalance = 5000;
-        const { investCashOut, investCashIn, commission } = record;
-        if (
-          LedgerEntry.length === 0 ||
-          !investCashOut ||
-          !investCashIn ||
-          !commission
-        )
-          return '-';
-        const cumulativeGainLoss =
-          record.investCashIn - record.investCashOut - record.commission;
-        const balance = initialBalance + cumulativeGainLoss;
-        return roundToDecimals(balance);
+        const balance = balanceMap[record.id];
+        return balance ? (
+          <PositiveNegativeText
+            isPositive={balance >= initialBalance}
+            isNegative={balance < initialBalance}
+          >
+            {roundToDecimals(balance)}
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        );
       }
     },
     {
@@ -332,30 +343,47 @@ export const LedgerEntryTable = () => {
       dataIndex: 'sector',
       key: 'sector',
       width: 140,
-      align: 'center'
+      align: 'center',
+      render: (value) => <EllipsisText text={value} maxLines={1} />
     },
     {
       title: t('notes'),
       dataIndex: 'notes',
       key: 'notes',
       width: 160,
-      align: 'center'
+      align: 'center',
+      render: (value) => <EllipsisText text={value} maxLines={1} />
     },
     {
       title: t('actions'),
       dataIndex: 'actions',
       key: 'actions',
-      width: 186,
+      width: 110,
       fixed: 'right',
       align: 'center',
       render: (_, record) => (
         <Space>
-          <Button type='primary' onClick={() => handleUpdate(record)}>
-            {t('update')}
-          </Button>
-          <Button danger onClick={() => handleDelete(record)}>
-            {t('delete')}
-          </Button>
+          <Tooltip title={t('update')}>
+            <Button
+              type='primary'
+              icon={
+                <Icon
+                  icon='edit'
+                  width={18}
+                  height={18}
+                  fill='var(--white-color)'
+                />
+              }
+              onClick={() => handleUpdate(record)}
+            />
+          </Tooltip>
+          <Tooltip title={t('delete')}>
+            <Button
+              danger
+              icon={<Icon icon='trash' width={18} height={18} />}
+              onClick={() => handleDelete(record)}
+            />
+          </Tooltip>
         </Space>
       )
     }
@@ -376,7 +404,7 @@ export const LedgerEntryTable = () => {
         loading={loading}
         scroll={{
           x: 1200,
-          y: LedgerEntry.length > 0 ? height - 278 : undefined
+          y: LedgerEntry.length > 0 ? height - 240 : undefined
         }}
         sortDirections={['descend', 'ascend']}
         locale={{

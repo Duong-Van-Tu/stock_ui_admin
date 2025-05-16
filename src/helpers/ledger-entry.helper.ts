@@ -29,3 +29,27 @@ export const transformLedgerEntry = (entries: any[]): LedgerEntry[] => {
     createDate: entry[fieldMapping.createDate]
   }));
 };
+
+export const computeLedgerBalances = (entries: LedgerEntry[]) => {
+  let balance = 5000;
+  let cumulative = 0;
+  const balanceMap: Record<string, number> = {};
+  const cumulativeMap: Record<string, number> = {};
+
+  for (const entry of entries) {
+    const { id, investCashOut, investCashIn, commission = 0 } = entry;
+
+    if (typeof investCashOut !== 'number' || typeof investCashIn !== 'number') {
+      continue;
+    }
+
+    const gainLoss = investCashIn - investCashOut - commission;
+    cumulative += gainLoss;
+    balance += gainLoss;
+
+    balanceMap[id] = balance;
+    cumulativeMap[id] = cumulative;
+  }
+
+  return { balanceMap, cumulativeMap };
+};

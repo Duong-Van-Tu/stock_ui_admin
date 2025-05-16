@@ -319,5 +319,6 @@
   "lowest20": "Thấp nhất 20 ngày",
   "highest20": "Cao nhất 20 ngày",
   "sma20Days": "Trung bình động 20 ngày",
-  "updatedAt": "Ngày cập nhật"
+  "updatedAt": "Ngày cập nhật",
+  "StockP/L": "Lãi/Lỗ"
 }

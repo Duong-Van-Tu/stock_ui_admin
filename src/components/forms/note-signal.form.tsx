@@ -16,6 +16,7 @@ import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
 import { updateAlertLogsData } from '@/redux/slices/signals.slice';
 import { ReactQuillEditor } from '../react-quill-editor';
+import { Icon } from '../icons';
 
 const { Title } = Typography;
 
@@ -106,7 +107,18 @@ export const NotesSignal = ({
           <Form.Item css={formFooterStyles}>
             <div css={buttonGroupStyles}>
               <Button onClick={handleCancel}>{t('cancel')}</Button>
-              <Button type='primary' htmlType='submit'>
+              <Button
+                type='primary'
+                htmlType='submit'
+                icon={
+                  <Icon
+                    icon='save'
+                    width={18}
+                    height={18}
+                    fill='var(--white-color)'
+                  />
+                }
+              >
                 {t('Save')}
               </Button>
             </div>

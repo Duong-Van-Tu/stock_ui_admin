@@ -1,15 +1,23 @@
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
-import { transformLedgerEntry } from '@/helpers/ledger-entry.helper';
+import {
+  computeLedgerBalances,
+  transformLedgerEntry
+} from '@/helpers/ledger-entry.helper';
+import { convertParamsByMapping } from '@/utils/common';
 
 export type ledgerEntryState = {
   loading: boolean;
   ledgerEntry: LedgerEntry[];
+  balanceMap: Record<string, number>;
+  cumulativeMap: Record<string, number>;
 };
 
 const initialState: ledgerEntryState = {
   loading: false,
-  ledgerEntry: []
+  ledgerEntry: [],
+  balanceMap: {},
+  cumulativeMap: {}
 };
 
 export const ledgerEntrySlice = createAppSlice({
@@ -17,9 +25,9 @@ export const ledgerEntrySlice = createAppSlice({
   initialState,
   reducers: (create) => ({
     getLedgerEntry: create.asyncThunk(
-      async (query?: Record<string, any>) => {
-        const response = await defaultApiFetcher.get('ledger-entry', {
-          query
+      async (params?: Record<string, any>) => {
+        const response = await defaultApiFetcher.get('ledger-entry/get-list', {
+          query: params ? convertParamsByMapping(params) : {}
         });
         return response;
       },
@@ -29,7 +37,15 @@ export const ledgerEntrySlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.loading = false;
-          state.ledgerEntry = transformLedgerEntry(action.payload);
+          const transformedEntries = transformLedgerEntry(
+            action.payload.data.result
+          );
+          const { balanceMap, cumulativeMap } =
+            computeLedgerBalances(transformedEntries);
+
+          state.ledgerEntry = transformedEntries;
+          state.balanceMap = balanceMap;
+          state.cumulativeMap = cumulativeMap;
         },
         rejected: (state) => {
           state.loading = false;
@@ -41,11 +57,17 @@ export const ledgerEntrySlice = createAppSlice({
 
   selectors: {
     watchLedgerEntryLoading: (state) => state.loading,
-    watchLedgerEntry: (state) => state.ledgerEntry
+    watchLedgerEntry: (state) => state.ledgerEntry,
+    watchBalanceMap: (state) => state.balanceMap,
+    watchCumulativeMap: (state) => state.cumulativeMap
   }
 });
 
-export const { watchLedgerEntryLoading, watchLedgerEntry } =
-  ledgerEntrySlice.selectors;
+export const {
+  watchLedgerEntryLoading,
+  watchLedgerEntry,
+  watchBalanceMap,
+  watchCumulativeMap
+} = ledgerEntrySlice.selectors;
 
 export const { getLedgerEntry } = ledgerEntrySlice.actions;

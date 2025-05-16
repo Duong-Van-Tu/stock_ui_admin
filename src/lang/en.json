@@ -319,5 +319,6 @@
   "lowest20": "Lowest 20",
   "highest20": "Highest 20",
   "sma20Days": "SMA 20 Days",
-  "updatedAt": "Updated at"
+  "updatedAt": "Updated at",
+  "StockP/L": "Stock P/L"
 }

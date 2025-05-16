@@ -222,7 +222,7 @@ export const parseRangeValue = (
   return { from: undefined, to: undefined };
 };
 
-export const convertParamsByMapping = <T extends Record<string, unknown>>(
+export const convertParamsByMapping = <T extends Record<string, any>>(
   params: T
 ): Record<string, any> => {
   return Object.entries(params).reduce((acc, [key, value]) => {
