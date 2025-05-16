@@ -798,7 +798,9 @@ export const AlertLogsTable = () => {
                       title={
                         <>
                           {t('exitScheduleFor')}&nbsp;
-                          <span css={exitTitleStyles}>"{record.symbol}"</span>
+                          <span
+                            css={exitTitleStyles}
+                          >{`"${record.symbol}"`}</span>
                         </>
                       }
                     />,

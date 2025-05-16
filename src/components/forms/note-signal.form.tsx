@@ -83,7 +83,7 @@ export const NotesSignal = ({
   return (
     <div>
       <Title css={titleStyles} level={4}>
-        {title}&nbsp;<span>"{symbol}"</span>
+        {title}&nbsp;<span>{`"${symbol}"`}</span>
       </Title>
 
       <Spin spinning={loading}>
