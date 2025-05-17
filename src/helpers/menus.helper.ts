@@ -84,7 +84,7 @@ export const getMenuStructure = (
     link: PageURLs.ofWatchListIn50days()
   },
   {
-    label: t('LedgerEntry'),
+    label: t('ledgerEntry'),
     key: 'ledger-entry',
     iconType: 'ledgerEntry',
     link: PageURLs.ofLedgerEntry()

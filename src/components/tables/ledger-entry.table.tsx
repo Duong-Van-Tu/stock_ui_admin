@@ -17,7 +17,7 @@ import { useTranslations } from 'next-intl';
 import { TableTitle } from './title.table';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { SocketContext } from '@/providers/socket.provider';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
@@ -30,6 +30,7 @@ import {
 import { getCurrentPrice } from '@/helpers/socket.helper';
 import { Icon } from '../icons';
 import EllipsisText from '../ellipsis-text';
+import { PageURLs } from '@/utils/navigate';
 
 const initialBalance = 5000;
 
@@ -37,6 +38,7 @@ export const LedgerEntryTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const { setWatchList, resFromWS } = useContext(SocketContext);
+  const router = useRouter();
   const { height } = useWindowSize();
 
   const searchParams = useSearchParams();
@@ -363,7 +365,7 @@ export const LedgerEntryTable = () => {
       align: 'center',
       render: (_, record) => (
         <Space>
-          <Tooltip title={t('update')}>
+          <Tooltip title={t('edit')}>
             <Button
               type='primary'
               icon={
@@ -374,7 +376,7 @@ export const LedgerEntryTable = () => {
                   fill='var(--white-color)'
                 />
               }
-              onClick={() => handleUpdate(record)}
+              onClick={() => router.push(PageURLs.ofLedgerEntry(record.id))}
             />
           </Tooltip>
           <Tooltip title={t('delete')}>

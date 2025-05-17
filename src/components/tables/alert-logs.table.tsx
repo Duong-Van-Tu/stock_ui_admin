@@ -752,7 +752,7 @@ export const AlertLogsTable = () => {
                       signalId={record.id}
                       symbol={record.symbol}
                       pageName={fieldMapping['stockAlertLogs']}
-                      title={t('NoteSignalForSymbol')}
+                      title={t('noteSignalForSymbol')}
                     />,
                     {
                       width: 500
@@ -941,7 +941,7 @@ const actionStyles = css`
 const segmentedStyles = css`
   padding: 0;
   .ant-segmented-item-selected {
-    background: var(--orange-color);
+    background: var(--primary-color);
     color: var(--white-color);
   }
 `;

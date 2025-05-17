@@ -119,7 +119,7 @@ export const NotesSignal = ({
                   />
                 }
               >
-                {t('Save')}
+                {t('save')}
               </Button>
             </div>
           </Form.Item>

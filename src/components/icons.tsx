@@ -28,6 +28,8 @@ import LedgerEntry from '@/assets/svg/ledgerEntry.svg';
 import Save from '@/assets/svg/save.svg';
 import Edit from '@/assets/svg/edit.svg';
 import Trash from '@/assets/svg/trash.svg';
+import Back from '@/assets/svg/back.svg';
+import Send from '@/assets/svg/send.svg';
 
 type IconProps = {
   width?: number | string;
@@ -65,7 +67,9 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   ledgerEntry: LedgerEntry,
   save: Save,
   edit: Edit,
-  trash: Trash
+  trash: Trash,
+  back: Back,
+  send: Send
 };
 
 export const Icon = ({
