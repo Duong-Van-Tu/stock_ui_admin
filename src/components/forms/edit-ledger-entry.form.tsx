@@ -29,7 +29,9 @@ export default function EditLedgerEntry() {
   const id = params.id as string;
   const [form] = Form.useForm();
 
-  const fetchLedgerEntryDetail = async (id: string) => {};
+  const fetchLedgerEntryDetail = async (id: string) => {
+    console.log({ id });
+  };
 
   useEffect(() => {
     if (id) {

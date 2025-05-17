@@ -49,11 +49,6 @@ export const LedgerEntryTable = () => {
   const cumulativeMap = useAppSelector(watchCumulativeMap);
   const balanceMap = useAppSelector(watchBalanceMap);
 
-  const handleUpdate = (record: LedgerEntry) => {
-    // TODO: implement update logic
-    console.log('Update record', record);
-  };
-
   const handleDelete = (record: LedgerEntry) => {
     // TODO: implement delete logic
     console.log('Delete record', record);
