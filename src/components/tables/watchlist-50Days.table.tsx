@@ -27,6 +27,7 @@ import { useModal } from '@/hooks/modal.hook';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
+import { AIExplain } from '../ai-explain';
 
 export const WatchlistIn50DaysTable = () => {
   const t = useTranslations();
@@ -161,16 +162,11 @@ export const WatchlistIn50DaysTable = () => {
       key: 'AIExplain',
       width: 110,
       align: 'center',
-      render: (value) =>
+      render: (value, record) =>
         value ? (
           <Button
             onClick={() =>
-              modal.openModal(
-                <div css={AIExplainStyles}>
-                  <h3>AI Explain</h3>
-                  <p>{value}</p>
-                </div>
-              )
+              modal.openModal(<AIExplain symbol={record.symbol} text={value} />)
             }
             type='link'
             block
@@ -534,17 +530,6 @@ const emptyStyles = (height: number) => css`
 
 const recommendationStyles = css`
   text-transform: uppercase;
-`;
-
-const AIExplainStyles = css`
-  h3 {
-    text-align: center;
-    font-weight: 600;
-    font-size: 2.2rem;
-  }
-  p {
-    margin-bottom: 0;
-  }
 `;
 
 const updatedAtStyles = css`

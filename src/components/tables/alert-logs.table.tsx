@@ -47,6 +47,7 @@ import { useModal } from '@/hooks/modal.hook';
 import { NotesSignal } from '../forms/note-signal.form';
 import { ExitSignal } from '../forms/exit-signal.form';
 import { TableRowSelection } from 'antd/es/table/interface';
+import { AIExplain } from '../ai-explain';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -75,7 +76,7 @@ export const AlertLogsTable = () => {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
   const { sortField, sortType, handleSortOrder } =
-    useSortOrder<ListHighActivityFilter>({
+    useSortOrder<AlertLogsFilter>({
       defaultField: 'entryDate',
       defaultOrder: 'descend',
       currentFilter: filter,
@@ -262,6 +263,27 @@ export const AlertLogsTable = () => {
           </PositiveNegativeText>
         ) : (
           <span>-</span>
+        )
+    },
+    {
+      title: t('aiExplain'),
+      dataIndex: 'AIExplain',
+      key: 'AIExplain',
+      width: 110,
+      align: 'center',
+      render: (value, record) =>
+        value ? (
+          <Button
+            onClick={() =>
+              modal.openModal(<AIExplain symbol={record.symbol} text={value} />)
+            }
+            type='link'
+            block
+          >
+            {t('viewDetails')}
+          </Button>
+        ) : (
+          '-'
         )
     },
     {

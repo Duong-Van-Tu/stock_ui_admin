@@ -59,6 +59,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     highest3DaysUpdateAt: stock[fieldMapping.highest3DaysUpdateAt],
     highest7DaysUpdateAt: stock[fieldMapping.highest7DaysUpdateAt],
     AIRating: stock[fieldMapping.AIRating],
-    AIRecommendationSignal: stock[fieldMapping.AIRecommendationSignal]
+    AIRecommendationSignal: stock[fieldMapping.AIRecommendationSignal],
+    AIExplain: stock[fieldMapping.AIExplain]
   }));
 };

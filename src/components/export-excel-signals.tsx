@@ -52,6 +52,7 @@ export const ExportExcelLog = () => {
         'Period',
         'AI Rating',
         'AI Recommendation',
+        'AI Explain',
         'Entry date',
         'Entry price',
         'Exit date',
@@ -158,6 +159,7 @@ export const ExportExcelLog = () => {
           log.timeFrame,
           log.AIRating,
           log.AIRecommendationSignal ?? '-',
+          log.AIExplain ?? '-',
           log.entryDate
             ? dayjs(log.entryDate)
                 .tz(TimeZone.NEW_YORK)
