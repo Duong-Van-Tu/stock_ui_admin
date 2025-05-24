@@ -1,21 +1,26 @@
 /** @jsxImportSource @emotion/react */
-import { TimeZone } from '@/constants/timezone.constant';
-import { defaultApiFetcher } from '@/utils/api-instances';
 import { css } from '@emotion/react';
 import dayjs from 'dayjs';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   createChart,
   type CandlestickData,
-  type IChartApi,
-  type DeepPartial,
   type ChartOptions,
+  type DeepPartial,
   type HistogramData,
+  type IChartApi,
   type SeriesMarker
 } from 'lightweight-charts';
-import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useRef, useState } from 'react';
+
+import { TimeZone } from '@/constants/timezone.constant';
+import { defaultApiFetcher } from '@/utils/api-instances';
+import {
+  formatNumberShort,
+  formatPercent,
+  roundToDecimals
+} from '@/utils/common';
 import { PositiveNegativeText } from './positive-negative-text';
-import { formatPercent, roundToDecimals } from '@/utils/common';
 
 type ExtendedCandlestickData = CandlestickData & {
   volume?: number;
@@ -65,7 +70,6 @@ export const BacktestSpikeVolume = ({
       .subtract(7, 'day')
       .tz(TimeZone.NEW_YORK)
       .format('YYYY-MM-DD');
-
     const toDate = exitTime
       ? dayjs(exitTime).add(7, 'day').tz(TimeZone.NEW_YORK).format('YYYY-MM-DD')
       : dayjs(entryTime)
@@ -140,6 +144,8 @@ export const BacktestSpikeVolume = ({
     };
 
     const chart = createChart(chartContainerRef.current, chartOptions);
+    chartRef.current = chart;
+
     chart.applyOptions({
       localization: {
         timeFormatter: (time: any) => {
@@ -149,13 +155,11 @@ export const BacktestSpikeVolume = ({
               : dayjs(`${time.year}-${time.month}-${time.day}`).unix();
           return dayjs
             .unix(timestamp)
-            .tz('America/New_York')
+            .tz(TimeZone.NEW_YORK)
             .format("DD MMM 'YY HH:mm:ss");
         }
       }
     });
-
-    chartRef.current = chart;
 
     const candleSeries = chart.addCandlestickSeries({
       upColor: '#26a69a',
@@ -232,12 +236,28 @@ export const BacktestSpikeVolume = ({
     smaVolumeSeries.setData(smaVolumeData);
 
     chart.subscribeCrosshairMove((param) => {
-      const data = param.seriesData.get(volumeSeries) as
+      const volumeData = param.seriesData.get(volumeSeries) as
         | HistogramData
         | undefined;
-      const volume = data?.value;
-      if (volume !== undefined && chartContainerRef.current) {
-        chartContainerRef.current.title = `Volume: ${volume.toLocaleString()}`;
+      const candleData = param.seriesData.get(candleSeries) as
+        | CandlestickData
+        | undefined;
+
+      if (chartContainerRef.current) {
+        let title = '';
+
+        if (volumeData?.value !== undefined) {
+          title += `Volume: ${formatNumberShort(volumeData.value)}`;
+        }
+
+        if (candleData) {
+          title += `\nOpen: ${candleData.open}`;
+          title += `\nHigh: ${candleData.high}`;
+          title += `\nLow: ${candleData.low}`;
+          title += `\nClose: ${candleData.close}`;
+        }
+
+        chartContainerRef.current.title = title;
       }
     });
 

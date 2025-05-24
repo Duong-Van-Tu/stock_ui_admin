@@ -3131,6 +3131,11 @@ extend@^3.0.2:
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
   integrity sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==
 
+fancy-canvas@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/fancy-canvas/-/fancy-canvas-2.1.0.tgz#44b40e40419ad8ef8304df365e4276767e918552"
+  integrity sha512-nifxXJ95JNLFR2NgRV4/MxVP45G9909wJTEKz5fg/TZS20JJZA6hfgRVh/bC9bwl2zBtBNcYPjiBE4njQHVBwQ==
+
 fast-csv@^4.3.1:
   version "4.3.6"
   resolved "https://registry.yarnpkg.com/fast-csv/-/fast-csv-4.3.6.tgz#70349bdd8fe4d66b1130d8c91820b64a21bc4a63"
@@ -3934,6 +3939,13 @@ lie@~3.3.0:
   integrity sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ==
   dependencies:
     immediate "~3.0.5"
+
+lightweight-charts@4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/lightweight-charts/-/lightweight-charts-4.2.3.tgz#0a0174793fc246b37bd8b96d1d4caadd2ecb329e"
+  integrity sha512-5kS/2hY3wNYNzhnS8Gb+GAS07DX8GPF2YVDnd2NMC85gJVQ6RLU6YrXNgNJ6eg0AnWPwCnvaGtYmGky3HiLQEw==
+  dependencies:
+    fancy-canvas "2.1.0"
 
 lines-and-columns@^1.1.6:
   version "1.2.4"
