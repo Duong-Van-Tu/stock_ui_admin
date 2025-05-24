@@ -83,7 +83,7 @@ export const BacktestSpikeVolume = ({
         query: {
           stockName: symbol,
           period,
-          smaPeriodLength: 20,
+          smaPeriodLength: 8,
           fromDate,
           toDate
         }
