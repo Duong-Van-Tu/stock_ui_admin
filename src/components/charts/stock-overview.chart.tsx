@@ -20,7 +20,7 @@ const StockChartOverview = ({ symbol }: StockChartOverviewProps) => {
           "autosize": true,
           "symbol": "${symbol}",
           "interval": "D",
-           "timezone": "${TimeZone.NEW_YORK}",
+          "timezone": "${TimeZone.NEW_YORK}",
           "theme": "light",
           "style": "1.5",
           "locale": "en",

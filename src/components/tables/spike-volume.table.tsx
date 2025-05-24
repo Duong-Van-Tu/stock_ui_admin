@@ -2,14 +2,7 @@
 import { css } from '@emotion/react';
 
 import { Key, useCallback, useContext, useEffect, useState } from 'react';
-import {
-  Button,
-  Segmented,
-  Space,
-  Table,
-  TableColumnsType,
-  Tooltip
-} from 'antd';
+import { Button, Space, Table, TableColumnsType, Tooltip } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   calculatePercentage,
@@ -35,21 +28,20 @@ import {
 } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
-import { AlertLogsFilter } from '../filters/alert-logs.filter';
 import { AlertLogsView, Recommendation } from '@/constants/common.constant';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
-import { ExportExcelLog } from '../export-excel-signals';
 import { Icon } from '../icons';
 import { useModal } from '@/hooks/modal.hook';
 import { NotesSignal } from '../forms/note-signal.form';
 import { ExitSignal } from '../forms/exit-signal.form';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { AIExplain } from '../ai-explain';
+import { BacktestSpikeVolume } from '../backtest-spike-volume';
 
-export const AlertLogsTable = () => {
+export const SpikeVolumeTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const { setWatchList, resFromWS } = useContext(SocketContext);
@@ -63,9 +55,7 @@ export const AlertLogsTable = () => {
     ? Number(searchParams.get('isOption'))
     : 0;
 
-  const strategyId = searchParams.get('strategyId')
-    ? Number(searchParams.get('strategyId'))
-    : undefined;
+  const strategyId = 9;
 
   const symbol = searchParams.get('symbol');
   const alertLogsData = useAppSelector(watchAlertLogsData);
@@ -128,15 +118,6 @@ export const AlertLogsTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [symbol]
   );
-
-  const handleFilter = (values: AlertLogsFilter) => {
-    const newFilter = {
-      ...filter,
-      ...values
-    };
-    setFilter(newFilter);
-    fetchDataAlertLogs({ filter: newFilter });
-  };
 
   const handleChangeView = useCallback(
     (view: AlertLogsView) => {
@@ -761,7 +742,7 @@ export const AlertLogsTable = () => {
       key: 'action',
       fixed: 'right',
       align: 'center',
-      width: 100,
+      width: 130,
       render: (_, record) => {
         const isExit = !!record.exitDate;
         return (
@@ -830,6 +811,33 @@ export const AlertLogsTable = () => {
                 }
               />
             </Tooltip>
+            <Tooltip title='Backtest'>
+              <Button
+                icon={
+                  <Icon
+                    icon='chartBacktest'
+                    width={22}
+                    height={22}
+                    fill='#1296db'
+                  />
+                }
+                onClick={() =>
+                  modal.openModal(
+                    <BacktestSpikeVolume
+                      period={record.timeFrame}
+                      symbol={record.symbol}
+                      entryPrice={record.entryPrice}
+                      entryTime={record.entryDate}
+                      exitPrice={record.exitPrice}
+                      exitTime={record.exitDate}
+                    />,
+                    {
+                      width: 1200
+                    }
+                  )
+                }
+              />
+            </Tooltip>
           </Space>
         );
       }
@@ -838,7 +846,6 @@ export const AlertLogsTable = () => {
 
   return (
     <div css={rootStyles}>
-      <AlertLogsFilter defaultStrategyId={strategyId} onFilter={handleFilter} />
       {selectedIds.size > 0 && (
         <Button
           onClick={() =>
@@ -862,27 +869,7 @@ export const AlertLogsTable = () => {
       )}
       <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
-          <TableTitle>{t('alertLogs')}</TableTitle>
-          <Segmented
-            css={segmentedStyles}
-            options={[
-              {
-                label: <div css={segmentedLabelStyles}>{t('stocks')}</div>,
-                value: AlertLogsView.STOCKS
-              },
-              {
-                label: <div css={segmentedLabelStyles}>{t('options')}</div>,
-                value: AlertLogsView.OPTIONS
-              }
-            ]}
-            defaultValue={
-              isOption ? AlertLogsView.OPTIONS : AlertLogsView.STOCKS
-            }
-            onChange={(value) => handleChangeView(value)}
-          />
-          <div css={actionStyles}>
-            <ExportExcelLog />
-          </div>
+          <TableTitle>Spike Volume</TableTitle>
         </div>
         <Table<Signal>
           css={tableStyles}
@@ -893,7 +880,7 @@ export const AlertLogsTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: alertLogsData.length > 0 ? height - 360 : undefined
+            y: alertLogsData.length > 0 ? height - 280 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -952,25 +939,6 @@ const tableTopStyles = css`
   justify-content: space-between;
   align-items: center;
   padding: 1.2rem 1.6rem;
-`;
-
-const actionStyles = css`
-  display: flex;
-  justify-content: flex-end;
-  gap: 1.2rem;
-`;
-
-const segmentedStyles = css`
-  padding: 0;
-  .ant-segmented-item-selected {
-    background: var(--primary-color);
-    color: var(--white-color);
-  }
-`;
-
-const segmentedLabelStyles = css`
-  font-size: 1.6rem;
-  font-weight: 500;
 `;
 
 const emptyStyles = (height: number) => css`

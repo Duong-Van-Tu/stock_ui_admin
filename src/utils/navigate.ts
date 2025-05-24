@@ -50,4 +50,8 @@ export namespace PageURLs {
   export function ofLedgerEntry(id?: number) {
     return withPrefix(`/ledger-entry${id ? `/${id}` : ''}`);
   }
+
+  export function ofSpikeVolumeBackTest() {
+    return withPrefix('/spike-volume');
+  }
 }

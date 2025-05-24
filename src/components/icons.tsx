@@ -30,6 +30,8 @@ import Edit from '@/assets/svg/edit.svg';
 import Trash from '@/assets/svg/trash.svg';
 import Back from '@/assets/svg/back.svg';
 import Send from '@/assets/svg/send.svg';
+import Volume from '@/assets/svg/volume.svg';
+import ChartBacktest from '@/assets/svg/chart-backtest.svg';
 
 type IconProps = {
   width?: number | string;
@@ -69,7 +71,9 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   edit: Edit,
   trash: Trash,
   back: Back,
-  send: Send
+  send: Send,
+  volume: Volume,
+  chartBacktest: ChartBacktest
 };
 
 export const Icon = ({

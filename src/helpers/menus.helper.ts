@@ -88,5 +88,11 @@ export const getMenuStructure = (
     key: 'ledger-entry',
     iconType: 'ledgerEntry',
     link: PageURLs.ofLedgerEntry()
+  },
+  {
+    label: 'Spike Volume',
+    key: 'spike-volume',
+    iconType: 'volume',
+    link: PageURLs.ofSpikeVolumeBackTest()
   }
 ];
