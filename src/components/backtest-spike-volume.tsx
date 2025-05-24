@@ -8,7 +8,6 @@ import {
   type CandlestickData,
   type ChartOptions,
   type DeepPartial,
-  type HistogramData,
   type IChartApi,
   type SeriesMarker
 } from 'lightweight-charts';
