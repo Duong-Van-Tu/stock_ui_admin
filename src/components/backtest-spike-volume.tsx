@@ -20,6 +20,8 @@ import {
   roundToDecimals
 } from '@/utils/common';
 import { PositiveNegativeText } from './positive-negative-text';
+import { useNotification } from '@/hooks/notification.hook';
+import { Empty, Spin } from 'antd';
 
 type ExtendedCandlestickData = CandlestickData & {
   volume?: number;
@@ -44,6 +46,7 @@ export const BacktestSpikeVolume = ({
   exitTime
 }: BacktestSpikeVolumeProps) => {
   const t = useTranslations();
+  const { notifyError } = useNotification();
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -51,6 +54,7 @@ export const BacktestSpikeVolume = ({
   const [candlestickData, setCandlestickData] = useState<
     ExtendedCandlestickData[]
   >([]);
+  const [loading, setLoading] = useState(true);
 
   const parseToUnixTime = useCallback(
     (timestamp: string): number => {
@@ -103,7 +107,10 @@ export const BacktestSpikeVolume = ({
 
       setCandlestickData(transformed);
     } catch (err) {
+      notifyError('Error fetching stock chart');
       console.error('Error fetching stock chart:', err);
+    } finally {
+      setLoading(false);
     }
   }, [symbol, period, entryTime, exitTime]);
 
@@ -293,7 +300,7 @@ export const BacktestSpikeVolume = ({
   ]);
 
   return (
-    <>
+    <Spin spinning={loading}>
       <h3
         css={css`
           text-align: center;
@@ -342,36 +349,44 @@ export const BacktestSpikeVolume = ({
           </>
         )}
       </div>
-      <div
-        ref={chartContainerRef}
-        css={css`
-          margin-top: 2rem;
-          width: 100%;
-          height: 400px;
-          position: relative;
-          #tv-attr-logo {
-            display: none;
-          }
-        `}
-      >
-        <div
-          ref={tooltipRef}
+      {candlestickData.length === 0 ? (
+        <Empty
           css={css`
-            position: absolute;
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 4px;
-            pointer-events: none;
-            font-size: 0.875rem;
-            display: none;
-            white-space: nowrap;
-            z-index: 10;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            font-size: 1.4rem;
+            padding: 4rem 0;
           `}
         />
-      </div>
-    </>
+      ) : (
+        <div
+          ref={chartContainerRef}
+          css={css`
+            margin-top: 2rem;
+            width: 100%;
+            height: 400px;
+            position: relative;
+            #tv-attr-logo {
+              display: none;
+            }
+          `}
+        >
+          <div
+            ref={tooltipRef}
+            css={css`
+              position: absolute;
+              background: rgba(255, 255, 255, 0.95);
+              border: 1px solid #ccc;
+              padding: 10px;
+              border-radius: 4px;
+              pointer-events: none;
+              font-size: 0.875rem;
+              display: none;
+              white-space: nowrap;
+              z-index: 10;
+              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+              font-size: 1.4rem;
+            `}
+          />
+        </div>
+      )}
+    </Spin>
   );
 };
