@@ -46,7 +46,9 @@ export const BacktestSpikeVolume = ({
 }: BacktestSpikeVolumeProps) => {
   const t = useTranslations();
   const chartContainerRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
+  let animationFrameId: number | null = null;
   const [candlestickData, setCandlestickData] = useState<
     ExtendedCandlestickData[]
   >([]);
@@ -235,30 +237,38 @@ export const BacktestSpikeVolume = ({
       }));
     smaVolumeSeries.setData(smaVolumeData);
 
-    chart.subscribeCrosshairMove((param) => {
-      const volumeData = param.seriesData.get(volumeSeries) as
-        | HistogramData
-        | undefined;
-      const candleData = param.seriesData.get(candleSeries) as
-        | CandlestickData
-        | undefined;
-
-      if (chartContainerRef.current) {
-        let title = '';
-
-        if (volumeData?.value !== undefined) {
-          title += `Volume: ${formatNumberShort(volumeData.value)}`;
-        }
-
-        if (candleData) {
-          title += `\nOpen: ${candleData.open}`;
-          title += `\nHigh: ${candleData.high}`;
-          title += `\nLow: ${candleData.low}`;
-          title += `\nClose: ${candleData.close}`;
-        }
-
-        chartContainerRef.current.title = title;
+    chart.subscribeClick((param) => {
+      if (!param || !param.time || !param.seriesData.size) {
+        tooltipRef.current!.style.display = 'none';
+        return;
       }
+
+      const candle = param.seriesData.get(candleSeries) as CandlestickData;
+      const volumeItem = candlestickData.find((d) => d.time === param.time);
+
+      if (!candle || !volumeItem) {
+        tooltipRef.current!.style.display = 'none';
+        return;
+      }
+
+      const tooltip = tooltipRef.current!;
+      tooltip.style.display = 'block';
+      tooltip.style.left = `${param.point?.x}px`;
+      tooltip.style.top = `${param.point?.y}px`;
+
+      tooltip.innerHTML = `
+        <strong>${dayjs
+          .unix(Number(param.time))
+          .tz(TimeZone.NEW_YORK)
+          .format('MM-DD HH:mm:ss')}</strong><br/>
+        <strong>Volume: </strong>${formatNumberShort(
+          volumeItem.volume || 0
+        )}<br/>
+        <strong>Open: </strong>${candle.open} <br/>
+        <strong>High: </strong>${candle.high} <br/>
+        <strong>Low: </strong>${candle.low} <br/>
+        <strong>Close: </strong>${candle.close}
+      `;
     });
 
     const resizeObserver = new ResizeObserver(() => {
@@ -272,6 +282,7 @@ export const BacktestSpikeVolume = ({
     return () => {
       chart.remove();
       resizeObserver.disconnect();
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
   }, [
     candlestickData,
@@ -338,11 +349,30 @@ export const BacktestSpikeVolume = ({
           margin-top: 2rem;
           width: 100%;
           height: 400px;
+          position: relative;
           #tv-attr-logo {
             display: none;
           }
         `}
-      />
+      >
+        <div
+          ref={tooltipRef}
+          css={css`
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+            pointer-events: none;
+            font-size: 0.875rem;
+            display: none;
+            white-space: nowrap;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 1.4rem;
+          `}
+        />
+      </div>
     </>
   );
 };
