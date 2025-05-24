@@ -70,6 +70,10 @@ export const BacktestSpikeVolume = ({
 
   const fetchCandlestickChartData = useCallback(async () => {
     if (!entryTime) return;
+    if (dayjs(entryTime).isBefore(dayjs().subtract(19, 'day'))) {
+      setLoading(false);
+      return;
+    }
 
     const fromDate = dayjs(entryTime)
       .subtract(7, 'day')
