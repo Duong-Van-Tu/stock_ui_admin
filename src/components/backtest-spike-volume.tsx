@@ -75,16 +75,12 @@ export const BacktestSpikeVolume = ({
       return;
     }
 
-    const fromDate = dayjs(entryTime)
-      .subtract(7, 'day')
+    const fromDate = dayjs()
+      .subtract(19, 'day')
       .tz(TimeZone.NEW_YORK)
       .format('YYYY-MM-DD');
-    const toDate = exitTime
-      ? dayjs(exitTime).add(7, 'day').tz(TimeZone.NEW_YORK).format('YYYY-MM-DD')
-      : dayjs(entryTime)
-          .add(7, 'day')
-          .tz(TimeZone.NEW_YORK)
-          .format('YYYY-MM-DD');
+
+    const toDate = dayjs().tz(TimeZone.NEW_YORK).format('YYYY-MM-DD');
 
     try {
       const res = await defaultApiFetcher.get('stock-worker/get-stock-chart', {
