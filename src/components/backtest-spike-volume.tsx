@@ -116,7 +116,7 @@ export const BacktestSpikeVolume = ({
     } finally {
       setLoading(false);
     }
-  }, [symbol, period, entryTime, exitTime]);
+  }, [symbol, period, entryTime, exitTime, notifyError]);
 
   useEffect(() => {
     fetchCandlestickChartData();
@@ -300,6 +300,7 @@ export const BacktestSpikeVolume = ({
     entryTime,
     exitPrice,
     exitTime,
+    animationFrameId,
     parseToUnixTime
   ]);
 

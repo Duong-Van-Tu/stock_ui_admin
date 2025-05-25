@@ -73,7 +73,7 @@ export const AlertLogsTable = () => {
   const loading = useAppSelector(watchAlertLogsLoading);
 
   const [filter, setFilter] = useState<AlertLogsFilter>({});
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const { sortField, sortType, handleSortOrder } =
     useSortOrder<AlertLogsFilter>({
@@ -91,13 +91,13 @@ export const AlertLogsTable = () => {
     });
 
   const onSelectChange = (_selectedRowKeys: Key[], selectedRows: Signal[]) => {
-    const alertLogIds = new Set(selectedRows.map((row) => row.id));
+    const alertLogIds = new Set(selectedRows.map((row) => row.hashAlertLogId));
     setSelectedIds(alertLogIds);
   };
 
   const rowSelection: TableRowSelection<Signal> = {
     selectedRowKeys: alertLogsData
-      .filter(({ id }) => selectedIds.has(id))
+      .filter(({ hashAlertLogId }) => selectedIds.has(hashAlertLogId))
       .map(({ key }) => key),
 
     onChange: onSelectChange,
@@ -841,7 +841,7 @@ export const AlertLogsTable = () => {
                 onClick={() =>
                   modal.openModal(
                     <ExitSignal
-                      ids={[record.id]}
+                      ids={[record.hashAlertLogId]}
                       title={
                         <>
                           {t('exitScheduleFor')}&nbsp;

@@ -143,5 +143,6 @@ export const fieldMapping: Record<string, string> = {
   highest20: 'highest_20',
   createdAt: 'created_at',
   realCandleEntry: 'real_candle_entry',
-  expectCandleEntry: 'expect_candle_entry'
+  expectCandleEntry: 'expect_candle_entry',
+  hashAlertLogId: 'hash_alert_log_id'
 };

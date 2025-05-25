@@ -1,5 +1,6 @@
 type Signal = {
   id: number;
+  hashAlertLogId: string;
   key: string;
   symbol: string;
   companyName: string;

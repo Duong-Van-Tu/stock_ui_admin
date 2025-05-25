@@ -17,6 +17,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
   return signals.map((stock) => ({
     id: stock.id,
     key: uuid(),
+    hashAlertLogId: stock[fieldMapping.hashAlertLogId],
     symbol: stock[fieldMapping.tickerName],
     companyName: stock[fieldMapping.companyName],
     earningDate: stock[fieldMapping.earningDate],

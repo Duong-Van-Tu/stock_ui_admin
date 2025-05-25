@@ -8,7 +8,6 @@ import { useModal } from '@/hooks/modal.hook';
 import { useTranslations } from 'next-intl';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  updateAlertLogsData,
   updateScheduleExitDate,
   watchExitLoading
 } from '@/redux/slices/signals.slice';
@@ -17,9 +16,9 @@ import { useNotification } from '@/hooks/notification.hook';
 import { Dispatch, ReactNode, SetStateAction } from 'react';
 
 type ExitSignalProps = {
-  ids: number[];
+  ids: string[];
   title: string | ReactNode;
-  setSelectedIds?: Dispatch<SetStateAction<Set<number>>>;
+  setSelectedIds?: Dispatch<SetStateAction<Set<string>>>;
 };
 
 export const ExitSignal = ({ ids, title, setSelectedIds }: ExitSignalProps) => {
@@ -40,11 +39,6 @@ export const ExitSignal = ({ ids, title, setSelectedIds }: ExitSignalProps) => {
     );
     if (isRequestSuccess(res)) {
       notifySuccess(t('updateExitScheduleSuccess'));
-      dispatch(
-        updateAlertLogsData(
-          ids.map((signalId) => ({ id: signalId, scheduleExitDate }))
-        )
-      );
       setSelectedIds?.(new Set());
       closeModal();
     }

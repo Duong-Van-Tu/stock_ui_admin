@@ -137,7 +137,7 @@ export const signalSlice = createAppSlice({
       }
     ),
     updateScheduleExitDate: create.asyncThunk(
-      async (params: { ids: number[]; scheduleExitDate: string }) => {
+      async (params: { ids: string[]; scheduleExitDate: string }) => {
         await defaultApiFetcher.post(
           'tickers/update-schedule-exit-date',
           convertParamsByMapping(params)
