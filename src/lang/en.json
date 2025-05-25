@@ -342,5 +342,7 @@
   "buyToClosePUT": "Buy to Close PUT",
   "premiumReceive": "Premium Receive",
   "investmentCashIn": "Investment Cash In",
-  "selectSector": "Select a sector"
+  "selectSector": "Select a sector",
+  "realCandleEntry": "Real Candle Entry",
+  "expectCandleEntry": "Expect Candle Entry"
 }

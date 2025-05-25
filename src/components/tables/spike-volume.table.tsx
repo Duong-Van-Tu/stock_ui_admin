@@ -209,6 +209,34 @@ export const SpikeVolumeTable = () => {
       })
     },
     {
+      title: t('realCandleEntry'),
+      dataIndex: 'realCandleEntry',
+      key: 'realCandleEntry',
+      width: 156,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'realCandleEntry' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('realCandleEntry')
+      }),
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
+      title: t('expectCandleEntry'),
+      dataIndex: 'expectCandleEntry',
+      key: 'expectCandleEntry',
+      width: 174,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'expectCandleEntry' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('expectCandleEntry')
+      }),
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
       title: t('aiRating'),
       dataIndex: 'AIRating',
       key: 'AIRating',

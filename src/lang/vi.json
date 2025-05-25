@@ -342,5 +342,7 @@
   "buyToClosePUT": "Mua đóng vị thế PUT",
   "premiumReceive": "Phí nhận được",
   "investmentCashIn": "Tiền đầu tư vào",
-  "selectSector": "Chọn ngành"
+  "selectSector": "Chọn ngành",
+  "realCandleEntry": "Cây nến Entry dự kiến",
+  "expectCandleEntry": "Cây nến Entry thực tế"
 }

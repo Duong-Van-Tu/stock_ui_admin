@@ -45,6 +45,8 @@ type Signal = {
   AIRating: number;
   AIRecommendationSignal: string;
   AIExplain: string;
+  realCandleEntry: string;
+  expectCandleEntry: string;
 };
 
 type AlertLogsFilter = Filter & {

@@ -141,5 +141,7 @@ export const fieldMapping: Record<string, string> = {
   lowest20: 'lowest_20',
   changeLowest20: 'change_pct_lowest_20',
   highest20: 'highest_20',
-  createdAt: 'created_at'
+  createdAt: 'created_at',
+  realCandleEntry: 'real_candle_entry',
+  expectCandleEntry: 'expect_candle_entry'
 };

@@ -50,6 +50,8 @@ export const ExportExcelLog = () => {
         'Strategy',
         'STOCK/OPTIONS',
         'Period',
+        'Real Candle Entry',
+        'Expect Candle Entry',
         'AI Rating',
         'AI Recommendation',
         'AI Explain',
@@ -157,6 +159,16 @@ export const ExportExcelLog = () => {
           log.strategyName,
           log.isImport === 0 ? 'STOCK' : 'OPTIONS',
           log.timeFrame,
+          log.realCandleEntry
+            ? dayjs(log.realCandleEntry)
+                .tz(TimeZone.NEW_YORK)
+                .format('YYYY-MM-DD HH:mm')
+            : '-',
+          log.expectCandleEntry
+            ? dayjs(log.expectCandleEntry)
+                .tz(TimeZone.NEW_YORK)
+                .format('YYYY-MM-DD HH:mm')
+            : '-',
           log.AIRating,
           log.AIRecommendationSignal ?? '-',
           log.AIExplain ?? '-',

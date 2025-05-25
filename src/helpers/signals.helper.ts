@@ -60,6 +60,8 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     highest7DaysUpdateAt: stock[fieldMapping.highest7DaysUpdateAt],
     AIRating: stock[fieldMapping.AIRating],
     AIRecommendationSignal: stock[fieldMapping.AIRecommendationSignal],
-    AIExplain: stock[fieldMapping.AIExplain]
+    AIExplain: stock[fieldMapping.AIExplain],
+    realCandleEntry: stock[fieldMapping.realCandleEntry],
+    expectCandleEntry: stock[fieldMapping.expectCandleEntry]
   }));
 };
