@@ -112,7 +112,7 @@ export const BacktestSpikeVolume = ({
     } finally {
       setLoading(false);
     }
-  }, [symbol, period, entryTime, exitTime, notifyError]);
+  }, [symbol, period, entryTime, notifyError]);
 
   useEffect(() => {
     fetchCandlestickChartData();
@@ -326,7 +326,7 @@ export const BacktestSpikeVolume = ({
           <strong>{t('entryPrice')}:</strong> &nbsp;{' '}
           <span>${roundToDecimals(entryPrice, 2)}</span>
         </div>
-        {exitPrice && exitTime && (
+        {!!exitPrice && exitTime && (
           <>
             <div>
               <strong>{t('exitDate')}:</strong> &nbsp;
