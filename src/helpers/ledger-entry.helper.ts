@@ -15,15 +15,15 @@ export const transformLedgerEntry = (entries: any[]): LedgerEntry[] => {
     action: entry.action,
     strike: entry.strike,
     expiration: entry.expiration,
-    premiumPay: entry[fieldMapping.premiumPay],
+    premiumPaid: entry[fieldMapping.premiumPaid],
     premiumReceive: entry[fieldMapping.premiumReceive],
     contracts: entry[fieldMapping.contracts],
-    investCashOut: entry[fieldMapping.investCashOut],
-    investCashIn: entry[fieldMapping.investCashIn],
+    investmentCashOut: entry[fieldMapping.investmentCashOut],
+    investmentCashIn: entry[fieldMapping.investmentCashIn],
     commission: entry.commission,
     exitPrice: entry[fieldMapping.exitPrice],
     entryPrice: entry[fieldMapping.entryPrice],
-    priceChange: entry[fieldMapping.priceChange],
+    stockPL: entry[fieldMapping.stockPL],
     sector: entry.sector,
     notes: entry.notes,
     createDate: entry[fieldMapping.createDate]
@@ -37,13 +37,16 @@ export const computeLedgerBalances = (entries: LedgerEntry[]) => {
   const cumulativeMap: Record<string, number> = {};
 
   for (const entry of entries) {
-    const { id, investCashOut, investCashIn, commission = 0 } = entry;
+    const { id, investmentCashOut, investmentCashIn, commission = 0 } = entry;
 
-    if (typeof investCashOut !== 'number' || typeof investCashIn !== 'number') {
+    if (
+      typeof investmentCashOut !== 'number' ||
+      typeof investmentCashIn !== 'number'
+    ) {
       continue;
     }
 
-    const gainLoss = investCashIn - investCashOut - commission;
+    const gainLoss = investmentCashIn - investmentCashOut - commission;
     cumulative += gainLoss;
     balance += gainLoss;
 

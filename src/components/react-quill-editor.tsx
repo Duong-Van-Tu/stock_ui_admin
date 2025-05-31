@@ -1,11 +1,12 @@
-'use client';
-
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 
 const ReactQuill = dynamic(() => import('react-quill'), {
-  ssr: false
+  ssr: false,
+  loading: () => <div style={{ height: '20rem' }}>Loading editor...</div>
 });
 
 type ReactQuillEditorProps = {
@@ -13,19 +14,25 @@ type ReactQuillEditorProps = {
   onChange: (value: string) => void;
   placeholder?: string;
   readOnly?: boolean;
+  height?: string | number;
+  className?: string;
+  showImage?: boolean;
 };
 
-const modules = {
+const getModules = (showImage: boolean = true) => ({
   toolbar: [
     ['bold', 'italic', 'underline', 'strike'],
     [{ header: [1, 2, false] }],
     [{ list: 'ordered' }, { list: 'bullet' }],
-    ['link', 'image'],
+    ['link', ...(showImage ? ['image'] : [])],
     ['clean']
-  ]
-};
+  ],
+  clipboard: {
+    matchVisual: false
+  }
+});
 
-const formats = [
+const getFormats = (showImage: boolean = true) => [
   'header',
   'bold',
   'italic',
@@ -34,32 +41,78 @@ const formats = [
   'list',
   'bullet',
   'link',
-  'image'
+  ...(showImage ? ['image'] : [])
 ];
 
 export const ReactQuillEditor = ({
-  value,
+  value = '',
   onChange,
   placeholder,
-  readOnly = false
+  readOnly = false,
+  height = '20rem',
+  className,
+  showImage = true
 }: ReactQuillEditorProps) => {
   const [mounted, setMounted] = useState(false);
+  const [editorValue, setEditorValue] = useState(value);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  useEffect(() => {
+    setEditorValue(value);
+  }, [value]);
+
+  const handleChange = (content: string) => {
+    setEditorValue(content);
+    onChange(content);
+  };
+
+  if (!mounted) {
+    return (
+      <div
+        className={className}
+        css={editorStyles(height)}
+        style={{ border: '1px solid #ccc', borderRadius: '4px' }}
+      />
+    );
+  }
 
   return (
-    <ReactQuill
-      value={value}
-      onChange={onChange}
-      modules={modules}
-      formats={formats}
-      readOnly={readOnly}
-      placeholder={placeholder}
-      theme='snow'
-    />
+    <div css={editorStyles(height)} className={className}>
+      <ReactQuill
+        value={editorValue}
+        onChange={handleChange}
+        modules={getModules(showImage)}
+        formats={getFormats(showImage)}
+        readOnly={readOnly}
+        placeholder={placeholder}
+        theme='snow'
+      />
+    </div>
   );
 };
+
+const editorStyles = (height: string | number) => css`
+  .ql-editor {
+    min-height: ${typeof height === 'number' ? `${height}px` : height};
+    font-size: 1.4rem;
+    line-height: 1.5;
+  }
+
+  .ql-container {
+    font-family: inherit;
+    border-radius: 0 0 4px 4px;
+  }
+
+  .ql-toolbar {
+    border-radius: 4px 4px 0 0;
+    border: 1px solid #ccc;
+  }
+
+  .ql-container.ql-snow {
+    border: 1px solid #ccc;
+    border-top: none;
+  }
+`;

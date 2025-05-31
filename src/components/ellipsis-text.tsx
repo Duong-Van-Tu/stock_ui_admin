@@ -31,9 +31,8 @@ const EllipsisText = ({ text, maxLines = 2 }: EllipsisTextProps) => {
     <div
       css={isExpanded ? expandedStyle : ellipsisStyle}
       onClick={() => setIsExpanded(!isExpanded)}
-    >
-      {isExpanded ? text : text}
-    </div>
+      dangerouslySetInnerHTML={{ __html: text }}
+    />
   );
 };
 

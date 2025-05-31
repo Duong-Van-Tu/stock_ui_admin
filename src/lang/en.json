@@ -344,5 +344,7 @@
   "investmentCashIn": "Investment Cash In",
   "selectSector": "Select a sector",
   "realCandleEntry": "Real Candle Entry",
-  "expectCandleEntry": "Expect Candle Entry"
+  "expectCandleEntry": "Expect Candle Entry",
+  "ledgerEntryUpdated": "Ledger entry updated successfully",
+  "updateFailed": "Failed to update ledger entry"
 }

@@ -344,5 +344,7 @@
   "investmentCashIn": "Tiền đầu tư vào",
   "selectSector": "Chọn ngành",
   "realCandleEntry": "Cây nến Entry dự kiến",
-  "expectCandleEntry": "Cây nến Entry thực tế"
+  "expectCandleEntry": "Cây nến Entry thực tế",
+  "ledgerEntryUpdated": "Cập nhật sổ tay thành công",
+  "updateFailed": "Cập nhật sổ tay thất bại"
 }

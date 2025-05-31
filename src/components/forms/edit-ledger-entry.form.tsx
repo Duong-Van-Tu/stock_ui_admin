@@ -10,45 +10,113 @@ import {
   Button,
   Spin,
   Typography,
-  Row,
-  Col,
   Space,
   Tooltip
 } from 'antd';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Icon } from '../icons';
 import { ReactQuillEditor } from '../react-quill-editor';
 import { useTranslations } from 'next-intl';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import {
+  getLedgerEntryById,
+  updateLedgerEntry,
+  watchLedgerEntryLoading,
+  watchSelectedLedgerEntry
+} from '@/redux/slices/ledger-entry.slice';
+import dayjs from 'dayjs';
+import { useNotification } from '@/hooks/notification.hook';
+import { isRequestSuccess } from '@/utils/request-status';
 
 const { Title } = Typography;
 const { Option } = Select;
 
 export default function EditLedgerEntry() {
   const t = useTranslations();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { notifySuccess, notifyError } = useNotification();
+  const selectedEntry = useAppSelector(watchSelectedLedgerEntry);
+  const loading = useAppSelector(watchLedgerEntryLoading);
   const params = useParams();
   const id = params.id as string;
   const [form] = Form.useForm();
 
-  const fetchLedgerEntryDetail = async (id: string) => {
-    console.log({ id });
+  const handleSubmit = async () => {
+    const values = await form.getFieldsValue();
+    const res = await dispatch(
+      updateLedgerEntry({
+        id,
+        data: {
+          ...values,
+          entryDate: values.entryDate?.toISOString(),
+          exitDate: values.exitDate?.toISOString(),
+          expiration: values.expiration?.toISOString()
+        }
+      })
+    );
+    if (isRequestSuccess(res)) {
+      notifySuccess(t('ledgerEntryUpdated'));
+    } else {
+      notifyError(t('updateFailed'));
+    }
   };
+
+  const handleGoBack = () => {
+    router.back();
+  };
+
+  const handleSendAlert = () => {};
 
   useEffect(() => {
     if (id) {
-      fetchLedgerEntryDetail(id);
+      dispatch(getLedgerEntryById(id));
     }
-  }, [id]);
+  }, [id, dispatch]);
 
-  const handleSubmit = async () => {};
-  const handleSendAlert = () => {};
+  useEffect(() => {
+    if (selectedEntry) {
+      form.setFieldsValue({
+        symbol: selectedEntry.symbol,
+        period: selectedEntry.period,
+        entryDate: selectedEntry.entryDate
+          ? dayjs(selectedEntry.entryDate)
+          : null,
+        entryPrice: selectedEntry.entryPrice,
+        stockPL: selectedEntry.stockPL,
+        contracts: selectedEntry.contracts,
+        premiumPaid: selectedEntry.premiumPaid,
+        investmentCashOut: selectedEntry.investmentCashOut,
+        commission: selectedEntry.commission,
+        strategy: selectedEntry.strategy,
+        strike: selectedEntry.strike,
+        exitDate: selectedEntry.exitDate ? dayjs(selectedEntry.exitDate) : null,
+        exitPrice: selectedEntry.exitPrice,
+        expiration: selectedEntry.expiration
+          ? dayjs(selectedEntry.expiration)
+          : null,
+        action: selectedEntry.action,
+        premiumReceive: selectedEntry.premiumReceive,
+        investmentCashIn: selectedEntry.investmentCashIn,
+        sector: selectedEntry.sector,
+        notes: selectedEntry.notes
+      });
+    }
+  }, [selectedEntry, form]);
 
   return (
-    <Spin spinning={false}>
+    <Spin spinning={loading}>
       <div css={rootStyles}>
         <Title level={3} css={titleStyles}>
           {t('UpdateLedgerEntry')}
         </Title>
-
+        <Tooltip title={t('back')} css={goBackStyles}>
+          <Button
+            shape='circle'
+            icon={<Icon icon='back' width={18} height={18} />}
+            onClick={handleGoBack}
+          />
+        </Tooltip>
         <Form
           form={form}
           layout='vertical'
@@ -58,217 +126,230 @@ export default function EditLedgerEntry() {
           }}
           css={formStyles}
         >
-          <Row css={formActionsStyles} justify='space-between'>
-            <Col>
-              <Tooltip title={t('back')}>
-                <Button
-                  shape='circle'
-                  icon={<Icon icon='back' width={18} height={18} />}
-                />
-              </Tooltip>
-            </Col>
-            <Col>
-              <Form.Item>
-                <Space>
-                  <Button
-                    css={saveBtnStyles}
-                    type='primary'
-                    htmlType='submit'
-                    loading={false}
-                    icon={
-                      <Icon
-                        icon='save'
-                        fill='var(--white-color)'
-                        width={18}
-                        height={18}
-                      />
-                    }
-                  >
-                    {t('save')}
-                  </Button>
-                  <Button
-                    type='primary'
-                    danger
-                    icon={
-                      <Icon
-                        icon='trash'
-                        width={18}
-                        height={18}
-                        fill='var(--white-color)'
-                      />
-                    }
-                  >
-                    {t('delete')}
-                  </Button>
-                  <Button
-                    onClick={handleSendAlert}
-                    type='primary'
-                    icon={
-                      <Icon
-                        fill='var(--white-color)'
-                        icon='send'
-                        width={18}
-                        height={18}
-                      />
-                    }
-                  >
-                    {t('sendAlertToMembers')}
-                  </Button>
-                </Space>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item
-                name='symbol'
-                label={t('symbol')}
-                rules={[{ required: true, message: '' }]}
+          <div css={formContainerStyles}>
+            <div
+              css={css`
+                display: flex;
+                gap: 2rem;
+              `}
+            >
+              <div
+                css={css`
+                  width: 50%;
+                `}
               >
-                <Input
-                  size='large'
-                  onChange={(e) =>
-                    form.setFieldValue('symbol', e.target.value.toUpperCase())
-                  }
-                />
-              </Form.Item>
-              <Form.Item name='period' label={t('period')}>
-                <Input size='large' css={fullWidthStyles} />
-              </Form.Item>
-              <Form.Item name='entryDate' label={t('entryDate')}>
-                <DatePicker size='large' showTime css={fullWidthStyles} />
-              </Form.Item>
-              <Form.Item name='entryPrice' label={t('entryPrice')}>
-                <InputNumber
-                  size='large'
-                  min={0}
-                  prefix='$'
-                  css={fullWidthStyles}
-                />
-              </Form.Item>
-              <Form.Item name='stockPL' label={t('stockPL')}>
-                <InputNumber
-                  size='large'
-                  min={0}
-                  prefix='$'
-                  css={fullWidthStyles}
-                />
-              </Form.Item>
-              <Form.Item name='contracts' label={t('contracts')}>
-                <InputNumber size='large' min={0} css={fullWidthStyles} />
-              </Form.Item>
-              <Form.Item name='premiumPaid' label={t('premiumPaid')}>
-                <InputNumber
-                  size='large'
-                  min={0}
-                  prefix='$'
-                  css={fullWidthStyles}
-                />
-              </Form.Item>
-              <Form.Item
-                name='investmentCashOut'
-                label={t('investmentCashOut')}
-              >
-                <InputNumber
-                  size='large'
-                  min={0}
-                  prefix='$'
-                  css={fullWidthStyles}
-                />
-              </Form.Item>
-              <Form.Item name='commission' label={t('commission')}>
-                <InputNumber
-                  size='large'
-                  min={0}
-                  prefix='$'
-                  css={fullWidthStyles}
-                />
-              </Form.Item>
-            </Col>
+                <Form.Item
+                  name='symbol'
+                  label={t('symbol')}
+                  rules={[{ required: true, message: '' }]}
+                >
+                  <Input
+                    size='large'
+                    onChange={(e) =>
+                      form.setFieldValue('symbol', e.target.value.toUpperCase())
+                    }
+                  />
+                </Form.Item>
+                <Form.Item name='period' label={t('period')}>
+                  <Input size='large' css={fullWidthStyles} />
+                </Form.Item>
+                <Form.Item name='entryDate' label={t('entryDate')}>
+                  <DatePicker size='large' showTime css={fullWidthStyles} />
+                </Form.Item>
+                <Form.Item name='entryPrice' label={t('entryPrice')}>
+                  <InputNumber
+                    size='large'
+                    min={0}
+                    prefix='$'
+                    css={fullWidthStyles}
+                  />
+                </Form.Item>
+                <Form.Item name='stockPL' label={t('stockPL')}>
+                  <InputNumber
+                    size='large'
+                    min={0}
+                    prefix='$'
+                    css={fullWidthStyles}
+                  />
+                </Form.Item>
+                <Form.Item name='contracts' label={t('contracts')}>
+                  <InputNumber size='large' min={0} css={fullWidthStyles} />
+                </Form.Item>
+                <Form.Item name='premiumPaid' label={t('premiumPaid')}>
+                  <InputNumber
+                    size='large'
+                    min={0}
+                    prefix='$'
+                    css={fullWidthStyles}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name='investmentCashOut'
+                  label={t('investmentCashOut')}
+                >
+                  <InputNumber
+                    size='large'
+                    min={0}
+                    prefix='$'
+                    css={fullWidthStyles}
+                  />
+                </Form.Item>
+                <Form.Item name='commission' label={t('commission')}>
+                  <InputNumber
+                    size='large'
+                    min={0}
+                    prefix='$'
+                    css={fullWidthStyles}
+                  />
+                </Form.Item>
+              </div>
 
-            <Col span={12}>
-              <Form.Item
-                name='strategy'
-                label={t('strategy')}
-                rules={[{ required: true, message: '' }]}
+              <div
+                css={css`
+                  width: 50%;
+                `}
               >
-                <Input size='large' />
-              </Form.Item>
-              <Form.Item name='strike' label={t('strike')}>
-                <InputNumber
-                  size='large'
-                  min={0}
-                  prefix='$'
-                  css={fullWidthStyles}
-                />
-              </Form.Item>
-              <Form.Item name='exitDate' label={t('exitDate')}>
-                <DatePicker size='large' showTime css={fullWidthStyles} />
-              </Form.Item>
-              <Form.Item name='exitPrice' label={t('exitPrice')}>
-                <InputNumber
-                  size='large'
-                  min={0}
-                  prefix='$'
-                  css={fullWidthStyles}
-                />
-              </Form.Item>
-              <Form.Item name='expiration' label={t('expiration')}>
-                <DatePicker size='large' css={fullWidthStyles} />
-              </Form.Item>
-              <Form.Item name='action' label={t('action')}>
-                <Select size='large'>
-                  <Option value='Buy to Open CALL'>{t('buyToOpenCALL')}</Option>
-                  <Option value='Sell to Close CALL'>
-                    {t('sellToCloseCALL')}
-                  </Option>
-                  <Option value='Sell to Open CALL'>
-                    {t('sellToOpenCALL')}
-                  </Option>
-                  <Option value='Buy to Close CALL'>
-                    {t('buyToCloseCALL')}
-                  </Option>
-                  <Option value='Buy to Open PUT'>{t('buyToOpenPUT')}</Option>
-                  <Option value='Sell to Close PUT'>
-                    {t('sellToClosePUT')}
-                  </Option>
-                  <Option value='Sell to Open PUT'>{t('sellToOpenPUT')}</Option>
-                  <Option value='Buy to Close PUT'>{t('buyToClosePUT')}</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item name='premiumReceive' label={t('premiumReceive')}>
-                <InputNumber
-                  size='large'
-                  min={0}
-                  prefix='$'
-                  css={fullWidthStyles}
-                />
-              </Form.Item>
-              <Form.Item name='investmentCashIn' label={t('investmentCashIn')}>
-                <InputNumber
-                  size='large'
-                  min={0}
-                  prefix='$'
-                  css={fullWidthStyles}
-                />
-              </Form.Item>
-              <Form.Item name='sector' label={t('sector')}>
-                <Select size='large' placeholder={t('selectSector')}></Select>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Form.Item
-            name='notes'
-            label={<strong>{t('notes')}</strong>}
-            rules={[{ required: true, message: '' }]}
-          >
-            <ReactQuillEditor
-              value=''
-              onChange={() => {}}
-              placeholder={t('EnterYourNotesHere')}
-            />
+                <Form.Item
+                  name='strategy'
+                  label={t('strategy')}
+                  rules={[{ required: true, message: '' }]}
+                >
+                  <Input size='large' />
+                </Form.Item>
+                <Form.Item name='strike' label={t('strike')}>
+                  <InputNumber
+                    size='large'
+                    min={0}
+                    prefix='$'
+                    css={fullWidthStyles}
+                  />
+                </Form.Item>
+                <Form.Item name='exitDate' label={t('exitDate')}>
+                  <DatePicker size='large' showTime css={fullWidthStyles} />
+                </Form.Item>
+                <Form.Item name='exitPrice' label={t('exitPrice')}>
+                  <InputNumber
+                    size='large'
+                    min={0}
+                    prefix='$'
+                    css={fullWidthStyles}
+                  />
+                </Form.Item>
+                <Form.Item name='expiration' label={t('expiration')}>
+                  <DatePicker size='large' css={fullWidthStyles} />
+                </Form.Item>
+                <Form.Item name='action' label={t('action')}>
+                  <Select size='large'>
+                    <Option value='Buy to Open CALL'>
+                      {t('buyToOpenCALL')}
+                    </Option>
+                    <Option value='Sell to Close CALL'>
+                      {t('sellToCloseCALL')}
+                    </Option>
+                    <Option value='Sell to Open CALL'>
+                      {t('sellToOpenCALL')}
+                    </Option>
+                    <Option value='Buy to Close CALL'>
+                      {t('buyToCloseCALL')}
+                    </Option>
+                    <Option value='Buy to Open PUT'>{t('buyToOpenPUT')}</Option>
+                    <Option value='Sell to Close PUT'>
+                      {t('sellToClosePUT')}
+                    </Option>
+                    <Option value='Sell to Open PUT'>
+                      {t('sellToOpenPUT')}
+                    </Option>
+                    <Option value='Buy to Close PUT'>
+                      {t('buyToClosePUT')}
+                    </Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item name='premiumReceive' label={t('premiumReceive')}>
+                  <InputNumber
+                    size='large'
+                    min={0}
+                    prefix='$'
+                    css={fullWidthStyles}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name='investmentCashIn'
+                  label={t('investmentCashIn')}
+                >
+                  <InputNumber
+                    size='large'
+                    min={0}
+                    prefix='$'
+                    css={fullWidthStyles}
+                  />
+                </Form.Item>
+                <Form.Item name='sector' label={t('sector')}>
+                  <Select size='large' placeholder={t('selectSector')}></Select>
+                </Form.Item>
+              </div>
+            </div>
+            <Form.Item
+              name='notes'
+              label={<strong>{t('notes')}</strong>}
+              rules={[{ required: true, message: '' }]}
+            >
+              <ReactQuillEditor
+                value=''
+                onChange={() => {}}
+                placeholder={t('EnterYourNotesHere')}
+                showImage={false}
+              />
+            </Form.Item>
+          </div>
+          <Form.Item css={formActionsStyles}>
+            <Space>
+              <Button
+                css={saveBtnStyles}
+                type='primary'
+                htmlType='submit'
+                size='large'
+                icon={
+                  <Icon
+                    icon='save'
+                    fill='var(--white-color)'
+                    width={18}
+                    height={18}
+                  />
+                }
+              >
+                {t('save')}
+              </Button>
+              <Button
+                type='primary'
+                size='large'
+                danger
+                icon={
+                  <Icon
+                    icon='trash'
+                    width={18}
+                    height={18}
+                    fill='var(--white-color)'
+                  />
+                }
+              >
+                {t('delete')}
+              </Button>
+              <Button
+                onClick={handleSendAlert}
+                type='primary'
+                size='large'
+                icon={
+                  <Icon
+                    fill='var(--white-color)'
+                    icon='send'
+                    width={18}
+                    height={18}
+                  />
+                }
+              >
+                {t('sendAlertToMembers')}
+              </Button>
+            </Space>
           </Form.Item>
         </Form>
       </div>
@@ -281,12 +362,18 @@ const rootStyles = css`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 `;
 
+const goBackStyles = css`
+  position: absolute;
+  top: 0;
+  left: 1rem;
+`;
 const formStyles = css`
-  margin-top: 1rem;
+  margin-top: 1.6rem;
   width: 100%;
-  padding: 0 2rem;
+  max-width: 120rem;
   .ant-form-item {
     margin-bottom: 1rem;
     label {
@@ -295,13 +382,35 @@ const formStyles = css`
   }
 `;
 
+const formContainerStyles = css`
+  overflow-y: auto;
+  padding-bottom: 4.8rem;
+  max-height: calc(100vh - 14.8rem);
+  width: 100%;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+`;
+
 const titleStyles = css`
   text-align: center;
   margin-bottom: 0 !important;
 `;
 
 const formActionsStyles = css`
-  margin-bottom: 1rem;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  right: -2rem;
+  left: -2rem;
+  bottom: -2rem;
+  margin-bottom: 0 !important;
+  box-shadow: 0 -1.2px 2.4px var(--separator-color);
+  background: var(--white-color);
 `;
 
 const fullWidthStyles = css`

@@ -100,6 +100,7 @@ export const NotesSignal = ({
                 setEditorValue(val);
                 form.setFieldsValue({ notes: val });
               }}
+              showImage={false}
               placeholder={t('EnterYourNotesHere')}
             />
           </Form.Item>

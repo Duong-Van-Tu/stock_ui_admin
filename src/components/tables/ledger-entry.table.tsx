@@ -103,6 +103,14 @@ export const LedgerEntryTable = () => {
       render: (_, record) => <SymbolCell symbol={record.symbol} />
     },
     {
+      title: t('strategy'),
+      dataIndex: 'strategy',
+      key: 'strategy',
+      width: 120,
+      align: 'center',
+      showSorterTooltip: false
+    },
+    {
       title: t('period'),
       dataIndex: 'period',
       key: 'period',
@@ -116,12 +124,16 @@ export const LedgerEntryTable = () => {
       width: 90,
       align: 'center',
       render: (_, record) => {
-        const { investCashIn = 0, investCashOut = 0, commission = 0 } = record;
-        const hasValidData = investCashIn && investCashOut;
+        const {
+          investmentCashIn = 0,
+          investmentCashOut = 0,
+          commission = 0
+        } = record;
+        const hasValidData = investmentCashIn && investmentCashOut;
 
         if (!hasValidData) return '-';
 
-        const netResult = investCashIn - investCashOut - commission;
+        const netResult = investmentCashIn - investmentCashOut - commission;
         const isPositive = netResult >= 0;
 
         return (
@@ -204,14 +216,16 @@ export const LedgerEntryTable = () => {
       dataIndex: 'action',
       key: 'action',
       width: 180,
-      align: 'center'
+      align: 'center',
+      render: (value) => (value ? value : '-')
     },
     {
       title: t('strike'),
       dataIndex: 'strike',
       key: 'strike',
       width: 80,
-      align: 'center'
+      align: 'center',
+      render: (value) => (value ? value : '-')
     },
     {
       title: t('expiration'),
@@ -242,7 +256,7 @@ export const LedgerEntryTable = () => {
       align: 'center',
       render: (_, record) => (
         <>
-          {record.premiumPay ?? '-'} <br />
+          {record.premiumPaid ?? '-'} <br />
           {record.premiumReceive ?? '-'}
         </>
       )
@@ -257,8 +271,8 @@ export const LedgerEntryTable = () => {
       align: 'center',
       render: (_, record) => (
         <>
-          {record.investCashOut ?? '-'} <br />
-          {record.investCashIn ?? '-'}
+          {record.investmentCashOut ?? '-'} <br />
+          {record.investmentCashIn ?? '-'}
         </>
       )
     },
@@ -267,14 +281,16 @@ export const LedgerEntryTable = () => {
       dataIndex: 'contracts',
       key: 'contracts',
       width: 134,
-      align: 'center'
+      align: 'center',
+      render: (value) => (value ? value : '-')
     },
     {
       title: t('commission'),
       dataIndex: 'commission',
       key: 'commission',
       width: 114,
-      align: 'center'
+      align: 'center',
+      render: (value) => (value ? value : '-')
     },
     {
       title: <span dangerouslySetInnerHTML={{ __html: t('plAmount') }}></span>,
@@ -283,10 +299,10 @@ export const LedgerEntryTable = () => {
       width: 130,
       align: 'center',
       render: (_, record) => {
-        const { investCashIn = 0, investCashOut = 0 } = record;
-        if (!(investCashIn && investCashOut)) return '-';
-        const plAmount = investCashIn - investCashOut;
-        const plAmountPercent = (plAmount / investCashIn) * 100;
+        const { investmentCashIn = 0, investmentCashOut = 0 } = record;
+        if (!(investmentCashIn && investmentCashOut)) return '-';
+        const plAmount = investmentCashIn - investmentCashOut;
+        const plAmountPercent = (plAmount / investmentCashIn) * 100;
 
         return (
           <StockChangeCell value={plAmount} percentage={plAmountPercent} />
@@ -341,7 +357,8 @@ export const LedgerEntryTable = () => {
       key: 'sector',
       width: 140,
       align: 'center',
-      render: (value) => <EllipsisText text={value} maxLines={1} />
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={1} /> : '-'
     },
     {
       title: t('notes'),
@@ -349,7 +366,8 @@ export const LedgerEntryTable = () => {
       key: 'notes',
       width: 160,
       align: 'center',
-      render: (value) => <EllipsisText text={value} maxLines={1} />
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={1} /> : '-'
     },
     {
       title: t('actions'),
