@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   Form,
   Input,
@@ -27,6 +27,8 @@ import {
 import dayjs from 'dayjs';
 import { useNotification } from '@/hooks/notification.hook';
 import { isRequestSuccess } from '@/utils/request-status';
+import { getSectors, watchSectors } from '@/redux/slices/stock-score.slice';
+import { PageURLs } from '@/utils/navigate';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -34,13 +36,25 @@ const { Option } = Select;
 export default function EditLedgerEntry() {
   const t = useTranslations();
   const router = useRouter();
+  const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const { notifySuccess, notifyError } = useNotification();
-  const selectedEntry = useAppSelector(watchSelectedLedgerEntry);
-  const loading = useAppSelector(watchLedgerEntryLoading);
   const params = useParams();
   const id = params.id as string;
-  const [form] = Form.useForm();
+  const selectedEntry = useAppSelector(watchSelectedLedgerEntry);
+  const loading = useAppSelector(watchLedgerEntryLoading);
+  const sectors = useAppSelector(watchSectors);
+
+  const sectorOptions = useMemo(
+    () => [
+      { value: '', label: t('selectSector'), disabled: true },
+      ...(sectors?.map((item) => ({
+        value: item.sector,
+        label: item.sector
+      })) || [])
+    ],
+    [sectors]
+  );
 
   const handleSubmit = async () => {
     const values = await form.getFieldsValue();
@@ -63,7 +77,7 @@ export default function EditLedgerEntry() {
   };
 
   const handleGoBack = () => {
-    router.back();
+    router.push(PageURLs.ofLedgerEntry());
   };
 
   const handleSendAlert = () => {};
@@ -73,6 +87,10 @@ export default function EditLedgerEntry() {
       dispatch(getLedgerEntryById(id));
     }
   }, [id, dispatch]);
+
+  useEffect(() => {
+    dispatch(getSectors());
+  }, [dispatch]);
 
   useEffect(() => {
     if (selectedEntry) {
@@ -121,23 +139,11 @@ export default function EditLedgerEntry() {
           form={form}
           layout='vertical'
           onFinish={handleSubmit}
-          initialValues={{
-            action: t('buyToOpenCALL')
-          }}
           css={formStyles}
         >
           <div css={formContainerStyles}>
-            <div
-              css={css`
-                display: flex;
-                gap: 2rem;
-              `}
-            >
-              <div
-                css={css`
-                  width: 50%;
-                `}
-              >
+            <div css={formRowStyles}>
+              <div css={formColumnStyles}>
                 <Form.Item
                   name='symbol'
                   label={t('symbol')}
@@ -145,19 +151,31 @@ export default function EditLedgerEntry() {
                 >
                   <Input
                     size='large'
+                    placeholder={t('enterSymbol')}
                     onChange={(e) =>
                       form.setFieldValue('symbol', e.target.value.toUpperCase())
                     }
                   />
                 </Form.Item>
                 <Form.Item name='period' label={t('period')}>
-                  <Input size='large' css={fullWidthStyles} />
+                  <Input
+                    placeholder={t('enterPeriod')}
+                    size='large'
+                    css={fullWidthStyles}
+                  />
                 </Form.Item>
                 <Form.Item name='entryDate' label={t('entryDate')}>
-                  <DatePicker size='large' showTime css={fullWidthStyles} />
+                  <DatePicker
+                    placeholder={t('selectEntryDate')}
+                    size='large'
+                    showTime
+                    css={fullWidthStyles}
+                  />
                 </Form.Item>
                 <Form.Item name='entryPrice' label={t('entryPrice')}>
                   <InputNumber
+                    type='number'
+                    placeholder={t('enterEntryPrice')}
                     size='large'
                     min={0}
                     prefix='$'
@@ -166,6 +184,8 @@ export default function EditLedgerEntry() {
                 </Form.Item>
                 <Form.Item name='stockPL' label={t('stockPL')}>
                   <InputNumber
+                    type='number'
+                    placeholder={t('enterStockPL')}
                     size='large'
                     min={0}
                     prefix='$'
@@ -173,13 +193,21 @@ export default function EditLedgerEntry() {
                   />
                 </Form.Item>
                 <Form.Item name='contracts' label={t('contracts')}>
-                  <InputNumber size='large' min={0} css={fullWidthStyles} />
+                  <InputNumber
+                    type='number'
+                    size='large'
+                    placeholder={t('enterNumberOfContracts')}
+                    min={0}
+                    css={fullWidthStyles}
+                  />
                 </Form.Item>
                 <Form.Item name='premiumPaid' label={t('premiumPaid')}>
                   <InputNumber
+                    type='number'
                     size='large'
                     min={0}
                     prefix='$'
+                    placeholder={t('enterPremiumPaid')}
                     css={fullWidthStyles}
                   />
                 </Form.Item>
@@ -188,6 +216,8 @@ export default function EditLedgerEntry() {
                   label={t('investmentCashOut')}
                 >
                   <InputNumber
+                    placeholder={t('enterInvestmentCashOut')}
+                    type='number'
                     size='large'
                     min={0}
                     prefix='$'
@@ -196,6 +226,8 @@ export default function EditLedgerEntry() {
                 </Form.Item>
                 <Form.Item name='commission' label={t('commission')}>
                   <InputNumber
+                    placeholder={t('enterCommission')}
+                    type='number'
                     size='large'
                     min={0}
                     prefix='$'
@@ -209,26 +241,31 @@ export default function EditLedgerEntry() {
                   width: 50%;
                 `}
               >
-                <Form.Item
-                  name='strategy'
-                  label={t('strategy')}
-                  rules={[{ required: true, message: '' }]}
-                >
-                  <Input size='large' />
+                <Form.Item name='strategy' label={t('strategy')}>
+                  <Input placeholder={t('enterStrategy')} size='large' />
                 </Form.Item>
                 <Form.Item name='strike' label={t('strike')}>
                   <InputNumber
+                    type='number'
                     size='large'
+                    placeholder={t('enterStrikePrice')}
                     min={0}
                     prefix='$'
                     css={fullWidthStyles}
                   />
                 </Form.Item>
                 <Form.Item name='exitDate' label={t('exitDate')}>
-                  <DatePicker size='large' showTime css={fullWidthStyles} />
+                  <DatePicker
+                    placeholder={t('selectExitDate')}
+                    size='large'
+                    showTime
+                    css={fullWidthStyles}
+                  />
                 </Form.Item>
                 <Form.Item name='exitPrice' label={t('exitPrice')}>
                   <InputNumber
+                    placeholder={t('enterExitPrice')}
+                    type='number'
                     size='large'
                     min={0}
                     prefix='$'
@@ -236,10 +273,17 @@ export default function EditLedgerEntry() {
                   />
                 </Form.Item>
                 <Form.Item name='expiration' label={t('expiration')}>
-                  <DatePicker size='large' css={fullWidthStyles} />
+                  <DatePicker
+                    placeholder={t('selectExpirationDate')}
+                    size='large'
+                    css={fullWidthStyles}
+                  />
                 </Form.Item>
                 <Form.Item name='action' label={t('action')}>
-                  <Select size='large'>
+                  <Select size='large' placeholder={t('selectAction')}>
+                    <Option value='' disabled>
+                      {t('selectAction')}
+                    </Option>
                     <Option value='Buy to Open CALL'>
                       {t('buyToOpenCALL')}
                     </Option>
@@ -266,6 +310,8 @@ export default function EditLedgerEntry() {
                 </Form.Item>
                 <Form.Item name='premiumReceive' label={t('premiumReceive')}>
                   <InputNumber
+                    placeholder={t('enterPremiumReceive')}
+                    type='number'
                     size='large'
                     min={0}
                     prefix='$'
@@ -277,6 +323,8 @@ export default function EditLedgerEntry() {
                   label={t('investmentCashIn')}
                 >
                   <InputNumber
+                    placeholder={t('enterInvestmentCashIn')}
+                    type='number'
                     size='large'
                     min={0}
                     prefix='$'
@@ -284,7 +332,11 @@ export default function EditLedgerEntry() {
                   />
                 </Form.Item>
                 <Form.Item name='sector' label={t('sector')}>
-                  <Select size='large' placeholder={t('selectSector')}></Select>
+                  <Select
+                    options={sectorOptions}
+                    size='large'
+                    placeholder={t('selectSector')}
+                  ></Select>
                 </Form.Item>
               </div>
             </div>
@@ -380,6 +432,15 @@ const formStyles = css`
       font-weight: 500;
     }
   }
+`;
+
+const formRowStyles = css`
+  display: flex;
+  gap: 2rem;
+`;
+
+const formColumnStyles = css`
+  width: 50%;
 `;
 
 const formContainerStyles = css`

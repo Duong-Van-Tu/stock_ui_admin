@@ -346,5 +346,22 @@
   "realCandleEntry": "Real Candle Entry",
   "expectCandleEntry": "Expect Candle Entry",
   "ledgerEntryUpdated": "Ledger entry updated successfully",
-  "updateFailed": "Failed to update ledger entry"
+  "updateFailed": "Failed to update ledger entry",
+  "enterSymbol": "Enter symbol",
+  "enterPeriod": "Enter period",
+  "selectEntryDate": "Select entry date",
+  "enterEntryPrice": "Enter entry price",
+  "enterStockPL": "Enter stock P/L",
+  "enterNumberOfContracts": "Enter number of contracts",
+  "enterPremiumPaid": "Enter premium paid",
+  "enterInvestmentCashOut": "Enter investment cash out",
+  "enterCommission": "Enter commission",
+  "enterStrategy": "Enter strategy",
+  "enterStrikePrice": "Enter strike price",
+  "selectExitDate": "Select exit date",
+  "enterExitPrice": "Enter exit price",
+  "selectExpirationDate": "Select expiration date",
+  "selectAction": "Select action",
+  "enterPremiumReceive": "Enter premium receive",
+  "enterInvestmentCashIn": "Enter investment cash in"
 }
