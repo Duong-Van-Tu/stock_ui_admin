@@ -190,8 +190,8 @@ export const LedgerEntryTable = () => {
     },
     {
       title: t('StockP/L'),
-      dataIndex: 'priceChange',
-      key: 'priceChange',
+      dataIndex: 'stockPL',
+      key: 'stockPL',
       width: 140,
       align: 'center',
       render: (value, record) => {
@@ -299,10 +299,10 @@ export const LedgerEntryTable = () => {
       width: 130,
       align: 'center',
       render: (_, record) => {
-        const { investmentCashIn = 0, investmentCashOut = 0 } = record;
-        if (!(investmentCashIn && investmentCashOut)) return '-';
-        const plAmount = investmentCashIn - investmentCashOut;
-        const plAmountPercent = (plAmount / investmentCashIn) * 100;
+        const { premiumReceive = 0, premiumPaid = 0 } = record;
+        if (!(premiumReceive && premiumPaid)) return '-';
+        const plAmount = premiumReceive - premiumPaid;
+        const plAmountPercent = (plAmount / premiumPaid) * 100;
 
         return (
           <StockChangeCell value={plAmount} percentage={plAmountPercent} />
