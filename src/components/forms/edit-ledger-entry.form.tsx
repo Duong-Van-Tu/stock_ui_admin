@@ -342,7 +342,7 @@ export default function EditLedgerEntry() {
             </div>
             <Form.Item
               name='notes'
-              label={<strong>{t('notes')}</strong>}
+              label={t('notes')}
               rules={[{ required: true, message: '' }]}
             >
               <ReactQuillEditor
@@ -428,8 +428,11 @@ const formStyles = css`
   max-width: 120rem;
   .ant-form-item {
     margin-bottom: 1rem;
+  }
+  .ant-form-item-label {
     label {
       font-weight: 500;
+      font-size: 1.6rem;
     }
   }
 `;
