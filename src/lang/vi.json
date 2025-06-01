@@ -363,5 +363,13 @@
   "selectExpirationDate": "Chọn ngày hết hạn",
   "selectAction": "Chọn hành động",
   "enterPremiumReceive": "Nhập phí bảo hiểm nhận",
-  "enterInvestmentCashIn": "Nhập tiền đầu tư vào"
+  "enterInvestmentCashIn": "Nhập tiền đầu tư vào",
+  "deleteConfirmationTitle": "Xóa mục này?",
+  "deleteConfirmationDescription": "Hành động này không thể hoàn tác.",
+  "deleteSuccess": "Xóa thành công!",
+  "deleteError": "Có lỗi xảy ra, vui lòng thử lại!",
+  "addLedgerEntry": "Thêm giao dịch",
+  "addLedgerEntryDesc": "Trang thêm sổ tay giao dịch",
+  "ledgerEntryCreated": "Tạo sổ tay giao dịch thành công",
+  "createFailed": "Tạo sổ tay giao dịch thất bại"
 }

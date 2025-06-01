@@ -2,7 +2,14 @@
 import { css } from '@emotion/react';
 
 import { useCallback, useContext, useEffect } from 'react';
-import { Button, Space, Table, TableColumnsType, Tooltip } from 'antd';
+import {
+  Button,
+  Popconfirm,
+  Space,
+  Table,
+  TableColumnsType,
+  Tooltip
+} from 'antd';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -10,7 +17,8 @@ import {
   watchLedgerEntry,
   getLedgerEntry,
   watchCumulativeMap,
-  watchBalanceMap
+  watchBalanceMap,
+  deleteLedgerEntry
 } from '@/redux/slices/ledger-entry.slice';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
@@ -31,6 +39,9 @@ import { getCurrentPrice } from '@/helpers/socket.helper';
 import { Icon } from '../icons';
 import EllipsisText from '../ellipsis-text';
 import { PageURLs } from '@/utils/navigate';
+import { isRequestSuccess } from '@/utils/request-status';
+import { useNotification } from '@/hooks/notification.hook';
+import { PlusOutlined } from '@ant-design/icons';
 
 const initialBalance = 5000;
 
@@ -38,6 +49,7 @@ export const LedgerEntryTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const { setWatchList, resFromWS } = useContext(SocketContext);
+  const { notifySuccess, notifyError } = useNotification();
   const router = useRouter();
   const { height } = useWindowSize();
 
@@ -49,9 +61,13 @@ export const LedgerEntryTable = () => {
   const cumulativeMap = useAppSelector(watchCumulativeMap);
   const balanceMap = useAppSelector(watchBalanceMap);
 
-  const handleDelete = (record: LedgerEntry) => {
-    // TODO: implement delete logic
-    console.log('Delete record', record);
+  const handleDelete = async (id: number) => {
+    const res = await dispatch(deleteLedgerEntry(id));
+    if (isRequestSuccess(res)) {
+      notifySuccess(t('deleteSuccess'));
+    } else {
+      notifyError(t('deleteError'));
+    }
   };
 
   const fetchDataStockScore = useCallback(
@@ -389,15 +405,23 @@ export const LedgerEntryTable = () => {
                   fill='var(--white-color)'
                 />
               }
-              onClick={() => router.push(PageURLs.ofLedgerEntry(record.id))}
+              onClick={() => router.push(PageURLs.ofEditLedgerEntry(record.id))}
             />
           </Tooltip>
           <Tooltip title={t('delete')}>
-            <Button
-              danger
-              icon={<Icon icon='trash' width={18} height={18} />}
-              onClick={() => handleDelete(record)}
-            />
+            <Popconfirm
+              placement='topRight'
+              title={t('deleteConfirmationTitle')}
+              description={t('deleteConfirmationDescription')}
+              okText={t('yes')}
+              cancelText={t('no')}
+              onConfirm={() => handleDelete(record.id)}
+            >
+              <Button
+                danger
+                icon={<Icon icon='trash' width={18} height={18} />}
+              />
+            </Popconfirm>
           </Tooltip>
         </Space>
       )
@@ -410,6 +434,15 @@ export const LedgerEntryTable = () => {
         <TableTitle customStyles={titleStyles}>
           {t('ledgerEntryTitle')}
         </TableTitle>
+        <Button
+          icon={<PlusOutlined />}
+          size='large'
+          css={addBtnStyles}
+          type='primary'
+          onClick={() => router.push(PageURLs.ofAddLedgerEntry())}
+        >
+          {t('addLedgerEntry')}
+        </Button>
       </div>
       <Table<LedgerEntry>
         css={tableStyles}
@@ -419,7 +452,7 @@ export const LedgerEntryTable = () => {
         loading={loading}
         scroll={{
           x: 1200,
-          y: LedgerEntry.length > 0 ? height - 240 : undefined
+          y: LedgerEntry.length > 0 ? height - 250 : undefined
         }}
         sortDirections={['descend', 'ascend']}
         locale={{
@@ -464,4 +497,12 @@ const emptyStyles = (height: number) => css`
   display: flex;
   flex-direction: column;
   justify-content: center;
+`;
+
+const addBtnStyles = css`
+  background: var(--green-color);
+  &:hover {
+    background: var(--green-color) !important;
+    opacity: 0.85;
+  }
 `;

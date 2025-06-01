@@ -363,5 +363,13 @@
   "selectExpirationDate": "Select expiration date",
   "selectAction": "Select action",
   "enterPremiumReceive": "Enter premium receive",
-  "enterInvestmentCashIn": "Enter investment cash in"
+  "enterInvestmentCashIn": "Enter investment cash in",
+  "deleteConfirmationTitle": "Delete this item?",
+  "deleteConfirmationDescription": "This action cannot be undone.",
+  "deleteSuccess": "Deleted successfully!",
+  "deleteError": "An error occurred, please try again!",
+  "addLedgerEntry": "Add Ledger Entry",
+  "addLedgerEntryDesc": "Add Ledger Entry Page",
+  "ledgerEntryCreated": "Ledger entry created successfully",
+  "createFailed": "Failed to create ledger entry"
 }

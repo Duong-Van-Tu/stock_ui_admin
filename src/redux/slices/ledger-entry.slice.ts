@@ -9,6 +9,7 @@ import { convertParamsByMapping } from '@/utils/common';
 export type ledgerEntryState = {
   loading: boolean;
   updating: boolean;
+  creating: boolean;
   ledgerEntry: LedgerEntry[];
   balanceMap: Record<string, number>;
   cumulativeMap: Record<string, number>;
@@ -17,11 +18,12 @@ export type ledgerEntryState = {
 
 const initialState: ledgerEntryState = {
   loading: false,
-  ledgerEntry: [],
+  updating: false,
+  creating: false,
   selectedEntry: null,
+  ledgerEntry: [],
   balanceMap: {},
-  cumulativeMap: {},
-  updating: false
+  cumulativeMap: {}
 };
 
 export const ledgerEntrySlice = createAppSlice({
@@ -78,6 +80,38 @@ export const ledgerEntrySlice = createAppSlice({
         }
       }
     ),
+    createLedgerEntry: create.asyncThunk(
+      async (data: Partial<LedgerEntry>) => {
+        const response = await defaultApiFetcher.post(
+          'ledger-entry',
+          convertParamsByMapping(data)
+        );
+        return response;
+      },
+      {
+        pending: (state) => {
+          state.creating = true;
+        },
+        fulfilled: (state, action) => {
+          state.creating = false;
+          const newEntry = transformLedgerEntry(
+            action.payload.data ? [action.payload.data] : []
+          )[0];
+          if (newEntry) {
+            const updatedEntries = [...state.ledgerEntry, newEntry];
+            const { balanceMap, cumulativeMap } =
+              computeLedgerBalances(updatedEntries);
+
+            state.ledgerEntry = updatedEntries;
+            state.balanceMap = balanceMap;
+            state.cumulativeMap = cumulativeMap;
+          }
+        },
+        rejected: (state) => {
+          state.creating = false;
+        }
+      }
+    ),
     updateLedgerEntry: create.asyncThunk(
       async ({ id, data }: { id: string; data: Partial<LedgerEntry> }) => {
         await defaultApiFetcher.put(
@@ -96,11 +130,40 @@ export const ledgerEntrySlice = createAppSlice({
           state.updating = false;
         }
       }
+    ),
+    deleteLedgerEntry: create.asyncThunk(
+      async (id: number) => {
+        await defaultApiFetcher.delete(`ledger-entry/${id}`);
+        return id;
+      },
+      {
+        pending: (state) => {
+          state.updating = true;
+        },
+        fulfilled: (state, action) => {
+          state.updating = false;
+          state.ledgerEntry = state.ledgerEntry.filter(
+            (entry) => entry.id !== action.payload
+          );
+          if (state.selectedEntry?.id === action.payload) {
+            state.selectedEntry = null;
+          }
+          const { balanceMap, cumulativeMap } = computeLedgerBalances(
+            state.ledgerEntry
+          );
+          state.balanceMap = balanceMap;
+          state.cumulativeMap = cumulativeMap;
+        },
+        rejected: (state) => {
+          state.updating = false;
+        }
+      }
     )
   }),
 
   selectors: {
     watchLedgerEntryLoading: (state) => state.loading,
+    watchCreatingLedgerEntry: (state) => state.creating,
     watchUpdatingLedgerEntry: (state) => state.updating,
     watchLedgerEntry: (state) => state.ledgerEntry,
     watchSelectedLedgerEntry: (state) => state.selectedEntry,
@@ -111,6 +174,7 @@ export const ledgerEntrySlice = createAppSlice({
 
 export const {
   watchLedgerEntryLoading,
+  watchCreatingLedgerEntry,
   watchUpdatingLedgerEntry,
   watchLedgerEntry,
   watchSelectedLedgerEntry,
@@ -118,5 +182,10 @@ export const {
   watchCumulativeMap
 } = ledgerEntrySlice.selectors;
 
-export const { getLedgerEntry, getLedgerEntryById, updateLedgerEntry } =
-  ledgerEntrySlice.actions;
+export const {
+  getLedgerEntry,
+  getLedgerEntryById,
+  updateLedgerEntry,
+  deleteLedgerEntry,
+  createLedgerEntry
+} = ledgerEntrySlice.actions;

@@ -47,8 +47,16 @@ export namespace PageURLs {
     return withPrefix(`/watchlist-50-days`);
   }
 
-  export function ofLedgerEntry(id?: number) {
-    return withPrefix(`/ledger-entry${id ? `/${id}` : ''}`);
+  export function ofLedgerEntry() {
+    return withPrefix('/ledger-entry');
+  }
+
+  export function ofAddLedgerEntry() {
+    return withPrefix('/ledger-entry/add');
+  }
+
+  export function ofEditLedgerEntry(id?: number) {
+    return withPrefix(`/ledger-entry/edit/${id ? `/${id}` : ''}`);
   }
 
   export function ofSpikeVolumeBackTest() {
