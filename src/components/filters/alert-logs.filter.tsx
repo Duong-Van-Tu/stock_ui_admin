@@ -93,7 +93,7 @@ export const AlertLogsFilter = ({
             <Form.Item
               css={formItemStyles}
               name='strategyId'
-              label={<span css={labelStyles}>{t('strategy')}:</span>}
+              label={<span css={labelStyles}>{t('strategy')}</span>}
             >
               <Select
                 css={selectStrategyStyles}
@@ -114,7 +114,7 @@ export const AlertLogsFilter = ({
             <Form.Item
               css={formItemStyles}
               name='entryDate'
-              label={<span css={labelStyles}>{t('entryDate')}:</span>}
+              label={<span css={labelStyles}>{t('entryDate')}</span>}
             >
               <RangePicker format='MM-DD-YYYY' allowClear />
             </Form.Item>
@@ -123,7 +123,7 @@ export const AlertLogsFilter = ({
             <Form.Item
               css={formItemStyles}
               name='exitDate'
-              label={<span css={labelStyles}>{t('exitDate')}:</span>}
+              label={<span css={labelStyles}>{t('exitDate')}</span>}
             >
               <RangePicker format='MM-DD-YYYY' allowClear />
             </Form.Item>

@@ -122,18 +122,13 @@ export const cleanFalsyValues = (values: Record<string, any> = {}) => {
 
 export const roundToDecimals = (
   value: number | null | undefined,
-  decimals: number = 2
+  decimals: number = 2,
+  minThreshold: number = 0.0001
 ): number | null | undefined => {
-  if (!value && value !== 0) return value;
-  if (value === 0) return 0;
+  if (value == null) return value;
+  if (Math.abs(value) < minThreshold) return 0;
 
-  const extraDecimals =
-    value > 0.1
-      ? 0
-      : Math.max(0, -Math.floor(Math.log10(Math.abs(value))) - 1) * 2;
-  const adjustedDecimals = decimals + extraDecimals;
-
-  const factor = Math.pow(10, adjustedDecimals);
+  const factor = Math.pow(10, decimals);
   return Math.round(value * factor) / factor;
 };
 
