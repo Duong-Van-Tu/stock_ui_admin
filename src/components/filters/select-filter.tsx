@@ -8,6 +8,7 @@ type SelectFilterProps = {
   name: string;
   label?: string;
   options: { label: string; value: string | number }[];
+  width?: string;
   onSelect: (value: string) => void;
   onClear: () => void;
 };
@@ -16,6 +17,7 @@ export const SelectFilter = ({
   name,
   label,
   options,
+  width = '14rem',
   onSelect,
   onClear
 }: SelectFilterProps) => {
@@ -27,7 +29,7 @@ export const SelectFilter = ({
       name={name}
     >
       <Select
-        css={inputStyles}
+        css={getInputStyles(width)}
         options={options}
         placeholder={label || t('selectPlaceholderDefault')}
         allowClear
@@ -48,6 +50,6 @@ const formItemStyles = css`
   margin-bottom: 0;
 `;
 
-const inputStyles = css`
-  width: 14rem !important;
+const getInputStyles = (width: string) => css`
+  width: ${width} !important;
 `;

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
 
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Select } from 'antd';
@@ -59,21 +59,13 @@ export const StockRankingFilter = ({
     onFilter({ industry: updatedIndustry });
   };
 
-  const fetchIndustries = useCallback(() => {
+  useEffect(() => {
     dispatch(getIndustries());
   }, [dispatch]);
 
-  const fetchSectors = useCallback(() => {
+  useEffect(() => {
     dispatch(getSectors());
   }, [dispatch]);
-
-  useEffect(() => {
-    fetchIndustries();
-  }, [fetchIndustries]);
-
-  useEffect(() => {
-    fetchSectors();
-  }, [fetchSectors]);
 
   return (
     <div css={[rootStyles, customStyles]}>

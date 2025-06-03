@@ -77,3 +77,8 @@ export const getRangeDateOptions = (t: (key: string) => string) => [
   { value: 7, label: t('1Week') },
   { value: 14, label: t('2Weeks') }
 ];
+
+export const getPeriodOptions = (t: (key: string) => string) => [
+  { value: '1h', label: t('1hour') },
+  { value: '1day', label: t('1Day') }
+];

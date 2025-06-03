@@ -33,6 +33,7 @@ import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
 import { AIExplain } from '../ai-explain';
 import EllipsisText from '../ellipsis-text';
+import { Watchlist50DaysFilter } from '../filters/watchlist-50-days.filter';
 
 export const WatchlistIn50DaysTable = () => {
   const t = useTranslations();
@@ -55,7 +56,7 @@ export const WatchlistIn50DaysTable = () => {
     currentFilter: filter,
     onChange: (_field, _order, newFilter) => {
       setFilter(newFilter);
-      fetchDataStockScore({
+      fetchDataWatchList({
         page: PAGINATION.currentPage,
         pageSize: pagination.pageSize,
         filter: newFilter
@@ -63,7 +64,7 @@ export const WatchlistIn50DaysTable = () => {
     }
   });
 
-  const fetchDataStockScore = useCallback(
+  const fetchDataWatchList = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
       pageSize = PAGINATION_PARAMS.limit,
@@ -77,7 +78,8 @@ export const WatchlistIn50DaysTable = () => {
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           symbol: symbol ? symbol : undefined,
-          ...filteredFilter
+          ...filteredFilter,
+          period: filteredFilter?.period ?? '1h'
         })
       );
     },
@@ -85,9 +87,23 @@ export const WatchlistIn50DaysTable = () => {
     [symbol]
   );
 
+  const handleFilter = useCallback(
+    (values: Watchlist50DaysFilter) => {
+      setFilter((prev) => {
+        const newFilter = {
+          ...prev,
+          ...values
+        };
+        fetchDataWatchList({ filter: newFilter });
+        return newFilter;
+      });
+    },
+    [fetchDataWatchList]
+  );
+
   useEffect(() => {
-    fetchDataStockScore();
-  }, [fetchDataStockScore]);
+    fetchDataWatchList();
+  }, [fetchDataWatchList]);
 
   const columns: TableColumnsType<WatchlistIn50Days> = [
     {
@@ -501,6 +517,7 @@ export const WatchlistIn50DaysTable = () => {
 
   return (
     <div css={rootStyles}>
+      <Watchlist50DaysFilter onFilter={handleFilter} />
       <div css={tableTopStyles}>
         <TableTitle customStyles={titleStyles}>
           {t('watchlistIn50DaysTitle')}
@@ -512,7 +529,10 @@ export const WatchlistIn50DaysTable = () => {
               {dayjs(watchlistIn50Days[0].createdAt)
                 .tz(TimeZone.NEW_YORK)
                 .format('MMM D, YYYY h:mm A')}
-              &nbsp; (New York)
+              &nbsp; (New York) -&nbsp;
+              <strong>
+                {t('period')}: {watchlistIn50Days[0].period}
+              </strong>
             </>
           )}
         </div>
@@ -525,7 +545,7 @@ export const WatchlistIn50DaysTable = () => {
         loading={loading}
         scroll={{
           x: 1200,
-          y: watchlistIn50Days.length > 0 ? height - 278 : undefined
+          y: watchlistIn50Days.length > 0 ? height - 340 : undefined
         }}
         sortDirections={['descend', 'ascend']}
         locale={{
@@ -553,7 +573,7 @@ export const WatchlistIn50DaysTable = () => {
           pageSize: pagination.pageSize,
           total: pagination.total,
           onChange: (page, pageSize) => {
-            fetchDataStockScore({ page, pageSize, filter });
+            fetchDataWatchList({ page, pageSize, filter });
           }
         }}
       />
