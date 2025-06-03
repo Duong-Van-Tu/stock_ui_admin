@@ -4,7 +4,11 @@ import { css } from '@emotion/react';
 import { useCallback, useEffect, useState } from 'react';
 import { Button, Table, TableColumnsType } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
-import { cleanFalsyValues, roundToDecimals } from '@/utils/common';
+import {
+  cleanFalsyValues,
+  formatMarketCap,
+  roundToDecimals
+} from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   watchWatchlistIn50DaysLoading,
@@ -28,6 +32,7 @@ import { StockChangeCell } from './columns/stock-change-cell.column';
 import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
 import { AIExplain } from '../ai-explain';
+import EllipsisText from '../ellipsis-text';
 
 export const WatchlistIn50DaysTable = () => {
   const t = useTranslations();
@@ -45,8 +50,8 @@ export const WatchlistIn50DaysTable = () => {
   const [filter, setFilter] = useState<Filter>({});
 
   const { sortField, sortType, handleSortOrder } = useSortOrder<Filter>({
-    defaultField: 'AIRecommendation',
-    defaultOrder: 'ascend',
+    defaultField: 'AIRating',
+    defaultOrder: 'descend',
     currentFilter: filter,
     onChange: (_field, _order, newFilter) => {
       setFilter(newFilter);
@@ -372,6 +377,65 @@ export const WatchlistIn50DaysTable = () => {
       }),
       align: 'center',
       render: (value) => (value ? roundToDecimals(value) : '-')
+    },
+    {
+      title: t('marketCap'),
+      dataIndex: 'marketCap',
+      key: 'marketCap',
+      width: 130,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'marketCap' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('marketCap')
+      }),
+      align: 'center',
+      render: (value) => (value ? formatMarketCap(value) : '-')
+    },
+    {
+      title: t('industry'),
+      dataIndex: 'industry',
+      key: 'industry',
+      width: 180,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'industry' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('industry')
+      }),
+      align: 'left',
+      render: (value) => <EllipsisText text={value} maxLines={1} />
+    },
+    {
+      title: t('subIndustry'),
+      dataIndex: 'subindustry',
+      key: 'subindustry',
+      width: 180,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'subindustry' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('subindustry')
+      }),
+      align: 'left',
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={1} /> : '-'
+    },
+    {
+      title: t('sector'),
+      dataIndex: 'sector',
+      key: 'sector',
+      width: 200,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'sector' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('sector')
+      }),
+      align: 'left',
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={1} /> : '-'
     },
     {
       title: t('buy'),

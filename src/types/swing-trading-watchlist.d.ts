@@ -24,5 +24,9 @@ type WatchlistIn50Days = {
   sell: number;
   strongSell: number;
   hold: number;
+  marketCap: number;
+  sector: string;
+  industry: string;
+  subindustry: string;
   createdAt: string;
 };

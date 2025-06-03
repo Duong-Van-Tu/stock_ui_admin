@@ -32,6 +32,10 @@ export const transformWatchlist50Days = (data: any[]): WatchlistIn50Days[] => {
     strongBuy: item.strongBuy,
     sell: item.sell,
     strongSell: item.strongSell,
-    hold: item.hold
+    hold: item.hold,
+    marketCap: Number(item.marketCap),
+    sector: item.sector,
+    industry: item.industry,
+    subindustry: item.subindustry
   }));
 };
