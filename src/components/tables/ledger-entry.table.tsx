@@ -42,6 +42,7 @@ import { PageURLs } from '@/utils/navigate';
 import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
 import { PlusOutlined } from '@ant-design/icons';
+import { ExportExcelLedgerEntry } from '../export-excel-ledger-entry';
 
 const initialBalance = 5000;
 
@@ -434,15 +435,18 @@ export const LedgerEntryTable = () => {
         <TableTitle customStyles={titleStyles}>
           {t('ledgerEntryTitle')}
         </TableTitle>
-        <Button
-          icon={<PlusOutlined />}
-          size='large'
-          css={addBtnStyles}
-          type='primary'
-          onClick={() => router.push(PageURLs.ofAddLedgerEntry())}
-        >
-          {t('addLedgerEntry')}
-        </Button>
+        <Space>
+          <Button
+            icon={<PlusOutlined />}
+            size='large'
+            css={addBtnStyles}
+            type='primary'
+            onClick={() => router.push(PageURLs.ofAddLedgerEntry())}
+          >
+            {t('addLedgerEntry')}
+          </Button>
+          <ExportExcelLedgerEntry />
+        </Space>
       </div>
       <Table<LedgerEntry>
         css={tableStyles}

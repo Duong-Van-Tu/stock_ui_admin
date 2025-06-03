@@ -20,7 +20,7 @@ export const ExportExcelLog = () => {
   const { setWatchList, resFromWS } = useContext(SocketContext);
   const [loading, setLoading] = useState(false);
 
-  const fetchSignals = async () => {
+  const handleExportExcelSignal = async () => {
     setLoading(true);
     const response = await defaultApiFetcher.get(
       'tickers/get-stock-alert-log',
@@ -262,14 +262,16 @@ export const ExportExcelLog = () => {
       type='primary'
       loading={loading}
       icon={
-        <Icon
-          icon='exportExcel'
-          width={18}
-          height={18}
-          fill='var(--white-color)'
-        />
+        !loading ? (
+          <Icon
+            icon='exportExcel'
+            width={18}
+            height={18}
+            fill='var(--white-color)'
+          />
+        ) : undefined
       }
-      onClick={fetchSignals}
+      onClick={handleExportExcelSignal}
       disabled={loading}
     >
       {t('exportExcel')}
