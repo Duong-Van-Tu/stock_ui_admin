@@ -13,6 +13,7 @@ import { logoutUser, watchUser } from '@/redux/slices/auth.slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { PageURLs } from '@/utils/navigate';
 import { getPathnameSegment } from '@/utils/common';
+import { useWindowSize } from '@/hooks/window-size.hook';
 
 enum UserMenu {
   PROFILE,
@@ -37,6 +38,7 @@ export default function Header({ collapsed }: HeaderProps) {
   const locale = getPathnameSegment(pathname, 0) || 'en';
   const user = useAppSelector(watchUser);
   const searchParams = useSearchParams();
+  const { isDesktop } = useWindowSize();
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -138,41 +140,45 @@ export default function Header({ collapsed }: HeaderProps) {
           css={searchStyles}
         />
       </div>
-      <div css={rightSectionStyles}>
-        <Dropdown
-          menu={{ items: languages, onClick: handleLanguageChange }}
-          trigger={['click']}
-          arrow
-        >
-          <Button
-            icon={
-              <Icon
-                icon='language'
-                width={18}
-                height={18}
-                fill='var(--primary-color)'
-              />
-            }
+      {isDesktop && (
+        <div css={rightSectionStyles}>
+          <Dropdown
+            menu={{ items: languages, onClick: handleLanguageChange }}
+            trigger={['click']}
+            arrow
           >
-            <Space>
-              <span css={languageStyles}>
-                {(
-                  languages.find((lang) => lang?.key === locale) as MenuItemType
-                )?.label || t('languageLabel')}
-              </span>
-            </Space>
-          </Button>
-        </Dropdown>
-        <Dropdown.Button
-          menu={userMenus}
-          placement='bottomRight'
-          trigger={['click']}
-          icon={<Icon icon='user' width={22} height={22} />}
-          arrow
-        >
-          {user?.fullname}
-        </Dropdown.Button>
-      </div>
+            <Button
+              icon={
+                <Icon
+                  icon='language'
+                  width={18}
+                  height={18}
+                  fill='var(--primary-color)'
+                />
+              }
+            >
+              <Space>
+                <span css={languageStyles}>
+                  {(
+                    languages.find(
+                      (lang) => lang?.key === locale
+                    ) as MenuItemType
+                  )?.label || t('languageLabel')}
+                </span>
+              </Space>
+            </Button>
+          </Dropdown>
+          <Dropdown.Button
+            menu={userMenus}
+            placement='bottomRight'
+            trigger={['click']}
+            icon={<Icon icon='user' width={22} height={22} />}
+            arrow
+          >
+            {user?.fullname}
+          </Dropdown.Button>
+        </div>
+      )}
     </Layout.Header>
   );
 }
