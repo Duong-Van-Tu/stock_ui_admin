@@ -50,7 +50,10 @@ export const highActivitySlice = createAppSlice({
           state.pagination = PAGINATION;
         }
       }
-    )
+    ),
+    resetState: create.reducer((state) => {
+      Object.assign(state, initialState);
+    })
   }),
 
   selectors: {
@@ -66,4 +69,4 @@ export const {
   watchListHighActivityPagination
 } = highActivitySlice.selectors;
 
-export const { getListHighActivity } = highActivitySlice.actions;
+export const { getListHighActivity, resetState } = highActivitySlice.actions;

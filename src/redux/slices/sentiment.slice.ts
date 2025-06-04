@@ -156,7 +156,10 @@ export const SentimentSlice = createAppSlice({
           state.newsLatestPagination = PAGINATION;
         }
       }
-    )
+    ),
+    resetState: create.reducer((state) => {
+      Object.assign(state, initialState);
+    })
   }),
 
   selectors: {
@@ -190,5 +193,6 @@ export const {
   getCountSentiment,
   getCompanyNews,
   getListWatcher,
-  getNewsLatest
+  getNewsLatest,
+  resetState
 } = SentimentSlice.actions;

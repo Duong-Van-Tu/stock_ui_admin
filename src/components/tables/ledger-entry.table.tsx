@@ -18,7 +18,8 @@ import {
   getLedgerEntry,
   watchCumulativeMap,
   watchBalanceMap,
-  deleteLedgerEntry
+  deleteLedgerEntry,
+  resetState
 } from '@/redux/slices/ledger-entry.slice';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
@@ -92,7 +93,11 @@ export const LedgerEntryTable = () => {
 
   useEffect(() => {
     fetchDataStockScore({});
-  }, [fetchDataStockScore]);
+
+    return () => {
+      dispatch(resetState());
+    };
+  }, [fetchDataStockScore, dispatch]);
 
   useEffect(() => {
     LedgerEntry.forEach((row) => {

@@ -23,6 +23,7 @@ import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
 import {
   getAlertLogs,
+  resetState,
   watchAlertLogsData,
   watchAlertLogsLoading,
   watchAlertLogsPagination
@@ -146,7 +147,11 @@ export const SpikeVolumeTable = () => {
     if (isOption === AlertLogsView.OPTIONS) {
       handleChangeView(AlertLogsView.OPTIONS);
     }
-  }, [isOption, strategyId, fetchDataAlertLogs, handleChangeView]);
+
+    return () => {
+      dispatch(resetState());
+    };
+  }, [isOption, strategyId, fetchDataAlertLogs, handleChangeView, dispatch]);
 
   useEffect(() => {
     alertLogsData.forEach((row) => {

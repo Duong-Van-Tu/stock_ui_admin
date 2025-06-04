@@ -7,6 +7,7 @@ import { EarningFilter } from '../filters/earnings.filter';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   getEarnings,
+  resetState,
   watchEarningPagination,
   watchEarnings,
   watchEarningsLoading
@@ -96,6 +97,10 @@ export const EarningsTable = () => {
   useEffect(() => {
     setFilter((prev) => ({ ...prev, date: earningDate }));
     fetchEarnings({ filter: { date: earningDate } });
+
+    return () => {
+      dispatch(resetState());
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchEarnings]);
 

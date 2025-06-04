@@ -171,7 +171,10 @@ export const signalSlice = createAppSlice({
           return signal;
         });
       }
-    )
+    ),
+    resetState: create.reducer((state) => {
+      Object.assign(state, initialState);
+    })
   }),
 
   selectors: {
@@ -208,5 +211,6 @@ export const {
   getStrategies,
   getSignalStrategyId,
   updateAlertLogsData,
-  updateScheduleExitDate
+  updateScheduleExitDate,
+  resetState
 } = signalSlice.actions;

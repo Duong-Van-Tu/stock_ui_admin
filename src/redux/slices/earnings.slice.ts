@@ -101,7 +101,10 @@ export const earningsSlice = createAppSlice({
           state.earningsFilter = [];
         }
       }
-    )
+    ),
+    resetState: create.reducer((state) => {
+      Object.assign(state, initialState);
+    })
   }),
 
   selectors: {
@@ -123,5 +126,9 @@ export const {
   watchEarningsFilter
 } = earningsSlice.selectors;
 
-export const { getCountEarningsCalendar, getEarnings, getEarningsFilter } =
-  earningsSlice.actions;
+export const {
+  getCountEarningsCalendar,
+  getEarnings,
+  getEarningsFilter,
+  resetState
+} = earningsSlice.actions;

@@ -4,6 +4,7 @@ import { useEffect, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   getStrategies,
+  resetState,
   watchStrategies,
   watchStrategyLoading
 } from '@/redux/slices/signals.slice';
@@ -28,7 +29,11 @@ export default function TradeSignalsDashboard() {
 
   useEffect(() => {
     fetchStrategies();
-  }, [fetchStrategies]);
+
+    return () => {
+      dispatch(resetState());
+    };
+  }, [fetchStrategies, dispatch]);
 
   return symbol ? (
     <SearchSignalTable symbol={symbol} />

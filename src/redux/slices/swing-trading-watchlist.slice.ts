@@ -50,7 +50,10 @@ export const swingTradingWatchlistSlice = createAppSlice({
           state.pagination = PAGINATION;
         }
       }
-    )
+    ),
+    resetState: create.reducer((state) => {
+      Object.assign(state, initialState);
+    })
   }),
 
   selectors: {
@@ -66,4 +69,5 @@ export const {
   watchWatchlistIn50DaysPagination
 } = swingTradingWatchlistSlice.selectors;
 
-export const { getWatchlistIn50Days } = swingTradingWatchlistSlice.actions;
+export const { getWatchlistIn50Days, resetState } =
+  swingTradingWatchlistSlice.actions;

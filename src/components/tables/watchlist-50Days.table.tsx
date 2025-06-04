@@ -14,7 +14,8 @@ import {
   watchWatchlistIn50DaysLoading,
   watchWatchlistIn50Days,
   watchWatchlistIn50DaysPagination,
-  getWatchlistIn50Days
+  getWatchlistIn50Days,
+  resetState
 } from '@/redux/slices/swing-trading-watchlist.slice';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
@@ -103,7 +104,11 @@ export const WatchlistIn50DaysTable = () => {
 
   useEffect(() => {
     fetchDataWatchList();
-  }, [fetchDataWatchList]);
+
+    return () => {
+      dispatch(resetState());
+    };
+  }, [fetchDataWatchList, dispatch]);
 
   const columns: TableColumnsType<WatchlistIn50Days> = [
     {

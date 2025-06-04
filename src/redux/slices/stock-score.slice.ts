@@ -95,7 +95,10 @@ export const stockScoreSlice = createAppSlice({
           state.sectorLoading = false;
         }
       }
-    )
+    ),
+    resetState: create.reducer((state) => {
+      Object.assign(state, initialState);
+    })
   }),
 
   selectors: {
@@ -119,5 +122,5 @@ export const {
   watchSectorLoading
 } = stockScoreSlice.selectors;
 
-export const { getStockScore, getIndustries, getSectors } =
+export const { getStockScore, getIndustries, getSectors, resetState } =
   stockScoreSlice.actions;

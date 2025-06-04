@@ -20,6 +20,7 @@ import { EmptyDataTable } from './empty.table';
 import { SymbolCell } from './columns/symbol-cell.column';
 import {
   getListHighActivity,
+  resetState,
   watchListHighActivity,
   watchListHighActivityLoading,
   watchListHighActivityPagination
@@ -74,6 +75,10 @@ export const ListHighActivity = () => {
           ...filteredFilter
         })
       );
+
+      return () => {
+        dispatch(resetState());
+      };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [symbol]

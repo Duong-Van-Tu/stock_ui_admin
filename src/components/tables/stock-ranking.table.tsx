@@ -14,6 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   getStockScore,
+  resetState,
   watchStockScoreData,
   watchStockScoreLoading,
   watchStockScorePagination
@@ -123,7 +124,10 @@ export const StockRankingTable = () => {
 
   useEffect(() => {
     fetchDataStockScore();
-  }, [fetchDataStockScore]);
+    return () => {
+      dispatch(resetState());
+    };
+  }, [fetchDataStockScore, dispatch]);
 
   useEffect(() => {
     stockScoreData.forEach((row) => {

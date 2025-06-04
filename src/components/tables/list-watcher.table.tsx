@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   getListWatcher,
+  resetState,
   watchListWatcher,
   watchListWatcherLoading,
   watchListWatcherPagination
@@ -91,6 +92,9 @@ export const ListWatcherTable = () => {
           ...filteredFilter
         })
       );
+      return () => {
+        dispatch(resetState());
+      };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [symbol]

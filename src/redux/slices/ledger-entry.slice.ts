@@ -158,7 +158,10 @@ export const ledgerEntrySlice = createAppSlice({
           state.updating = false;
         }
       }
-    )
+    ),
+    resetState: create.reducer((state) => {
+      Object.assign(state, initialState);
+    })
   }),
 
   selectors: {
@@ -187,5 +190,6 @@ export const {
   getLedgerEntryById,
   updateLedgerEntry,
   deleteLedgerEntry,
-  createLedgerEntry
+  createLedgerEntry,
+  resetState
 } = ledgerEntrySlice.actions;
