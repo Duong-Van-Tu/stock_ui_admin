@@ -1,6 +1,7 @@
 type Watchlist50DaysFilter = Filter & {
   period?: string;
-  marketCap?: string;
+  fromMarketCap?: number;
+  toMarketCap?: number;
   industry?: string;
   sector?: string;
 };

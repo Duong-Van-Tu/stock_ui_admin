@@ -80,7 +80,7 @@ export const WatchlistIn50DaysTable = () => {
           sortType: convertSortType(sortType),
           symbol: symbol ? symbol : undefined,
           ...filteredFilter,
-          period: filteredFilter?.period ?? '1h'
+          period: filteredFilter?.period
         })
       );
     },
@@ -103,8 +103,6 @@ export const WatchlistIn50DaysTable = () => {
   );
 
   useEffect(() => {
-    fetchDataWatchList();
-
     return () => {
       dispatch(resetState());
     };
@@ -425,8 +423,9 @@ export const WatchlistIn50DaysTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('industry')
       }),
-      align: 'left',
-      render: (value) => <EllipsisText text={value} maxLines={1} />
+      align: 'center',
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={1} /> : '-'
     },
     {
       title: t('subIndustry'),
@@ -439,7 +438,7 @@ export const WatchlistIn50DaysTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('subindustry')
       }),
-      align: 'left',
+      align: 'center',
       render: (value) =>
         value ? <EllipsisText text={value} maxLines={1} /> : '-'
     },
@@ -454,7 +453,7 @@ export const WatchlistIn50DaysTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('sector')
       }),
-      align: 'left',
+      align: 'center',
       render: (value) =>
         value ? <EllipsisText text={value} maxLines={1} /> : '-'
     },

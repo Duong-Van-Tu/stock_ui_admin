@@ -2,6 +2,7 @@ import { PAGINATION } from '@/constants/pagination.constant';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { transformWatchlist50Days } from '@/helpers/swing-trading-watchlist.helper';
+import { convertParamsByMapping } from '@/utils/common';
 
 export type SwingTradingWatchlistState = {
   loading: boolean;
@@ -24,7 +25,7 @@ export const swingTradingWatchlistSlice = createAppSlice({
         const response = await defaultApiFetcher.get(
           'tickers/get-swing-trading-watchlist',
           {
-            query
+            query: query ? convertParamsByMapping(query) : {}
           }
         );
         return response.data;

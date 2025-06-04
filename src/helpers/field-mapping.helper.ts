@@ -144,5 +144,7 @@ export const fieldMapping: Record<string, string> = {
   createdAt: 'created_at',
   realCandleEntry: 'real_candle_entry',
   expectCandleEntry: 'expect_candle_entry',
-  hashAlertLogId: 'hash_alert_log_id'
+  hashAlertLogId: 'hash_alert_log_id',
+  fromMarketCap: 'frommarketCap',
+  toMarketCap: 'tomarketCap'
 };

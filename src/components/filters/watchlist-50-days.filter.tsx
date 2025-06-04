@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { Button, Col, Form, Row, Space } from 'antd';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
 import { SelectFilter } from './select-filter';
-import { getPeriodOptions } from '@/utils/stock-filter';
+import { getMarketCapOptions, getPeriodOptions } from '@/utils/stock-filter';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   getIndustries,
@@ -15,6 +15,7 @@ import {
   watchIndustries,
   watchSectors
 } from '@/redux/slices/stock-score.slice';
+import { parseRangeValue } from '@/utils/common';
 
 type Watchlist50DaysFilterProps = {
   customStyles?: SerializedStyles;
@@ -37,6 +38,7 @@ export const Watchlist50DaysFilter = ({
   const sectors = useAppSelector(watchSectors);
 
   const periodOptions = getPeriodOptions(t);
+  const avgVolumeOptions = getMarketCapOptions(t);
   const industryOptions = useMemo(
     () =>
       industries?.map((item) => ({
@@ -74,16 +76,20 @@ export const Watchlist50DaysFilter = ({
 
   useEffect(() => {
     const period = params.get('period') ?? DEFAULT_PERIOD;
+    const marketCap = params.get('marketCap')!;
     const industry = params.get('industry')!;
     const sector = params.get('sector')!;
-    const initialValues = { period, industry, sector };
+    const initialValues = { period, industry, sector, marketCap };
     form.setFieldsValue({ ...initialValues });
 
     onFilter({
-      ...initialValues,
+      period,
+      sector,
       industry: industry?.includes(' & ')
         ? industry.replace(/ & /g, ' @ ')
-        : industry
+        : industry,
+      fromMarketCap: parseRangeValue(marketCap).from,
+      toMarketCap: parseRangeValue(marketCap).to
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, form, onFilter]);
@@ -114,6 +120,15 @@ export const Watchlist50DaysFilter = ({
               onSelect={(value) => updateSearchParams('period', value)}
               onClear={() => updateSearchParams('period')}
               width='10rem'
+            />
+          </Col>
+          <Col>
+            <SelectFilter
+              name='marketCap'
+              label={t('marketCap')}
+              options={avgVolumeOptions}
+              onSelect={(value) => updateSearchParams('marketCap', value)}
+              onClear={() => updateSearchParams('marketCap')}
             />
           </Col>
           <Col>

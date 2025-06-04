@@ -82,3 +82,29 @@ export const getPeriodOptions = (t: (key: string) => string) => [
   { value: '1h', label: t('1hour') },
   { value: '1day', label: t('1Day') }
 ];
+
+export const getMarketCapOptions = (t: (key: string) => string) => [
+  { label: t('any'), value: '' },
+  { label: t('under1B'), value: 'u1000' },
+  { label: t('under2B'), value: 'u2000' },
+  { label: t('under5B'), value: 'u5000' },
+  { label: t('under10B'), value: 'u10000' },
+  { label: t('under50B'), value: 'u50000' },
+  { label: t('under100B'), value: 'u100000' },
+  { label: t('under1T'), value: 'u1000000' },
+
+  { label: t('over1B'), value: 'o1000' },
+  { label: t('over10B'), value: 'o10000' },
+  { label: t('over50B'), value: 'o50000' },
+  { label: t('over100B'), value: 'o100000' },
+  { label: t('over500B'), value: 'o500000' },
+  { label: t('over1T'), value: 'o1000000' },
+
+  { label: t('from1bTo2B'), value: '1000to2000' },
+  { label: t('from2bTo5B'), value: '2000to5000' },
+  { label: t('from5bTo10B'), value: '5000to10000' },
+  { label: t('from10bTo50B'), value: '10000to50000' },
+  { label: t('from50bTo100B'), value: '50000to100000' },
+  { label: t('from100bTo500B'), value: '100000to500000' },
+  { label: t('from500bTo1T'), value: '500000to1000000' }
+];
