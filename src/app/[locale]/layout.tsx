@@ -31,19 +31,12 @@ export default function RootLayout({
   }
 
   return (
-    // <html lang={locale || 'en'}>
-    //   <body>
-    //     <NextIntlClientProvider locale={locale} messages={messages}>
-    //       <Providers>{children}</Providers>
-    //     </NextIntlClientProvider>
-    //   </body>
-    // </html>
-    <html lang='en'>
-    <body>
-      <NextIntlClientProvider locale='en' messages={messages}>
-        <Providers>{children}</Providers>
-      </NextIntlClientProvider>
-    </body>
-  </html>
+    <html lang={locale || 'en'}>
+      <body>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }
