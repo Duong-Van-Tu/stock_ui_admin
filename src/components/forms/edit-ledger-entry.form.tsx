@@ -219,7 +219,6 @@ export default function EditLedgerEntry() {
                       type='number'
                       placeholder={t('enterStockPL')}
                       size='large'
-                      min={0}
                       prefix='$'
                       css={fullWidthStyles}
                     />
