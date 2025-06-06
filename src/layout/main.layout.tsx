@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 
 import { CSSProperties, ReactNode, useEffect, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import { Button, Layout, theme } from 'antd';
 import { Icon } from '@/components/icons';
 import { Menu } from '@/components/menu';
@@ -35,7 +36,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
   } = theme.useToken();
 
   useEffect(() => {
-    if (width <= 1450) {
+    if (isMobile) {
       dispatch(setSideBarCollapsed(true));
       setCollapsed(true);
     }
