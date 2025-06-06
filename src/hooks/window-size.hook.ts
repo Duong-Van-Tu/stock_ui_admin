@@ -3,8 +3,16 @@
 import { useEffect, useState } from 'react';
 
 export function useWindowSize() {
-  const getSize = () => {
-    if (typeof window !== 'undefined') {
+  const [size, setSize] = useState({
+    width: 0,
+    height: 0,
+    isMobile: false,
+    isTablet: false,
+    isDesktop: false
+  });
+
+  useEffect(() => {
+    const getSize = () => {
       const width = window.innerWidth;
       return {
         width,
@@ -13,26 +21,16 @@ export function useWindowSize() {
         isTablet: width >= 768 && width < 1024,
         isDesktop: width >= 1024
       };
-    } else {
-      return {
-        width: 0,
-        height: 0,
-        isMobile: false,
-        isTablet: false,
-        isDesktop: false
-      };
-    }
-  };
+    };
 
-  const [size, setSize] = useState(getSize);
-
-  useEffect(() => {
-    const updateSize = () => {
+    const handleResize = () => {
       setSize(getSize());
     };
 
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return size;
