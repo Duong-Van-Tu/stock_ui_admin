@@ -149,5 +149,7 @@ export const fieldMapping: Record<string, string> = {
   toMarketCap: 'tomarketCap',
   birthofday: 'dateOfBirth',
   manualRecommendation: 'manual_recommendation',
-  strongBuy: 'sbuy'
+  strongBuy: 'sbuy',
+  previousPrice: 'prev_price',
+  currentPriceWatchlist: 'price'
 };

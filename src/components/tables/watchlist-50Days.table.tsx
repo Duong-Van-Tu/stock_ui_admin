@@ -233,6 +233,26 @@ export const WatchlistIn50DaysTable = () => {
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
+      title: t('currentPrice'),
+      dataIndex: 'currentPriceWatchlist',
+      key: 'currentPriceWatchlist',
+      width: 130,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'currentPriceWatchlist' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('currentPriceWatchlist')
+      }),
+      render: (value, record) =>
+        value
+          ? roundToDecimals(value)
+          : record.previousClose
+          ? roundToDecimals(record.previousClose)
+          : '-'
+    },
+    {
       title: t('lowest50'),
       dataIndex: 'lowest50',
       key: 'lowest50',

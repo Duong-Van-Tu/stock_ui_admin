@@ -14,6 +14,8 @@ type WatchlistIn50Days = {
   AIRecommendation: string;
   AIExplain: string;
   previousClose: number;
+  previousPrice: number;
+  currentPriceWatchlist: number;
   lowest50: number;
   changeLowest50: number;
   highest50: number;
