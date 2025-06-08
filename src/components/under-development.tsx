@@ -1,4 +1,3 @@
-import { PageURLs } from '@/utils/navigate';
 import { Button, Result } from 'antd';
 import { useRouter } from 'next/navigation';
 
@@ -10,8 +9,8 @@ export function UnderDevelopment() {
       title='Under Development'
       subTitle='This page is currently under development. Please check back later.'
       extra={
-        <Button type='primary' onClick={() => router.push(PageURLs.ofIndex())}>
-          Back Home
+        <Button type='primary' onClick={() => router.back()}>
+          Go Back
         </Button>
       }
     />
