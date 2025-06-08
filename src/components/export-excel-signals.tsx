@@ -6,7 +6,11 @@ import { Button } from 'antd';
 import * as ExcelJS from 'exceljs';
 import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
-import { formatPercent, roundToDecimals } from '@/utils/common';
+import {
+  capitalizeAllLetters,
+  formatPercent,
+  roundToDecimals
+} from '@/utils/common';
 import { SocketContext } from '@/providers/socket.provider';
 import { Icon } from './icons';
 import { defaultApiFetcher } from '@/utils/api-instances';
@@ -14,6 +18,7 @@ import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { transformSignalsData } from '@/helpers/signals.helper';
 import { useTranslations } from 'next-intl';
+import { RecommendationText } from '@/constants/common.constant';
 
 export const ExportExcelLog = () => {
   const t = useTranslations();
@@ -170,7 +175,14 @@ export const ExportExcelLog = () => {
                 .format('YYYY-MM-DD HH:mm')
             : '-',
           log.AIRating,
-          log.AIRecommendationSignal ?? '-',
+          log.AIRecommendationSignal
+            ? capitalizeAllLetters(
+                RecommendationText[log.AIRecommendationSignal]
+              )
+            : '-',
+          log.manualRecommendation
+            ? capitalizeAllLetters(RecommendationText[log.manualRecommendation])
+            : '-',
           log.AIExplain ?? '-',
           log.entryDate
             ? dayjs(log.entryDate)

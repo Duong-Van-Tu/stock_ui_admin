@@ -393,6 +393,7 @@
   "from50bTo100B": "Từ 50 đến 100 tỷ USD",
   "from100bTo500B": "Từ 100 đến 500 tỷ USD",
   "from500bTo1T": "Từ 500 tỷ đến 1 nghìn tỷ USD",
-  "sendAlertPageTitle": "Send notification to members",
-  "sendAlertPageDescription": "Page to send notifications to members"
+  "sendAlertPageTitle": "Gửi thông báo cho thành viên",
+  "sendAlertPageDescription": "Trang gửi thông báo cho thành viên",
+  "manualRecommendation": "Chuyên gia đề xuất"
 }

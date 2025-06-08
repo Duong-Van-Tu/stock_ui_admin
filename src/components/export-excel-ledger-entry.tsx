@@ -136,7 +136,6 @@ export const ExportExcelLedgerEntry = () => {
   return (
     <Button
       type='primary'
-      size='large'
       onClick={handleExportLedger}
       disabled={loading}
       icon={

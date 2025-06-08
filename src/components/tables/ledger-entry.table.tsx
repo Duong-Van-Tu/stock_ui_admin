@@ -443,7 +443,6 @@ export const LedgerEntryTable = () => {
         <Space>
           <Button
             icon={<PlusOutlined />}
-            size='large'
             css={addBtnStyles}
             type='primary'
             onClick={() => router.push(PageURLs.ofAddLedgerEntry())}

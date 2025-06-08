@@ -1,3 +1,5 @@
+import { fieldMapping } from '@/helpers/field-mapping.helper';
+
 export enum AlertLogsView {
   STOCKS,
   OPTIONS
@@ -18,8 +20,16 @@ export enum Impact {
   Low = 'low'
 }
 
-export enum Recommendation {
-  HOLD = 'hold',
-  BUY = 'buy',
-  SELL = 'sell'
-}
+export const Recommendation = {
+  HOLD: 'hold',
+  BUY: 'buy',
+  STRONG_BUY: fieldMapping['strongBuy'],
+  SELL: 'sell'
+};
+
+export const RecommendationText: Record<string, string> = {
+  [Recommendation.HOLD]: 'Hold',
+  [Recommendation.BUY]: 'Buy',
+  [Recommendation.STRONG_BUY]: 'Strong Buy',
+  [Recommendation.SELL]: 'Sell'
+};

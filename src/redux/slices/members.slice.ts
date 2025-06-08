@@ -1,4 +1,4 @@
-import { transformMembers } from '@/helpers/member.helper';
+import { transformMembers } from '@/helpers/members.helper';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { convertParamsByMapping } from '@/utils/common';

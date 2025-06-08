@@ -147,5 +147,7 @@ export const fieldMapping: Record<string, string> = {
   hashAlertLogId: 'hash_alert_log_id',
   fromMarketCap: 'frommarketCap',
   toMarketCap: 'tomarketCap',
-  birthofday: 'dateOfBirth'
+  birthofday: 'dateOfBirth',
+  manualRecommendation: 'manual_recommendation',
+  strongBuy: 'sbuy'
 };

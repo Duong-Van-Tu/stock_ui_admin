@@ -48,6 +48,7 @@ type Signal = {
   AIExplain: string;
   realCandleEntry: string;
   expectCandleEntry: string;
+  manualRecommendation: string;
 };
 
 type AlertLogsFilter = Filter & {

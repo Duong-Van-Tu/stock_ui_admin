@@ -63,6 +63,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     AIRecommendationSignal: stock[fieldMapping.AIRecommendationSignal],
     AIExplain: stock[fieldMapping.AIExplain],
     realCandleEntry: stock[fieldMapping.realCandleEntry],
-    expectCandleEntry: stock[fieldMapping.expectCandleEntry]
+    expectCandleEntry: stock[fieldMapping.expectCandleEntry],
+    manualRecommendation: stock[fieldMapping.manualRecommendation]
   }));
 };

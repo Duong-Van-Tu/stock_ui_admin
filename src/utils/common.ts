@@ -88,6 +88,11 @@ export const capitalizeFirstLetter = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+export const capitalizeAllLetters = (str: string): string => {
+  if (typeof str !== 'string') return str;
+  return str.toUpperCase();
+};
+
 export const getFirstPathnameSegment = (pathname: string) => {
   const segments = pathname.split('/').filter(Boolean);
   return segments[0] || '';

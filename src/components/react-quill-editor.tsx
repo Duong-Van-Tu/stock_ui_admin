@@ -15,6 +15,7 @@ type ReactQuillEditorProps = {
   placeholder?: string;
   readOnly?: boolean;
   height?: string | number;
+  maxHeight?: string | number;
   className?: string;
   showImage?: boolean;
 };
@@ -50,6 +51,7 @@ export const ReactQuillEditor = ({
   placeholder,
   readOnly = false,
   height = '20rem',
+  maxHeight,
   className,
   showImage = true
 }: ReactQuillEditorProps) => {
@@ -73,14 +75,14 @@ export const ReactQuillEditor = ({
     return (
       <div
         className={className}
-        css={editorStyles(height)}
+        css={editorStyles(height, maxHeight)}
         style={{ border: '1px solid #ccc', borderRadius: '4px' }}
       />
     );
   }
 
   return (
-    <div css={editorStyles(height)} className={className}>
+    <div css={editorStyles(height, maxHeight)} className={className}>
       <ReactQuill
         value={editorValue}
         onChange={handleChange}
@@ -94,9 +96,18 @@ export const ReactQuillEditor = ({
   );
 };
 
-const editorStyles = (height: string | number) => css`
+const editorStyles = (
+  height: string | number,
+  maxHeight?: string | number
+) => css`
   .ql-editor {
     min-height: ${typeof height === 'number' ? `${height}px` : height};
+    ${maxHeight
+      ? `max-height: ${
+          typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight
+        };`
+      : ''}
+    ${maxHeight ? 'overflow-y: auto;' : ''}
     font-size: 1.4rem;
     line-height: 1.5;
   }

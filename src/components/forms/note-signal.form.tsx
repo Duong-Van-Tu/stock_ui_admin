@@ -100,6 +100,7 @@ export const NotesSignal = ({
                 setEditorValue(val);
                 form.setFieldsValue({ notes: val });
               }}
+              maxHeight={200}
               showImage={false}
               placeholder={t('EnterYourNotesHere')}
             />

@@ -37,7 +37,11 @@ import {
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { AlertLogsFilter } from '../filters/alert-logs.filter';
-import { AlertLogsView, Recommendation } from '@/constants/common.constant';
+import {
+  AlertLogsView,
+  Recommendation,
+  RecommendationText
+} from '@/constants/common.constant';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
@@ -292,7 +296,35 @@ export const AlertLogsTable = () => {
             isPositive={value === Recommendation.BUY}
             isNegative={value === Recommendation.SELL}
           >
-            <span css={recommendationStyles}>{value}</span>
+            <span css={recommendationStyles}>{RecommendationText[value]}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
+      title: t('manualRecommendation'),
+      dataIndex: 'manualRecommendation',
+      key: 'manualRecommendation',
+      width: 160,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'manualRecommendation' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('manualRecommendation')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText
+            isPositive={
+              value === Recommendation.BUY ||
+              value === Recommendation.STRONG_BUY
+            }
+            isNegative={value === Recommendation.SELL}
+          >
+            <span css={recommendationStyles}>{RecommendationText[value]}</span>
           </PositiveNegativeText>
         ) : (
           <span>-</span>
@@ -872,27 +904,6 @@ export const AlertLogsTable = () => {
   return (
     <div css={rootStyles}>
       <AlertLogsFilter defaultStrategyId={strategyId} onFilter={handleFilter} />
-      {selectedIds.size > 0 && (
-        <Button
-          onClick={() =>
-            modal.openModal(
-              <ExitSignal
-                ids={Array.from(selectedIds)}
-                setSelectedIds={setSelectedIds}
-                title={t('exitSelectedSignals')}
-              />,
-              {
-                width: 400
-              }
-            )
-          }
-          icon={<Icon icon='exit' width={18} height={18} />}
-          css={exitBtnStyles}
-          danger
-        >
-          {t('exitSelected')}
-        </Button>
-      )}
       <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
           <TableTitle>{t('alertLogs')}</TableTitle>
@@ -914,6 +925,37 @@ export const AlertLogsTable = () => {
             onChange={(value) => handleChangeView(value)}
           />
           <div css={actionStyles}>
+            <Button
+              onClick={() =>
+                modal.openModal(
+                  <ExitSignal
+                    ids={Array.from(selectedIds)}
+                    setSelectedIds={setSelectedIds}
+                    title={t('exitSelectedSignals')}
+                  />,
+                  {
+                    width: 400
+                  }
+                )
+              }
+              icon={
+                <Icon
+                  icon='exit'
+                  fill={
+                    selectedIds.size <= 0
+                      ? 'var(--gray-light-color)'
+                      : 'var(--orange-color)'
+                  }
+                  width={18}
+                  height={18}
+                />
+              }
+              css={exitBtnStyles}
+              disabled={selectedIds.size <= 0}
+              danger
+            >
+              {t('exitSelected')}
+            </Button>
             <ExportExcelLog />
           </div>
         </div>

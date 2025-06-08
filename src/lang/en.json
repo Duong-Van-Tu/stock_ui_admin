@@ -393,6 +393,7 @@
   "from50bTo100B": "50B to 100B",
   "from100bTo500B": "100B to 500B",
   "from500bTo1T": "500B to 1T",
-  "sendAlertPageTitle": "Gửi thông báo cho thành viên",
-  "sendAlertPageDescription": "Trang gửi thông báo cho thành viên"
+  "sendAlertPageTitle": "Send notification to members",
+  "sendAlertPageDescription": "Page to send notifications to members",
+  "manualRecommendation": "Manual Recommendation"
 }
