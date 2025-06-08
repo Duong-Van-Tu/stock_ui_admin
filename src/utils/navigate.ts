@@ -59,6 +59,10 @@ export namespace PageURLs {
     return withPrefix(`/ledger-entry/edit/${id ? `/${id}` : ''}`);
   }
 
+  export function ofSendAlertLedgerEntry() {
+    return withPrefix('/ledger-entry/send-alert');
+  }
+
   export function ofSpikeVolumeBackTest() {
     return withPrefix('/spike-volume');
   }

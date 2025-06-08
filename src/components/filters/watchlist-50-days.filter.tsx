@@ -70,7 +70,8 @@ export const Watchlist50DaysFilter = ({
 
   const handleClearFilters = () => {
     form.resetFields();
-    onFilter({});
+    form.setFieldValue('period', DEFAULT_PERIOD);
+    onFilter({ period: DEFAULT_PERIOD });
     router.push('?', { scroll: false });
   };
 

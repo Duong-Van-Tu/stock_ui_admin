@@ -107,7 +107,9 @@ export default function EditLedgerEntry() {
     router.push(PageURLs.ofLedgerEntry());
   };
 
-  const handleSendAlert = () => {};
+  const handleSendAlert = () => {
+    router.push(PageURLs.ofSendAlertLedgerEntry());
+  };
 
   useEffect(() => {
     if (id) {

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Table, TableColumnsType } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
@@ -15,7 +15,8 @@ import {
   watchWatchlistIn50Days,
   watchWatchlistIn50DaysPagination,
   getWatchlistIn50Days,
-  resetState
+  resetState,
+  autoUpdateWatchlistIn50days
 } from '@/redux/slices/swing-trading-watchlist.slice';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
@@ -65,6 +66,8 @@ export const WatchlistIn50DaysTable = () => {
     }
   });
 
+  const filteredFilter = useMemo(() => cleanFalsyValues(filter), [filter]);
+
   const fetchDataWatchList = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
@@ -79,8 +82,7 @@ export const WatchlistIn50DaysTable = () => {
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           symbol: symbol ? symbol : undefined,
-          ...filteredFilter,
-          period: filteredFilter?.period
+          ...filteredFilter
         })
       );
     },
@@ -107,6 +109,20 @@ export const WatchlistIn50DaysTable = () => {
       dispatch(resetState());
     };
   }, [fetchDataWatchList, dispatch]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      dispatch(
+        autoUpdateWatchlistIn50days({
+          page: pagination.currentPage,
+          limit: pagination.pageSize,
+          ...filteredFilter
+        })
+      );
+    }, 60000);
+
+    return () => clearInterval(intervalId);
+  }, [dispatch, filteredFilter, pagination.currentPage, pagination.pageSize]);
 
   const columns: TableColumnsType<WatchlistIn50Days> = [
     {
@@ -522,70 +538,77 @@ export const WatchlistIn50DaysTable = () => {
   return (
     <div css={rootStyles}>
       <Watchlist50DaysFilter onFilter={handleFilter} />
-      <div css={tableTopStyles}>
-        <TableTitle customStyles={titleStyles}>
-          {t('watchlistIn50DaysTitle')}
-        </TableTitle>
-        <div css={updatedAtStyles}>
-          {watchlistIn50Days.length > 0 && (
-            <>
-              <strong>{t('updatedAt')}:</strong>&nbsp;
-              {dayjs(watchlistIn50Days[0].createdAt)
-                .tz(TimeZone.NEW_YORK)
-                .format('MMM D, YYYY h:mm A')}
-              &nbsp; (New York) -&nbsp;
-              <strong>
-                {t('period')}: {watchlistIn50Days[0].period}
-              </strong>
-            </>
-          )}
+      <div css={tableContainerStyles}>
+        <div css={tableTopStyles}>
+          <TableTitle customStyles={titleStyles}>
+            {t('watchlistIn50DaysTitle')}
+          </TableTitle>
+          <div css={updatedAtStyles}>
+            {watchlistIn50Days.length > 0 && (
+              <>
+                <strong>{t('updatedAt')}:</strong>&nbsp;
+                {dayjs(watchlistIn50Days[0].createdAt)
+                  .tz(TimeZone.NEW_YORK)
+                  .format('MMM D, YYYY h:mm A')}
+                &nbsp; (New York) -&nbsp;
+                <strong>
+                  {t('period')}: {watchlistIn50Days[0].period}
+                </strong>
+              </>
+            )}
+          </div>
         </div>
+        <Table<WatchlistIn50Days>
+          css={tableStyles}
+          rowKey='key'
+          columns={columns}
+          dataSource={watchlistIn50Days}
+          loading={loading}
+          scroll={{
+            x: 1200,
+            y: watchlistIn50Days.length > 0 ? height - 350 : undefined
+          }}
+          sortDirections={['descend', 'ascend']}
+          locale={{
+            emptyText: (
+              <div css={emptyStyles(height - 400)}>
+                <EmptyDataTable />
+              </div>
+            )
+          }}
+          pagination={{
+            position: ['bottomCenter'],
+            pageSizeOptions: [
+              '10',
+              '20',
+              '50',
+              '100',
+              '200',
+              '300',
+              '400',
+              '500'
+            ],
+            showSizeChanger: true,
+            showQuickJumper: true,
+            current: pagination.currentPage,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+            onChange: (page, pageSize) => {
+              fetchDataWatchList({ page, pageSize, filter });
+            }
+          }}
+        />
       </div>
-      <Table<WatchlistIn50Days>
-        css={tableStyles}
-        rowKey='key'
-        columns={columns}
-        dataSource={watchlistIn50Days}
-        loading={loading}
-        scroll={{
-          x: 1200,
-          y: watchlistIn50Days.length > 0 ? height - 340 : undefined
-        }}
-        sortDirections={['descend', 'ascend']}
-        locale={{
-          emptyText: (
-            <div css={emptyStyles(height - 400)}>
-              <EmptyDataTable />
-            </div>
-          )
-        }}
-        pagination={{
-          position: ['bottomCenter'],
-          pageSizeOptions: [
-            '10',
-            '20',
-            '50',
-            '100',
-            '200',
-            '300',
-            '400',
-            '500'
-          ],
-          showSizeChanger: true,
-          showQuickJumper: true,
-          current: pagination.currentPage,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          onChange: (page, pageSize) => {
-            fetchDataWatchList({ page, pageSize, filter });
-          }
-        }}
-      />
     </div>
   );
 };
 
 const rootStyles = css`
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+`;
+const tableContainerStyles = css`
   border: 1px solid var(--border-table-color);
   border-radius: 0.8rem;
 `;

@@ -107,12 +107,12 @@
   "veryNegativeTitle": "VERY NEGATIVE",
   "fromLabel": "From:",
   "toLabel": "To:",
-  "1Day": "1 day",
-  "2Days": "2 days",
-  "3Days": "3 days",
-  "4Days": "4 days",
-  "5Days": "5 days",
-  "6Days": "6 days",
+  "1Day": "1 Day",
+  "2Days": "2 Days",
+  "3Days": "3 Days",
+  "4Days": "4 Days",
+  "5Days": "5 Days",
+  "6Days": "6 Days",
   "1Week": "1 week",
   "2Weeks": "2 weeks",
   "countSentiment": "Count Sentiment",
@@ -392,5 +392,7 @@
   "from10bTo50B": "10B to 50B",
   "from50bTo100B": "50B to 100B",
   "from100bTo500B": "100B to 500B",
-  "from500bTo1T": "500B to 1T"
+  "from500bTo1T": "500B to 1T",
+  "sendAlertPageTitle": "Gửi thông báo cho thành viên",
+  "sendAlertPageDescription": "Trang gửi thông báo cho thành viên"
 }
