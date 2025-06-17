@@ -11,7 +11,6 @@ import {
   type IChartApi,
   type SeriesMarker
 } from 'lightweight-charts';
-
 import { TimeZone } from '@/constants/timezone.constant';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import {
@@ -21,7 +20,7 @@ import {
 } from '@/utils/common';
 import { PositiveNegativeText } from './positive-negative-text';
 import { useNotification } from '@/hooks/notification.hook';
-import { Empty, Spin } from 'antd';
+import { Empty, Spin, Select } from 'antd';
 
 type ExtendedCandlestickData = CandlestickData & {
   volume?: number;
@@ -37,6 +36,8 @@ type BacktestSpikeVolumeProps = {
   exitTime?: string;
 };
 
+const periodOptions = ['15M', '1H'];
+
 export const BacktestSpikeVolume = ({
   symbol,
   period,
@@ -51,6 +52,8 @@ export const BacktestSpikeVolume = ({
   const tooltipRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   let animationFrameId: number | null = null;
+
+  const [selectedPeriod, setSelectedPeriod] = useState(period);
   const [candlestickData, setCandlestickData] = useState<
     ExtendedCandlestickData[]
   >([]);
@@ -59,13 +62,13 @@ export const BacktestSpikeVolume = ({
   const parseToUnixTime = useCallback(
     (timestamp: string): number => {
       const entry = dayjs(timestamp).tz(TimeZone.NEW_YORK);
-      const periodMinutes = parseInt(period);
+      const periodMinutes = parseInt(selectedPeriod);
       const rounded = entry
         .minute(Math.floor(entry.minute() / periodMinutes) * periodMinutes)
         .second(0);
       return Math.floor(rounded.valueOf() / 1000);
     },
-    [period]
+    [selectedPeriod]
   );
 
   const fetchCandlestickChartData = useCallback(async () => {
@@ -86,7 +89,7 @@ export const BacktestSpikeVolume = ({
       const res = await defaultApiFetcher.get('stock-worker/get-stock-chart', {
         query: {
           stockName: symbol,
-          period,
+          period: selectedPeriod,
           smaPeriodLength: 8,
           fromDate,
           toDate
@@ -112,7 +115,7 @@ export const BacktestSpikeVolume = ({
     } finally {
       setLoading(false);
     }
-  }, [symbol, period, entryTime, notifyError]);
+  }, [symbol, selectedPeriod, entryTime, notifyError]);
 
   useEffect(() => {
     fetchCandlestickChartData();
@@ -312,44 +315,69 @@ export const BacktestSpikeVolume = ({
       >
         {symbol}
       </h3>
+
       <div
         css={css`
           display: flex;
-          flex-direction: column;
+          justify-content: space-between;
+          align-items: flex-end;
+          margin: 1rem 0;
         `}
       >
-        <div>
-          <strong>{t('entryDate')}:</strong> &nbsp;
-          {dayjs(entryTime).tz(TimeZone.NEW_YORK).format('MM-DD-YYYY HH:mm:ss')}
+        <div
+          css={css`
+            display: flex;
+            flex-direction: column;
+          `}
+        >
+          <div>
+            <strong>{t('entryDate')}:</strong> &nbsp;
+            {dayjs(entryTime)
+              .tz(TimeZone.NEW_YORK)
+              .format('MM-DD-YYYY HH:mm:ss')}
+          </div>
+          <div>
+            <strong>{t('entryPrice')}:</strong> &nbsp;{' '}
+            <span>${roundToDecimals(entryPrice, 2)}</span>
+          </div>
+          {!!exitPrice && exitTime && (
+            <>
+              <div>
+                <strong>{t('exitDate')}:</strong> &nbsp;
+                {dayjs(exitTime)
+                  .tz(TimeZone.NEW_YORK)
+                  .format('MM-DD-YYYY HH:mm:ss')}
+              </div>
+              <div>
+                <strong>{t('exitPrice')}:</strong> &nbsp;
+                <PositiveNegativeText
+                  isNegative={exitPrice < entryPrice}
+                  isPositive={exitPrice > entryPrice}
+                >
+                  <span>
+                    ${roundToDecimals(exitPrice, 2)}&nbsp;(
+                    {formatPercent(
+                      ((exitPrice - entryPrice) / entryPrice) * 100
+                    )}
+                    )
+                  </span>
+                </PositiveNegativeText>
+              </div>
+            </>
+          )}
         </div>
-        <div>
-          <strong>{t('entryPrice')}:</strong> &nbsp;{' '}
-          <span>${roundToDecimals(entryPrice, 2)}</span>
-        </div>
-        {!!exitPrice && exitTime && (
-          <>
-            <div>
-              <strong>{t('exitDate')}:</strong> &nbsp;
-              {dayjs(exitTime)
-                .tz(TimeZone.NEW_YORK)
-                .format('MM-DD-YYYY HH:mm:ss')}
-            </div>
-            <div>
-              <strong>{t('exitPrice')}:</strong> &nbsp;
-              <PositiveNegativeText
-                isNegative={exitPrice < entryPrice}
-                isPositive={exitPrice > entryPrice}
-              >
-                <span>
-                  ${roundToDecimals(exitPrice, 2)}&nbsp;(
-                  {formatPercent(((exitPrice - entryPrice) / entryPrice) * 100)}
-                  )
-                </span>
-              </PositiveNegativeText>
-            </div>
-          </>
-        )}
+        <Select
+          value={selectedPeriod}
+          onChange={setSelectedPeriod}
+          style={{ width: 80 }}
+          options={periodOptions.map((p) => ({
+            value: p,
+            label: `${p}`
+          }))}
+          size='small'
+        />
       </div>
+
       {candlestickData.length === 0 ? (
         <Empty
           css={css`
