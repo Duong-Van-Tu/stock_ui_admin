@@ -22,6 +22,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   deleteLedgerEntry,
   getLedgerEntryById,
+  resetState,
   updateLedgerEntry,
   watchLedgerEntryLoading,
   watchSelectedLedgerEntry,
@@ -61,7 +62,7 @@ export default function EditLedgerEntry() {
     handleGoBack();
   };
 
-  const confirm = () => {
+  const confirmDeleteLedger = () => {
     modal.confirm({
       title: t('deleteConfirmationTitle'),
       icon: <ExclamationCircleOutlined />,
@@ -108,13 +109,16 @@ export default function EditLedgerEntry() {
   };
 
   const handleSendAlert = () => {
-    router.push(PageURLs.ofSendAlertLedgerEntry());
+    router.push(PageURLs.ofSendAlertLedgerEntry(Number(id)));
   };
 
   useEffect(() => {
     if (id) {
       dispatch(getLedgerEntryById(id));
     }
+    return () => {
+      dispatch(resetState());
+    };
   }, [id, dispatch]);
 
   useEffect(() => {
@@ -406,7 +410,7 @@ export default function EditLedgerEntry() {
                   {t('save')}
                 </Button>
                 <Button
-                  onClick={confirm}
+                  onClick={confirmDeleteLedger}
                   type='primary'
                   size='large'
                   danger

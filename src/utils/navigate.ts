@@ -55,12 +55,12 @@ export namespace PageURLs {
     return withPrefix('/ledger-entry/add');
   }
 
-  export function ofEditLedgerEntry(id?: number) {
-    return withPrefix(`/ledger-entry/edit/${id ? `/${id}` : ''}`);
+  export function ofEditLedgerEntry(id: number) {
+    return withPrefix(`/ledger-entry/edit/${id}`);
   }
 
-  export function ofSendAlertLedgerEntry() {
-    return withPrefix('/ledger-entry/send-alert');
+  export function ofSendAlertLedgerEntry(id: number) {
+    return withPrefix(`/ledger-entry/${id}/send-alert`);
   }
 
   export function ofSpikeVolumeBackTest() {

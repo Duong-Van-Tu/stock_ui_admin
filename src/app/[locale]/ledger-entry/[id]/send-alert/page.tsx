@@ -1,12 +1,12 @@
 'use client';
 
-import { UnderDevelopment } from '@/components/under-development';
+import { MembersLedgerEntry } from '@/components/tables/members-ledger-entry.table';
 import MainLayout from '@/layout/main.layout';
 
 export default function SendAlertLedgerEntry() {
   return (
     <MainLayout>
-      <UnderDevelopment />
+      <MembersLedgerEntry />
     </MainLayout>
   );
 }

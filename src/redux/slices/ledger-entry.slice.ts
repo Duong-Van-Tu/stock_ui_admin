@@ -10,6 +10,7 @@ export type ledgerEntryState = {
   loading: boolean;
   updating: boolean;
   creating: boolean;
+  sending: boolean;
   ledgerEntry: LedgerEntry[];
   balanceMap: Record<string, number>;
   cumulativeMap: Record<string, number>;
@@ -20,6 +21,7 @@ const initialState: ledgerEntryState = {
   loading: false,
   updating: false,
   creating: false,
+  sending: false,
   selectedEntry: null,
   ledgerEntry: [],
   balanceMap: {},
@@ -159,6 +161,33 @@ export const ledgerEntrySlice = createAppSlice({
         }
       }
     ),
+    sendAlertLedger: create.asyncThunk(
+      async (payload: {
+        emails: string[];
+        telegrams: string[];
+        ledgerEntry: LedgerEntry;
+      }) => {
+        const response = await defaultApiFetcher.post(
+          'users/send-ledger-email',
+          {
+            ...payload,
+            ledgerEntry: convertParamsByMapping(payload.ledgerEntry)
+          }
+        );
+        return response;
+      },
+      {
+        pending: (state) => {
+          state.sending = true;
+        },
+        fulfilled: (state) => {
+          state.sending = false;
+        },
+        rejected: (state) => {
+          state.sending = false;
+        }
+      }
+    ),
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -168,6 +197,7 @@ export const ledgerEntrySlice = createAppSlice({
     watchLedgerEntryLoading: (state) => state.loading,
     watchCreatingLedgerEntry: (state) => state.creating,
     watchUpdatingLedgerEntry: (state) => state.updating,
+    watchSendingAlertLedger: (state) => state.sending,
     watchLedgerEntry: (state) => state.ledgerEntry,
     watchSelectedLedgerEntry: (state) => state.selectedEntry,
     watchBalanceMap: (state) => state.balanceMap,
@@ -179,6 +209,7 @@ export const {
   watchLedgerEntryLoading,
   watchCreatingLedgerEntry,
   watchUpdatingLedgerEntry,
+  watchSendingAlertLedger,
   watchLedgerEntry,
   watchSelectedLedgerEntry,
   watchBalanceMap,
@@ -191,5 +222,6 @@ export const {
   updateLedgerEntry,
   deleteLedgerEntry,
   createLedgerEntry,
+  sendAlertLedger,
   resetState
 } = ledgerEntrySlice.actions;
