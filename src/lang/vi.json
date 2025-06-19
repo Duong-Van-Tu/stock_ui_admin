@@ -395,5 +395,20 @@
   "from500bTo1T": "Từ 500 tỷ đến 1 nghìn tỷ USD",
   "sendAlertPageTitle": "Gửi thông báo cho thành viên",
   "sendAlertPageDescription": "Trang gửi thông báo cho thành viên",
-  "manualRecommendation": "Chuyên gia đề xuất"
+  "manualRecommendation": "Chuyên gia đề xuất",
+  "sendNotification": "Gửi Thông báo",
+  "sendTo": "Gửi thông báo đến thành viên",
+  "send": "Gửi",
+  "close": "Đóng",
+  "sendSuccess": "Gửi thông báo thành công!",
+  "sendFail": "Gửi thông báo thất bại",
+  "sendSelected": "Gửi Thông báo Đã chọn",
+  "membersList": "Danh sách thành viên",
+  "fullname": "Họ và tên",
+  "email": "Email",
+  "phone": "Số điện thoại",
+  "telegram": "Telegram",
+  "sendAlert": "Gửi Thông báo",
+  "sendBulkConfirmStart": "Gửi thông báo đến",
+  "sendBulkConfirmEnd": "thành viên đã chọn?"
 }

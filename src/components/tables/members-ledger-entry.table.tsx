@@ -43,7 +43,7 @@ export function MembersLedgerEntry() {
     modal.confirm({
       title: (
         <Title css={titleConfirmStyles} level={4}>
-          Send Notification
+          {t('sendNotification')}
         </Title>
       ),
       icon: (
@@ -57,14 +57,14 @@ export function MembersLedgerEntry() {
       ),
       content: (
         <div>
-          Send a notification to member{' '}
+          {t('sendTo')}&nbsp;
           <strong>
             <i>{member.username}</i>
           </strong>
         </div>
       ),
-      okText: 'Send',
-      cancelText: 'Close',
+      okText: t('send'),
+      cancelText: t('cancel'),
       onOk: () => handleSendAlert(member)
     });
   };
@@ -79,7 +79,7 @@ export function MembersLedgerEntry() {
     modal.confirm({
       title: (
         <Title css={titleConfirmStyles} level={4}>
-          Send Notification
+          {t('sendNotification')}
         </Title>
       ),
       icon: (
@@ -93,12 +93,13 @@ export function MembersLedgerEntry() {
       ),
       content: (
         <div>
-          Send notifications to <strong>{selectedMembers.length}</strong>{' '}
-          selected members?
+          {t('sendBulkConfirmStart')} <strong>{selectedMembers.length}</strong>
+          &nbsp;
+          {t('sendBulkConfirmEnd')}
         </div>
       ),
-      okText: 'Send',
-      cancelText: 'Cancel',
+      okText: t('send'),
+      cancelText: t('cancel'),
       onOk: () => handleSendBulkAlert()
     });
   };
@@ -112,9 +113,9 @@ export function MembersLedgerEntry() {
       })
     );
     if (isRequestSuccess(res)) {
-      notifySuccess('Notification sent successfully!');
+      notifySuccess(t('sendSuccess'));
     } else {
-      notifyError('Failed to send notification');
+      notifyError(t('sendFail'));
     }
   };
 
@@ -140,12 +141,10 @@ export function MembersLedgerEntry() {
     );
 
     if (isRequestSuccess(res)) {
-      notifySuccess(
-        `Notification sent to ${selectedMembers.length} members successfully!`
-      );
+      notifySuccess(t('sendSuccess'));
       setSelectedRowKeys([]);
     } else {
-      notifyError('Failed to send notifications to selected members');
+      notifySuccess(t('sendFail'));
     }
   };
 
@@ -174,32 +173,37 @@ export function MembersLedgerEntry() {
       render: (_, __, index) => index + 1
     },
     {
-      title: 'Username',
+      title: t('username'),
       dataIndex: 'username',
-      key: 'username'
+      key: 'username',
+      render: (value) => (value ? value : '-')
     },
     {
-      title: 'Full Name',
+      title: t('fullname'),
       dataIndex: 'fullname',
-      key: 'fullname'
+      key: 'fullname',
+      render: (value) => (value ? value : '-')
     },
     {
-      title: 'Email',
+      title: t('email'),
       dataIndex: 'email',
-      key: 'email'
+      key: 'email',
+      render: (value) => (value ? value : '-')
     },
     {
-      title: 'Phone',
+      title: t('phone'),
       dataIndex: 'phone',
-      key: 'phone'
+      key: 'phone',
+      render: (value) => (value ? value : '-')
     },
     {
-      title: 'Telegram',
+      title: t('telegram'),
       dataIndex: 'telegram',
-      key: 'telegram'
+      key: 'telegram',
+      render: (value) => (value ? value : '-')
     },
     {
-      title: 'Action',
+      title: t('action'),
       key: 'action',
       align: 'center',
       fixed: 'right',
@@ -218,7 +222,7 @@ export function MembersLedgerEntry() {
             />
           }
         >
-          Send Alert
+          {t('sendAlert')}
         </Button>
       )
     }
@@ -229,7 +233,7 @@ export function MembersLedgerEntry() {
       {contextHolder}
       <div css={rootStyles}>
         <Title level={3} css={titleStyles}>
-          Members list
+          {t('membersList')}
         </Title>
         <Tooltip title={t('back')} css={goBackStyles}>
           <Button
@@ -257,7 +261,7 @@ export function MembersLedgerEntry() {
               />
             }
           >
-            Send Alert Selected
+            {t('sendSelected')}
           </Button>
         </div>
         <Table

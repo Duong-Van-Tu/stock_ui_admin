@@ -394,6 +394,21 @@
   "from100bTo500B": "100B to 500B",
   "from500bTo1T": "500B to 1T",
   "sendAlertPageTitle": "Send notification to members",
-  "sendAlertPageDescription": "Page to send notifications to members",
-  "manualRecommendation": "Manual Recommendation"
+  "sendAlertPageDescription": "Page send notifications to members",
+  "manualRecommendation": "Manual Recommendation",
+  "sendNotification": "Send Notification",
+  "sendTo": "Send a notification to member",
+  "send": "Send",
+  "close": "Close",
+  "sendSuccess": "Notification sent successfully!",
+  "sendFail": "Failed to send notification!",
+  "sendSelected": "Send Alert Selected",
+  "membersList": "Members list",
+  "fullname": "Full Name",
+  "email": "Email",
+  "phone": "Phone",
+  "telegram": "Telegram",
+  "sendAlert": "Send Alert",
+  "sendBulkConfirmStart": "Send notifications to",
+  "sendBulkConfirmEnd": "selected members?"
 }
