@@ -137,7 +137,7 @@ export const signalSlice = createAppSlice({
       }
     ),
     updateScheduleExitDate: create.asyncThunk(
-      async (params: { ids: string[]; scheduleExitDate: string }) => {
+      async (params: { hashIds: string[]; scheduleExitDate: string }) => {
         await defaultApiFetcher.post(
           'tickers/update-schedule-exit-date',
           convertParamsByMapping(params)
@@ -158,20 +158,37 @@ export const signalSlice = createAppSlice({
     updateAlertLogsData: create.reducer(
       (
         state,
-        action: PayloadAction<Array<{ id: number } & Partial<Signal>>>
+        action: PayloadAction<
+          Array<({ id: number } | { hashAlertLogId: string }) & Partial<Signal>>
+        >
       ) => {
-        const updatesMap = new Map(
-          action.payload.map(({ id, ...updates }) => [id, updates])
-        );
+        const updatesById = new Map<number, Partial<Signal>>();
+        const updatesByHash = new Map<string, Partial<Signal>>();
+
+        for (const item of action.payload) {
+          if ('id' in item) {
+            const { id, ...updates } = item;
+            updatesById.set(id!, updates);
+          } else if ('hashAlertLogId' in item) {
+            const { hashAlertLogId, ...updates } = item;
+            updatesByHash.set(hashAlertLogId, updates);
+          }
+        }
 
         state.alertLogsData = state.alertLogsData.map((signal) => {
-          if (updatesMap.has(signal.id)) {
-            return { ...signal, ...updatesMap.get(signal.id)! };
+          if (updatesById.has(signal.id)) {
+            return { ...signal, ...updatesById.get(signal.id)! };
+          } else if (
+            signal.hashAlertLogId &&
+            updatesByHash.has(signal.hashAlertLogId)
+          ) {
+            return { ...signal, ...updatesByHash.get(signal.hashAlertLogId)! };
           }
           return signal;
         });
       }
     ),
+
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })

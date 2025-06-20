@@ -8,6 +8,7 @@ import { useModal } from '@/hooks/modal.hook';
 import { useTranslations } from 'next-intl';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
+  updateAlertLogsData,
   updateScheduleExitDate,
   watchExitLoading
 } from '@/redux/slices/signals.slice';
@@ -35,10 +36,18 @@ export const ExitSignal = ({ ids, title, setSelectedIds }: ExitSignalProps) => {
       .toISOString();
 
     const res = await dispatch(
-      updateScheduleExitDate({ ids, scheduleExitDate })
+      updateScheduleExitDate({ hashIds: ids, scheduleExitDate })
     );
     if (isRequestSuccess(res)) {
       notifySuccess(t('updateExitScheduleSuccess'));
+      await dispatch(
+        updateAlertLogsData(
+          ids.map((id: string) => ({
+            hashAlertLogId: id,
+            exitDate: dayjs().utc().toISOString()
+          }))
+        )
+      );
       setSelectedIds?.(new Set());
       closeModal();
     }
