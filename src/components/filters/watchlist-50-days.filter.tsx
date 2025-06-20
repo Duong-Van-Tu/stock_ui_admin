@@ -76,7 +76,7 @@ export const Watchlist50DaysFilter = ({
   };
 
   useEffect(() => {
-    const period = params.get('period') ?? DEFAULT_PERIOD;
+    const period = params.get('period');
     const marketCap = params.get('marketCap')!;
     const industry = params.get('industry')!;
     const sector = params.get('sector')!;
@@ -84,7 +84,7 @@ export const Watchlist50DaysFilter = ({
     form.setFieldsValue({ ...initialValues });
 
     onFilter({
-      period,
+      period: period!,
       sector,
       industry: industry?.includes(' & ')
         ? industry.replace(/ & /g, ' @ ')
