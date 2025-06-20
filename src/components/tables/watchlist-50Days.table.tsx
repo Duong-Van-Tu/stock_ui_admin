@@ -50,21 +50,22 @@ export const WatchlistIn50DaysTable = () => {
   const pagination = useAppSelector(watchWatchlistIn50DaysPagination);
   const loading = useAppSelector(watchWatchlistIn50DaysLoading);
 
-  const [filter, setFilter] = useState<Filter>({});
+  const [filter, setFilter] = useState<Watchlist50DaysFilter>({});
 
-  const { sortField, sortType, handleSortOrder } = useSortOrder<Filter>({
-    defaultField: 'AIRating',
-    defaultOrder: 'descend',
-    currentFilter: filter,
-    onChange: (_field, _order, newFilter) => {
-      setFilter(newFilter);
-      fetchDataWatchList({
-        page: PAGINATION.currentPage,
-        pageSize: pagination.pageSize,
-        filter: newFilter
-      });
-    }
-  });
+  const { sortField, sortType, handleSortOrder } =
+    useSortOrder<Watchlist50DaysFilter>({
+      defaultField: 'AIRating',
+      defaultOrder: 'descend',
+      currentFilter: filter,
+      onChange: (_field, _order, newFilter) => {
+        setFilter(newFilter);
+        fetchDataWatchList({
+          page: PAGINATION.currentPage,
+          pageSize: pagination.pageSize,
+          filter: newFilter
+        });
+      }
+    });
 
   const filteredFilter = useMemo(() => cleanFalsyValues(filter), [filter]);
 
@@ -261,13 +262,20 @@ export const WatchlistIn50DaysTable = () => {
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'changeLowest50' ? sortType : null,
+      sortOrder: sortField === 'changeLowest50Realtime' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('changeLowest50')
+        onClick: () => handleSortOrder('changeLowest50Realtime')
       }),
       render: (value, record) => {
         return value ? (
-          <StockChangeCell value={value} percentage={-record.changeLowest50} />
+          <StockChangeCell
+            value={value}
+            percentage={
+              record.changeLowest50Realtime < 0
+                ? record.changeLowest50Realtime
+                : -record.changeLowest50Realtime
+            }
+          />
         ) : (
           '-'
         );
@@ -299,13 +307,20 @@ export const WatchlistIn50DaysTable = () => {
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'changeLowest20' ? sortType : null,
+      sortOrder: sortField === 'changeLowest20Realtime' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('changeLowest20')
+        onClick: () => handleSortOrder('changeLowest20Realtime')
       }),
       render: (value, record) => {
         return value ? (
-          <StockChangeCell value={value} percentage={-record.changeLowest20} />
+          <StockChangeCell
+            value={value}
+            percentage={
+              record.changeLowest20Realtime < 0
+                ? record.changeLowest20Realtime
+                : -record.changeLowest20Realtime
+            }
+          />
         ) : (
           '-'
         );
@@ -323,6 +338,51 @@ export const WatchlistIn50DaysTable = () => {
       sortOrder: sortField === 'highest20' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('highest20')
+      }),
+      render: (value) => {
+        return value ? roundToDecimals(value) : '-';
+      }
+    },
+    {
+      title: t('lowest10'),
+      dataIndex: 'lowest10',
+      key: 'lowest10',
+      width: 120,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'changeLowest10Realtime' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('changeLowest10Realtime')
+      }),
+      render: (value, record) => {
+        return value ? (
+          <StockChangeCell
+            value={value}
+            percentage={
+              record.changeLowest10Realtime < 0
+                ? record.changeLowest10Realtime
+                : -record.changeLowest10Realtime
+            }
+          />
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
+      title: t('highest10'),
+      dataIndex: 'highest10',
+      key: 'highest10',
+      width: 120,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highest10' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highest10')
       }),
       render: (value) => {
         return value ? roundToDecimals(value) : '-';

@@ -17,11 +17,17 @@ type WatchlistIn50Days = {
   previousPrice: number;
   currentPriceWatchlist: number;
   lowest50: number;
+  changeLowest50Realtime: number;
   changeLowest50: number;
   highest50: number;
   lowest20: number;
   changeLowest20: number;
+  changeLowest20Realtime: number;
+  lowest10: number;
+  changeLowest10: number;
+  changeLowest10Realtime: number;
   highest20: number;
+  highest10: number;
   average: number;
   median: number;
   sma50: number;
