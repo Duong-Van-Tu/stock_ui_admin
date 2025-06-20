@@ -211,6 +211,7 @@ export function MembersLedgerEntry() {
       render: (_, record) => (
         <Button
           css={sendBtnStyles}
+          size='middle'
           type='primary'
           onClick={() => confirmSendAlert(record)}
           icon={

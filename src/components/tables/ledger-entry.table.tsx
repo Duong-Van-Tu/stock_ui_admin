@@ -321,10 +321,14 @@ export const LedgerEntryTable = () => {
       width: 130,
       align: 'center',
       render: (_, record) => {
-        const { premiumReceive = 0, premiumPaid = 0 } = record;
-        if (!(premiumReceive && premiumPaid)) return '-';
-        const plAmount = premiumReceive - premiumPaid;
-        const plAmountPercent = (plAmount / premiumPaid) * 100;
+        const {
+          investmentCashOut = 0,
+          investmentCashIn = 0,
+          commission = 0
+        } = record;
+        if (!(investmentCashOut && investmentCashIn)) return '-';
+        const plAmount = investmentCashIn - investmentCashOut - commission;
+        const plAmountPercent = (plAmount / investmentCashOut) * 100;
 
         return (
           <StockChangeCell value={plAmount} percentage={plAmountPercent} />
@@ -395,11 +399,26 @@ export const LedgerEntryTable = () => {
       title: t('actions'),
       dataIndex: 'actions',
       key: 'actions',
-      width: 110,
+      width: 130,
       fixed: 'right',
       align: 'center',
       render: (_, record) => (
         <Space>
+          <Tooltip title={t('sendAlert')}>
+            <Button
+              icon={
+                <Icon
+                  fill='var(--sky-pulse)'
+                  icon='send'
+                  width={20}
+                  height={20}
+                />
+              }
+              onClick={() =>
+                router.push(PageURLs.ofSendAlertLedgerEntry(record.id))
+              }
+            />
+          </Tooltip>
           <Tooltip title={t('edit')}>
             <Button
               type='primary'
