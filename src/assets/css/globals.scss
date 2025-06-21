@@ -62,7 +62,7 @@ body {
   overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
-
+  color: var(--text-color);
   &::-webkit-scrollbar {
     display: none;
   }

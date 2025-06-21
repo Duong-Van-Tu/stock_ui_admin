@@ -425,8 +425,8 @@ export const LedgerEntryTable = () => {
               icon={
                 <Icon
                   icon='edit'
-                  width={18}
-                  height={18}
+                  width={20}
+                  height={20}
                   fill='var(--white-color)'
                 />
               }
@@ -444,7 +444,7 @@ export const LedgerEntryTable = () => {
             >
               <Button
                 danger
-                icon={<Icon icon='trash' width={18} height={18} />}
+                icon={<Icon icon='trash' width={20} height={20} />}
               />
             </Popconfirm>
           </Tooltip>

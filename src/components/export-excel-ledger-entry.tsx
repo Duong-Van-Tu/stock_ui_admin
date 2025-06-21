@@ -38,8 +38,6 @@ export const ExportExcelLedgerEntry = () => {
       const {
         investmentCashIn = 0,
         investmentCashOut = 0,
-        premiumReceive = 0,
-        premiumPaid = 0,
         exitPrice = 0,
         entryPrice = 0,
         commission = 0
@@ -51,9 +49,11 @@ export const ExportExcelLedgerEntry = () => {
         investmentCashIn - investmentCashOut - commission;
 
       const plAmount =
-        premiumReceive && premiumPaid && premiumReceive - premiumPaid;
+        investmentCashIn &&
+        investmentCashOut &&
+        investmentCashIn - investmentCashOut - commission;
 
-      const plPercent = plAmount && (plAmount / premiumPaid) * 100;
+      const plPercent = plAmount && (plAmount / investmentCashOut) * 100;
 
       const cumulative = cumulativeMap[item.id];
       const cumulativePercent =

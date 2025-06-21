@@ -246,12 +246,27 @@ export const WatchlistIn50DaysTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('currentPriceWatchlist')
       }),
-      render: (value, record) =>
+      render: (value, record) => {
         value
           ? roundToDecimals(value)
           : record.previousClose
           ? roundToDecimals(record.previousClose)
-          : '-'
+          : null;
+
+        console.log(value <= record.lowest20);
+        return !!value ? (
+          <span
+            css={currentPriceStyles(
+              value <= record.lowest20,
+              value > record.lowest20 && record.changeLowest20Realtime <= 2 // current price
+            )}
+          >
+            {value}
+          </span>
+        ) : (
+          '-'
+        );
+      }
     },
     {
       title: t('lowest50'),
@@ -725,4 +740,13 @@ const recommendationStyles = css`
 
 const updatedAtStyles = css`
   font-size: 1.6rem;
+`;
+
+const currentPriceStyles = (isGreen: boolean, isYellow: boolean) => css`
+  color: ${isGreen
+    ? 'var(--positive-color)'
+    : isYellow
+    ? 'var(--yellow-color)'
+    : 'var(--text-color)'};
+  font-weight: ${isYellow || isYellow ? '500' : '400'};
 `;
