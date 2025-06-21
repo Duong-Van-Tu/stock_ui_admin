@@ -665,7 +665,7 @@ export const WatchlistIn50DaysTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: watchlistIn50Days.length > 0 ? height - 350 : undefined
+            y: watchlistIn50Days.length > 0 ? height - 360 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
