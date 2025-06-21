@@ -462,7 +462,6 @@ export const LedgerEntryTable = () => {
         <Space>
           <Button
             icon={<PlusOutlined />}
-            css={addBtnStyles}
             type='primary'
             onClick={() => router.push(PageURLs.ofAddLedgerEntry())}
           >
@@ -524,12 +523,4 @@ const emptyStyles = (height: number) => css`
   display: flex;
   flex-direction: column;
   justify-content: center;
-`;
-
-const addBtnStyles = css`
-  background: var(--green-color);
-  &:hover {
-    background: var(--green-color) !important;
-    opacity: 0.85;
-  }
 `;

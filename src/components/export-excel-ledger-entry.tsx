@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+
 import { useState } from 'react';
 import ExcelJS from 'exceljs';
 import dayjs from 'dayjs';
@@ -14,10 +17,12 @@ import {
   roundToDecimals
 } from '@/utils/common';
 import { Icon } from './icons';
+import { useTranslations } from 'next-intl';
 
 const initialBalance = 5000;
 
 export const ExportExcelLedgerEntry = () => {
+  const t = useTranslations();
   const [loading, setLoading] = useState(false);
   const LedgerEntry = useAppSelector(watchLedgerEntry);
   const cumulativeMap = useAppSelector(watchCumulativeMap);
@@ -135,6 +140,7 @@ export const ExportExcelLedgerEntry = () => {
 
   return (
     <Button
+      css={buttonStyles}
       type='primary'
       onClick={handleExportLedger}
       disabled={loading}
@@ -149,7 +155,15 @@ export const ExportExcelLedgerEntry = () => {
         ) : undefined
       }
     >
-      Export Ledger
+      {t('exportExcel')}
     </Button>
   );
 };
+
+const buttonStyles = css`
+  background: var(--green-color);
+  &:hover {
+    background: var(--green-color) !important;
+    opacity: 0.9;
+  }
+`;

@@ -36,6 +36,7 @@ import { TimeZone } from '@/constants/timezone.constant';
 import { AIExplain } from '../ai-explain';
 import EllipsisText from '../ellipsis-text';
 import { Watchlist50DaysFilter } from '../filters/watchlist-50-days.filter';
+import { ExportExcelSwingWatchlist } from '../export-excel-swing-watchlist';
 
 export const WatchlistIn50DaysTable = () => {
   const t = useTranslations();
@@ -635,23 +636,25 @@ export const WatchlistIn50DaysTable = () => {
       <Watchlist50DaysFilter onFilter={handleFilter} />
       <div css={tableContainerStyles}>
         <div css={tableTopStyles}>
-          <TableTitle customStyles={titleStyles}>
-            {t('watchlistIn50DaysTitle')}
-          </TableTitle>
-          <div css={updatedAtStyles}>
-            {watchlistIn50Days.length > 0 && (
-              <>
-                <strong>{t('updatedAt')}:</strong>&nbsp;
-                {dayjs(watchlistIn50Days[0].createdAt)
-                  .tz(TimeZone.NEW_YORK)
-                  .format('MMM D, YYYY h:mm A')}
-                &nbsp; (New York) -&nbsp;
-                <strong>
-                  {t('period')}: {watchlistIn50Days[0].period}
-                </strong>
-              </>
-            )}
+          <div css={tableTopRightStyles}>
+            <TableTitle customStyles={titleStyles}>
+              {t('watchlistIn50DaysTitle')} - &nbsp;
+            </TableTitle>
+            <div css={updatedAtStyles}>
+              {watchlistIn50Days.length > 0 && (
+                <>
+                  <strong>{t('updatedAt')}:</strong>&nbsp;
+                  {dayjs(watchlistIn50Days[0].createdAt)
+                    .tz(TimeZone.NEW_YORK)
+                    .format('MMM D, YYYY h:mm A')}
+                  &nbsp; (New York) -&nbsp;
+                  <strong>{t('period')}:</strong>&nbsp;
+                  {watchlistIn50Days[0].period}
+                </>
+              )}
+            </div>
           </div>
+          <ExportExcelSwingWatchlist />
         </div>
         <Table<WatchlistIn50Days>
           css={tableStyles}
@@ -725,6 +728,11 @@ const tableTopStyles = css`
   flex-wrap: wrap;
   padding: 1.2rem 1.4rem;
   gap: 1.4rem;
+`;
+
+const tableTopRightStyles = css`
+  display: flex;
+  align-items: center;
 `;
 
 const emptyStyles = (height: number) => css`
