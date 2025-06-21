@@ -36,7 +36,7 @@ type BacktestSpikeVolumeProps = {
   exitTime?: string;
 };
 
-const periodOptions = ['15M', '1H'];
+const periodOptions = ['5M', '10M', '15M', '30M', '1H'];
 
 export const BacktestSpikeVolume = ({
   symbol,

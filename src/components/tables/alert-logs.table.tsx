@@ -53,6 +53,7 @@ import { NotesSignal } from '../forms/note-signal.form';
 import { ExitSignal } from '../forms/exit-signal.form';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { AIExplain } from '../ai-explain';
+import { BacktestSpikeVolume } from '../backtest-spike-volume';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -826,7 +827,7 @@ export const AlertLogsTable = () => {
       key: 'action',
       fixed: 'right',
       align: 'center',
-      width: 100,
+      width: 130,
       render: (_, record) => {
         const isExit = !!record.exitDate;
         return (
@@ -890,6 +891,33 @@ export const AlertLogsTable = () => {
                     />,
                     {
                       width: 400
+                    }
+                  )
+                }
+              />
+            </Tooltip>
+            <Tooltip title='Backtest'>
+              <Button
+                icon={
+                  <Icon
+                    icon='chartBacktest'
+                    width={22}
+                    height={22}
+                    fill='#1296db'
+                  />
+                }
+                onClick={() =>
+                  modal.openModal(
+                    <BacktestSpikeVolume
+                      period={record.timeFrame}
+                      symbol={record.symbol}
+                      entryPrice={record.entryPrice}
+                      entryTime={record.entryDate}
+                      exitPrice={record.exitPrice}
+                      exitTime={record.exitDate}
+                    />,
+                    {
+                      width: 1200
                     }
                   )
                 }
