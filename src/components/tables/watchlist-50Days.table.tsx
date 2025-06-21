@@ -109,7 +109,7 @@ export const WatchlistIn50DaysTable = () => {
     return () => {
       dispatch(resetState());
     };
-  }, [fetchDataWatchList, dispatch]);
+  }, [dispatch]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
