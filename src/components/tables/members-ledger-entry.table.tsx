@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Table, Button, Tooltip, Modal } from 'antd';
+import { Table, Button, Tooltip, Modal, Space } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getMembers, watchMembers } from '@/redux/slices/members.slice';
 import { useWindowSize } from '@/hooks/window-size.hook';
@@ -17,6 +17,7 @@ import {
 } from '@/redux/slices/ledger-entry.slice';
 import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
+import { defaultApiFetcher } from '@/utils/api-instances';
 
 export function MembersLedgerEntry() {
   const t = useTranslations();
@@ -29,10 +30,12 @@ export function MembersLedgerEntry() {
   const dispatch = useAppDispatch();
   const { notifySuccess, notifyError } = useNotification();
 
+  const inputImportRef = useRef<HTMLInputElement>(null);
   const ledgerEntry = useAppSelector(watchSelectedLedgerEntry);
   const members = useAppSelector(watchMembers);
-
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [downloading, setDownloading] = useState<boolean>(false);
+  const [importing, setImporting] = useState<boolean>(false);
 
   const uniqueMembers = members.filter(
     (member, index, self) =>
@@ -102,6 +105,47 @@ export function MembersLedgerEntry() {
       cancelText: t('cancel'),
       onOk: () => handleSendBulkAlert()
     });
+  };
+
+  const handleDownloadUserTemplate = async () => {
+    setDownloading(true);
+    const response = await defaultApiFetcher.get('users/download-template', {
+      responseType: 'blob'
+    });
+    if (!!response) {
+      const url = window.URL.createObjectURL(new Blob([response]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'user_template.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      notifySuccess('Download template successfully!');
+    } else {
+      notifyError('Download template failed. Please try again.');
+    }
+    setDownloading(false);
+  };
+
+  const handleImportUser = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files?.length) return;
+    setImporting(true);
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await defaultApiFetcher.post('users/import', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    if (response) {
+      notifySuccess('Import member list successfully!');
+      dispatch(getMembers());
+    } else {
+      notifyError('Import member list failed. Please try again.');
+    }
+    setImporting(false);
   };
 
   const handleSendAlert = async (member: Member) => {
@@ -203,7 +247,7 @@ export function MembersLedgerEntry() {
       render: (value) => (value ? value : '-')
     },
     {
-      title: t('action'),
+      title: t('actions'),
       key: 'action',
       align: 'center',
       fixed: 'right',
@@ -264,6 +308,47 @@ export function MembersLedgerEntry() {
           >
             {t('sendSelected')}
           </Button>
+          <Space>
+            <Button
+              onClick={handleDownloadUserTemplate}
+              loading={downloading}
+              type='primary'
+              icon={
+                <Icon
+                  fill='var(--brand-blue-color)'
+                  icon='download'
+                  width={18}
+                  height={18}
+                />
+              }
+              ghost
+            >
+              Download User Template
+            </Button>
+            <Button
+              type='primary'
+              css={importUserBtnStyles}
+              loading={importing}
+              icon={
+                <Icon
+                  fill='var(--white-color)'
+                  icon='upload'
+                  width={18}
+                  height={18}
+                />
+              }
+              onClick={() => inputImportRef.current?.click()}
+            >
+              Import User Template
+              <input
+                ref={inputImportRef}
+                type='file'
+                hidden
+                accept='.xlsx,.xls'
+                onChange={handleImportUser}
+              />
+            </Button>
+          </Space>
         </div>
         <Table
           css={tableStyles}
@@ -294,6 +379,7 @@ const rootStyles = css`
 const actionHeaderStyles = css`
   padding: 2.4rem 0 1.2rem;
   display: flex;
+  justify-content: space-between;
 `;
 
 const titleStyles = css`
@@ -322,4 +408,12 @@ const sendIconStyles = css`
 
 const titleConfirmStyles = css`
   margin-bottom: 0 !important;
+`;
+
+const importUserBtnStyles = css`
+  background: var(--electric-indigo-color);
+  &:hover {
+    background: var(--electric-indigo-color) !important;
+    opacity: 0.9;
+  }
 `;

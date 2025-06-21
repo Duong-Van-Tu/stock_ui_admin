@@ -32,6 +32,8 @@ import Back from '@/assets/svg/back.svg';
 import Send from '@/assets/svg/send.svg';
 import Volume from '@/assets/svg/volume.svg';
 import ChartBacktest from '@/assets/svg/chart-backtest.svg';
+import Download from '@/assets/svg/download.svg';
+import Upload from '@/assets/svg/upload.svg';
 
 type IconProps = {
   width?: number | string;
@@ -73,7 +75,9 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   back: Back,
   send: Send,
   volume: Volume,
-  chartBacktest: ChartBacktest
+  chartBacktest: ChartBacktest,
+  download: Download,
+  upload: Upload
 };
 
 export const Icon = ({
