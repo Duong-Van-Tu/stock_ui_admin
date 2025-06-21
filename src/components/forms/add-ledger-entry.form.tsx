@@ -301,6 +301,9 @@ export default function AddLedgerEntry() {
           </div>
           <Form.Item css={formActionsStyles}>
             <Space>
+              <Button onClick={handleGoBack} type='default' size='large'>
+                {t('cancel')}
+              </Button>
               <Button
                 css={saveBtnStyles}
                 type='primary'
@@ -316,9 +319,6 @@ export default function AddLedgerEntry() {
                 }
               >
                 {t('save')}
-              </Button>
-              <Button onClick={handleGoBack} type='default' size='large'>
-                {t('cancel')}
               </Button>
             </Space>
           </Form.Item>

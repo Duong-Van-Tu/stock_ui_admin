@@ -390,6 +390,9 @@ export default function EditLedgerEntry() {
             </div>
             <Form.Item css={formActionsStyles}>
               <Space>
+                <Button onClick={handleGoBack} type='default' size='large'>
+                  {t('cancel')}
+                </Button>
                 <Button
                   loading={updating}
                   css={saveBtnStyles}
