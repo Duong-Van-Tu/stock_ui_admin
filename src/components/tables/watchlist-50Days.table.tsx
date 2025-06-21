@@ -84,7 +84,8 @@ export const WatchlistIn50DaysTable = () => {
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           symbol: symbol ? symbol : undefined,
-          ...filteredFilter
+          ...filteredFilter,
+          period: filteredFilter.period === 'any' ? '' : filteredFilter.period
         })
       );
     },

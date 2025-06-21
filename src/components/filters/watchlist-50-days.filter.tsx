@@ -76,7 +76,7 @@ export const Watchlist50DaysFilter = ({
   };
 
   useEffect(() => {
-    const period = params.get('period');
+    const period = params.get('period') || DEFAULT_PERIOD;
     const marketCap = params.get('marketCap')!;
     const industry = params.get('industry')!;
     const sector = params.get('sector')!;
@@ -120,7 +120,7 @@ export const Watchlist50DaysFilter = ({
               options={periodOptions}
               onSelect={(value) => updateSearchParams('period', value)}
               onClear={() => updateSearchParams('period')}
-              width='10rem'
+              width='11rem'
             />
           </Col>
           <Col>

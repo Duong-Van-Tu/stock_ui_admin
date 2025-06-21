@@ -412,5 +412,6 @@
   "telegram": "Telegram",
   "sendAlert": "Send Alert",
   "sendBulkConfirmStart": "Send notifications to",
-  "sendBulkConfirmEnd": "selected members?"
+  "sendBulkConfirmEnd": "selected members?",
+  "allPeriod": "All Period"
 }

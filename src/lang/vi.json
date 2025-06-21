@@ -412,5 +412,6 @@
   "telegram": "Telegram",
   "sendAlert": "Gửi Thông báo",
   "sendBulkConfirmStart": "Gửi thông báo đến",
-  "sendBulkConfirmEnd": "thành viên đã chọn?"
+  "sendBulkConfirmEnd": "thành viên đã chọn?",
+  "allPeriod": "Tất cả period"
 }
