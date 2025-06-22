@@ -199,7 +199,7 @@ export const OptionSignal = () => {
       key: 'winOrLoss',
       width: 90,
       align: 'center',
-      fixed: 'right',
+      fixed: isMobile ? undefined : 'right',
       render: (_, record) =>
         record.plPercent ? (
           <PositiveNegativeText

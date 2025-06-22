@@ -31,6 +31,7 @@ import { StockChangeCell } from './columns/stock-change-cell.column';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
+import { isMobile } from 'react-device-detect';
 
 type SearchSignalTable = {
   symbol: string;
@@ -96,7 +97,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alertLogsData]);
 
-  const columns: TableColumnsType<Signal> = [
+  const baseColumns: TableColumnsType<Signal> = [
     {
       title: t('stt'),
       dataIndex: 'index',
@@ -111,18 +112,20 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: 200,
+      width: isMobile ? 90 : 200,
       fixed: 'left',
-      render: (_, record) => (
-        <SymbolCell
-          symbol={record.symbol}
-          companyName={record.companyName}
-          isNews={record.isNews}
-          earningDate={record.earningDate}
-          isNewsNegative={record.isNewsNegative}
-          // showRecentNewsEarnings={record.recentNewsEarnings}
-        />
-      )
+      render: (value, record) =>
+        isMobile ? (
+          <SymbolCell symbol={value} />
+        ) : (
+          <SymbolCell
+            symbol={value}
+            companyName={record.companyName}
+            isNews={record.isNews}
+            earningDate={record.earningDate}
+            isNewsNegative={record.isNewsNegative}
+          />
+        )
     },
     {
       title: t('strategy'),
@@ -142,7 +145,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       title: t('period'),
       dataIndex: 'timeFrame',
       key: 'timeFrame',
-      width: 110,
+      width: isMobile ? 80 : 110,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -155,7 +158,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       title: t('entryDate'),
       dataIndex: 'entryDate',
       key: 'entryDate',
-      width: 140,
+      width: isMobile ? 108 : 134,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -169,7 +172,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       title: t('entryPrice'),
       dataIndex: 'entryPrice',
       key: 'entryPrice',
-      width: 140,
+      width: isMobile ? 110 : 130,
       align: 'center',
       defaultSortOrder: 'descend',
       sorter: true,
@@ -184,7 +187,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       title: t('exitDate'),
       dataIndex: 'exitDate',
       key: 'exitDate',
-      width: 150,
+      width: isMobile ? 110 : 130,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -198,7 +201,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       title: t('exitPrice'),
       dataIndex: 'exitPrice',
       key: 'exitPrice',
-      width: 140,
+      width: isMobile ? 110 : 140,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -461,8 +464,46 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
         ) : (
           '-'
         )
+    },
+    {
+      title: t('winOrLoss'),
+      dataIndex: 'winOrLoss',
+      key: 'winOrLoss',
+      width: isMobile ? 84 : 90,
+      align: 'center',
+      fixed: isMobile ? undefined : 'right',
+      render: (_, record) =>
+        record.plPercent ? (
+          <PositiveNegativeText
+            isPositive={record.plPercent >= 0}
+            isNegative={record.plPercent < 0}
+          >
+            {record.plPercent >= 0 ? (
+              <span>{t('win')}</span>
+            ) : (
+              <span>{t('loss')}</span>
+            )}
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     }
   ];
+
+  const mobileColumnKeys = [
+    'symbol',
+    'timeFrame',
+    'entryDate',
+    'entryPrice',
+    'exitDate',
+    'exitPrice',
+    'currentPrice',
+    'winOrLoss'
+  ];
+
+  const columns: TableColumnsType<Signal> = isMobile
+    ? baseColumns.filter((col) => mobileColumnKeys.includes(col.key as string))
+    : baseColumns;
 
   return (
     <div css={rootStyles}>
@@ -471,6 +512,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
           {t('searchResult')} {`"${symbol}"`}
         </TableTitle>
         <Table<Signal>
+          size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey={(record) => record.key}
           columns={columns}
@@ -478,7 +520,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
           loading={loading}
           showHeader={alertLogsData.length > 0}
           scroll={{
-            x: alertLogsData.length > 0 ? 1200 : undefined,
+            x: alertLogsData.length > 0 ? (isMobile ? 400 : 1200) : undefined,
             y: alertLogsData.length > 0 ? height - 260 : undefined
           }}
           sortDirections={['descend', 'ascend']}
@@ -529,7 +571,9 @@ const tableWrapperStyles = css`
 
 const tableStyles = css`
   .ant-table-cell {
-    padding: 0.8rem 1rem !important;
+    padding: ${isMobile
+      ? '0.6rem 0.8rem !important'
+      : '0.8rem 1rem !important'};
   }
 `;
 

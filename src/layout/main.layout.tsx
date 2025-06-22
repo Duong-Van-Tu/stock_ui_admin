@@ -88,14 +88,12 @@ export default function MainLayout({ children }: MainLayoutProps) {
           <Menu collapsed={collapsed} />
         </div>
       </Sider>
-      {!(isMobile && !collapsed) && (
-        <Layout css={layoutStyles}>
-          <Header collapsed={collapsed} />
-          <Content css={contentStyles(colorBgContainer, collapsed)}>
-            {children}
-          </Content>
-        </Layout>
-      )}
+      <Layout css={layoutStyles}>
+        {!(isMobile && !collapsed) && <Header collapsed={collapsed} />}
+        <Content css={contentStyles(colorBgContainer, collapsed)}>
+          {children}
+        </Content>
+      </Layout>
     </Layout>
   );
 }

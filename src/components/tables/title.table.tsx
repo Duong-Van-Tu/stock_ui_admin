@@ -3,6 +3,7 @@ import { SerializedStyles, css } from '@emotion/react';
 
 import { ReactNode } from 'react';
 import { Typography } from 'antd';
+import { isMobile } from 'react-device-detect';
 
 const { Title } = Typography;
 
@@ -12,7 +13,7 @@ type TableTitleProps = {
 };
 export const TableTitle = ({ children, customStyles }: TableTitleProps) => {
   return (
-    <Title level={4} css={[titleStyles, customStyles]}>
+    <Title level={isMobile ? 5 : 4} css={[titleStyles, customStyles]}>
       {children}
     </Title>
   );
