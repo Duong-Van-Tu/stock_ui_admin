@@ -25,6 +25,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
   const { width } = useWindowSize();
   const sideBarCollapsed = useAppSelector(watchSideBarCollapsed);
   const [collapsed, setCollapsed] = useState(sideBarCollapsed);
+  const [isClient, setIsClient] = useState(false);
 
   const handleChangeSidebarCollapsed = () => {
     setCollapsed(!collapsed);
@@ -42,6 +43,12 @@ export default function MainLayout({ children }: MainLayoutProps) {
     }
   }, [dispatch, width]);
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null;
+
   return (
     <Layout hasSider>
       <Sider
@@ -50,8 +57,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
         collapsed={collapsed}
         theme='light'
         style={sidebarStyle}
-        width={250}
-        collapsedWidth={80}
+        width={isMobile ? '100%' : 250}
+        collapsedWidth={isMobile ? 50 : 80}
       >
         <div css={menuTopStyles(collapsed)}>
           <Button
@@ -81,12 +88,14 @@ export default function MainLayout({ children }: MainLayoutProps) {
           <Menu collapsed={collapsed} />
         </div>
       </Sider>
-      <Layout css={layoutStyles}>
-        <Header collapsed={collapsed} />
-        <Content css={contentStyles(colorBgContainer, collapsed)}>
-          {children}
-        </Content>
-      </Layout>
+      {!(isMobile && !collapsed) && (
+        <Layout css={layoutStyles}>
+          <Header collapsed={collapsed} />
+          <Content css={contentStyles(colorBgContainer, collapsed)}>
+            {children}
+          </Content>
+        </Layout>
+      )}
     </Layout>
   );
 }
@@ -94,7 +103,11 @@ export default function MainLayout({ children }: MainLayoutProps) {
 const contentStyles = (background: string, collapsed: boolean) => css`
   background: ${background};
   margin-top: var(--header-height);
-  margin-inline-start: ${collapsed
+  margin-inline-start: ${isMobile
+    ? collapsed
+      ? 'var(--mobile-collapsed-sidebar-width)'
+      : 'var(--mobile-expanded-sidebar-width)'
+    : collapsed
     ? 'var(--collapsed-sidebar-width)'
     : 'var(--expanded-sidebar-width)'};
   transition: margin-inline-start 0.25s ease;
@@ -116,7 +129,8 @@ const sidebarStyle: CSSProperties = {
   top: 0,
   bottom: 0,
   scrollbarWidth: 'thin',
-  scrollbarColor: 'unset'
+  scrollbarColor: 'unset',
+  zIndex: 99
 };
 
 const menuTopStyles = (collapsed: boolean) => css`
@@ -126,9 +140,14 @@ const menuTopStyles = (collapsed: boolean) => css`
   justify-content: center;
   align-items: center;
   position: fixed;
-  width: ${!collapsed
-    ? 'var(--expanded-sidebar-width)'
-    : 'var(--collapsed-sidebar-width)'};
+  width: ${isMobile
+    ? collapsed
+      ? 'var(--mobile-collapsed-sidebar-width)'
+      : 'var(--mobile-expanded-sidebar-width)'
+    : collapsed
+    ? 'var(--collapsed-sidebar-width)'
+    : 'var(--expanded-sidebar-width)'};
+
   background: var(--white-color);
   z-index: 99;
   transition: width 0.25s ease;

@@ -13,7 +13,7 @@ import { logoutUser, watchUser } from '@/redux/slices/auth.slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { PageURLs } from '@/utils/navigate';
 import { getPathnameSegment } from '@/utils/common';
-import { useWindowSize } from '@/hooks/window-size.hook';
+import { isMobile, isDesktop } from 'react-device-detect';
 
 enum UserMenu {
   PROFILE,
@@ -38,7 +38,6 @@ export default function Header({ collapsed }: HeaderProps) {
   const locale = getPathnameSegment(pathname, 0) || 'en';
   const user = useAppSelector(watchUser);
   const searchParams = useSearchParams();
-  const { isDesktop } = useWindowSize();
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -190,7 +189,11 @@ const rootStyles = (background: string, collapsed: boolean) => css`
   position: fixed;
   right: 0;
   z-index: 99;
-  left: ${collapsed
+  left: ${isMobile
+    ? collapsed
+      ? 'var(--mobile-collapsed-sidebar-width)'
+      : 'var(--mobile-expanded-sidebar-width)'
+    : collapsed
     ? 'var(--collapsed-sidebar-width)'
     : 'var(--expanded-sidebar-width)'};
   transition: left 0.25s ease;
@@ -206,10 +209,11 @@ const leftSectionStyles = css`
   display: flex;
   align-items: center;
   gap: 1rem;
+  width: ${isMobile ? '100%' : 'unset'};
 `;
 
 const searchStyles = css`
-  width: 36rem;
+  width: ${isMobile ? '100%' : '36rem'};
 `;
 
 const rightSectionStyles = css`
@@ -224,6 +228,7 @@ const languageStyles = css`
 
 const logoIconStyles = css`
   cursor: pointer;
+
   &:hover {
     opacity: 0.85;
   }
