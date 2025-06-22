@@ -30,6 +30,7 @@ import { PageURLs } from '@/utils/navigate';
 import { EmptyDataTable } from '../tables/empty.table';
 import { StockChangeCell } from '../tables/columns/stock-change-cell.column';
 import { useSortOrder } from '@/hooks/sort-order.hook';
+import { isMobile } from 'react-device-detect';
 
 export const OptionSignal = () => {
   const t = useTranslations();
@@ -219,6 +220,7 @@ export const OptionSignal = () => {
 
   return (
     <Card
+      size={isMobile ? 'small' : 'default'}
       css={cardStyles}
       title={
         <Link
@@ -230,6 +232,7 @@ export const OptionSignal = () => {
       }
     >
       <Table<Signal>
+        size={isMobile ? 'small' : 'middle'}
         loading={loading}
         css={tableStyles(strategyData.length === 0)}
         rowKey={(record) => record.key}
@@ -266,7 +269,9 @@ export const OptionSignal = () => {
 
 const tableStyles = (isEmpty: boolean) => css`
   .ant-table-cell {
-    padding: 0.8rem 1rem !important;
+    padding: ${isMobile
+      ? '0.6rem 0.8rem !important'
+      : '0.8rem 1rem !important'};
     border-bottom: ${isEmpty ? 'unset' : '1px solid #f0f0f0'} !important;
     height: ${isEmpty ? '33.2rem' : 'unset'};
   }
@@ -292,5 +297,5 @@ const emptyStyles = css`
 const strategyLinkStyles = css`
   display: block;
   text-align: center;
-  font-size: 1.8rem;
+  font-size: ${isMobile ? '1.6rem' : '1.8rem'};
 `;

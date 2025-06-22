@@ -50,7 +50,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
   if (!isClient) return null;
 
   return (
-    <Layout hasSider>
+    <Layout hasSider css={rootStyles}>
       <Sider
         trigger={null}
         collapsible
@@ -100,6 +100,10 @@ export default function MainLayout({ children }: MainLayoutProps) {
   );
 }
 
+const rootStyles = css`
+  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
+`;
+
 const contentStyles = (background: string, collapsed: boolean) => css`
   background: ${background};
   margin-top: var(--header-height);
@@ -113,7 +117,7 @@ const contentStyles = (background: string, collapsed: boolean) => css`
   transition: margin-inline-start 0.25s ease;
   min-height: calc(100vh - var(--header-height));
   background: var(--white-color);
-  padding: 2rem;
+  padding: ${isMobile ? '2rem 1rem' : '2rem'};
 `;
 
 const layoutStyles = css`

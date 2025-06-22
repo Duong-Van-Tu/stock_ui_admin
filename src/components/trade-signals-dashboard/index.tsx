@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { isMobile } from 'react-device-detect';
 import { useEffect, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -39,7 +40,7 @@ export default function TradeSignalsDashboard() {
     <SearchSignalTable symbol={symbol} />
   ) : (
     <div css={rootStyles}>
-      <Typography.Title css={titleStyles} level={2}>
+      <Typography.Title css={titleStyles} level={isMobile ? 4 : 2}>
         {t('tradeSignalsDashboard')}
       </Typography.Title>
       <div css={gridStyles}>
