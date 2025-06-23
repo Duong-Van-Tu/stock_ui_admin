@@ -35,6 +35,7 @@ import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { useSearchParams } from 'next/navigation';
+import { isMobile } from 'react-device-detect';
 
 export const StockRankingTable = () => {
   const t = useTranslations();
@@ -143,7 +144,7 @@ export const StockRankingTable = () => {
       key: 'index',
       width: 60,
       align: 'center',
-      fixed: 'left',
+      fixed: isMobile ? undefined : 'left',
       render: (_, __, index) =>
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
     },
@@ -151,13 +152,13 @@ export const StockRankingTable = () => {
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: 200,
+      width: isMobile ? 90 : 200,
       fixed: 'left',
       render: (_, record) => (
         <SymbolCell
           earningDate={record.earningDate}
           symbol={record.symbol}
-          companyName={record.companyName}
+          companyName={isMobile ? undefined : record.companyName}
           isNews={record.isNews}
           isNewsNegative={record.isNewsNegative}
         />
@@ -365,23 +366,26 @@ export const StockRankingTable = () => {
         </TableTitle>
         <div css={actionStyles}>
           <StockRankingFilter onFilter={handleFilter} />
-          {/* <Button
-            icon={
-              <Icon
-                icon='exportExcel'
-                width={18}
-                height={18}
-                fill='var(--white-color)'
-              />
-            }
-            type='primary'
-          >
-            {t('exportExcel')}
-          </Button> */}
+          {/* {isDesktop && (
+            <Button
+              icon={
+                <Icon
+                  icon='exportExcel'
+                  width={18}
+                  height={18}
+                  fill='var(--white-color)'
+                />
+              }
+              type='primary'
+            >
+              {t('exportExcel')}
+            </Button>
+          )} */}
         </div>
       </div>
       <LegendStatus customStyles={legendStatusStyles} />
       <Table<StockScore>
+        size={isMobile ? 'small' : 'middle'}
         rowClassName={(record) =>
           getRowClassName(record, [
             { key: 'isAdd', className: 'hl-add-symbol' },
@@ -390,13 +394,16 @@ export const StockRankingTable = () => {
         }
         css={tableStyles}
         rowKey='key'
-        rowSelection={rowSelection}
+        rowSelection={isMobile ? undefined : rowSelection}
         columns={columns}
         dataSource={stockScoreData}
         loading={loading}
         scroll={{
           x: 1200,
-          y: stockScoreData.length > 0 ? height - 310 : undefined
+          y:
+            stockScoreData.length > 0
+              ? height - (isMobile ? 380 : 310)
+              : undefined
         }}
         sortDirections={['descend', 'ascend']}
         locale={{
@@ -439,7 +446,9 @@ const rootStyles = css`
 
 const tableStyles = css`
   .ant-table-cell {
-    padding: 0.8rem 1rem !important;
+    padding: ${isMobile
+      ? '0.6rem 0.8rem !important'
+      : '0.8rem 1rem !important'};
   }
 `;
 

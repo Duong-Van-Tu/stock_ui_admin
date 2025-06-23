@@ -28,12 +28,12 @@ export const LegendStatus = ({ customStyles }: LegendStatusProps) => {
 
 const legendContainerStyles = css`
   display: flex;
+  gap: 1.6rem;
 `;
 
 const legendItemStyle = css`
   display: flex;
   align-items: center;
-  margin-right: 16px;
 `;
 
 const colorBoxStyle = (color: string) => css`

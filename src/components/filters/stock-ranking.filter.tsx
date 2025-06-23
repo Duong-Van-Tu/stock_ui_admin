@@ -13,6 +13,7 @@ import {
   watchSectorLoading,
   watchSectors
 } from '@/redux/slices/stock-score.slice';
+import { isMobile } from 'react-device-detect';
 
 type StockRankingFilterProps = {
   customStyles?: SerializedStyles;
@@ -95,7 +96,9 @@ export const StockRankingFilter = ({
 
 const rootStyles = css`
   display: flex;
+  flex-wrap: wrap;
   gap: 1.2rem;
+  justify-content: ${isMobile ? 'flex-end' : 'unset'};
 `;
 
 const selectStyles = css`

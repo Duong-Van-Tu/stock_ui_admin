@@ -8,6 +8,7 @@ import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details.drawer'
 import MiniStockChart from '@/components/charts/stock-mini.chart';
 import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
+import { isMobile } from 'react-device-detect';
 
 enum ContentType {
   NEWS = 'news',
@@ -130,6 +131,7 @@ const symbolStyles = css`
 const stockLinkStyles = css`
   margin-right: 0.6rem;
   color: var(--symbol-color);
+  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
   &:hover {
     color: var(--primary-color);
   }
