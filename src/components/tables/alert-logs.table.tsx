@@ -833,7 +833,7 @@ export const AlertLogsTable = () => {
         const isExit = !!record.exitDate;
         return (
           <Space size={'small'}>
-            <Tooltip title={t('notes')}>
+            <Tooltip title={isMobile ? null : t('notes')}>
               <Button
                 onClick={() =>
                   modal.openModal(
@@ -863,7 +863,7 @@ export const AlertLogsTable = () => {
                 css={notesBtnStyles}
               />
             </Tooltip>
-            <Tooltip title={t('exit')}>
+            <Tooltip title={isMobile ? null : t('exit')}>
               <Button
                 disabled={isExit}
                 css={exitBtnStyles}
@@ -897,7 +897,7 @@ export const AlertLogsTable = () => {
                 }
               />
             </Tooltip>
-            <Tooltip title='Backtest'>
+            <Tooltip title={isMobile ? null : 'Backtest'}>
               <Button
                 icon={
                   <Icon
@@ -1014,7 +1014,7 @@ export const AlertLogsTable = () => {
           dataSource={alertLogsData}
           loading={loading}
           scroll={{
-            x: 1200,
+            x: isMobile ? 800 : 1200,
             y: alertLogsData.length > 0 ? height - 360 : undefined
           }}
           sortDirections={['descend', 'ascend']}

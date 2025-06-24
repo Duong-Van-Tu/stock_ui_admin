@@ -44,6 +44,7 @@ import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
 import { PlusOutlined } from '@ant-design/icons';
 import { ExportExcelLedgerEntry } from '../export-excel-ledger-entry';
+import { isMobile } from 'react-device-detect';
 
 const initialBalance = 5000;
 
@@ -404,7 +405,7 @@ export const LedgerEntryTable = () => {
       align: 'center',
       render: (_, record) => (
         <Space>
-          <Tooltip title={t('sendAlert')}>
+          <Tooltip title={isMobile ? null : t('sendAlert')}>
             <Button
               icon={
                 <Icon
@@ -419,7 +420,7 @@ export const LedgerEntryTable = () => {
               }
             />
           </Tooltip>
-          <Tooltip title={t('edit')}>
+          <Tooltip title={isMobile ? null : t('edit')}>
             <Button
               type='primary'
               icon={
@@ -433,7 +434,7 @@ export const LedgerEntryTable = () => {
               onClick={() => router.push(PageURLs.ofEditLedgerEntry(record.id))}
             />
           </Tooltip>
-          <Tooltip title={t('delete')}>
+          <Tooltip title={isMobile ? null : t('delete')}>
             <Popconfirm
               placement='topRight'
               title={t('deleteConfirmationTitle')}

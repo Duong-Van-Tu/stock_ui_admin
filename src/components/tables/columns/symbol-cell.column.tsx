@@ -61,7 +61,7 @@ export const SymbolCell = ({
           </Link>
         </Popover>
         {isNews && (
-          <Tooltip title={t('news')}>
+          <Tooltip title={isMobile ? null : t('news')}>
             <Button
               css={buttonStyles}
               type='text'
@@ -81,7 +81,7 @@ export const SymbolCell = ({
           </Tooltip>
         )}
         {earningDate && (
-          <Tooltip title={t('earnings')}>
+          <Tooltip title={isMobile ? null : t('earnings')}>
             <Button
               css={buttonStyles}
               type='text'
@@ -97,7 +97,7 @@ export const SymbolCell = ({
           </Tooltip>
         )}
         {showRecentNewsEarnings && (
-          <Tooltip title={t('recentNewsAndEarnings')}>
+          <Tooltip title={isMobile ? null : t('recentNewsAndEarnings')}>
             <Button
               css={buttonStyles}
               type='text'

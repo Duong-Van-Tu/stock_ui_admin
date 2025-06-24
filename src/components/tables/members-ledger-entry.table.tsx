@@ -18,6 +18,7 @@ import {
 import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
 import { defaultApiFetcher } from '@/utils/api-instances';
+import { isMobile } from 'react-device-detect';
 
 export function MembersLedgerEntry() {
   const t = useTranslations();
@@ -280,7 +281,7 @@ export function MembersLedgerEntry() {
         <Title level={3} css={titleStyles}>
           {t('membersList')}
         </Title>
-        <Tooltip title={t('back')} css={goBackStyles}>
+        <Tooltip title={isMobile ? null : t('back')} css={goBackStyles}>
           <Button
             shape='circle'
             icon={<Icon icon='back' width={18} height={18} />}

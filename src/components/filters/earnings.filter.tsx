@@ -10,6 +10,7 @@ import {
   watchEarningsSummary
 } from '@/redux/slices/earnings.slice';
 import { useLocale, useTranslations } from 'next-intl';
+import { isMobile } from 'react-device-detect';
 
 type EarningsFilterProps = {
   customStyles?: SerializedStyles;
@@ -92,7 +93,7 @@ export const EarningFilter = ({
 
   return (
     <div css={[rootStyles, customStyles]}>
-      <Tooltip placement='top' title={t('previousWeek')}>
+      <Tooltip placement='top' title={isMobile ? null : t('previousWeek')}>
         <Button
           shape='circle'
           onClick={() => updateWeek(currentWeek.subtract(1, 'week'))}
@@ -123,7 +124,7 @@ export const EarningFilter = ({
         </Carousel>
       </div>
 
-      <Tooltip placement='top' title={t('nextWeek')}>
+      <Tooltip placement='top' title={isMobile ? null : t('nextWeek')}>
         <Button
           shape='circle'
           onClick={() => updateWeek(currentWeek.add(1, 'week'))}

@@ -26,6 +26,7 @@ import { useNotification } from '@/hooks/notification.hook';
 import { isRequestSuccess } from '@/utils/request-status';
 import { PageURLs } from '@/utils/navigate';
 import { getSectors, watchSectors } from '@/redux/slices/stock-score.slice';
+import { isMobile } from 'react-device-detect';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -83,7 +84,7 @@ export default function AddLedgerEntry() {
         <Title level={3} css={titleStyles}>
           {t('addLedgerEntry')}
         </Title>
-        <Tooltip title={t('back')} css={goBackStyles}>
+        <Tooltip title={isMobile ? null : t('back')} css={goBackStyles}>
           <Button
             shape='circle'
             icon={<Icon icon='back' width={18} height={18} />}
@@ -328,7 +329,6 @@ export default function AddLedgerEntry() {
   );
 }
 
-// Các style giữ nguyên như trong EditLedgerEntry
 const rootStyles = css`
   display: flex;
   flex-direction: column;

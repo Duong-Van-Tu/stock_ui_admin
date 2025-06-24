@@ -764,12 +764,12 @@ export const SpikeVolumeTable = () => {
       key: 'action',
       fixed: isMobile ? undefined : 'right',
       align: 'center',
-      width: isMobile ? 110 : 130,
+      width: isMobile ? 100 : 130,
       render: (_, record) => {
         const isExit = !!record.exitDate;
         return (
           <Space size={'small'}>
-            <Tooltip title={t('notes')}>
+            <Tooltip title={isMobile ? null : t('notes')}>
               <Button
                 onClick={() =>
                   modal.openModal(
@@ -799,7 +799,7 @@ export const SpikeVolumeTable = () => {
                 css={notesBtnStyles}
               />
             </Tooltip>
-            <Tooltip title={t('exit')}>
+            <Tooltip title={isMobile ? null : t('exit')}>
               <Button
                 disabled={isExit}
                 css={exitBtnStyles}
@@ -833,7 +833,7 @@ export const SpikeVolumeTable = () => {
                 }
               />
             </Tooltip>
-            <Tooltip title='Backtest'>
+            <Tooltip title={isMobile ? null : 'Backtest'}>
               <Button
                 icon={
                   <Icon

@@ -1,3 +1,5 @@
+import { isMobile } from 'react-device-detect';
+
 export const PAGINATION = {
   total: 0,
   currentPage: 1,
@@ -6,6 +8,6 @@ export const PAGINATION = {
 
 export const PAGINATION_PARAMS = {
   offset: 1,
-  limit: 100,
+  limit: isMobile ? 30 : 100,
   unLimit: 999999
 };

@@ -34,6 +34,7 @@ import { isRequestSuccess } from '@/utils/request-status';
 import { getSectors, watchSectors } from '@/redux/slices/stock-score.slice';
 import { PageURLs } from '@/utils/navigate';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { isMobile } from 'react-device-detect';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -163,7 +164,7 @@ export default function EditLedgerEntry() {
           <Title level={3} css={titleStyles}>
             {t('UpdateLedgerEntry')}
           </Title>
-          <Tooltip title={t('back')} css={goBackStyles}>
+          <Tooltip title={isMobile ? null : t('back')} css={goBackStyles}>
             <Button
               shape='circle'
               icon={<Icon icon='back' width={18} height={18} />}
