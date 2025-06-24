@@ -184,14 +184,14 @@ export const AlertLogsTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alertLogsData]);
 
-  const columns: TableColumnsType<Signal> = [
+  const baseColumns: TableColumnsType<Signal> = [
     {
       title: t('stt'),
       dataIndex: 'index',
       key: 'index',
       width: 60,
       align: 'center',
-      fixed: isMobile ? undefined : 'left',
+      fixed: 'left',
       render: (_, __, index) =>
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
     },
@@ -200,7 +200,7 @@ export const AlertLogsTable = () => {
       dataIndex: 'symbol',
       key: 'symbol',
       width: isMobile ? 90 : 200,
-      fixed: 'left',
+      fixed: isMobile ? undefined : 'left',
       render: (_, record) => (
         <SymbolCell
           symbol={record.symbol}
@@ -228,7 +228,7 @@ export const AlertLogsTable = () => {
       title: t('period'),
       dataIndex: 'timeFrame',
       key: 'timeFrame',
-      width: 110,
+      width: isMobile ? 76 : 110,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -357,7 +357,7 @@ export const AlertLogsTable = () => {
       title: t('entryDate'),
       dataIndex: 'entryDate',
       key: 'entryDate',
-      width: 140,
+      width: isMobile ? 116 : 140,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -371,7 +371,7 @@ export const AlertLogsTable = () => {
       title: t('entryPrice'),
       dataIndex: 'entryPrice',
       key: 'entryPrice',
-      width: 140,
+      width: isMobile ? 110 : 140,
       align: 'center',
       defaultSortOrder: 'descend',
       sorter: true,
@@ -386,7 +386,7 @@ export const AlertLogsTable = () => {
       title: t('exitDate'),
       dataIndex: 'exitDate',
       key: 'exitDate',
-      width: 150,
+      width: isMobile ? 100 : 150,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -400,7 +400,7 @@ export const AlertLogsTable = () => {
       title: t('exitPrice'),
       dataIndex: 'exitPrice',
       key: 'exitPrice',
-      width: 140,
+      width: isMobile ? 100 : 140,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -421,7 +421,7 @@ export const AlertLogsTable = () => {
       title: t('currentPrice'),
       dataIndex: 'currentPrice',
       key: 'currentPrice',
-      width: 140,
+      width: isMobile ? 116 : 140,
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'currentPrice' ? sortType : null,
@@ -828,7 +828,7 @@ export const AlertLogsTable = () => {
       key: 'action',
       fixed: isMobile ? undefined : 'right',
       align: 'center',
-      width: 130,
+      width: isMobile ? 110 : 130,
       render: (_, record) => {
         const isExit = !!record.exitDate;
         return (
@@ -929,6 +929,22 @@ export const AlertLogsTable = () => {
       }
     }
   ];
+
+  const mobileColumnKeys = [
+    'symbol',
+    'strategyName',
+    'timeFrame',
+    'entryDate',
+    'entryPrice',
+    'exitDate',
+    'exitPrice',
+    'currentPrice',
+    'action'
+  ];
+
+  const columns: TableColumnsType<Signal> = isMobile
+    ? baseColumns.filter((col) => mobileColumnKeys.includes(col.key as string))
+    : baseColumns;
 
   return (
     <div css={rootStyles}>
