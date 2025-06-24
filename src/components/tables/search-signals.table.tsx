@@ -114,18 +114,15 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       key: 'symbol',
       width: isMobile ? 90 : 200,
       fixed: 'left',
-      render: (value, record) =>
-        isMobile ? (
-          <SymbolCell symbol={value} />
-        ) : (
-          <SymbolCell
-            symbol={value}
-            companyName={record.companyName}
-            isNews={record.isNews}
-            earningDate={record.earningDate}
-            isNewsNegative={record.isNewsNegative}
-          />
-        )
+      render: (value, record) => (
+        <SymbolCell
+          symbol={value}
+          companyName={isMobile ? undefined : record.companyName}
+          isNews={record.isNews}
+          earningDate={record.earningDate}
+          isNewsNegative={record.isNewsNegative}
+        />
+      )
     },
     {
       title: t('strategy'),

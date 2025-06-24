@@ -357,7 +357,7 @@ export const AlertLogsTable = () => {
       title: t('entryDate'),
       dataIndex: 'entryDate',
       key: 'entryDate',
-      width: isMobile ? 116 : 140,
+      width: isMobile ? 110 : 140,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,

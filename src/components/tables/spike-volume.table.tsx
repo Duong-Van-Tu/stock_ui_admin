@@ -42,6 +42,7 @@ import { ExitSignal } from '../forms/exit-signal.form';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { AIExplain } from '../ai-explain';
 import { BacktestSpikeVolume } from '../backtest-spike-volume';
+import { isMobile } from 'react-device-detect';
 
 export const SpikeVolumeTable = () => {
   const t = useTranslations();
@@ -160,7 +161,7 @@ export const SpikeVolumeTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alertLogsData]);
 
-  const columns: TableColumnsType<Signal> = [
+  const baseColumns: TableColumnsType<Signal> = [
     {
       title: t('stt'),
       dataIndex: 'index',
@@ -175,12 +176,12 @@ export const SpikeVolumeTable = () => {
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: 200,
-      fixed: 'left',
+      width: isMobile ? 90 : 200,
+      fixed: isMobile ? undefined : 'left',
       render: (_, record) => (
         <SymbolCell
           symbol={record.symbol}
-          companyName={record.companyName}
+          companyName={isMobile ? undefined : record.companyName}
           isNews={record.isNews}
           earningDate={record.earningDate}
           isNewsNegative={record.isNewsNegative}
@@ -188,23 +189,10 @@ export const SpikeVolumeTable = () => {
       )
     },
     {
-      title: t('strategy'),
-      dataIndex: 'strategyName',
-      key: 'strategyName',
-      width: 180,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'strategyName' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('strategyName')
-      })
-    },
-    {
       title: t('period'),
       dataIndex: 'timeFrame',
       key: 'timeFrame',
-      width: 110,
+      width: isMobile ? 76 : 110,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -305,7 +293,7 @@ export const SpikeVolumeTable = () => {
       title: t('entryDate'),
       dataIndex: 'entryDate',
       key: 'entryDate',
-      width: 140,
+      width: isMobile ? 110 : 140,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -319,7 +307,7 @@ export const SpikeVolumeTable = () => {
       title: t('entryPrice'),
       dataIndex: 'entryPrice',
       key: 'entryPrice',
-      width: 140,
+      width: isMobile ? 100 : 140,
       align: 'center',
       defaultSortOrder: 'descend',
       sorter: true,
@@ -334,7 +322,7 @@ export const SpikeVolumeTable = () => {
       title: t('exitDate'),
       dataIndex: 'exitDate',
       key: 'exitDate',
-      width: 150,
+      width: isMobile ? 100 : 150,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -348,7 +336,7 @@ export const SpikeVolumeTable = () => {
       title: t('exitPrice'),
       dataIndex: 'exitPrice',
       key: 'exitPrice',
-      width: 140,
+      width: isMobile ? 80 : 140,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -369,7 +357,7 @@ export const SpikeVolumeTable = () => {
       title: t('currentPrice'),
       dataIndex: 'currentPrice',
       key: 'currentPrice',
-      width: 140,
+      width: isMobile ? 100 : 140,
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'currentPrice' ? sortType : null,
@@ -774,9 +762,9 @@ export const SpikeVolumeTable = () => {
       title: t('actions'),
       dataIndex: 'action',
       key: 'action',
-      fixed: 'right',
+      fixed: isMobile ? undefined : 'right',
       align: 'center',
-      width: 130,
+      width: isMobile ? 110 : 130,
       render: (_, record) => {
         const isExit = !!record.exitDate;
         return (
@@ -878,6 +866,22 @@ export const SpikeVolumeTable = () => {
     }
   ];
 
+  const mobileColumnKeys = [
+    'symbol',
+    'timeFrame',
+    'entryDate',
+    'entryPrice',
+    'exitDate',
+    'exitPrice',
+    'currentPrice',
+    'winOrLoss',
+    'action'
+  ];
+
+  const columns: TableColumnsType<Signal> = isMobile
+    ? baseColumns.filter((col) => mobileColumnKeys.includes(col.key as string))
+    : baseColumns;
+
   return (
     <div css={rootStyles}>
       {selectedIds.size > 0 && (
@@ -906,6 +910,7 @@ export const SpikeVolumeTable = () => {
           <TableTitle>Spike Volume</TableTitle>
         </div>
         <Table<Signal>
+          size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey={(record) => record.key}
           rowSelection={rowSelection}
