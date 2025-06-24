@@ -228,7 +228,7 @@ export const AlertLogsTable = () => {
       title: t('period'),
       dataIndex: 'timeFrame',
       key: 'timeFrame',
-      width: isMobile ? 76 : 110,
+      width: 110,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -357,7 +357,7 @@ export const AlertLogsTable = () => {
       title: t('entryDate'),
       dataIndex: 'entryDate',
       key: 'entryDate',
-      width: isMobile ? 110 : 140,
+      width: 140,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -371,7 +371,7 @@ export const AlertLogsTable = () => {
       title: t('entryPrice'),
       dataIndex: 'entryPrice',
       key: 'entryPrice',
-      width: isMobile ? 110 : 140,
+      width: 140,
       align: 'center',
       defaultSortOrder: 'descend',
       sorter: true,
@@ -386,7 +386,7 @@ export const AlertLogsTable = () => {
       title: t('exitDate'),
       dataIndex: 'exitDate',
       key: 'exitDate',
-      width: isMobile ? 100 : 150,
+      width: 150,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -400,7 +400,7 @@ export const AlertLogsTable = () => {
       title: t('exitPrice'),
       dataIndex: 'exitPrice',
       key: 'exitPrice',
-      width: isMobile ? 100 : 140,
+      width: 140,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -421,7 +421,7 @@ export const AlertLogsTable = () => {
       title: t('currentPrice'),
       dataIndex: 'currentPrice',
       key: 'currentPrice',
-      width: isMobile ? 116 : 140,
+      width: 140,
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'currentPrice' ? sortType : null,
@@ -828,7 +828,7 @@ export const AlertLogsTable = () => {
       key: 'action',
       fixed: isMobile ? undefined : 'right',
       align: 'center',
-      width: isMobile ? 110 : 130,
+      width: 130,
       render: (_, record) => {
         const isExit = !!record.exitDate;
         return (
@@ -1014,8 +1014,8 @@ export const AlertLogsTable = () => {
           dataSource={alertLogsData}
           loading={loading}
           scroll={{
-            x: isMobile ? 800 : 1200,
-            y: alertLogsData.length > 0 ? height - 360 : undefined
+            x: 1200,
+            y: !isMobile && alertLogsData.length > 0 ? height - 280 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
