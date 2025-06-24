@@ -213,7 +213,8 @@ const leftSectionStyles = css`
 `;
 
 const searchStyles = css`
-  width: ${isMobile ? '100%' : '36rem'};
+  max-width: 36rem;
+  width: 100%;
 `;
 
 const rightSectionStyles = css`

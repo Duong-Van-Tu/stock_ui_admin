@@ -12,6 +12,7 @@ import {
   watchStrategies,
   watchStrategyLoading
 } from '@/redux/slices/signals.slice';
+import { isMobile } from 'react-device-detect';
 
 type AlertLogsFilterProps = {
   customStyles?: SerializedStyles;
@@ -85,11 +86,12 @@ export const AlertLogsFilter = ({
         form={form}
         name='stock-alert-logs-filter'
         onFinish={handleSearch}
+        labelCol={{ span: isMobile ? 3 : undefined }}
         css={formStyles}
         layout='horizontal'
       >
         <Row gutter={[16, 12]} align='bottom' justify='end'>
-          <Col>
+          <Col css={strategyColumnStyles}>
             <Form.Item
               css={formItemStyles}
               name='strategyId'
@@ -110,25 +112,41 @@ export const AlertLogsFilter = ({
               />
             </Form.Item>
           </Col>
-          <Col>
+          <Col
+            css={css`
+              width: ${isMobile ? '100%' : 'unset'};
+            `}
+          >
             <Form.Item
               css={formItemStyles}
               name='entryDate'
               label={<span css={labelStyles}>{t('entryDate')}</span>}
             >
-              <RangePicker format='MM-DD-YYYY' allowClear />
+              <RangePicker
+                css={rangePickerStyles}
+                format='MM-DD-YYYY'
+                allowClear
+              />
             </Form.Item>
           </Col>
-          <Col>
+          <Col
+            css={css`
+              width: ${isMobile ? '100%' : 'unset'};
+            `}
+          >
             <Form.Item
               css={formItemStyles}
               name='exitDate'
               label={<span css={labelStyles}>{t('exitDate')}</span>}
             >
-              <RangePicker format='MM-DD-YYYY' allowClear />
+              <RangePicker
+                css={rangePickerStyles}
+                format='MM-DD-YYYY'
+                allowClear
+              />
             </Form.Item>
           </Col>
-          <Col>
+          <Col css={actionStyles}>
             <Space size='small'>
               <Button
                 htmlType='submit'
@@ -156,8 +174,11 @@ const rootStyles = css`
 
 const formStyles = css`
   display: flex;
-  justify-content: flex-end;
+  justify-content: ${isMobile ? 'center' : 'flex-end'};
   gap: 1.6rem;
+  .ant-form-item-label {
+    padding-bottom: 0;
+  }
 `;
 
 const formItemStyles = css`
@@ -171,5 +192,20 @@ const labelStyles = css`
 `;
 
 const selectStrategyStyles = css`
-  width: 27rem !important;
+  width: ${isMobile ? '100%' : '27rem !important'};
+`;
+
+const rangePickerStyles = css`
+  width: ${isMobile ? '100%' : 'unset'};
+`;
+
+const strategyColumnStyles = css`
+  width: ${isMobile ? '100%' : 'unset'};
+`;
+
+const actionStyles = css`
+  width: ${isMobile ? '100%' : 'unset'};
+  display: ${isMobile ? 'flex' : 'block'};
+  justify-content: ${isMobile ? 'right' : 'unset'};
+  margin-top: ${isMobile ? '0.8rem' : 'unset'};
 `;

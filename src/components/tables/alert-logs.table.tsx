@@ -54,6 +54,7 @@ import { ExitSignal } from '../forms/exit-signal.form';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { AIExplain } from '../ai-explain';
 import { BacktestSpikeVolume } from '../backtest-spike-volume';
+import { isDesktop, isMobile } from 'react-device-detect';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -190,7 +191,7 @@ export const AlertLogsTable = () => {
       key: 'index',
       width: 60,
       align: 'center',
-      fixed: 'left',
+      fixed: isMobile ? undefined : 'left',
       render: (_, __, index) =>
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
     },
@@ -198,12 +199,12 @@ export const AlertLogsTable = () => {
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: 200,
+      width: isMobile ? 90 : 200,
       fixed: 'left',
       render: (_, record) => (
         <SymbolCell
           symbol={record.symbol}
-          companyName={record.companyName}
+          companyName={isMobile ? undefined : record.companyName}
           isNews={record.isNews}
           earningDate={record.earningDate}
           isNewsNegative={record.isNewsNegative}
@@ -403,9 +404,9 @@ export const AlertLogsTable = () => {
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'exitPrice' ? sortType : null,
+      sortOrder: sortField === 'plPercent' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('exitPrice')
+        onClick: () => handleSortOrder('plPercent')
       }),
       render: (value, record) => {
         const percentage = calculatePercentage(record.entryPrice, value);
@@ -825,7 +826,7 @@ export const AlertLogsTable = () => {
       title: t('actions'),
       dataIndex: 'action',
       key: 'action',
-      fixed: 'right',
+      fixed: isMobile ? undefined : 'right',
       align: 'center',
       width: 130,
       render: (_, record) => {
@@ -934,7 +935,7 @@ export const AlertLogsTable = () => {
       <AlertLogsFilter defaultStrategyId={strategyId} onFilter={handleFilter} />
       <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
-          <TableTitle>{t('alertLogs')}</TableTitle>
+          <TableTitle customStyles={titleStyles}>{t('alertLogs')}</TableTitle>
           <Segmented
             css={segmentedStyles}
             options={[
@@ -952,42 +953,44 @@ export const AlertLogsTable = () => {
             }
             onChange={(value) => handleChangeView(value)}
           />
-          <div css={actionStyles}>
-            <Button
-              onClick={() =>
-                modal.openModal(
-                  <ExitSignal
-                    ids={Array.from(selectedIds)}
-                    setSelectedIds={setSelectedIds}
-                    title={t('exitSelectedSignals')}
-                  />,
-                  {
-                    width: 400
-                  }
-                )
-              }
-              icon={
-                <Icon
-                  icon='exit'
-                  fill={
-                    selectedIds.size <= 0
-                      ? 'var(--gray-light-color)'
-                      : 'var(--orange-color)'
-                  }
-                  width={18}
-                  height={18}
-                />
-              }
-              css={exitBtnStyles}
-              disabled={selectedIds.size <= 0}
-              danger
-            >
-              {t('exitSelected')}
-            </Button>
-            <ExportExcelLog />
-          </div>
+          {(isDesktop || (isMobile && selectedIds.size > 0)) && (
+            <div css={actionStyles}>
+              <Button
+                onClick={() =>
+                  modal.openModal(
+                    <ExitSignal
+                      ids={Array.from(selectedIds)}
+                      setSelectedIds={setSelectedIds}
+                      title={t('exitSelectedSignals')}
+                    />,
+                    { width: 400 }
+                  )
+                }
+                icon={
+                  <Icon
+                    icon='exit'
+                    fill={
+                      selectedIds.size <= 0
+                        ? 'var(--gray-light-color)'
+                        : 'var(--orange-color)'
+                    }
+                    width={18}
+                    height={18}
+                  />
+                }
+                css={exitBtnStyles}
+                disabled={selectedIds.size <= 0}
+                danger
+              >
+                {t('exitSelected')}
+              </Button>
+
+              {isDesktop && <ExportExcelLog />}
+            </div>
+          )}
         </div>
         <Table<Signal>
+          size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey={(record) => record.key}
           rowSelection={rowSelection}
@@ -1039,6 +1042,10 @@ const rootStyles = css`
   gap: 1.4rem;
 `;
 
+const titleStyles = css`
+  width: ${isMobile ? '100%' : 'unset'};
+`;
+
 const tableWrapperStyles = css`
   border: 1px solid var(--border-table-color);
   border-radius: 0.8rem;
@@ -1052,15 +1059,18 @@ const tableStyles = css`
 
 const tableTopStyles = css`
   display: flex;
-  justify-content: space-between;
+  justify-content: ${isMobile ? 'center' : 'space-between'};
+  flex-wrap: wrap;
   align-items: center;
   padding: 1.2rem 1.6rem;
+  gap: 1.4rem;
 `;
 
 const actionStyles = css`
   display: flex;
   justify-content: flex-end;
   gap: 1.2rem;
+  width: ${isMobile ? '100%' : 'unset'};
 `;
 
 const segmentedStyles = css`
@@ -1072,7 +1082,7 @@ const segmentedStyles = css`
 `;
 
 const segmentedLabelStyles = css`
-  font-size: 1.6rem;
+  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
   font-weight: 500;
 `;
 
