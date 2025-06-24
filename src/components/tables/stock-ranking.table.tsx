@@ -400,10 +400,7 @@ export const StockRankingTable = () => {
         loading={loading}
         scroll={{
           x: 1200,
-          y:
-            stockScoreData.length > 0
-              ? height - (isMobile ? 380 : 310)
-              : undefined
+          y: !isMobile && stockScoreData.length > 0 ? height - 280 : undefined
         }}
         sortDirections={['descend', 'ascend']}
         locale={{
