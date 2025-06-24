@@ -140,10 +140,6 @@ export default function ModalProvider({ children }: ModalProviderProps) {
 }
 
 const modalStyles = css`
-  .ant-modal-content {
-    padding: 2.4rem !important;
-  }
-
   .ant-modal-body {
     -ms-overflow-style: none;
     scrollbar-width: none;
