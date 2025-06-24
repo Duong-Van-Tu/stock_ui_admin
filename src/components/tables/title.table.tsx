@@ -3,7 +3,6 @@ import { SerializedStyles, css } from '@emotion/react';
 
 import { ReactNode } from 'react';
 import { Typography } from 'antd';
-import { isMobile } from 'react-device-detect';
 
 const { Title } = Typography;
 
