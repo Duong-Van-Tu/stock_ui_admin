@@ -30,7 +30,11 @@ import {
 } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
-import { AlertLogsView, Recommendation } from '@/constants/common.constant';
+import {
+  AlertLogsView,
+  Recommendation,
+  RecommendationText
+} from '@/constants/common.constant';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
@@ -287,6 +291,34 @@ export const SpikeVolumeTable = () => {
           </Button>
         ) : (
           '-'
+        )
+    },
+    {
+      title: t('manualRecommendation'),
+      dataIndex: 'manualRecommendation',
+      key: 'manualRecommendation',
+      width: 160,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'manualRecommendation' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('manualRecommendation')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText
+            isPositive={
+              value === Recommendation.BUY ||
+              value === Recommendation.STRONG_BUY
+            }
+            isNegative={value === Recommendation.SELL}
+          >
+            <span css={recommendationStyles}>{RecommendationText[value]}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
         )
     },
     {
@@ -852,6 +884,7 @@ export const SpikeVolumeTable = () => {
                       entryTime={record.entryDate}
                       exitPrice={record.exitPrice}
                       exitTime={record.exitDate}
+                      manualRecommendation={record.manualRecommendation}
                     />,
                     {
                       width: 1200
@@ -868,6 +901,7 @@ export const SpikeVolumeTable = () => {
 
   const mobileColumnKeys = [
     'symbol',
+    'manualRecommendation',
     'timeFrame',
     'entryDate',
     'entryPrice',

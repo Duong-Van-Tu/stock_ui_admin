@@ -21,6 +21,10 @@ import {
 import { PositiveNegativeText } from './positive-negative-text';
 import { useNotification } from '@/hooks/notification.hook';
 import { Empty, Spin, Select } from 'antd';
+import {
+  Recommendation,
+  RecommendationText
+} from '@/constants/common.constant';
 
 type ExtendedCandlestickData = CandlestickData & {
   volume?: number;
@@ -34,6 +38,7 @@ type BacktestSpikeVolumeProps = {
   entryTime: string;
   exitPrice?: number;
   exitTime?: string;
+  manualRecommendation?: string;
 };
 
 const periodOptions = ['5M', '10M', '15M', '30M', '1H'];
@@ -44,7 +49,8 @@ export const BacktestSpikeVolume = ({
   entryPrice,
   entryTime,
   exitPrice,
-  exitTime
+  exitTime,
+  manualRecommendation
 }: BacktestSpikeVolumeProps) => {
   const t = useTranslations();
   const { notifyError } = useNotification();
@@ -337,9 +343,29 @@ export const BacktestSpikeVolume = ({
               .format('MM-DD-YYYY HH:mm:ss')}
           </div>
           <div>
-            <strong>{t('entryPrice')}:</strong> &nbsp;{' '}
+            <strong>{t('entryPrice')}:</strong> &nbsp;
             <span>${roundToDecimals(entryPrice, 2)}</span>
           </div>
+          {manualRecommendation && (
+            <div>
+              <strong>{t('manualRecommendation')}:</strong> &nbsp;
+              <PositiveNegativeText
+                isPositive={
+                  manualRecommendation === Recommendation.BUY ||
+                  manualRecommendation === Recommendation.STRONG_BUY
+                }
+                isNegative={manualRecommendation === Recommendation.SELL}
+              >
+                <span
+                  css={css`
+                    text-transform: uppercase;
+                  `}
+                >
+                  {RecommendationText[manualRecommendation]}
+                </span>
+              </PositiveNegativeText>
+            </div>
+          )}
           {!!exitPrice && exitTime && (
             <>
               <div>

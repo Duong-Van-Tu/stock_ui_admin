@@ -918,6 +918,7 @@ export const AlertLogsTable = () => {
                       entryTime={record.entryDate}
                       exitPrice={record.exitPrice}
                       exitTime={record.exitDate}
+                      manualRecommendation={record.manualRecommendation}
                     />,
                     {
                       width: 1200
