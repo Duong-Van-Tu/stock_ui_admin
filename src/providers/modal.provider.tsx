@@ -3,6 +3,7 @@ import { css, Global } from '@emotion/react';
 import { ModalContext, ModalOptions } from '@/hooks/modal.hook';
 import { ReactElement, ReactNode, useCallback, useState } from 'react';
 import { Modal } from 'antd';
+import { isMobile } from 'react-device-detect';
 
 interface ModalProviderProps {
   children: ReactNode;
@@ -140,10 +141,12 @@ export default function ModalProvider({ children }: ModalProviderProps) {
 }
 
 const modalStyles = css`
+  .ant-modal-content {
+    padding: ${isMobile ? '1.6rem' : '2rem'} !important;
+  }
   .ant-modal-body {
     -ms-overflow-style: none;
     scrollbar-width: none;
-
     &::-webkit-scrollbar {
       display: none;
     }

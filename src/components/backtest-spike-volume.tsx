@@ -348,7 +348,7 @@ export const BacktestSpikeVolume = ({
           </div>
           {manualRecommendation && (
             <div>
-              <strong>{t('manualRecommendation')}:</strong> &nbsp;
+              <strong>{t('recommendation')}:</strong> &nbsp;
               <PositiveNegativeText
                 isPositive={
                   manualRecommendation === Recommendation.BUY ||
