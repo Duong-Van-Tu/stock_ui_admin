@@ -171,10 +171,6 @@ export const AlertLogsTable = () => {
     if (isOption === AlertLogsView.OPTIONS) {
       handleChangeView(AlertLogsView.OPTIONS);
     }
-
-    return () => {
-      dispatch(resetState());
-    };
   }, [isOption, strategyId, fetchDataAlertLogs, handleChangeView, dispatch]);
 
   useEffect(() => {
@@ -183,6 +179,12 @@ export const AlertLogsTable = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alertLogsData]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetState());
+    };
+  }, []);
 
   const baseColumns: TableColumnsType<Signal> = [
     {
