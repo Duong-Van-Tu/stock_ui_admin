@@ -184,7 +184,7 @@ export const AlertLogsTable = () => {
     return () => {
       dispatch(resetState());
     };
-  }, []);
+  }, [dispatch]);
 
   const baseColumns: TableColumnsType<Signal> = [
     {
@@ -202,7 +202,7 @@ export const AlertLogsTable = () => {
       dataIndex: 'symbol',
       key: 'symbol',
       width: isMobile ? 90 : 200,
-      fixed: isMobile ? undefined : 'left',
+      fixed: 'left',
       render: (_, record) => (
         <SymbolCell
           symbol={record.symbol}
@@ -999,6 +999,7 @@ export const AlertLogsTable = () => {
                 }
                 css={exitBtnStyles}
                 disabled={selectedIds.size <= 0}
+                size={isMobile ? 'small' : 'middle'}
                 danger
               >
                 {t('exitSelected')}
@@ -1018,7 +1019,7 @@ export const AlertLogsTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: !isMobile && alertLogsData.length > 0 ? height - 280 : undefined
+            y: alertLogsData.length > 0 ? height - 280 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
