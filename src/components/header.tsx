@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { searchSymbol } from '@/redux/slices/search';
@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { PageURLs } from '@/utils/navigate';
 import { getPathnameSegment } from '@/utils/common';
 import { isMobile, isDesktop } from 'react-device-detect';
+import { setSideBarCollapsed } from '@/redux/slices/app.slice';
 
 enum UserMenu {
   PROFILE,
@@ -24,9 +25,10 @@ const { Search } = Input;
 
 type HeaderProps = {
   collapsed: boolean;
+  setCollapsed: Dispatch<SetStateAction<boolean>>;
 };
 
-export default function Header({ collapsed }: HeaderProps) {
+export default function Header({ collapsed, setCollapsed }: HeaderProps) {
   const {
     token: { colorBgContainer }
   } = theme.useToken();
@@ -50,6 +52,11 @@ export default function Header({ collapsed }: HeaderProps) {
     if (e.key === UserMenu.LOGOUT.toString()) {
       dispatch(logoutUser());
     }
+  };
+
+  const handleToggleMenu = () => {
+    setCollapsed(!collapsed);
+    dispatch(setSideBarCollapsed(!collapsed));
   };
 
   const handleLanguageChange: MenuProps['onClick'] = (e) => {
@@ -121,6 +128,16 @@ export default function Header({ collapsed }: HeaderProps) {
   return (
     <Layout.Header css={rootStyles(colorBgContainer, collapsed)}>
       <div css={leftSectionStyles}>
+        {isMobile && (
+          <Icon
+            customStyles={menuIconStyles}
+            icon='menu'
+            width={32}
+            height={32}
+            onClick={handleToggleMenu}
+          />
+        )}
+
         <Icon
           onClick={() => router.push(PageURLs.ofIndex())}
           customStyles={logoIconStyles}
@@ -191,7 +208,7 @@ const rootStyles = (background: string, collapsed: boolean) => css`
   z-index: 99;
   left: ${isMobile
     ? collapsed
-      ? 'var(--mobile-collapsed-sidebar-width)'
+      ? '0'
       : 'var(--mobile-expanded-sidebar-width)'
     : collapsed
     ? 'var(--collapsed-sidebar-width)'
@@ -202,7 +219,7 @@ const rootStyles = (background: string, collapsed: boolean) => css`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
+  padding: ${isMobile ? '0 1.4rem' : '0 2rem'};
 `;
 
 const leftSectionStyles = css`
@@ -230,6 +247,14 @@ const languageStyles = css`
 const logoIconStyles = css`
   cursor: pointer;
 
+  &:hover {
+    opacity: 0.85;
+  }
+`;
+
+const menuIconStyles = css`
+  cursor: pointer;
+  margin-right: 0.6rem;
   &:hover {
     opacity: 0.85;
   }

@@ -89,7 +89,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
         </div>
       </Sider>
       <Layout css={layoutStyles}>
-        {!(isMobile && !collapsed) && <Header collapsed={collapsed} />}
+        {!(isMobile && !collapsed) && (
+          <Header setCollapsed={setCollapsed} collapsed={collapsed} />
+        )}
         <Content css={contentStyles(colorBgContainer, collapsed)}>
           {children}
         </Content>
