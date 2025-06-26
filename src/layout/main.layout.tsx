@@ -58,7 +58,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
         theme='light'
         style={sidebarStyle}
         width={isMobile ? '100%' : 250}
-        collapsedWidth={isMobile ? 50 : 80}
+        collapsedWidth={isMobile ? 0 : 80}
       >
         <div css={menuTopStyles(collapsed)}>
           <Button
@@ -98,7 +98,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
   );
 }
 
-const rootStyles = css`
+const rootStyles = () => css`
   font-size: ${isMobile ? '1.4rem' : '1.6rem'};
 `;
 
@@ -107,7 +107,7 @@ const contentStyles = (background: string, collapsed: boolean) => css`
   margin-top: var(--header-height);
   margin-inline-start: ${isMobile
     ? collapsed
-      ? 'var(--mobile-collapsed-sidebar-width)'
+      ? '0'
       : 'var(--mobile-expanded-sidebar-width)'
     : collapsed
     ? 'var(--collapsed-sidebar-width)'
@@ -153,7 +153,7 @@ const menuTopStyles = (collapsed: boolean) => css`
   background: var(--white-color);
   z-index: 99;
   transition: width 0.25s ease;
-  border-right: 0.1rem solid var(--border-color);
+  border-right: ${isMobile ? 'unset' : '0.1rem solid var(--border-color)'};
 `;
 
 const menuContainerStyle = css`

@@ -181,7 +181,7 @@ export const SpikeVolumeTable = () => {
       dataIndex: 'symbol',
       key: 'symbol',
       width: isMobile ? 90 : 200,
-      fixed: isMobile ? undefined : 'left',
+      fixed: 'left',
       render: (_, record) => (
         <SymbolCell
           symbol={record.symbol}
@@ -947,13 +947,13 @@ export const SpikeVolumeTable = () => {
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey={(record) => record.key}
-          rowSelection={rowSelection}
+          rowSelection={isMobile ? undefined : rowSelection}
           columns={columns}
           dataSource={alertLogsData}
           loading={loading}
           scroll={{
             x: isMobile ? 1100 : 1200,
-            y: !isMobile && alertLogsData.length > 0 ? height - 280 : undefined
+            y: alertLogsData.length > 0 ? height - 270 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{

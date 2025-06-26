@@ -1013,7 +1013,7 @@ export const AlertLogsTable = () => {
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey={(record) => record.key}
-          rowSelection={rowSelection}
+          rowSelection={isMobile ? undefined : rowSelection}
           columns={columns}
           dataSource={alertLogsData}
           loading={loading}
