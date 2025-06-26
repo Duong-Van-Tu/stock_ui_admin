@@ -231,6 +231,7 @@ const leftSectionStyles = css`
 
 const searchStyles = css`
   max-width: 36rem;
+  min-width: ${isDesktop ? '36rem' : 'unset'};
   width: 100%;
 `;
 

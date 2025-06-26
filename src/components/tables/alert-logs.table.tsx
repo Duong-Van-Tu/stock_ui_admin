@@ -883,9 +883,11 @@ export const AlertLogsTable = () => {
                   modal.openModal(
                     <ExitSignal
                       ids={[record.hashAlertLogId]}
+                      description={t('confirmExitOne')}
                       title={
                         <>
-                          {t('exitScheduleFor')}&nbsp;
+                          {t('exit')}&nbsp;
+                          {t('signal')}&nbsp;
                           <span
                             css={exitTitleStyles}
                           >{`"${record.symbol}"`}</span>
@@ -981,6 +983,7 @@ export const AlertLogsTable = () => {
                       ids={Array.from(selectedIds)}
                       setSelectedIds={setSelectedIds}
                       title={t('exitSelectedSignals')}
+                      description={t('confirmExitSelected')}
                     />,
                     { width: 400 }
                   )

@@ -255,7 +255,6 @@ export const WatchlistIn50DaysTable = () => {
           ? roundToDecimals(record.previousClose)
           : null;
 
-        console.log(value <= record.lowest20);
         return !!value ? (
           <span
             css={currentPriceStyles(

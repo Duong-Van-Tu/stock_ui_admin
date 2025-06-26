@@ -49,8 +49,8 @@
   "languageSelect": "Select Language",
   "english": "English",
   "vietnamese": "Vietnamese",
-  "searchSelectSector": "Search select Sector",
-  "searchSelectIndustry": "Search select Industry",
+  "searchSelectSector": "Search by Sector",
+  "searchSelectIndustry": "Search by Industry",
   "exportExcel": "Export Excel",
   "profile": "Profile",
   "logout": "Logout",
@@ -303,10 +303,9 @@
   "update": "Update",
   "delete": "Delete",
   "action": "Action",
-  "updateExitScheduleSuccess": "Successfully updated exit schedule",
-  "scheduleExitDateLabel": "Schedule Exit Date",
+  "exitNowSuccess": "Exited successfully!",
+  "exitNowFailed": "Failed to exit!",
   "requiredDate": "Please select a date",
-  "exitScheduleFor": "Exit Schedule For",
   "exitSelectedSignals": "Exit Selected Signals",
   "exitSelected": "Exit Selected",
   "highest3DaysUpdateAt": "Highest price date 3 days",
@@ -413,5 +412,8 @@
   "sendAlert": "Send Alert",
   "sendBulkConfirmStart": "Send notifications to",
   "sendBulkConfirmEnd": "selected members?",
-  "allPeriod": "All Period"
+  "allPeriod": "All Period",
+  "signal": "Signal",
+  "confirmExitSelected": "Are you sure you want to exit the selected signals?",
+  "confirmExitOne": "Are you sure you want to exit this signal?"
 }

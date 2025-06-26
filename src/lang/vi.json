@@ -303,10 +303,9 @@
   "update": "Cập nhật",
   "delete": "Xóa",
   "action": "Action",
-  "updateExitScheduleSuccess": "Cập nhật thời gian thoát lệnh thành công",
-  "scheduleExitDateLabel": "Schedule Exit Date",
+  "exitNowSuccess": "Exit thành công!",
+  "exitNowFailed": "Exit thất bại!",
   "requiredDate": "Please select a date",
-  "exitScheduleFor": "Lịch thoát cho",
   "exitSelectedSignals": "Thoát các tín hiệu đã chọn",
   "exitSelected": "Thoát đã chọn",
   "highest3DaysUpdateAt": "Thời gian giá cao nhất 3 ngày",
@@ -413,5 +412,8 @@
   "sendAlert": "Gửi Thông báo",
   "sendBulkConfirmStart": "Gửi thông báo đến",
   "sendBulkConfirmEnd": "thành viên đã chọn?",
-  "allPeriod": "Tất cả period"
+  "allPeriod": "Tất cả period",
+  "signal": "Tín hiệu",
+  "confirmExitSelected": "Bạn có chắc chắn muốn exit tín hiệu đã chọn không?",
+  "confirmExitOne": "Bạn có chắc chắn muốn exit tín hiệu này không?"
 }

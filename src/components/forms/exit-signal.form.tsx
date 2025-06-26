@@ -1,28 +1,34 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { Form, Button, DatePicker, Typography, Spin } from 'antd';
-import dayjs, { Dayjs } from 'dayjs';
-import { TimeZone } from '@/constants/timezone.constant';
+import { Form, Button, Typography, Spin } from 'antd';
+import dayjs from 'dayjs';
 import { useModal } from '@/hooks/modal.hook';
 import { useTranslations } from 'next-intl';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   updateAlertLogsData,
-  updateScheduleExitDate,
+  exitNow,
   watchExitLoading
 } from '@/redux/slices/signals.slice';
 import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
 import { Dispatch, ReactNode, SetStateAction } from 'react';
+import { Icon } from '../icons';
 
 type ExitSignalProps = {
   ids: string[];
   title: string | ReactNode;
+  description?: string;
   setSelectedIds?: Dispatch<SetStateAction<Set<string>>>;
 };
 
-export const ExitSignal = ({ ids, title, setSelectedIds }: ExitSignalProps) => {
+export const ExitSignal = ({
+  ids,
+  title,
+  description,
+  setSelectedIds
+}: ExitSignalProps) => {
   const t = useTranslations();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
@@ -30,16 +36,10 @@ export const ExitSignal = ({ ids, title, setSelectedIds }: ExitSignalProps) => {
   const { notifySuccess } = useNotification();
   const loading = useAppSelector(watchExitLoading);
 
-  const handleFinish = async (values: { scheduleExitDate: Dayjs }) => {
-    const scheduleExitDate = values.scheduleExitDate
-      .tz(TimeZone.NEW_YORK)
-      .toISOString();
-
-    const res = await dispatch(
-      updateScheduleExitDate({ hashIds: ids, scheduleExitDate })
-    );
+  const handleFinish = async () => {
+    const res = await dispatch(exitNow({ hashIds: ids }));
     if (isRequestSuccess(res)) {
-      notifySuccess(t('updateExitScheduleSuccess'));
+      notifySuccess(t('exitNowSuccess'));
       await dispatch(
         updateAlertLogsData(
           ids.map((id: string) => ({
@@ -50,6 +50,8 @@ export const ExitSignal = ({ ids, title, setSelectedIds }: ExitSignalProps) => {
       );
       setSelectedIds?.(new Set());
       closeModal();
+    } else {
+      notifySuccess(t('exitNowFailed'));
     }
   };
 
@@ -70,25 +72,16 @@ export const ExitSignal = ({ ids, title, setSelectedIds }: ExitSignalProps) => {
           scheduleExitDate: dayjs()
         }}
       >
-        <Form.Item
-          label={<span css={labelStyles}>{t('scheduleExitDateLabel')}</span>}
-          name='scheduleExitDate'
-          rules={[{ required: true, message: t('requiredDate') }]}
-        >
-          <DatePicker
-            style={{ width: '100%' }}
-            size='large'
-            disabledDate={(current) =>
-              current && current < dayjs().startOf('day')
-            }
-          />
-        </Form.Item>
-
+        <Typography.Text css={descriptionStyles}>{description}</Typography.Text>
         <Form.Item css={formFooterStyles}>
           <div css={buttonGroupStyles}>
             <Button onClick={handleCancel}>{t('cancel')}</Button>
-            <Button type='primary' htmlType='submit'>
-              {t('update')}
+            <Button
+              icon={<Icon icon='exit' width={18} height={18} />}
+              htmlType='submit'
+              danger
+            >
+              {t('exit')}
             </Button>
           </div>
         </Form.Item>
@@ -107,10 +100,6 @@ const formFooterStyles = css`
   margin-top: 2rem;
 `;
 
-const labelStyles = css`
-  font-weight: 500;
-`;
-
 const buttonGroupStyles = css`
   display: flex;
   justify-content: center;
@@ -118,4 +107,9 @@ const buttonGroupStyles = css`
   button {
     width: 8rem;
   }
+`;
+
+const descriptionStyles = css`
+  text-align: center;
+  display: block;
 `;

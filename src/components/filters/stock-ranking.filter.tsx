@@ -70,37 +70,48 @@ export const StockRankingFilter = ({
 
   return (
     <div css={[rootStyles, customStyles]}>
-      <Select
-        allowClear
-        showSearch
-        css={selectStyles}
-        loading={sectorsLoading}
-        placeholder={t('searchSelectSector')}
-        optionFilterProp='label'
-        options={sectorOptions}
-        onChange={handleSectorChange}
-      />
-      <Select
-        allowClear
-        showSearch
-        css={selectStyles}
-        loading={industriesLoading}
-        placeholder={t('searchSelectIndustry')}
-        optionFilterProp='label'
-        options={industryOptions}
-        onChange={handleIndustryChange}
-      />
+      <div css={selectContainerStyles}>
+        <Select
+          allowClear
+          showSearch
+          css={selectStyles}
+          loading={sectorsLoading}
+          placeholder={t('searchSelectSector')}
+          optionFilterProp='label'
+          options={sectorOptions}
+          onChange={handleSectorChange}
+        />
+      </div>
+      <div css={selectContainerStyles}>
+        <Select
+          allowClear
+          showSearch
+          css={selectStyles}
+          loading={industriesLoading}
+          placeholder={t('searchSelectIndustry')}
+          optionFilterProp='label'
+          options={industryOptions}
+          onChange={handleIndustryChange}
+        />
+      </div>
     </div>
   );
 };
 
 const rootStyles = css`
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: ${isMobile ? 'no-wrap' : 'wrap'};
   gap: 1.2rem;
   justify-content: ${isMobile ? 'flex-end' : 'unset'};
+  width: ${isMobile ? '100%' : 'unset'};
 `;
 
 const selectStyles = css`
-  min-width: 20rem;
+  min-width: ${isMobile ? '100%' : '20rem'};
+  max-width: ${isMobile ? '14rem' : '20rem'};
+  width: ${isMobile ? '100%' : 'unset'};
+`;
+
+const selectContainerStyles = css`
+  width: ${isMobile ? '50%' : 'unset'};
 `;

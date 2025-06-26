@@ -7,6 +7,7 @@ import {
 } from '@/helpers/signals.helper';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { convertParamsByMapping } from '@/utils/common';
+import { AppThunk } from '../store';
 
 export type SignalsState = {
   loading: boolean;
@@ -136,10 +137,10 @@ export const signalSlice = createAppSlice({
         }
       }
     ),
-    updateScheduleExitDate: create.asyncThunk(
-      async (params: { hashIds: string[]; scheduleExitDate: string }) => {
+    exitNow: create.asyncThunk(
+      async (params: { hashIds: string[] }) => {
         await defaultApiFetcher.post(
-          'tickers/update-schedule-exit-date',
+          'stock-worker/exit-now',
           convertParamsByMapping(params)
         );
       },
@@ -188,7 +189,23 @@ export const signalSlice = createAppSlice({
         });
       }
     ),
+    updateSignalsData: create.reducer(
+      (
+        state,
+        action: PayloadAction<{ strategyId: number } & Record<string, any>>
+      ) => {
+        const { data, strategyId } = action.payload;
 
+        state.signalByStrategyId[strategyId] = transformSignalsData(
+          data.result
+        );
+        state.paginationByStrategyId[strategyId] = {
+          currentPage: data.offset,
+          pageSize: data.limit,
+          total: Number(data.total)
+        };
+      }
+    ),
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -228,6 +245,28 @@ export const {
   getStrategies,
   getSignalStrategyId,
   updateAlertLogsData,
-  updateScheduleExitDate,
+  exitNow,
+  updateSignalsData,
   resetState
 } = signalSlice.actions;
+
+export const autoUpdateSignalData =
+  ({
+    strategyId,
+    ...query
+  }: { strategyId: number } & Record<string, any>): AppThunk =>
+  async (dispatch) => {
+    const response = await defaultApiFetcher.get(
+      'tickers/get-stock-alert-log',
+      { query: { strategyId, isImport: 0, ...query } }
+    );
+
+    if (response.data) {
+      dispatch(
+        updateSignalsData({
+          strategyId,
+          data: response.data
+        })
+      );
+    }
+  };

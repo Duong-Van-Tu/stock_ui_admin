@@ -851,7 +851,7 @@ export const SpikeVolumeTable = () => {
                       ids={[record.hashAlertLogId]}
                       title={
                         <>
-                          {t('exitScheduleFor')}&nbsp;
+                          {t('exit')}&nbsp;
                           <span
                             css={exitTitleStyles}
                           >{`"${record.symbol}"`}</span>

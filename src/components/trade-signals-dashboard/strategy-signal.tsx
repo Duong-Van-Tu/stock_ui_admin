@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Card, Table, TableColumnsType } from 'antd';
 import {
   calculatePercentage,
@@ -17,6 +17,7 @@ import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
 import {
+  autoUpdateSignalData,
   getSignalStrategyId,
   watchSignalByStrategyId
 } from '@/redux/slices/signals.slice';
@@ -65,6 +66,8 @@ export const StrategySignal = ({
     }
   });
 
+  const filteredFilter = useMemo(() => cleanFalsyValues(filter), [filter]);
+
   const fetchSignalByStrategy = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
@@ -99,6 +102,22 @@ export const StrategySignal = ({
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [strategyData, strategyId]);
+
+  useEffect(() => {
+    if (!strategyId) return;
+    const interval = setInterval(() => {
+      dispatch(
+        autoUpdateSignalData({
+          page: signalStrategyPagination.currentPage,
+          limit: signalStrategyPagination.pageSize,
+          strategyId,
+          ...filteredFilter
+        })
+      );
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [strategyId, filteredFilter, signalStrategyPagination, dispatch]);
 
   const columns: TableColumnsType<Signal> = [
     {
