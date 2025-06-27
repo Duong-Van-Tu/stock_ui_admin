@@ -38,6 +38,7 @@ import {
 import { ListWatcherFilter } from '../filters/list-watcher.filter';
 import { useSearchParams } from 'next/navigation';
 import { useSortOrder } from '@/hooks/sort-order.hook';
+import { isMobile } from 'react-device-detect';
 
 export const ListWatcherTable = () => {
   const t = useTranslations();
@@ -121,7 +122,7 @@ export const ListWatcherTable = () => {
       key: 'index',
       width: 60,
       align: 'center',
-      fixed: 'left',
+      fixed: !isMobile && 'left',
       render: (_, __, index) =>
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
     },
@@ -145,7 +146,7 @@ export const ListWatcherTable = () => {
       dataIndex: 'groupStock',
       key: 'groupStock',
       width: 100,
-      fixed: 'left',
+      fixed: !isMobile && 'left',
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
@@ -471,7 +472,7 @@ export const ListWatcherTable = () => {
         onClick: () => handleSortOrder('url')
       }),
       align: 'center',
-      fixed: 'right',
+      fixed: !isMobile && 'right',
       render: (value) => (
         <a href={value} target='_blank'>
           {t('viewDetails')}
@@ -483,29 +484,33 @@ export const ListWatcherTable = () => {
   return (
     <div css={rootStyles}>
       <ListWatcherFilter onFilter={handleFilter} />
-      <div css={groupDescStyles}>
-        <div css={groupItemStyles}>
-          <strong>{t('group')} 1:</strong>
-          <Tag color={filter.group === 'group_1' ? 'blue' : ''}>
-            {t('group1')}
-          </Tag>
+      {!isMobile && (
+        <div css={groupDescStyles}>
+          <div css={groupItemStyles}>
+            <strong>{t('group')} 1:</strong>
+            <Tag color={filter.group === 'group_1' ? 'blue' : ''}>
+              {t('group1')}
+            </Tag>
+          </div>
+          <div css={groupItemStyles}>
+            <strong>{t('group')} 2:</strong>
+            <Tag color={filter.group === 'group_2' ? 'blue' : ''}>
+              {t('group2')}
+            </Tag>
+          </div>
+          <div css={groupItemStyles}>
+            <strong>{t('group')} 3:</strong>
+            <Tag color={filter.group === 'group_3' ? 'blue' : ''}>
+              {t('group3')}
+            </Tag>
+          </div>
         </div>
-        <div css={groupItemStyles}>
-          <strong>{t('group')} 2:</strong>
-          <Tag color={filter.group === 'group_2' ? 'blue' : ''}>
-            {t('group2')}
-          </Tag>
-        </div>
-        <div css={groupItemStyles}>
-          <strong>{t('group')} 3:</strong>
-          <Tag color={filter.group === 'group_3' ? 'blue' : ''}>
-            {t('group3')}
-          </Tag>
-        </div>
-      </div>
+      )}
+
       <div css={tableWrapperStyles}>
         <TableTitle customStyles={titleStyles}>{t('AISentiment')}</TableTitle>
         <Table<ListWatcher>
+          size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey={(record) => record.key}
           columns={columns}

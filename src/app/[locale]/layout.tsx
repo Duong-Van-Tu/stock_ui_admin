@@ -5,6 +5,7 @@ import '../../assets/css/globals.scss';
 import Providers from '@/providers';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { Locale, locales } from '@/constants/locale.constant';
+import Head from 'next/head';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await import('next-intl/server').then((m) => m.getTranslations());
@@ -32,6 +33,12 @@ export default function RootLayout({
 
   return (
     <html lang={locale || 'en'}>
+      <Head>
+        <meta
+          name='viewport'
+          content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'
+        />
+      </Head>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>
