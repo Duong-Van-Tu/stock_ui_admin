@@ -2,7 +2,7 @@
 import { css, SerializedStyles } from '@emotion/react';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import dayjs from 'dayjs';
-import { Carousel, Card, Button, Tooltip } from 'antd';
+import { Card, Button, Tooltip } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -104,26 +104,22 @@ export const EarningFilter = ({
       </Tooltip>
 
       <div css={scrollContainerStyles}>
-        <Carousel dots={false} infinite={false}>
-          <div>
-            <div css={carouselInnerStyles}>
-              {weekData.map((item, index) => (
-                <Card
-                  key={item.date.toString()}
-                  css={[cardStyles, selected === index && selectedCardStyles]}
-                  onClick={() => handleSelectedDate(index)}
-                >
-                  <p css={dateTextStyles}>
-                    {item.date.locale(locale).format('ddd, MMM DD')}
-                  </p>
-                  <Button type='default' css={earningsButtonStyles}>
-                    ● {item.total} {t('earnings')}
-                  </Button>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </Carousel>
+        <div css={carouselInnerStyles}>
+          {weekData.map((item, index) => (
+            <Card
+              key={item.date.toString()}
+              css={[cardStyles, selected === index && selectedCardStyles]}
+              onClick={() => handleSelectedDate(index)}
+            >
+              <p css={dateTextStyles}>
+                {item.date.locale(locale).format('ddd, MMM DD')}
+              </p>
+              <Button type='default' css={earningsButtonStyles}>
+                ● {item.total} {t('earnings')}
+              </Button>
+            </Card>
+          ))}
+        </div>
       </div>
 
       <Tooltip placement='top' title={isMobile ? null : t('nextWeek')}>
