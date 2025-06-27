@@ -8,6 +8,6 @@ export const PAGINATION = {
 
 export const PAGINATION_PARAMS = {
   offset: 1,
-  limit: isMobile ? 30 : 100,
+  limit: isMobile ? 20 : 100,
   unLimit: 999999
 };
