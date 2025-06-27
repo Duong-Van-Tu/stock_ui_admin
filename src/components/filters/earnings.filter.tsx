@@ -95,9 +95,11 @@ export const EarningFilter = ({
     <div css={[rootStyles, customStyles]}>
       <Tooltip placement='top' title={isMobile ? null : t('previousWeek')}>
         <Button
+          size={isMobile ? 'small' : 'middle'}
           shape='circle'
           onClick={() => updateWeek(currentWeek.subtract(1, 'week'))}
           icon={<LeftOutlined />}
+          css={prevBtnStyles}
         />
       </Tooltip>
 
@@ -126,6 +128,8 @@ export const EarningFilter = ({
 
       <Tooltip placement='top' title={isMobile ? null : t('nextWeek')}>
         <Button
+          css={nextBtnStyles}
+          size={isMobile ? 'small' : 'middle'}
           shape='circle'
           onClick={() => updateWeek(currentWeek.add(1, 'week'))}
           icon={<RightOutlined />}
@@ -139,7 +143,7 @@ const rootStyles = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1.4rem;
+  /* gap: 1.4rem; */
 `;
 
 const scrollContainerStyles = css`
@@ -183,4 +187,12 @@ const dateTextStyles = css`
 const earningsButtonStyles = css`
   border-color: var(--blue-500);
   color: var(--blue-500);
+`;
+
+const prevBtnStyles = css`
+  margin-right: 0.6rem;
+`;
+
+const nextBtnStyles = css`
+  margin-left: 0.6rem;
 `;

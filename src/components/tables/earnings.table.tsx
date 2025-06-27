@@ -28,6 +28,7 @@ import { PositiveNegativeText } from '../positive-negative-text';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { useSearchParams } from 'next/navigation';
+import { isMobile } from 'react-device-detect';
 
 export const EarningsTable = () => {
   const t = useTranslations();
@@ -119,10 +120,13 @@ export const EarningsTable = () => {
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: 200,
+      width: isMobile ? 90 : 200,
       fixed: 'left',
       render: (_, record) => (
-        <SymbolCell symbol={record.symbol} companyName={record.companyName} />
+        <SymbolCell
+          symbol={record.symbol}
+          companyName={isMobile ? undefined : record.companyName}
+        />
       )
     },
     {
@@ -291,6 +295,7 @@ export const EarningsTable = () => {
           </TableTitle>
         </div>
         <Table<Earning>
+          size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey={(record) => record.key}
           columns={columns}
