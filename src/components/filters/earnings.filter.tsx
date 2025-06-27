@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
-import { useCallback, useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo, useRef } from 'react';
 import dayjs from 'dayjs';
 import { Card, Button, Tooltip } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
@@ -37,6 +37,8 @@ export const EarningFilter = ({
     );
   }, [currentWeek]);
 
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   const [selected, setSelected] = useState(() => {
     const todayIndex = weekDays.findIndex((day) =>
       day.startOf('day').isSame(dayjs().startOf('day'), 'day')
@@ -65,6 +67,12 @@ export const EarningFilter = ({
     setSelected(index);
     const selectedDate = weekData[index].date.format('YYYY-MM-DD');
     onFilter({ date: selectedDate });
+
+    itemRefs.current[index]?.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'center',
+      block: 'nearest'
+    });
   };
 
   const fetchEarningsSummary = useCallback(() => {
@@ -85,11 +93,29 @@ export const EarningFilter = ({
 
     const firstDayOfWeek = newWeek.startOf('isoWeek').format('YYYY-MM-DD');
     onFilter({ date: firstDayOfWeek });
+
+    setTimeout(() => {
+      itemRefs.current[0]?.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'start',
+        block: 'nearest'
+      });
+    }, 100);
   };
 
   useEffect(() => {
     fetchEarningsSummary();
   }, [fetchEarningsSummary]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      itemRefs.current[selected]?.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest'
+      });
+    }, 100);
+  }, [weekData, selected]);
 
   return (
     <div css={[rootStyles, customStyles]}>
@@ -106,18 +132,28 @@ export const EarningFilter = ({
       <div css={scrollContainerStyles}>
         <div css={carouselInnerStyles}>
           {weekData.map((item, index) => (
-            <Card
+            <div
               key={item.date.toString()}
-              css={[cardStyles, selected === index && selectedCardStyles]}
-              onClick={() => handleSelectedDate(index)}
+              css={[cardWrapperStyles]}
+              ref={(el) => {
+                itemRefs.current[index] = el;
+              }}
             >
-              <p css={dateTextStyles}>
-                {item.date.locale(locale).format('ddd, MMM DD')}
-              </p>
-              <Button type='default' css={earningsButtonStyles}>
-                ● {item.total} {t('earnings')}
-              </Button>
-            </Card>
+              <Card
+                css={[
+                  cardStyles,
+                  selected === index && selectedCardWrapperStyles
+                ]}
+                onClick={() => handleSelectedDate(index)}
+              >
+                <p css={dateTextStyles}>
+                  {item.date.locale(locale).format('ddd, MMM DD')}
+                </p>
+                <Button type='default' css={earningsButtonStyles}>
+                  ● {item.total} {t('earnings')}
+                </Button>
+              </Card>
+            </div>
           ))}
         </div>
       </div>
@@ -139,7 +175,6 @@ const rootStyles = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* gap: 1.4rem; */
 `;
 
 const scrollContainerStyles = css`
@@ -147,6 +182,7 @@ const scrollContainerStyles = css`
   align-items: center;
   gap: 1.6rem;
   overflow-x: auto;
+  scroll-behavior: smooth;
   scrollbar-width: none;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
@@ -159,6 +195,15 @@ const carouselInnerStyles = css`
   gap: 1.2rem;
 `;
 
+const cardWrapperStyles = css`
+  flex-shrink: 0;
+`;
+
+const selectedCardWrapperStyles = css`
+  border: 1px solid var(--blue-500);
+  background: var(--blue-100);
+`;
+
 const cardStyles = css`
   text-align: center;
   cursor: pointer;
@@ -169,11 +214,6 @@ const cardStyles = css`
     min-width: 14rem;
     min-height: 8.8rem;
   }
-`;
-
-const selectedCardStyles = css`
-  border: 1px solid var(--blue-500);
-  background: var(--blue-100);
 `;
 
 const dateTextStyles = css`
