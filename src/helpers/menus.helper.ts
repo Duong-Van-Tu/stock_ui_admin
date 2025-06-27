@@ -1,6 +1,7 @@
 import { Key, ReactNode } from 'react';
 import { MenuProps } from 'antd';
 import { PageURLs } from '@/utils/navigate';
+import { isMobile } from 'react-device-detect';
 
 export type LevelKeysProps = {
   key?: string;
@@ -40,59 +41,68 @@ export const getLevelKeys = (items1: LevelKeysProps[]) => {
 
 export const getMenuStructure = (
   t: (key: string) => string
-): MenuItemStructure[] => [
-  {
-    label: t('home'),
-    key: 'home',
-    iconType: 'home',
-    link: PageURLs.ofIndex()
-  },
-  {
-    label: t('stockRanking'),
-    key: 'stock-rankings',
-    iconType: 'stockRanking',
-    link: PageURLs.ofStockRanking()
-  },
-  {
-    label: t('alertLogs'),
-    key: 'alert-logs',
-    iconType: 'alertLogs',
-    link: PageURLs.ofAlertLogs()
-  },
-  {
-    label: t('earnings'),
-    key: 'earnings',
-    iconType: 'earnings',
-    link: PageURLs.ofEarings()
-  },
-  {
-    label: t('AISentiment'),
-    key: 'AI-sentiment',
-    iconType: 'AISentiment',
-    link: PageURLs.ofAISentiment()
-  },
-  {
-    label: t('listHighActivity'),
-    key: 'high-activity',
-    iconType: 'listHighActivity',
-    link: PageURLs.ofHighActivity()
-  },
-  {
-    label: t('watchlistIn50Days'),
-    key: 'watchlist-50-days',
-    iconType: 'watchlist50Days',
-    link: PageURLs.ofWatchListIn50days()
-  },
-  {
-    label: t('ledgerEntry'),
-    key: 'ledger-entry',
-    iconType: 'ledgerEntry',
-    link: PageURLs.ofLedgerEntry()
-  },
-  {
-    label: 'Spike Volume',
-    key: 'spike-volume',
-    iconType: 'volume',
-    link: PageURLs.ofSpikeVolumeBackTest()
-  }
-];
+): MenuItemStructure[] => {
+  const menu: MenuItemStructure[] = [
+    {
+      label: t('home'),
+      key: 'home',
+      iconType: 'home',
+      link: PageURLs.ofIndex()
+    },
+    {
+      label: t('stockRanking'),
+      key: 'stock-rankings',
+      iconType: 'stockRanking',
+      link: PageURLs.ofStockRanking()
+    },
+    {
+      label: t('alertLogs'),
+      key: 'alert-logs',
+      iconType: 'alertLogs',
+      link: PageURLs.ofAlertLogs()
+    },
+    {
+      label: t('earnings'),
+      key: 'earnings',
+      iconType: 'earnings',
+      link: PageURLs.ofEarings()
+    },
+    {
+      label: t('AISentiment'),
+      key: 'AI-sentiment',
+      iconType: 'AISentiment',
+      link: PageURLs.ofAISentiment()
+    },
+    ...(!isMobile
+      ? [
+          {
+            label: t('listHighActivity'),
+            key: 'high-activity',
+            iconType: 'listHighActivity',
+            link: PageURLs.ofHighActivity()
+          }
+        ]
+      : []),
+    {
+      label: t('watchlistIn50Days'),
+      key: 'watchlist-50-days',
+      iconType: 'watchlist50Days',
+      link: PageURLs.ofWatchListIn50days()
+    },
+    {
+      label: t('ledgerEntry'),
+      key: 'ledger-entry',
+      iconType: 'ledgerEntry',
+      link: PageURLs.ofLedgerEntry()
+    },
+    {
+      label: 'Spike Volume',
+      key: 'spike-volume',
+      iconType: 'volume',
+      link: PageURLs.ofSpikeVolumeBackTest()
+    }
+  ];
+
+  // Lọc bỏ phần tử false hoặc undefined (tức là item bị ẩn)
+  return menu.filter(Boolean);
+};
