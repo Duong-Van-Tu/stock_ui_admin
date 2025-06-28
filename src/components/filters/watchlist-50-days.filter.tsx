@@ -16,6 +16,7 @@ import {
   watchSectors
 } from '@/redux/slices/stock-score.slice';
 import { parseRangeValue } from '@/utils/common';
+import { isMobile } from 'react-device-detect';
 
 type Watchlist50DaysFilterProps = {
   customStyles?: SerializedStyles;
@@ -38,23 +39,27 @@ export const Watchlist50DaysFilter = ({
   const sectors = useAppSelector(watchSectors);
 
   const periodOptions = getPeriodOptions(t);
-  const avgVolumeOptions = getMarketCapOptions(t);
+  const marketCapOptions = getMarketCapOptions(t);
   const industryOptions = useMemo(
-    () =>
-      industries?.map((item) => ({
+    () => [
+      { value: '', label: t('allIndustry') },
+      ...(industries?.map((item) => ({
         value: item.industry,
         label: item.industry
-      })) ?? [],
-    [industries]
+      })) ?? [])
+    ],
+    [industries, t]
   );
 
   const sectorOptions = useMemo(
-    () =>
-      sectors?.map((item) => ({
+    () => [
+      { value: '', label: t('allIndustry') },
+      ...(sectors?.map((item) => ({
         value: item.sector,
         label: item.sector
-      })) ?? [],
-    [sectors]
+      })) ?? [])
+    ],
+    [t, sectors]
   );
 
   const updateSearchParams = (key: string, value?: string) => {
@@ -70,19 +75,21 @@ export const Watchlist50DaysFilter = ({
 
   const handleClearFilters = () => {
     form.resetFields();
-    form.setFieldValue('period', DEFAULT_PERIOD);
+    form.setFieldValue('period', '');
+    form.setFieldValue('marketCap', '');
+    form.setFieldValue('sector', '');
+    form.setFieldValue('industry', '');
     onFilter({ period: DEFAULT_PERIOD });
     router.push('?', { scroll: false });
   };
 
   useEffect(() => {
-    const period = params.get('period') || DEFAULT_PERIOD;
-    const marketCap = params.get('marketCap')!;
-    const industry = params.get('industry')!;
-    const sector = params.get('sector')!;
+    const period = params.get('period') ?? '';
+    const marketCap = params.get('marketCap') ?? '';
+    const industry = params.get('industry') ?? '';
+    const sector = params.get('sector') ?? '';
     const initialValues = { period, industry, sector, marketCap };
     form.setFieldsValue({ ...initialValues });
-
     onFilter({
       period: period!,
       sector,
@@ -112,7 +119,11 @@ export const Watchlist50DaysFilter = ({
         css={formStyles}
         layout='horizontal'
       >
-        <Row gutter={[16, 12]} align='bottom' justify='end'>
+        <Row
+          gutter={isMobile ? [16, 16] : [16, 12]}
+          align='bottom'
+          justify='end'
+        >
           <Col>
             <SelectFilter
               name='period'
@@ -121,15 +132,19 @@ export const Watchlist50DaysFilter = ({
               onSelect={(value) => updateSearchParams('period', value)}
               onClear={() => updateSearchParams('period')}
               width='11rem'
+              value={form.getFieldValue('period') ?? ''}
+              labelFloating
             />
           </Col>
           <Col>
             <SelectFilter
               name='marketCap'
               label={t('marketCap')}
-              options={avgVolumeOptions}
+              options={marketCapOptions}
               onSelect={(value) => updateSearchParams('marketCap', value)}
               onClear={() => updateSearchParams('marketCap')}
+              value={form.getFieldValue('marketCap')}
+              labelFloating
             />
           </Col>
           <Col>
@@ -139,7 +154,9 @@ export const Watchlist50DaysFilter = ({
               options={industryOptions}
               onSelect={(value) => updateSearchParams('industry', value)}
               onClear={() => updateSearchParams('industry')}
-              width='20rem'
+              width={isMobile ? '17rem' : '20rem'}
+              labelFloating
+              value={form.getFieldValue('industry') ?? ''}
             />
           </Col>
           <Col>
@@ -149,7 +166,9 @@ export const Watchlist50DaysFilter = ({
               options={sectorOptions}
               onSelect={(value) => updateSearchParams('sector', value)}
               onClear={() => updateSearchParams('sector')}
-              width='20rem'
+              width={isMobile ? '17rem' : '20rem'}
+              value={form.getFieldValue('sector') ?? ''}
+              labelFloating
             />
           </Col>
           <Col>
@@ -181,5 +200,4 @@ const rootStyles = css`
 const formStyles = css`
   display: flex;
   justify-content: flex-end;
-  gap: 1.6rem;
 `;

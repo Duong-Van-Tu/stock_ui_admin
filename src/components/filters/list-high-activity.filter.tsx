@@ -141,7 +141,10 @@ export const ListHighActivityFilter = ({
           <Col>
             <SelectFilter
               name='rangeDate'
-              options={rangeDateOptions}
+              options={rangeDateOptions.map((option) => ({
+                label: option.label,
+                value: String(option.value)
+              }))}
               onSelect={(value) => updateSearchParams('rangeDate', value)}
               onClear={() => updateSearchParams('rangeDate')}
             />

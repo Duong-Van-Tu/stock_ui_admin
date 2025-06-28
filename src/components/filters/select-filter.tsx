@@ -1,16 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-
 import { Form, Select } from 'antd';
 import { useTranslations } from 'next-intl';
+import FloatSelect from '../float-select';
 
 type SelectFilterProps = {
   name: string;
   label?: string;
-  options: { label: string; value: string | number }[];
+  options: { label: string; value: string }[];
   width?: string;
-  onSelect: (value: string) => void;
+  onSelect: (value: string | undefined) => void;
   onClear: () => void;
+  labelFloating?: boolean;
+  value?: string;
 };
 
 export const SelectFilter = ({
@@ -18,10 +20,27 @@ export const SelectFilter = ({
   label,
   options,
   width = '14rem',
+  labelFloating = false,
   onSelect,
-  onClear
+  onClear,
+  value
 }: SelectFilterProps) => {
   const t = useTranslations();
+  if (labelFloating) {
+    return (
+      <FloatSelect
+        label={label || t('selectPlaceholderDefault')}
+        options={options}
+        allowClear
+        width={width}
+        value={value}
+        placeholder=''
+        onChange={(val) => onSelect(val)}
+        onClear={onClear}
+      />
+    );
+  }
+
   return (
     <Form.Item
       label={label ? <span css={labelStyles}>{label}</span> : undefined}
@@ -33,7 +52,8 @@ export const SelectFilter = ({
         options={options}
         placeholder={label || t('selectPlaceholderDefault')}
         allowClear
-        onSelect={onSelect}
+        value={value}
+        onChange={(val) => onSelect(val)}
         onClear={onClear}
       />
     </Form.Item>

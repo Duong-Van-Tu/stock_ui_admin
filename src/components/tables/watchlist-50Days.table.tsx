@@ -37,6 +37,7 @@ import { AIExplain } from '../ai-explain';
 import EllipsisText from '../ellipsis-text';
 import { Watchlist50DaysFilter } from '../filters/watchlist-50-days.filter';
 import { ExportExcelSwingWatchlist } from '../export-excel-swing-watchlist';
+import { isMobile } from 'react-device-detect';
 
 export const WatchlistIn50DaysTable = () => {
   const t = useTranslations();
@@ -84,8 +85,7 @@ export const WatchlistIn50DaysTable = () => {
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           symbol: symbol ? symbol : undefined,
-          ...filteredFilter,
-          period: filteredFilter.period === 'any' ? '' : filteredFilter.period
+          ...filteredFilter
         })
       );
     },
@@ -134,7 +134,7 @@ export const WatchlistIn50DaysTable = () => {
       key: 'index',
       width: 60,
       align: 'center',
-      fixed: 'left',
+      fixed: !isMobile && 'left',
       render: (_, __, index) =>
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
     },
@@ -262,7 +262,12 @@ export const WatchlistIn50DaysTable = () => {
               value > record.lowest20 && record.changeLowest20Realtime <= 2 // current price
             )}
           >
-            {value}
+            {value} <br />
+            {(
+              ((value - record.previousClose) / record.previousClose) *
+              100
+            ).toLocaleString()}
+            %
           </span>
         ) : (
           '-'
@@ -633,30 +638,35 @@ export const WatchlistIn50DaysTable = () => {
 
   return (
     <div css={rootStyles}>
-      <Watchlist50DaysFilter onFilter={handleFilter} />
+      <Watchlist50DaysFilter
+        customStyles={filterContainerStyles}
+        onFilter={handleFilter}
+      />
       <div css={tableContainerStyles}>
         <div css={tableTopStyles}>
           <div css={tableTopRightStyles}>
             <TableTitle customStyles={titleStyles}>
-              {t('watchlistIn50DaysTitle')} - &nbsp;
+              {t('watchlistIn50DaysTitle')}
             </TableTitle>
             <div css={updatedAtStyles}>
               {watchlistIn50Days.length > 0 && (
                 <>
                   <strong>{t('updatedAt')}:</strong>&nbsp;
-                  {dayjs(watchlistIn50Days[0].createdAt)
-                    .tz(TimeZone.NEW_YORK)
-                    .format('MMM D, YYYY h:mm A')}
-                  &nbsp; (New York) -&nbsp;
+                  <span css={dateTextStyles}>
+                    {dayjs(watchlistIn50Days[0].createdAt)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MMM D, YYYY h:mm A')}
+                  </span>
                   <strong>{t('period')}:</strong>&nbsp;
                   {watchlistIn50Days[0].period}
                 </>
               )}
             </div>
           </div>
-          <ExportExcelSwingWatchlist />
+          {!isMobile && <ExportExcelSwingWatchlist />}
         </div>
         <Table<WatchlistIn50Days>
+          size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey='key'
           columns={columns}
@@ -664,7 +674,7 @@ export const WatchlistIn50DaysTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: watchlistIn50Days.length > 0 ? height - 360 : undefined
+            y: watchlistIn50Days.length > 0 ? height - 374 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -726,13 +736,14 @@ const tableTopStyles = css`
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  padding: 1.2rem 1.4rem;
+  padding: ${isMobile ? '1.2rem' : '1.2rem 1.4rem'};
   gap: 1.4rem;
 `;
 
 const tableTopRightStyles = css`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
 `;
 
 const emptyStyles = (height: number) => css`
@@ -747,7 +758,7 @@ const recommendationStyles = css`
 `;
 
 const updatedAtStyles = css`
-  font-size: 1.6rem;
+  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
 `;
 
 const currentPriceStyles = (isGreen: boolean, isYellow: boolean) => css`
@@ -757,4 +768,12 @@ const currentPriceStyles = (isGreen: boolean, isYellow: boolean) => css`
     ? 'var(--yellow-color)'
     : 'var(--text-color)'};
   font-weight: ${isYellow || isYellow ? '500' : '400'};
+`;
+
+const dateTextStyles = css`
+  margin-right: 0.6rem;
+`;
+
+const filterContainerStyles = css`
+  padding: ${isMobile && '1.6rem 1.4rem'};
 `;
