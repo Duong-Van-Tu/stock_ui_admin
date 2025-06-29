@@ -44,7 +44,7 @@ import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
 import { PlusOutlined } from '@ant-design/icons';
 import { ExportExcelLedgerEntry } from '../export-excel-ledger-entry';
-import { isMobile } from 'react-device-detect';
+import { isDesktop, isMobile } from 'react-device-detect';
 
 const initialBalance = 5000;
 
@@ -114,15 +114,15 @@ export const LedgerEntryTable = () => {
       key: 'index',
       width: 60,
       align: 'center',
-      fixed: 'left',
+      fixed: !isMobile && 'left',
       render: (_, __, index) => index + 1
     },
     {
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: 100,
-      fixed: 'left',
+      width: 90,
+      fixed: !isMobile && 'left',
       render: (_, record) => <SymbolCell symbol={record.symbol} />
     },
     {
@@ -137,7 +137,7 @@ export const LedgerEntryTable = () => {
       title: t('period'),
       dataIndex: 'period',
       key: 'period',
-      width: 100,
+      width: 80,
       align: 'center'
     },
     {
@@ -182,7 +182,7 @@ export const LedgerEntryTable = () => {
       title: t('entryPrice'),
       dataIndex: 'entryPrice',
       key: 'entryPrice',
-      width: 140,
+      width: 130,
       align: 'center',
       defaultSortOrder: 'descend',
       render: (value) => (value ? roundToDecimals(value, 2) : '-')
@@ -191,7 +191,7 @@ export const LedgerEntryTable = () => {
       title: t('exitDate'),
       dataIndex: 'exitDate',
       key: 'exitDate',
-      width: 140,
+      width: 130,
       align: 'center',
       render: (value) =>
         value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
@@ -200,7 +200,7 @@ export const LedgerEntryTable = () => {
       title: t('exitPrice'),
       dataIndex: 'exitPrice',
       key: 'exitPrice',
-      width: 140,
+      width: 130,
       align: 'center',
       render: (value, record) => {
         const percentage = calculatePercentage(record.entryPrice, value);
@@ -215,7 +215,7 @@ export const LedgerEntryTable = () => {
       title: t('StockP/L'),
       dataIndex: 'stockPL',
       key: 'stockPL',
-      width: 140,
+      width: 120,
       align: 'center',
       render: (value, record) => {
         const currPrice = getCurrentPrice(resFromWS, record.symbol);
@@ -238,7 +238,7 @@ export const LedgerEntryTable = () => {
       title: t('actions'),
       dataIndex: 'action',
       key: 'action',
-      width: 180,
+      width: 160,
       align: 'center',
       render: (value) => (value ? value : '-')
     },
@@ -362,7 +362,7 @@ export const LedgerEntryTable = () => {
       title: <span dangerouslySetInnerHTML={{ __html: t('balance') }}></span>,
       dataIndex: 'balance',
       key: 'balance',
-      width: 130,
+      width: 120,
       align: 'center',
       render: (_, record) => {
         const balance = balanceMap[record.id];
@@ -468,10 +468,11 @@ export const LedgerEntryTable = () => {
           >
             {t('addLedgerEntry')}
           </Button>
-          <ExportExcelLedgerEntry />
+          {isDesktop && <ExportExcelLedgerEntry />}
         </Space>
       </div>
       <Table<LedgerEntry>
+        size={isMobile ? 'small' : 'middle'}
         css={tableStyles}
         rowKey='id'
         columns={columns}
