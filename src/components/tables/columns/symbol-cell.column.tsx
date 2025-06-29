@@ -8,7 +8,7 @@ import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details.drawer'
 import MiniStockChart from '@/components/charts/stock-mini.chart';
 import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
-import { isDesktop, isMobile } from 'react-device-detect';
+import { isMobile } from 'react-device-detect';
 
 enum ContentType {
   NEWS = 'news',
