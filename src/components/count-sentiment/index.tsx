@@ -11,6 +11,7 @@ import {
 } from '@/redux/slices/sentiment.slice';
 import { CountCard } from './count-card';
 import { useTranslations } from 'next-intl';
+import { isMobile } from 'react-device-detect';
 
 type CountSentimentProps = {
   symbol: string;
@@ -97,7 +98,7 @@ const cardRowContainerStyles = css`
   flex-wrap: wrap;
   gap: 1.6rem;
   & > * {
-    flex: 1 1 19rem;
+    flex: ${isMobile ? '1 1 12rem' : '1 1 19rem'};
   }
 `;
 

@@ -23,6 +23,7 @@ import {
   isPositiveSentiment
 } from '@/helpers/sentiment.helper';
 import EllipsisText from '../ellipsis-text';
+import { isMobile } from 'react-device-detect';
 
 type CompanyNewsProps = {
   symbol: string;
@@ -59,7 +60,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       dataIndex: 'timestamp',
       key: 'timestamp',
       width: 120,
-      fixed: 'left',
+      fixed: !isMobile && 'left',
       align: 'center',
       render: (value) => <DateTimeCell value={value} />
     },
@@ -119,7 +120,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       title: t('sentiment'),
       dataIndex: 'sentiment',
       key: 'sentiment',
-      width: 140,
+      width: isMobile ? 130 : 140,
       align: 'center',
       fixed: 'right',
       render: (value, record) => (
@@ -141,6 +142,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
 
   return (
     <Table<CompanyNews>
+      size={isMobile ? 'small' : 'middle'}
       bordered={false}
       css={tableStyles}
       loading={loading}

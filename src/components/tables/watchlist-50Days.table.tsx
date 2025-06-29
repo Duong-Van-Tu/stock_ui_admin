@@ -263,11 +263,17 @@ export const WatchlistIn50DaysTable = () => {
             )}
           >
             {value} <br />
-            {(
-              ((value - record.previousClose) / record.previousClose) *
-              100
-            ).toLocaleString()}
-            %
+            <PositiveNegativeText
+              isNegative={value < record.previousClose}
+              isPositive={value >= record.previousClose}
+            >
+              (<span>{value >= record.previousClose ? '+' : ''}</span>
+              {(
+                ((value - record.previousClose) / record.previousClose) *
+                100
+              ).toLocaleString()}
+              %)
+            </PositiveNegativeText>
           </span>
         ) : (
           '-'

@@ -16,6 +16,7 @@ import { PositiveNegativeText } from '@/components/positive-negative-text';
 import { formatNumberShort, roundToDecimals } from '@/utils/common';
 import { StockChangeCell } from '@/components/tables/columns/stock-change-cell.column';
 import { DateTimeCell } from '@/components/tables/columns/date-time-cell.column';
+import { isMobile } from 'react-device-detect';
 
 type SymbolEarningsDetailProps = {
   symbol: string;
@@ -176,6 +177,7 @@ export const SymbolEarningsDetail = ({
       label: <h5 css={titleStyles}>{t('earnings')}</h5>,
       children: (
         <Table<Earning>
+          size={isMobile ? 'small' : 'middle'}
           bordered={false}
           css={tableStyles}
           loading={loading}

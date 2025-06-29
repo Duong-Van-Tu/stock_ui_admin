@@ -9,6 +9,7 @@ import { Icon } from '@/components/icons';
 import { useTranslations } from 'next-intl';
 import { NewsSentiment } from '@/components/news-sentiment';
 import { getRangeDateOptions } from '@/utils/stock-filter';
+import { isMobile } from 'react-device-detect';
 
 type NewDetailsProps = { symbol: string };
 
@@ -22,14 +23,19 @@ export const NewDetails = ({ symbol }: NewDetailsProps) => {
     <div css={rootStyles}>
       <div css={selectDateStyles}>
         <div css={rangeDateStyles}>
-          <span>
-            <strong>{t('fromLabel')}</strong>{' '}
-            {dayjs(fromDate).format('MM-DD-YYYY')}
-          </span>
-          <Icon icon='arrowRight' width={20} height={20} />
-          <span>
-            <strong>{t('toLabel')}</strong> {dayjs(toDate).format('MM-DD-YYYY')}
-          </span>
+          {!isMobile && (
+            <>
+              <span>
+                <strong>{t('fromLabel')}</strong>{' '}
+                {dayjs(fromDate).format('MM-DD-YYYY')}
+              </span>
+              <Icon icon='arrowRight' width={20} height={20} />
+              <span>
+                <strong>{t('toLabel')}</strong>{' '}
+                {dayjs(toDate).format('MM-DD-YYYY')}
+              </span>
+            </>
+          )}
         </div>
         <Select
           css={selectStyles}
