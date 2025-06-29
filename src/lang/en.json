@@ -416,5 +416,6 @@
   "signal": "Signal",
   "confirmExitSelected": "Are you sure you want to exit the selected signals?",
   "confirmExitOne": "Are you sure you want to exit this signal?",
-  "allIndustry": "All Industry"
+  "allIndustry": "All Industry",
+  "holdingTime": "DIM"
 }

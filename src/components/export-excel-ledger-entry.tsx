@@ -36,6 +36,17 @@ export const ExportExcelLedgerEntry = () => {
     return !!value ? `${roundToDecimals(value)}%` : '-';
   };
 
+  const calculateHoldingDays = (
+    entryDate: string | null,
+    exitDate: string | null
+  ) => {
+    if (!entryDate || !exitDate) return '-';
+    const entry = new Date(entryDate);
+    const exit = new Date(exitDate);
+    const diffTime = Math.abs(exit.getTime() - entry.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
   const handleExportLedger = async () => {
     setLoading(true);
 
@@ -45,7 +56,9 @@ export const ExportExcelLedgerEntry = () => {
         investmentCashOut = 0,
         exitPrice = 0,
         entryPrice = 0,
-        commission = 0
+        commission = 0,
+        entryDate,
+        exitDate
       } = item;
 
       const winOrLoss =
@@ -71,6 +84,8 @@ export const ExportExcelLedgerEntry = () => {
         exitPrice &&
         ((exitPrice - entryPrice) / entryPrice) * 100;
 
+      const holdingDays = calculateHoldingDays(entryDate, exitDate);
+
       return {
         Symbol: item.strategy || '-',
         Strategy: item.strategy || '-',
@@ -79,6 +94,7 @@ export const ExportExcelLedgerEntry = () => {
         'Entry Date': item.entryDate ? formatDateTime(item.entryDate) : '-',
         'Entry Price': formatCurrency(item.entryPrice),
         'Exit Date': formatDateTime(item.exitDate),
+        DIM: holdingDays,
         'Exit Price': formatCurrency(item.exitPrice),
         'Stock P/L (%)': formatPercent(stockPLPercent),
         Action: item.action ? item.action : '-',

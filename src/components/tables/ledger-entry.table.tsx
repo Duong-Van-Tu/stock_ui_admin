@@ -197,6 +197,23 @@ export const LedgerEntryTable = () => {
         value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
     },
     {
+      title: t('holdingTime'),
+      dataIndex: 'holdingTime',
+      key: 'holdingTime',
+      width: 60,
+      align: 'center',
+      render: (_, record) => {
+        if (!record.entryDate || !record.exitDate) return '-';
+
+        const entryDate = new Date(record.entryDate);
+        const exitDate = new Date(record.exitDate);
+        const diffTime = Math.abs(exitDate.getTime() - entryDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        return diffDays;
+      }
+    },
+    {
       title: t('exitPrice'),
       dataIndex: 'exitPrice',
       key: 'exitPrice',
