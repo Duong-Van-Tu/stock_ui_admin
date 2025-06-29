@@ -81,9 +81,10 @@ export default function AddLedgerEntry() {
   return (
     <Spin spinning={loading}>
       <div css={rootStyles}>
-        <Title level={3} css={titleStyles}>
+        <Title level={isMobile ? 4 : 3} css={titleStyles}>
           {t('addLedgerEntry')}
         </Title>
+
         <Tooltip title={isMobile ? null : t('back')} css={goBackStyles}>
           <Button
             shape='circle'
@@ -91,6 +92,7 @@ export default function AddLedgerEntry() {
             onClick={handleGoBack}
           />
         </Tooltip>
+
         <Form
           form={form}
           layout='vertical'
@@ -106,8 +108,8 @@ export default function AddLedgerEntry() {
                   rules={[{ required: true, message: '' }]}
                 >
                   <Input
-                    size='large'
-                    placeholder={t('enterSymbol')}
+                    size={isMobile ? 'middle' : 'large'}
+                    placeholder={isMobile ? '' : t('enterSymbol')}
                     onChange={(e) =>
                       form.setFieldValue('symbol', e.target.value.toUpperCase())
                     }
@@ -115,15 +117,15 @@ export default function AddLedgerEntry() {
                 </Form.Item>
                 <Form.Item name='period' label={t('period')}>
                   <Input
-                    placeholder={t('enterPeriod')}
-                    size='large'
+                    placeholder={isMobile ? '' : t('enterPeriod')}
+                    size={isMobile ? 'middle' : 'large'}
                     css={fullWidthStyles}
                   />
                 </Form.Item>
                 <Form.Item name='entryDate' label={t('entryDate')}>
                   <DatePicker
-                    placeholder={t('selectEntryDate')}
-                    size='large'
+                    placeholder={isMobile ? '' : t('selectEntryDate')}
+                    size={isMobile ? 'middle' : 'large'}
                     showTime
                     css={fullWidthStyles}
                   />
@@ -131,8 +133,8 @@ export default function AddLedgerEntry() {
                 <Form.Item name='entryPrice' label={t('entryPrice')}>
                   <InputNumber
                     type='number'
-                    placeholder={t('enterEntryPrice')}
-                    size='large'
+                    placeholder={isMobile ? '' : t('enterEntryPrice')}
+                    size={isMobile ? 'middle' : 'large'}
                     min={0}
                     prefix='$'
                     css={fullWidthStyles}
@@ -141,8 +143,8 @@ export default function AddLedgerEntry() {
                 <Form.Item name='stockPL' label={t('stockPL')}>
                   <InputNumber
                     type='number'
-                    placeholder={t('enterStockPL')}
-                    size='large'
+                    placeholder={isMobile ? '' : t('enterStockPL')}
+                    size={isMobile ? 'middle' : 'large'}
                     prefix='$'
                     css={fullWidthStyles}
                   />
@@ -150,8 +152,8 @@ export default function AddLedgerEntry() {
                 <Form.Item name='contracts' label={t('contracts')}>
                   <InputNumber
                     type='number'
-                    size='large'
-                    placeholder={t('enterNumberOfContracts')}
+                    size={isMobile ? 'middle' : 'large'}
+                    placeholder={isMobile ? '' : t('enterNumberOfContracts')}
                     min={0}
                     css={fullWidthStyles}
                   />
@@ -159,10 +161,10 @@ export default function AddLedgerEntry() {
                 <Form.Item name='premiumPaid' label={t('premiumPaid')}>
                   <InputNumber
                     type='number'
-                    size='large'
+                    size={isMobile ? 'middle' : 'large'}
                     min={0}
                     prefix='$'
-                    placeholder={t('enterPremiumPaid')}
+                    placeholder={isMobile ? '' : t('enterPremiumPaid')}
                     css={fullWidthStyles}
                   />
                 </Form.Item>
@@ -171,9 +173,9 @@ export default function AddLedgerEntry() {
                   label={t('investmentCashOut')}
                 >
                   <InputNumber
-                    placeholder={t('enterInvestmentCashOut')}
+                    placeholder={isMobile ? '' : t('enterInvestmentCashOut')}
                     type='number'
-                    size='large'
+                    size={isMobile ? 'middle' : 'large'}
                     min={0}
                     prefix='$'
                     css={fullWidthStyles}
@@ -181,9 +183,9 @@ export default function AddLedgerEntry() {
                 </Form.Item>
                 <Form.Item name='commission' label={t('commission')}>
                   <InputNumber
-                    placeholder={t('enterCommission')}
+                    placeholder={isMobile ? '' : t('enterCommission')}
                     type='number'
-                    size='large'
+                    size={isMobile ? 'middle' : 'large'}
                     min={0}
                     prefix='$'
                     css={fullWidthStyles}
@@ -193,13 +195,16 @@ export default function AddLedgerEntry() {
 
               <div css={formColumnStyles}>
                 <Form.Item name='strategy' label={t('strategy')}>
-                  <Input placeholder={t('enterStrategy')} size='large' />
+                  <Input
+                    placeholder={isMobile ? '' : t('enterStrategy')}
+                    size={isMobile ? 'middle' : 'large'}
+                  />
                 </Form.Item>
                 <Form.Item name='strike' label={t('strike')}>
                   <InputNumber
                     type='number'
-                    size='large'
-                    placeholder={t('enterStrikePrice')}
+                    size={isMobile ? 'middle' : 'large'}
+                    placeholder={isMobile ? '' : t('enterStrikePrice')}
                     min={0}
                     prefix='$'
                     css={fullWidthStyles}
@@ -207,17 +212,17 @@ export default function AddLedgerEntry() {
                 </Form.Item>
                 <Form.Item name='exitDate' label={t('exitDate')}>
                   <DatePicker
-                    placeholder={t('selectExitDate')}
-                    size='large'
+                    placeholder={isMobile ? '' : t('selectExitDate')}
+                    size={isMobile ? 'middle' : 'large'}
                     showTime
                     css={fullWidthStyles}
                   />
                 </Form.Item>
                 <Form.Item name='exitPrice' label={t('exitPrice')}>
                   <InputNumber
-                    placeholder={t('enterExitPrice')}
+                    placeholder={isMobile ? '' : t('enterExitPrice')}
                     type='number'
-                    size='large'
+                    size={isMobile ? 'middle' : 'large'}
                     min={0}
                     prefix='$'
                     css={fullWidthStyles}
@@ -225,13 +230,16 @@ export default function AddLedgerEntry() {
                 </Form.Item>
                 <Form.Item name='expiration' label={t('expiration')}>
                   <DatePicker
-                    placeholder={t('selectExpirationDate')}
-                    size='large'
+                    placeholder={isMobile ? '' : t('selectExpirationDate')}
+                    size={isMobile ? 'middle' : 'large'}
                     css={fullWidthStyles}
                   />
                 </Form.Item>
                 <Form.Item name='action' label={t('action')}>
-                  <Select size='large' placeholder={t('selectAction')}>
+                  <Select
+                    size={isMobile ? 'middle' : 'large'}
+                    placeholder={t('selectAction')}
+                  >
                     <Option value='' disabled>
                       {t('selectAction')}
                     </Option>
@@ -261,9 +269,9 @@ export default function AddLedgerEntry() {
                 </Form.Item>
                 <Form.Item name='premiumReceive' label={t('premiumReceive')}>
                   <InputNumber
-                    placeholder={t('enterPremiumReceive')}
+                    placeholder={isMobile ? '' : t('enterPremiumReceive')}
                     type='number'
-                    size='large'
+                    size={isMobile ? 'middle' : 'large'}
                     min={0}
                     prefix='$'
                     css={fullWidthStyles}
@@ -274,9 +282,9 @@ export default function AddLedgerEntry() {
                   label={t('investmentCashIn')}
                 >
                   <InputNumber
-                    placeholder={t('enterInvestmentCashIn')}
+                    placeholder={isMobile ? '' : t('enterInvestmentCashIn')}
                     type='number'
-                    size='large'
+                    size={isMobile ? 'middle' : 'large'}
                     min={0}
                     prefix='$'
                     css={fullWidthStyles}
@@ -285,7 +293,7 @@ export default function AddLedgerEntry() {
                 <Form.Item name='sector' label={t('sector')}>
                   <Select
                     options={sectorOptions}
-                    size='large'
+                    size={isMobile ? 'middle' : 'large'}
                     placeholder={t('selectSector')}
                   />
                 </Form.Item>
@@ -295,21 +303,26 @@ export default function AddLedgerEntry() {
               <ReactQuillEditor
                 value=''
                 onChange={(value) => form.setFieldValue('notes', value)}
-                placeholder={t('EnterYourNotesHere')}
+                placeholder={isMobile ? '' : t('EnterYourNotesHere')}
                 showImage={false}
+                height={isMobile ? 150 : 200}
               />
             </Form.Item>
           </div>
           <Form.Item css={formActionsStyles}>
             <Space>
-              <Button onClick={handleGoBack} type='default' size='large'>
+              <Button
+                onClick={handleGoBack}
+                type='default'
+                size={isMobile ? 'middle' : 'large'}
+              >
                 {t('cancel')}
               </Button>
               <Button
                 css={saveBtnStyles}
                 type='primary'
                 htmlType='submit'
-                size='large'
+                size={isMobile ? 'middle' : 'large'}
                 icon={
                   <Icon
                     icon='save'
@@ -352,7 +365,7 @@ const formStyles = css`
   .ant-form-item-label {
     label {
       font-weight: 500;
-      font-size: 1.6rem;
+      font-size: ${isMobile ? '1.4rem' : '1.6rem'};
     }
   }
 `;

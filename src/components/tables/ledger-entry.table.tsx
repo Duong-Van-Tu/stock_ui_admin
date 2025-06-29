@@ -428,8 +428,8 @@ export const LedgerEntryTable = () => {
                 <Icon
                   fill='var(--sky-pulse)'
                   icon='send'
-                  width={20}
-                  height={20}
+                  width={18}
+                  height={18}
                 />
               }
               onClick={() =>
@@ -443,8 +443,8 @@ export const LedgerEntryTable = () => {
               icon={
                 <Icon
                   icon='edit'
-                  width={20}
-                  height={20}
+                  width={18}
+                  height={18}
                   fill='var(--white-color)'
                 />
               }
@@ -462,7 +462,7 @@ export const LedgerEntryTable = () => {
             >
               <Button
                 danger
-                icon={<Icon icon='trash' width={20} height={20} />}
+                icon={<Icon icon='trash' width={18} height={18} />}
               />
             </Popconfirm>
           </Tooltip>
