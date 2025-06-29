@@ -12,6 +12,7 @@ import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { transformWatchlist50Days } from '@/helpers/swing-trading-watchlist.helper';
 import { useTranslations } from 'next-intl';
+import { TimeZone } from '@/constants/timezone.constant';
 
 export const ExportExcelSwingWatchlist = () => {
   const t = useTranslations();
@@ -107,7 +108,9 @@ export const ExportExcelSwingWatchlist = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Swing_Watchlist_${dayjs().format('MM-DD-YYYY_HH-mm')}.xlsx`;
+      a.download = `Swing_Watchlist_${dayjs()
+        .tz(TimeZone.NEW_YORK)
+        .format('MM-DD-YYYY_HH-mm')}.xlsx`;
       a.click();
       URL.revokeObjectURL(url);
     } else {

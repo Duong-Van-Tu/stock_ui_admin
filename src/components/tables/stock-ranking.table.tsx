@@ -35,7 +35,8 @@ import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { useSearchParams } from 'next/navigation';
-import { isMobile } from 'react-device-detect';
+import { isDesktop, isMobile } from 'react-device-detect';
+import { ExportExcelStockRanking } from '../export-stock-ranking';
 
 export const StockRankingTable = () => {
   const t = useTranslations();
@@ -366,21 +367,7 @@ export const StockRankingTable = () => {
         </TableTitle>
         <div css={actionStyles}>
           <StockRankingFilter onFilter={handleFilter} />
-          {/* {isDesktop && (
-            <Button
-              icon={
-                <Icon
-                  icon='exportExcel'
-                  width={18}
-                  height={18}
-                  fill='var(--white-color)'
-                />
-              }
-              type='primary'
-            >
-              {t('exportExcel')}
-            </Button>
-          )} */}
+          {isDesktop && <ExportExcelStockRanking />}
         </div>
       </div>
       <LegendStatus customStyles={legendStatusStyles} />

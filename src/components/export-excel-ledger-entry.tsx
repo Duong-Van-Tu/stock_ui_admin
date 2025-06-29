@@ -18,6 +18,7 @@ import {
 } from '@/utils/common';
 import { Icon } from './icons';
 import { useTranslations } from 'next-intl';
+import { TimeZone } from '@/constants/timezone.constant';
 
 const initialBalance = 5000;
 
@@ -148,7 +149,9 @@ export const ExportExcelLedgerEntry = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Ledger_Entry_${dayjs().format('MM-DD-YYYY_HH-mm')}.xlsx`;
+    a.download = `Ledger_Entry_${dayjs()
+      .tz(TimeZone.NEW_YORK)
+      .format('MM-DD-YYYY_HH-mm')}.xlsx`;
     a.click();
     URL.revokeObjectURL(url);
     setLoading(false);
