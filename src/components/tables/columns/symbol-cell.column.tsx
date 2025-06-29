@@ -8,7 +8,7 @@ import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details.drawer'
 import MiniStockChart from '@/components/charts/stock-mini.chart';
 import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
-import { isMobile } from 'react-device-detect';
+import { isDesktop, isMobile } from 'react-device-detect';
 
 enum ContentType {
   NEWS = 'news',
@@ -56,7 +56,10 @@ export const SymbolCell = ({
           placement='rightTop'
           overlayStyle={{ padding: 0 }}
         >
-          <Link css={stockLinkStyles} href={PageURLs.ofStockDetail(symbol)}>
+          <Link
+            css={stockLinkStyles}
+            href={isDesktop ? PageURLs.ofStockDetail(symbol) : ''}
+          >
             {symbol}
           </Link>
         </Popover>

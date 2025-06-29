@@ -126,7 +126,14 @@ export const StrategySignal = ({
       key: 'symbol',
       width: 80,
       fixed: 'left',
-      render: (value) => <SymbolCell symbol={value} />
+      render: (value, record) => (
+        <SymbolCell
+          isNews={record.isNews}
+          earningDate={record.earningDate}
+          isNewsNegative={record.isNewsNegative}
+          symbol={value}
+        />
+      )
     },
     {
       title: t('period'),
