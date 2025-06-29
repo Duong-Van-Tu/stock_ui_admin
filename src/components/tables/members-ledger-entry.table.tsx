@@ -18,7 +18,7 @@ import {
 import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
 import { defaultApiFetcher } from '@/utils/api-instances';
-import { isMobile } from 'react-device-detect';
+import { isDesktop, isMobile } from 'react-device-detect';
 
 export function MembersLedgerEntry() {
   const t = useTranslations();
@@ -214,7 +214,6 @@ export function MembersLedgerEntry() {
       key: 'index',
       width: 60,
       align: 'center',
-      fixed: 'left',
       render: (_, __, index) => index + 1
     },
     {
@@ -245,6 +244,7 @@ export function MembersLedgerEntry() {
       title: t('telegram'),
       dataIndex: 'telegram',
       key: 'telegram',
+      width: 120,
       render: (value) => (value ? value : '-')
     },
     {
@@ -252,7 +252,7 @@ export function MembersLedgerEntry() {
       key: 'action',
       align: 'center',
       fixed: 'right',
-      width: 150,
+      width: isMobile ? 120 : 150,
       render: (_, record) => (
         <Button
           css={sendBtnStyles}
@@ -268,7 +268,7 @@ export function MembersLedgerEntry() {
             />
           }
         >
-          {t('sendAlert')}
+          {isMobile ? t('send') : t('sendAlert')}
         </Button>
       )
     }
@@ -309,61 +309,63 @@ export function MembersLedgerEntry() {
           >
             {t('sendSelected')}
           </Button>
-          <Space>
-            <Button
-              onClick={handleDownloadUserTemplate}
-              loading={downloading}
-              type='primary'
-              icon={
-                <Icon
-                  fill='var(--brand-blue-color)'
-                  icon='download'
-                  width={18}
-                  height={18}
+          {isDesktop && (
+            <Space>
+              <Button
+                onClick={handleDownloadUserTemplate}
+                loading={downloading}
+                type='primary'
+                icon={
+                  <Icon
+                    fill='var(--brand-blue-color)'
+                    icon='download'
+                    width={18}
+                    height={18}
+                  />
+                }
+                ghost
+              >
+                Download User Template
+              </Button>
+              <Button
+                type='primary'
+                css={importUserBtnStyles}
+                loading={importing}
+                icon={
+                  <Icon
+                    fill='var(--white-color)'
+                    icon='upload'
+                    width={18}
+                    height={18}
+                  />
+                }
+                onClick={() => inputImportRef.current?.click()}
+              >
+                Import User Template
+                <input
+                  ref={inputImportRef}
+                  type='file'
+                  hidden
+                  accept='.xlsx,.xls'
+                  onChange={handleImportUser}
                 />
-              }
-              ghost
-            >
-              Download User Template
-            </Button>
-            <Button
-              type='primary'
-              css={importUserBtnStyles}
-              loading={importing}
-              icon={
-                <Icon
-                  fill='var(--white-color)'
-                  icon='upload'
-                  width={18}
-                  height={18}
-                />
-              }
-              onClick={() => inputImportRef.current?.click()}
-            >
-              Import User Template
-              <input
-                ref={inputImportRef}
-                type='file'
-                hidden
-                accept='.xlsx,.xls'
-                onChange={handleImportUser}
-              />
-            </Button>
-          </Space>
+              </Button>
+            </Space>
+          )}
         </div>
         <Table
+          size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           dataSource={uniqueMembers}
           columns={columns}
           rowKey='id'
-          size='middle'
           pagination={false}
           rowSelection={{
             selectedRowKeys,
             onChange: (keys) => setSelectedRowKeys(keys)
           }}
           scroll={{
-            x: 1300,
+            x: 1100,
             y: members.length > 0 ? height - 250 : undefined
           }}
         />
