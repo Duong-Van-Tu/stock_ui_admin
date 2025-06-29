@@ -1,13 +1,17 @@
 import { v4 as uuid } from 'uuid';
 import { fieldMapping } from './field-mapping.helper';
 
+const UNUSED_IDS = [4, 7, 8, 13];
+
 export const transformStrategyData = (strategies: any[]): Strategies => {
-  return strategies.map((strategy) => ({
-    id: strategy.id,
-    name: strategy.name,
-    groupName: strategy.group_name,
-    description: strategy.description
-  }));
+  return strategies
+    .filter((strategy) => !UNUSED_IDS.includes(strategy.id))
+    .map((strategy) => ({
+      id: strategy.id,
+      name: strategy.name,
+      groupName: strategy.group_name,
+      description: strategy.description
+    }));
 };
 
 export const transformSignalsData = (signals: any[]): Signal[] => {
