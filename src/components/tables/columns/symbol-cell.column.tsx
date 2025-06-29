@@ -56,12 +56,13 @@ export const SymbolCell = ({
           placement='rightTop'
           overlayStyle={{ padding: 0 }}
         >
-          <Link
-            css={stockLinkStyles}
-            href={isDesktop ? PageURLs.ofStockDetail(symbol) : ''}
-          >
-            {symbol}
-          </Link>
+          {isMobile ? (
+            <span css={stockLinkStyles}>{symbol}</span>
+          ) : (
+            <Link css={stockLinkStyles} href={PageURLs.ofStockDetail(symbol)}>
+              {symbol}
+            </Link>
+          )}
         </Popover>
         {isNews && (
           <Tooltip title={isMobile ? null : t('news')}>
