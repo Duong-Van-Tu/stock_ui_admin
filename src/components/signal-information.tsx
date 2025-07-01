@@ -13,18 +13,15 @@ import {
 } from 'lightweight-charts';
 import { TimeZone } from '@/constants/timezone.constant';
 import { defaultApiFetcher } from '@/utils/api-instances';
-import {
-  formatNumberShort,
-  formatPercent,
-  roundToDecimals
-} from '@/utils/common';
+import { formatNumberShort, roundToDecimals } from '@/utils/common';
 import { PositiveNegativeText } from './positive-negative-text';
 import { useNotification } from '@/hooks/notification.hook';
-import { Empty, Spin, Select } from 'antd';
+import { Empty, Spin, Select, Row, Col } from 'antd';
 import {
   Recommendation,
   RecommendationText
 } from '@/constants/common.constant';
+import { useWindowSize } from '@/hooks/window-size.hook';
 
 type ExtendedCandlestickData = CandlestickData & {
   volume?: number;
@@ -32,35 +29,30 @@ type ExtendedCandlestickData = CandlestickData & {
 };
 
 type BacktestSpikeVolumeProps = {
-  symbol: string;
-  period: string;
-  entryPrice: number;
-  entryTime: string;
-  exitPrice?: number;
-  exitTime?: string;
-  manualRecommendation?: string;
+  signal: Signal;
 };
 
 const periodOptions = ['10M', '15M', '30M', '1H'];
 
-export const SignalInformation = ({
-  symbol,
-  period,
-  entryPrice,
-  entryTime,
-  exitPrice,
-  exitTime,
-  manualRecommendation
-}: BacktestSpikeVolumeProps) => {
+export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
   const t = useTranslations();
   const { notifyError } = useNotification();
+  const { width } = useWindowSize();
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
+  const {
+    symbol,
+    timeFrame: period,
+    exitPrice,
+    exitDate,
+    entryPrice,
+    entryDate
+  } = signal;
   let animationFrameId: number | null = null;
 
   const [selectedPeriod, setSelectedPeriod] = useState(
-    periodOptions.includes(period) ? period : '1H'
+    periodOptions.includes(signal.timeFrame) ? period : '1H'
   );
   const [candlestickData, setCandlestickData] = useState<
     ExtendedCandlestickData[]
@@ -80,8 +72,8 @@ export const SignalInformation = ({
   );
 
   const fetchCandlestickChartData = useCallback(async () => {
-    if (!entryTime) return;
-    if (dayjs(entryTime).isBefore(dayjs().subtract(19, 'day'))) {
+    if (!entryDate) return;
+    if (dayjs(entryDate).isBefore(dayjs().subtract(19, 'day'))) {
       setLoading(false);
       return;
     }
@@ -123,7 +115,7 @@ export const SignalInformation = ({
     } finally {
       setLoading(false);
     }
-  }, [symbol, selectedPeriod, entryTime, notifyError]);
+  }, [symbol, selectedPeriod, entryDate, notifyError]);
 
   useEffect(() => {
     fetchCandlestickChartData();
@@ -192,12 +184,12 @@ export const SignalInformation = ({
 
     const markers: SeriesMarker<any>[] = [];
     try {
-      const hasExit = exitPrice !== undefined && exitTime;
+      const hasExit = exitPrice !== undefined && exitDate;
       const isProfit = hasExit ? exitPrice! >= entryPrice : false;
 
-      if (entryTime) {
+      if (entryDate) {
         markers.push({
-          time: parseToUnixTime(entryTime),
+          time: parseToUnixTime(entryDate),
           position: isProfit ? 'belowBar' : 'aboveBar',
           color: isProfit ? 'red' : 'green',
           shape: isProfit ? 'arrowDown' : 'arrowUp',
@@ -207,7 +199,7 @@ export const SignalInformation = ({
 
       if (hasExit) {
         markers.push({
-          time: parseToUnixTime(exitTime!),
+          time: parseToUnixTime(exitDate!),
           position: isProfit ? 'aboveBar' : 'belowBar',
           color: isProfit ? 'green' : 'red',
           shape: isProfit ? 'arrowUp' : 'arrowDown',
@@ -304,100 +296,21 @@ export const SignalInformation = ({
   }, [
     candlestickData,
     entryPrice,
-    entryTime,
+    entryDate,
     exitPrice,
-    exitTime,
+    exitDate,
     animationFrameId,
     parseToUnixTime
   ]);
 
   return (
     <Spin spinning={loading}>
-      <h3
-        css={css`
-          text-align: center;
-          font-size: 2rem;
-          font-weight: 500;
-          margin-bottom: 0;
-        `}
-      >
-        {symbol}
-      </h3>
-
-      <div
-        css={css`
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-          margin: 1rem 0;
-        `}
-      >
-        <div
-          css={css`
-            display: flex;
-            flex-direction: column;
-          `}
-        >
-          <div>
-            <strong>{t('entryDate')}:</strong> &nbsp;
-            {dayjs(entryTime)
-              .tz(TimeZone.NEW_YORK)
-              .format('MM-DD-YYYY HH:mm:ss')}
-          </div>
-          <div>
-            <strong>{t('entryPrice')}:</strong> &nbsp;
-            <span>${roundToDecimals(entryPrice, 2)}</span>
-          </div>
-          {manualRecommendation && (
-            <div>
-              <strong>{t('recommendation')}:</strong> &nbsp;
-              <PositiveNegativeText
-                isPositive={
-                  manualRecommendation === Recommendation.BUY ||
-                  manualRecommendation === Recommendation.STRONG_BUY
-                }
-                isNegative={manualRecommendation === Recommendation.SELL}
-              >
-                <span
-                  css={css`
-                    text-transform: uppercase;
-                  `}
-                >
-                  {RecommendationText[manualRecommendation]}
-                </span>
-              </PositiveNegativeText>
-            </div>
-          )}
-          {!!exitPrice && exitTime && (
-            <>
-              <div>
-                <strong>{t('exitDate')}:</strong> &nbsp;
-                {dayjs(exitTime)
-                  .tz(TimeZone.NEW_YORK)
-                  .format('MM-DD-YYYY HH:mm:ss')}
-              </div>
-              <div>
-                <strong>{t('exitPrice')}:</strong> &nbsp;
-                <PositiveNegativeText
-                  isNegative={exitPrice < entryPrice}
-                  isPositive={exitPrice > entryPrice}
-                >
-                  <span>
-                    ${roundToDecimals(exitPrice, 2)}&nbsp;(
-                    {formatPercent(
-                      ((exitPrice - entryPrice) / entryPrice) * 100
-                    )}
-                    )
-                  </span>
-                </PositiveNegativeText>
-              </div>
-            </>
-          )}
-        </div>
+      <h3 css={styles.title}>{`${t('symbol')}: ${symbol}`}</h3>
+      <div css={styles.selectWrapper}>
         <Select
           value={selectedPeriod}
           onChange={setSelectedPeriod}
-          style={{ width: 80 }}
+          css={styles.selectPeriod}
           options={periodOptions.map((p) => ({
             value: p,
             label: `${p}`
@@ -407,43 +320,237 @@ export const SignalInformation = ({
       </div>
 
       {candlestickData.length === 0 ? (
-        <Empty
-          css={css`
-            padding: 4rem 0;
-          `}
-        />
+        <Empty css={styles.empty} />
       ) : (
-        <div
-          ref={chartContainerRef}
-          css={css`
-            margin-top: 2rem;
-            width: 100%;
-            height: 400px;
-            position: relative;
-            #tv-attr-logo {
-              display: none;
-            }
-          `}
-        >
-          <div
-            ref={tooltipRef}
-            css={css`
-              position: absolute;
-              background: rgba(255, 255, 255, 0.95);
-              border: 1px solid #ccc;
-              padding: 10px;
-              border-radius: 4px;
-              pointer-events: none;
-              font-size: 0.875rem;
-              display: none;
-              white-space: nowrap;
-              z-index: 10;
-              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-              font-size: 1.4rem;
-            `}
-          />
+        <div ref={chartContainerRef} css={styles.chartContainer}>
+          <div ref={tooltipRef} css={styles.tooltip} />
         </div>
       )}
+
+      <div css={styles.infoGroup}>
+        <Row gutter={[32, 8]}>
+          {[
+            { label: t('companyName'), value: signal.companyName },
+            { label: t('period'), value: signal.timeFrame },
+            {
+              label: t('entryDate'),
+              value: signal.entryDate
+                ? dayjs(signal.entryDate)
+                    .tz(TimeZone.NEW_YORK)
+                    .format('MM-DD-YYYY HH:mm:ss')
+                : '--'
+            },
+            {
+              label: t('entryPrice'),
+              value: signal.entryPrice
+                ? `$${roundToDecimals(signal.entryPrice, 2)}`
+                : '--'
+            },
+            {
+              label: t('exitDate'),
+              value: signal.exitDate
+                ? dayjs(signal.exitDate)
+                    .tz(TimeZone.NEW_YORK)
+                    .format('MM-DD-YYYY HH:mm:ss')
+                : '--'
+            },
+            {
+              label: t('exitPrice'),
+              value: signal.exitPrice
+                ? `$${roundToDecimals(signal.exitPrice, 2)}`
+                : '--'
+            },
+            {
+              label: t('currentPrice'),
+              value: signal.currentPrice
+                ? `$${roundToDecimals(signal.currentPrice, 2)}`
+                : '--'
+            },
+            {
+              label: t('highestPrice'),
+              value: signal.highestPrice
+                ? `$${roundToDecimals(signal.highestPrice, 2)}`
+                : '--'
+            },
+            {
+              label: t('lowestPrice'),
+              value: signal.lowestPrice
+                ? `$${roundToDecimals(signal.lowestPrice, 2)}`
+                : '--'
+            },
+            { label: t('aiRating'), value: signal.AIRating ?? '--' },
+            {
+              label: t('aiRecommendation'),
+              value: signal.AIRecommendationSignal ? (
+                <PositiveNegativeText
+                  isPositive={
+                    signal.AIRecommendationSignal === Recommendation.BUY
+                  }
+                  isNegative={
+                    signal.AIRecommendationSignal === Recommendation.SELL
+                  }
+                >
+                  <span css={styles.recommendation}>
+                    {RecommendationText[signal.AIRecommendationSignal]}
+                  </span>
+                </PositiveNegativeText>
+              ) : (
+                <span>-</span>
+              )
+            },
+            {
+              label: t('manualRecommendation'),
+              value: signal.manualRecommendation ? (
+                <PositiveNegativeText
+                  isPositive={
+                    signal.manualRecommendation === Recommendation.BUY ||
+                    signal.manualRecommendation === Recommendation.STRONG_BUY
+                  }
+                  isNegative={
+                    signal.manualRecommendation === Recommendation.SELL
+                  }
+                >
+                  <span css={styles.recommendationText}>
+                    {RecommendationText[signal.manualRecommendation]}
+                  </span>
+                </PositiveNegativeText>
+              ) : (
+                '--'
+              )
+            },
+            {
+              label: t('totalScore'),
+              value: signal.totalScore
+                ? roundToDecimals(signal.totalScore, 2)
+                : '--'
+            },
+            {
+              label: t('fundamentalScore'),
+              value: signal.fundamentalScore
+                ? roundToDecimals(signal.fundamentalScore, 2)
+                : '--'
+            },
+            {
+              label: t('sentimentScore'),
+              value: signal.sentimentScore
+                ? roundToDecimals(signal.sentimentScore, 2)
+                : '--'
+            },
+            {
+              label: t('earningsScore'),
+              value: signal.earningsScore
+                ? roundToDecimals(signal.earningsScore, 2)
+                : '--'
+            },
+            {
+              label: t('marketCap'),
+              value: signal.marketCap
+                ? formatNumberShort(signal.marketCap)
+                : '--'
+            },
+            {
+              label: t('volume'),
+              value: signal.volumeAVG
+                ? formatNumberShort(signal.volumeAVG)
+                : '--'
+            },
+            {
+              label: t('beta'),
+              value: signal.beta ? roundToDecimals(signal.beta, 2) : '--'
+            },
+            {
+              label: t('atr'),
+              value: signal.atr
+                ? `${roundToDecimals(signal.atr, 2)} (${roundToDecimals(
+                    signal.atrPercent,
+                    2
+                  )}%)`
+                : '--'
+            },
+            {
+              label: t('ytd'),
+              value: signal.ytd ? `${roundToDecimals(signal.ytd, 2)}%` : '--'
+            }
+          ].map((item, index) => (
+            <Col
+              span={width < 500 ? 24 : width < 700 ? 12 : 8}
+              key={index}
+              css={styles.col}
+            >
+              <strong>{item.label}:</strong>&nbsp;{item.value}
+            </Col>
+          ))}
+        </Row>
+      </div>
     </Spin>
   );
+};
+
+const styles = {
+  title: css`
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 0;
+  `,
+  infoContainer: css`
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: 1rem 0;
+  `,
+  infoGroup: css`
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+  `,
+  recommendationText: css`
+    text-transform: uppercase;
+  `,
+  empty: css`
+    padding: 4rem 0;
+  `,
+  chartContainer: css`
+    margin-top: 2rem;
+    width: 100%;
+    height: 400px;
+    position: relative;
+
+    #tv-attr-logo {
+      display: none;
+    }
+  `,
+  tooltip: css`
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 0.875rem;
+    display: none;
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 1.4rem;
+  `,
+
+  selectWrapper: css`
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  `,
+
+  selectPeriod: css`
+    width: 8rem;
+  `,
+
+  col: css`
+    display: flex;
+    justify-content: space-between;
+  `,
+
+  recommendation: css`
+    text-transform: uppercase;
+  `
 };

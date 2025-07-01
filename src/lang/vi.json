@@ -417,5 +417,6 @@
   "confirmExitSelected": "Bạn có chắc chắn muốn exit tín hiệu đã chọn không?",
   "confirmExitOne": "Bạn có chắc chắn muốn exit tín hiệu này không?",
   "allIndustry": "Tất cả Industry",
-  "holdingTime": "DIM"
+  "holdingTime": "DIM",
+  "companyName": "Tên công ty"
 }

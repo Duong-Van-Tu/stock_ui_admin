@@ -905,20 +905,9 @@ export const AlertLogsTable = () => {
               <Button
                 icon={<Icon icon='tv' width={22} height={22} fill='#1296db' />}
                 onClick={() =>
-                  modal.openModal(
-                    <SignalInformation
-                      period={record.timeFrame}
-                      symbol={record.symbol}
-                      entryPrice={record.entryPrice}
-                      entryTime={record.entryDate}
-                      exitPrice={record.exitPrice}
-                      exitTime={record.exitDate}
-                      manualRecommendation={record.manualRecommendation}
-                    />,
-                    {
-                      width: 1200
-                    }
-                  )
+                  modal.openModal(<SignalInformation signal={record} />, {
+                    width: 1200
+                  })
                 }
               />
             </Tooltip>
