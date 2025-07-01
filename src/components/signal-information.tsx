@@ -41,9 +41,9 @@ type BacktestSpikeVolumeProps = {
   manualRecommendation?: string;
 };
 
-const periodOptions = ['5M', '10M', '15M', '30M', '1H'];
+const periodOptions = ['10M', '15M', '30M', '1H'];
 
-export const BacktestSpikeVolume = ({
+export const SignalInformation = ({
   symbol,
   period,
   entryPrice,
@@ -59,7 +59,9 @@ export const BacktestSpikeVolume = ({
   const chartRef = useRef<IChartApi | null>(null);
   let animationFrameId: number | null = null;
 
-  const [selectedPeriod, setSelectedPeriod] = useState(period);
+  const [selectedPeriod, setSelectedPeriod] = useState(
+    periodOptions.includes(period) ? period : '1H'
+  );
   const [candlestickData, setCandlestickData] = useState<
     ExtendedCandlestickData[]
   >([]);

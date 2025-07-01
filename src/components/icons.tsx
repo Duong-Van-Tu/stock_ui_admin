@@ -31,7 +31,7 @@ import Trash from '@/assets/svg/trash.svg';
 import Back from '@/assets/svg/back.svg';
 import Send from '@/assets/svg/send.svg';
 import Volume from '@/assets/svg/volume.svg';
-import ChartBacktest from '@/assets/svg/chart-backtest.svg';
+import TV from '@/assets/svg/tv.svg';
 import Download from '@/assets/svg/download.svg';
 import Upload from '@/assets/svg/upload.svg';
 import Menu from '@/assets/svg/menu.svg';
@@ -76,7 +76,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   back: Back,
   send: Send,
   volume: Volume,
-  chartBacktest: ChartBacktest,
+  tv: TV,
   download: Download,
   upload: Upload,
   menu: Menu

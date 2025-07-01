@@ -53,7 +53,7 @@ import { NotesSignal } from '../forms/note-signal.form';
 import { ExitSignal } from '../forms/exit-signal.form';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { AIExplain } from '../ai-explain';
-import { BacktestSpikeVolume } from '../backtest-spike-volume';
+import { SignalInformation } from '../signal-information';
 import { isDesktop, isMobile } from 'react-device-detect';
 
 export const AlertLogsTable = () => {
@@ -903,17 +903,10 @@ export const AlertLogsTable = () => {
             </Tooltip>
             <Tooltip title={isMobile ? null : 'Backtest'}>
               <Button
-                icon={
-                  <Icon
-                    icon='chartBacktest'
-                    width={22}
-                    height={22}
-                    fill='#1296db'
-                  />
-                }
+                icon={<Icon icon='tv' width={22} height={22} fill='#1296db' />}
                 onClick={() =>
                   modal.openModal(
-                    <BacktestSpikeVolume
+                    <SignalInformation
                       period={record.timeFrame}
                       symbol={record.symbol}
                       entryPrice={record.entryPrice}
