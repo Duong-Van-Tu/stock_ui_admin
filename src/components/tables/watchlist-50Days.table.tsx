@@ -52,15 +52,15 @@ export const WatchlistIn50DaysTable = () => {
   const pagination = useAppSelector(watchWatchlistIn50DaysPagination);
   const loading = useAppSelector(watchWatchlistIn50DaysLoading);
 
-  // console.log(
-  //   watchlistIn50Days
-  //     .filter((item) => item.currentPriceWatchlist > 200 && item.AIRating > 78)
-  //     .map((item) => ({
-  //       symbol: item.symbol,
-  //       entry: item.previousClose,
-  //       exit: item.currentPriceWatchlist
-  //     }))
-  // );
+  console.log(
+    watchlistIn50Days
+      .filter((item) => item.currentPriceWatchlist > 200 && item.AIRating > 78)
+      .map((item) => ({
+        symbol: item.symbol,
+        entry: item.previousClose,
+        exit: item.currentPriceWatchlist
+      }))
+  );
 
   const [filter, setFilter] = useState<Watchlist50DaysFilter>({});
 

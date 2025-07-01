@@ -20,7 +20,7 @@ import {
 } from '@/utils/common';
 import { PositiveNegativeText } from './positive-negative-text';
 import { useNotification } from '@/hooks/notification.hook';
-import { Empty, Spin, Select, Row, Col } from 'antd';
+import { Empty, Spin, Select, Row, Col, Button, Modal } from 'antd';
 import {
   Recommendation,
   RecommendationText
@@ -43,6 +43,7 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
   const t = useTranslations();
   const { notifyError } = useNotification();
   const { width } = useWindowSize();
+  const [modal, contextHolder] = Modal.useModal();
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -309,250 +310,407 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
   ]);
 
   return (
-    <Spin spinning={loading}>
-      <h3 css={styles.title}>{`${t('symbol')}: ${symbol}`}</h3>
-      <div css={styles.selectWrapper}>
-        <Select
-          value={selectedPeriod}
-          onChange={setSelectedPeriod}
-          css={styles.selectPeriod}
-          options={periodOptions.map((p) => ({
-            value: p,
-            label: `${p}`
-          }))}
-          size='small'
-        />
-      </div>
-
-      {candlestickData.length === 0 ? (
-        <Empty css={styles.empty} />
-      ) : (
-        <div ref={chartContainerRef} css={styles.chartContainer}>
-          <div ref={tooltipRef} css={styles.tooltip} />
+    <>
+      {contextHolder}
+      <Spin spinning={loading}>
+        <h3 css={styles.title}>{`${t('symbol')}: ${symbol}`}</h3>
+        <div css={styles.selectWrapper}>
+          <Select
+            value={selectedPeriod}
+            onChange={setSelectedPeriod}
+            css={styles.selectPeriod}
+            options={periodOptions.map((p) => ({
+              value: p,
+              label: `${p}`
+            }))}
+            size='small'
+          />
         </div>
-      )}
 
-      <div css={styles.infoGroup}>
-        <Row gutter={[32, 8]}>
-          {[
-            {
-              label: t('companyName'),
-              value: signal.companyName.trim() ? signal.companyName : '--'
-            },
-            { label: t('period'), value: signal.timeFrame },
-            {
-              label: t('entryDate'),
-              value: signal.entryDate
-                ? dayjs(signal.entryDate)
-                    .tz(TimeZone.NEW_YORK)
-                    .format('MM-DD-YYYY HH:mm')
-                : '--'
-            },
-            {
-              label: t('entryPrice'),
-              value: signal.entryPrice
-                ? `$${roundToDecimals(signal.entryPrice, 2)}`
-                : '--'
-            },
-            {
-              label: t('exitDate'),
-              value: signal.exitDate
-                ? dayjs(signal.exitDate)
-                    .tz(TimeZone.NEW_YORK)
-                    .format('MM-DD-YYYY HH:mm:ss')
-                : '--'
-            },
-            {
-              label: t('exitPrice'),
-              value: signal.exitPrice ? (
-                <PriceWithChange
-                  price={signal.exitPrice}
-                  comparePrice={signal.entryPrice}
-                />
-              ) : (
-                '--'
-              )
-            },
-            {
-              label: t('currentPrice'),
-              value: signal.currentPrice ? (
-                <PriceWithChange
-                  price={signal.currentPrice}
-                  comparePrice={signal.entryPrice}
-                />
-              ) : (
-                '--'
-              )
-            },
-            {
-              label: t('highestPrice'),
-              value: signal.highestPrice ? (
-                <PriceWithChange
-                  price={signal.highestPrice}
-                  comparePrice={signal.entryPrice}
-                />
-              ) : (
-                '--'
-              )
-            },
-            {
-              label: t('lowestPrice'),
-              value: signal.lowestPrice ? (
-                <PriceWithChange
-                  price={signal.lowestPrice}
-                  comparePrice={signal.entryPrice}
-                />
-              ) : (
-                '--'
-              )
-            },
-            { label: t('aiRating'), value: signal.AIRating ?? '--' },
-            {
-              label: t('aiRecommendation'),
-              value: signal.AIRecommendationSignal ? (
-                <PositiveNegativeText
-                  isPositive={
-                    signal.AIRecommendationSignal === Recommendation.BUY
-                  }
-                  isNegative={
-                    signal.AIRecommendationSignal === Recommendation.SELL
-                  }
-                >
-                  <span css={styles.recommendation}>
-                    {RecommendationText[signal.AIRecommendationSignal]}
-                  </span>
-                </PositiveNegativeText>
-              ) : (
-                <span>-</span>
-              )
-            },
-            {
-              label: t('manualRecommendation'),
-              value: signal.manualRecommendation ? (
-                <PositiveNegativeText
-                  isPositive={
-                    signal.manualRecommendation === Recommendation.BUY ||
-                    signal.manualRecommendation === Recommendation.STRONG_BUY
-                  }
-                  isNegative={
-                    signal.manualRecommendation === Recommendation.SELL
-                  }
-                >
-                  <span css={styles.recommendationText}>
-                    {RecommendationText[signal.manualRecommendation]}
-                  </span>
-                </PositiveNegativeText>
-              ) : (
-                '--'
-              )
-            },
-            {
-              label: t('totalScore'),
-              value: signal.totalScore ? (
-                <PositiveNegativeText
-                  isPositive={signal.totalScore > 7}
-                  isNegative={signal.totalScore < 4}
-                >
-                  <span>{roundToDecimals(signal.totalScore, 2)}</span>
-                </PositiveNegativeText>
-              ) : (
-                '--'
-              )
-            },
-            {
-              label: t('fundamentalScore'),
-              value: signal.fundamentalScore ? (
-                <PositiveNegativeText
-                  isPositive={signal.fundamentalScore > 7}
-                  isNegative={signal.fundamentalScore < 4}
-                >
-                  <span>{roundToDecimals(signal.fundamentalScore, 2)}</span>
-                </PositiveNegativeText>
-              ) : (
-                '--'
-              )
-            },
-            {
-              label: t('sentimentScore'),
-              value: signal.sentimentScore ? (
-                <PositiveNegativeText
-                  isPositive={signal.sentimentScore > 7}
-                  isNegative={signal.sentimentScore < 4}
-                >
-                  <span>{roundToDecimals(signal.sentimentScore, 2)}</span>
-                </PositiveNegativeText>
-              ) : (
-                '--'
-              )
-            },
-            {
-              label: t('earningsScore'),
-              value: signal.earningsScore ? (
-                <PositiveNegativeText
-                  isPositive={signal.earningsScore > 7}
-                  isNegative={signal.earningsScore < 4}
-                >
-                  <span>{roundToDecimals(signal.earningsScore, 2)}</span>
-                </PositiveNegativeText>
-              ) : (
-                '--'
-              )
-            },
-            {
-              label: t('marketCap'),
-              value: signal.marketCap ? formatMarketCap(signal.marketCap) : '--'
-            },
-            {
-              label: t('volume'),
-              value: signal.volumeAVG
-                ? formatNumberShort(signal.volumeAVG)
-                : '--'
-            },
-            {
-              label: t('beta'),
-              value: signal.beta ? roundToDecimals(signal.beta, 2) : '--'
-            },
-            {
-              label: t('atr'),
-              value: signal.atr ? (
-                <PositiveNegativeText
-                  isPositive={signal.atrPercent > 0}
-                  isNegative={signal.atrPercent < 0}
-                >
-                  <span>
-                    {roundToDecimals(signal.atr, 2)} ($
-                    {roundToDecimals(signal.atrPercent, 2)})
-                  </span>
-                </PositiveNegativeText>
-              ) : (
-                '--'
-              )
-            },
-            {
-              label: t('ytd'),
-              value: signal.ytd ? (
-                <PositiveNegativeText
-                  isPositive={signal.ytd > 0}
-                  isNegative={signal.ytd < 0}
-                >
-                  <span>{roundToDecimals(signal.ytd, 2)}%</span>
-                </PositiveNegativeText>
-              ) : (
-                '--'
-              )
-            }
-          ].map((item, index) => (
-            <Col
-              span={width < 500 ? 24 : width < 700 ? 12 : 8}
-              key={index}
-              css={styles.col}
-            >
-              <strong>{item.label}:</strong>&nbsp;{item.value}
-            </Col>
-          ))}
-        </Row>
-      </div>
-    </Spin>
+        {candlestickData.length === 0 ? (
+          <Empty css={styles.empty} />
+        ) : (
+          <div ref={chartContainerRef} css={styles.chartContainer}>
+            <div ref={tooltipRef} css={styles.tooltip} />
+          </div>
+        )}
+
+        <div css={styles.infoGroup}>
+          <Row gutter={[32, 8]}>
+            {[
+              {
+                label: t('companyName'),
+                value: signal.companyName.trim() ? signal.companyName : '--'
+              },
+              { label: t('strategy'), value: signal.strategyName || '--' },
+              { label: t('period'), value: signal.timeFrame },
+              {
+                label: t('realCandleEntry'),
+                value: signal.realCandleEntry
+                  ? dayjs(signal.realCandleEntry)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MM-DD-YYYY HH:mm')
+                  : '--'
+              },
+              {
+                label: t('expectCandleEntry'),
+                value: signal.expectCandleEntry
+                  ? dayjs(signal.expectCandleEntry)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MM-DD-YYYY HH:mm')
+                  : '--'
+              },
+              {
+                label: t('entryDate'),
+                value: signal.entryDate
+                  ? dayjs(signal.entryDate)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MM-DD-YYYY HH:mm')
+                  : '--'
+              },
+              {
+                label: t('entryPrice'),
+                value: signal.entryPrice
+                  ? `$${roundToDecimals(signal.entryPrice, 2)}`
+                  : '--'
+              },
+              {
+                label: t('exitDate'),
+                value: signal.exitDate
+                  ? dayjs(signal.exitDate)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MM-DD-YYYY HH:mm:ss')
+                  : '--'
+              },
+              {
+                label: t('exitPrice'),
+                value: signal.exitPrice ? (
+                  <PriceWithChange
+                    price={signal.exitPrice}
+                    comparePrice={signal.entryPrice}
+                  />
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('currentPrice'),
+                value: signal.currentPrice ? (
+                  <PriceWithChange
+                    price={signal.currentPrice}
+                    comparePrice={signal.entryPrice}
+                  />
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('highestPrice'),
+                value: signal.highestPrice ? (
+                  <PriceWithChange
+                    price={signal.highestPrice}
+                    comparePrice={signal.entryPrice}
+                  />
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('highestPriceDate'),
+                value: signal.highestUpdateAt
+                  ? dayjs(signal.highestUpdateAt)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MM-DD-YYYY HH:mm')
+                  : '--'
+              },
+              {
+                label: t('highestPrice3Days'),
+                value: signal.highestPrice3Days ? (
+                  <PriceWithChange
+                    price={signal.highestPrice3Days}
+                    comparePrice={signal.entryPrice}
+                  />
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('highest3DaysUpdateAt'),
+                value: signal.highest3DaysUpdateAt
+                  ? dayjs(signal.highest3DaysUpdateAt)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MM-DD-YYYY HH:mm')
+                  : '--'
+              },
+              {
+                label: t('highestPrice7Days'),
+                value: signal.highestPrice7Days ? (
+                  <PriceWithChange
+                    price={signal.highestPrice7Days}
+                    comparePrice={signal.entryPrice}
+                  />
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('highest7DaysUpdateAt'),
+                value: signal.highest7DaysUpdateAt
+                  ? dayjs(signal.highest7DaysUpdateAt)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MM-DD-YYYY HH:mm')
+                  : '--'
+              },
+              {
+                label: t('lowestPrice'),
+                value: signal.lowestPrice ? (
+                  <PriceWithChange
+                    price={signal.lowestPrice}
+                    comparePrice={signal.entryPrice}
+                  />
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('lowestPriceDate'),
+                value: signal.lowestUpdateAt
+                  ? dayjs(signal.lowestUpdateAt)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MM-DD-YYYY HH:mm')
+                  : '--'
+              },
+              {
+                label: t('lowestPrice3Days'),
+                value: signal.lowestPrice3Days ? (
+                  <PriceWithChange
+                    price={signal.lowestPrice3Days}
+                    comparePrice={signal.entryPrice}
+                  />
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('lowest3DaysUpdateAt'),
+                value: signal.lowest3DaysUpdateAt
+                  ? dayjs(signal.lowest3DaysUpdateAt)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MM-DD-YYYY HH:mm')
+                  : '--'
+              },
+              {
+                label: t('lowestPrice7Days'),
+                value: signal.lowestPrice7Days ? (
+                  <PriceWithChange
+                    price={signal.lowestPrice7Days}
+                    comparePrice={signal.entryPrice}
+                  />
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('lowest7DaysUpdateAt'),
+                value: signal.lowest7DaysUpdateAt
+                  ? dayjs(signal.lowest7DaysUpdateAt)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MM-DD-YYYY HH:mm')
+                  : '--'
+              },
+              {
+                label: t('earningsNext3Days'),
+                value: signal.earningDate3days ? t('yes') : t('no')
+              },
+              {
+                label: t('aiRating'),
+                value: signal.AIRating ?? '--'
+              },
+              {
+                label: t('aiRecommendation'),
+                value: signal.AIRecommendationSignal ? (
+                  <PositiveNegativeText
+                    isPositive={
+                      signal.AIRecommendationSignal === Recommendation.BUY
+                    }
+                    isNegative={
+                      signal.AIRecommendationSignal === Recommendation.SELL
+                    }
+                  >
+                    <span css={styles.recommendation}>
+                      {RecommendationText[signal.AIRecommendationSignal]}
+                    </span>
+                  </PositiveNegativeText>
+                ) : (
+                  <span>-</span>
+                )
+              },
+              {
+                label: t('manualRecommendation'),
+                value: signal.manualRecommendation ? (
+                  <PositiveNegativeText
+                    isPositive={
+                      signal.manualRecommendation === Recommendation.BUY ||
+                      signal.manualRecommendation === Recommendation.STRONG_BUY
+                    }
+                    isNegative={
+                      signal.manualRecommendation === Recommendation.SELL
+                    }
+                  >
+                    <span css={styles.recommendationText}>
+                      {RecommendationText[signal.manualRecommendation]}
+                    </span>
+                  </PositiveNegativeText>
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('aiExplain'),
+                value: signal.AIExplain ? (
+                  <Button
+                    css={styles.AIExplainBtn}
+                    type='link'
+                    onClick={() =>
+                      modal.confirm({
+                        title: t('aiExplain'),
+                        content: signal.AIExplain,
+                        cancelText: t('close')
+                      })
+                    }
+                  >
+                    {t('viewDetails')}
+                  </Button>
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('totalScore'),
+                value: signal.totalScore ? (
+                  <PositiveNegativeText
+                    isPositive={signal.totalScore > 7}
+                    isNegative={signal.totalScore < 4}
+                  >
+                    <span>{roundToDecimals(signal.totalScore, 2)}</span>
+                  </PositiveNegativeText>
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('fundamentalScore'),
+                value: signal.fundamentalScore ? (
+                  <PositiveNegativeText
+                    isPositive={signal.fundamentalScore > 7}
+                    isNegative={signal.fundamentalScore < 4}
+                  >
+                    <span>{roundToDecimals(signal.fundamentalScore, 2)}</span>
+                  </PositiveNegativeText>
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('sentimentScore'),
+                value: signal.sentimentScore ? (
+                  <PositiveNegativeText
+                    isPositive={signal.sentimentScore > 7}
+                    isNegative={signal.sentimentScore < 4}
+                  >
+                    <span>{roundToDecimals(signal.sentimentScore, 2)}</span>
+                  </PositiveNegativeText>
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('earningsScore'),
+                value: signal.earningsScore ? (
+                  <PositiveNegativeText
+                    isPositive={signal.earningsScore > 7}
+                    isNegative={signal.earningsScore < 4}
+                  >
+                    <span>{roundToDecimals(signal.earningsScore, 2)}</span>
+                  </PositiveNegativeText>
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('marketCap'),
+                value: signal.marketCap
+                  ? formatMarketCap(signal.marketCap)
+                  : '--'
+              },
+              {
+                label: t('volume'),
+                value: signal.volumeAVG
+                  ? formatNumberShort(signal.volumeAVG)
+                  : '--'
+              },
+              {
+                label: t('beta'),
+                value: signal.beta ? roundToDecimals(signal.beta, 2) : '--'
+              },
+              {
+                label: t('atr'),
+                value: signal.atr ? (
+                  <PositiveNegativeText
+                    isPositive={signal.atrPercent > 0}
+                    isNegative={signal.atrPercent < 0}
+                  >
+                    <span>
+                      {roundToDecimals(signal.atr, 2)} (
+                      {roundToDecimals(signal.atrPercent, 2)})
+                    </span>
+                  </PositiveNegativeText>
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('ytd'),
+                value: signal.ytd ? (
+                  <PositiveNegativeText
+                    isPositive={signal.ytd > 0}
+                    isNegative={signal.ytd < 0}
+                  >
+                    <span>{roundToDecimals(signal.ytd, 2)}%</span>
+                  </PositiveNegativeText>
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('isNews'),
+                value: signal.isNews ? t('yes') : t('no')
+              },
+              {
+                label: t('isNewsNegative'),
+                value: signal.isNewsNegative ? t('yes') : t('no')
+              },
+              {
+                label: t('earningDate'),
+                value: signal.earningDate
+                  ? dayjs(signal.earningDate)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MM-DD-YYYY')
+                  : '--'
+              }
+            ].map((item, index) => (
+              <Col
+                span={width < 500 ? 24 : width < 700 ? 12 : 8}
+                key={index}
+                css={styles.col}
+              >
+                <strong>{item.label}:</strong>&nbsp;{item.value}
+              </Col>
+            ))}
+          </Row>
+        </div>
+      </Spin>
+    </>
   );
 };
 
@@ -622,5 +780,9 @@ const styles = {
 
   recommendation: css`
     text-transform: uppercase;
+  `,
+
+  AIExplainBtn: css`
+    padding: 0;
   `
 };

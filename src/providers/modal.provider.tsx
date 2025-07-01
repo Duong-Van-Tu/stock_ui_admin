@@ -143,7 +143,7 @@ export default function ModalProvider({ children }: ModalProviderProps) {
 const modalStyles = css`
   .ant-modal-content {
     padding: ${isMobile ? '1.6rem' : '2rem'} !important;
-    max-height: ${isMobile ? 'calc(100vh - 20rem)' : 'unset'};
+    max-height: ${isMobile ? 'calc(100vh - 20rem)' : 'calc(100vh - 8rem)'};
     overflow-y: auto;
   }
   .ant-modal-body {
