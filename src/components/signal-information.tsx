@@ -22,6 +22,7 @@ import {
   RecommendationText
 } from '@/constants/common.constant';
 import { useWindowSize } from '@/hooks/window-size.hook';
+import { PriceWithChange } from './price-with-change';
 
 type ExtendedCandlestickData = CandlestickData & {
   volume?: number;
@@ -330,14 +331,17 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
       <div css={styles.infoGroup}>
         <Row gutter={[32, 8]}>
           {[
-            { label: t('companyName'), value: signal.companyName },
+            {
+              label: t('companyName'),
+              value: signal.companyName.trim() ? signal.companyName : '--'
+            },
             { label: t('period'), value: signal.timeFrame },
             {
               label: t('entryDate'),
               value: signal.entryDate
                 ? dayjs(signal.entryDate)
                     .tz(TimeZone.NEW_YORK)
-                    .format('MM-DD-YYYY HH:mm:ss')
+                    .format('MM-DD-YYYY HH:mm')
                 : '--'
             },
             {
@@ -356,27 +360,47 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
             },
             {
               label: t('exitPrice'),
-              value: signal.exitPrice
-                ? `$${roundToDecimals(signal.exitPrice, 2)}`
-                : '--'
+              value: signal.exitPrice ? (
+                <PriceWithChange
+                  price={signal.exitPrice}
+                  comparePrice={signal.entryPrice}
+                />
+              ) : (
+                '--'
+              )
             },
             {
               label: t('currentPrice'),
-              value: signal.currentPrice
-                ? `$${roundToDecimals(signal.currentPrice, 2)}`
-                : '--'
+              value: signal.currentPrice ? (
+                <PriceWithChange
+                  price={signal.currentPrice}
+                  comparePrice={signal.entryPrice}
+                />
+              ) : (
+                '--'
+              )
             },
             {
               label: t('highestPrice'),
-              value: signal.highestPrice
-                ? `$${roundToDecimals(signal.highestPrice, 2)}`
-                : '--'
+              value: signal.highestPrice ? (
+                <PriceWithChange
+                  price={signal.highestPrice}
+                  comparePrice={signal.entryPrice}
+                />
+              ) : (
+                '--'
+              )
             },
             {
               label: t('lowestPrice'),
-              value: signal.lowestPrice
-                ? `$${roundToDecimals(signal.lowestPrice, 2)}`
-                : '--'
+              value: signal.lowestPrice ? (
+                <PriceWithChange
+                  price={signal.lowestPrice}
+                  comparePrice={signal.entryPrice}
+                />
+              ) : (
+                '--'
+              )
             },
             { label: t('aiRating'), value: signal.AIRating ?? '--' },
             {
