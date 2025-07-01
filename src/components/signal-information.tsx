@@ -16,6 +16,7 @@ import { defaultApiFetcher } from '@/utils/api-instances';
 import {
   formatMarketCap,
   formatNumberShort,
+  formatPercent,
   roundToDecimals
 } from '@/utils/common';
 import { PositiveNegativeText } from './positive-negative-text';
@@ -662,7 +663,7 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
                   >
                     <span>
                       {roundToDecimals(signal.atr, 2)} (
-                      {roundToDecimals(signal.atrPercent, 2)})
+                      {formatPercent(signal.atrPercent, 2)})
                     </span>
                   </PositiveNegativeText>
                 ) : (
