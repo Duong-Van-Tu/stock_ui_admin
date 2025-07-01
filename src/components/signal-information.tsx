@@ -13,7 +13,11 @@ import {
 } from 'lightweight-charts';
 import { TimeZone } from '@/constants/timezone.constant';
 import { defaultApiFetcher } from '@/utils/api-instances';
-import { formatNumberShort, roundToDecimals } from '@/utils/common';
+import {
+  formatMarketCap,
+  formatNumberShort,
+  roundToDecimals
+} from '@/utils/common';
 import { PositiveNegativeText } from './positive-negative-text';
 import { useNotification } from '@/hooks/notification.hook';
 import { Empty, Spin, Select, Row, Col } from 'antd';
@@ -444,33 +448,59 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
             },
             {
               label: t('totalScore'),
-              value: signal.totalScore
-                ? roundToDecimals(signal.totalScore, 2)
-                : '--'
+              value: signal.totalScore ? (
+                <PositiveNegativeText
+                  isPositive={signal.totalScore > 7}
+                  isNegative={signal.totalScore < 4}
+                >
+                  <span>{roundToDecimals(signal.totalScore, 2)}</span>
+                </PositiveNegativeText>
+              ) : (
+                '--'
+              )
             },
             {
               label: t('fundamentalScore'),
-              value: signal.fundamentalScore
-                ? roundToDecimals(signal.fundamentalScore, 2)
-                : '--'
+              value: signal.fundamentalScore ? (
+                <PositiveNegativeText
+                  isPositive={signal.fundamentalScore > 7}
+                  isNegative={signal.fundamentalScore < 4}
+                >
+                  <span>{roundToDecimals(signal.fundamentalScore, 2)}</span>
+                </PositiveNegativeText>
+              ) : (
+                '--'
+              )
             },
             {
               label: t('sentimentScore'),
-              value: signal.sentimentScore
-                ? roundToDecimals(signal.sentimentScore, 2)
-                : '--'
+              value: signal.sentimentScore ? (
+                <PositiveNegativeText
+                  isPositive={signal.sentimentScore > 7}
+                  isNegative={signal.sentimentScore < 4}
+                >
+                  <span>{roundToDecimals(signal.sentimentScore, 2)}</span>
+                </PositiveNegativeText>
+              ) : (
+                '--'
+              )
             },
             {
               label: t('earningsScore'),
-              value: signal.earningsScore
-                ? roundToDecimals(signal.earningsScore, 2)
-                : '--'
+              value: signal.earningsScore ? (
+                <PositiveNegativeText
+                  isPositive={signal.earningsScore > 7}
+                  isNegative={signal.earningsScore < 4}
+                >
+                  <span>{roundToDecimals(signal.earningsScore, 2)}</span>
+                </PositiveNegativeText>
+              ) : (
+                '--'
+              )
             },
             {
               label: t('marketCap'),
-              value: signal.marketCap
-                ? formatNumberShort(signal.marketCap)
-                : '--'
+              value: signal.marketCap ? formatMarketCap(signal.marketCap) : '--'
             },
             {
               label: t('volume'),
@@ -484,16 +514,32 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
             },
             {
               label: t('atr'),
-              value: signal.atr
-                ? `${roundToDecimals(signal.atr, 2)} (${roundToDecimals(
-                    signal.atrPercent,
-                    2
-                  )}%)`
-                : '--'
+              value: signal.atr ? (
+                <PositiveNegativeText
+                  isPositive={signal.atrPercent > 0}
+                  isNegative={signal.atrPercent < 0}
+                >
+                  <span>
+                    {roundToDecimals(signal.atr, 2)} ($
+                    {roundToDecimals(signal.atrPercent, 2)})
+                  </span>
+                </PositiveNegativeText>
+              ) : (
+                '--'
+              )
             },
             {
               label: t('ytd'),
-              value: signal.ytd ? `${roundToDecimals(signal.ytd, 2)}%` : '--'
+              value: signal.ytd ? (
+                <PositiveNegativeText
+                  isPositive={signal.ytd > 0}
+                  isNegative={signal.ytd < 0}
+                >
+                  <span>{roundToDecimals(signal.ytd, 2)}%</span>
+                </PositiveNegativeText>
+              ) : (
+                '--'
+              )
             }
           ].map((item, index) => (
             <Col

@@ -15,6 +15,7 @@ import {
   calculatePercentage,
   cleanFalsyValues,
   formatMarketCap,
+  formatNumberShort,
   roundToDecimals
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -684,7 +685,7 @@ export const AlertLogsTable = () => {
         onClick: () => handleSortOrder('volumeAVG')
       }),
       align: 'center',
-      render: (value) => (value ? roundToDecimals(value, 2) : '-')
+      render: (value) => (value ? formatNumberShort(value) : '-')
     },
     {
       title: t('beta'),
