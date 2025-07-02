@@ -1,6 +1,5 @@
 import { v4 as uuid } from 'uuid';
 import { fieldMapping } from './field-mapping.helper';
-import dayjs from 'dayjs';
 import { parseToUTC } from '@/utils/common';
 
 const UNUSED_IDS = [4, 7, 8, 13];
