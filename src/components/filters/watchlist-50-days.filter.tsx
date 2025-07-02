@@ -154,7 +154,7 @@ export const Watchlist50DaysFilter = ({
               options={industryOptions}
               onSelect={(value) => updateSearchParams('industry', value)}
               onClear={() => updateSearchParams('industry')}
-              width={isMobile ? '17rem' : '20rem'}
+              width={isMobile ? '15.4rem' : '20rem'}
               labelFloating
               value={form.getFieldValue('industry') ?? ''}
             />
@@ -166,7 +166,7 @@ export const Watchlist50DaysFilter = ({
               options={sectorOptions}
               onSelect={(value) => updateSearchParams('sector', value)}
               onClear={() => updateSearchParams('sector')}
-              width={isMobile ? '17rem' : '20rem'}
+              width={isMobile ? '15.4rem' : '20rem'}
               value={form.getFieldValue('sector') ?? ''}
               labelFloating
             />
