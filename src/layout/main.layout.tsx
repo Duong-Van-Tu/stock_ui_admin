@@ -123,6 +123,9 @@ const contentStyles = (background: string, collapsed: boolean) => css`
 const layoutStyles = css`
   background: var(--white-color);
   height: '100%';
+  .ant-layout-header {
+    line-height: 1.6rem;
+  }
 `;
 
 const sidebarStyle: CSSProperties = {

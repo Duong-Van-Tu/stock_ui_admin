@@ -35,6 +35,7 @@ import TV from '@/assets/svg/tv.svg';
 import Download from '@/assets/svg/download.svg';
 import Upload from '@/assets/svg/upload.svg';
 import Menu from '@/assets/svg/menu.svg';
+import Clock from '@/assets/svg/clock.svg';
 
 type IconProps = {
   width?: number | string;
@@ -79,7 +80,8 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   tv: TV,
   download: Download,
   upload: Upload,
-  menu: Menu
+  menu: Menu,
+  clock: Clock
 };
 
 export const Icon = ({

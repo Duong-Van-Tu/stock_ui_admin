@@ -15,6 +15,7 @@ import { PageURLs } from '@/utils/navigate';
 import { getPathnameSegment } from '@/utils/common';
 import { isMobile, isDesktop } from 'react-device-detect';
 import { setSideBarCollapsed } from '@/redux/slices/app.slice';
+import TimeZoneClock from './time-zone-clock';
 
 enum UserMenu {
   PROFILE,
@@ -158,6 +159,7 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
       </div>
       {isDesktop && (
         <div css={rightSectionStyles}>
+          {<TimeZoneClock />}
           <Dropdown
             menu={{ items: languages, onClick: handleLanguageChange }}
             trigger={['click']}
@@ -220,6 +222,7 @@ const rootStyles = (background: string, collapsed: boolean) => css`
   align-items: center;
   justify-content: space-between;
   padding: ${isMobile ? '0 1.4rem' : '0 2rem'};
+  gap: 2rem;
 `;
 
 const leftSectionStyles = css`
@@ -230,14 +233,16 @@ const leftSectionStyles = css`
 `;
 
 const searchStyles = css`
-  max-width: 36rem;
-  min-width: ${isDesktop ? '36rem' : 'unset'};
+  max-width: 32rem;
+  min-width: ${isDesktop ? '32rem' : 'unset'};
   width: 100%;
 `;
 
 const rightSectionStyles = css`
   display: flex;
   gap: 1rem;
+  align-items: center;
+  justify-content: center;
 `;
 
 const languageStyles = css`
