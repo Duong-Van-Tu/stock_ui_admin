@@ -48,5 +48,5 @@ const valueStyles = css`
 `;
 
 const titleStyles = css`
-  ${isMobile && '1.4rem'}
+  font-size: ${isMobile && '1.4rem !important'};
 `;
