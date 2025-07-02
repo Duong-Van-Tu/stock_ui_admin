@@ -11,7 +11,6 @@ import {
 } from '@/redux/slices/sentiment.slice';
 import { CountCard } from './count-card';
 import { useTranslations } from 'next-intl';
-import { useWindowSize } from '@/hooks/window-size.hook';
 
 type CountSentimentProps = {
   symbol: string;
