@@ -244,3 +244,6 @@ export const convertParamsByMapping = <T extends Record<string, any>>(
     return acc;
   }, {} as Record<string, any>);
 };
+
+export const parseToUTC = (date?: string) =>
+  date ? dayjs.utc(date, 'YYYY-MM-DD HH:mm:ss').format() : '';

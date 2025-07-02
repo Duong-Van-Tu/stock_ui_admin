@@ -1,5 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { fieldMapping } from './field-mapping.helper';
+import dayjs from 'dayjs';
+import { parseToUTC } from '@/utils/common';
 
 const UNUSED_IDS = [4, 7, 8, 13];
 
@@ -66,8 +68,8 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     AIRating: stock[fieldMapping.AIRating],
     AIRecommendationSignal: stock[fieldMapping.AIRecommendationSignal],
     AIExplain: stock[fieldMapping.AIExplain],
-    realCandleEntry: stock[fieldMapping.realCandleEntry],
-    expectCandleEntry: stock[fieldMapping.expectCandleEntry],
+    realCandleEntry: parseToUTC(stock[fieldMapping.realCandleEntry]),
+    expectCandleEntry: parseToUTC(stock[fieldMapping.expectCandleEntry]),
     manualRecommendation: stock[fieldMapping.manualRecommendation]
   }));
 };

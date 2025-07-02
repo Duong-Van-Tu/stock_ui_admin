@@ -30,7 +30,11 @@ export const ExportExcelLedgerEntry = () => {
   const balanceMap = useAppSelector(watchBalanceMap);
 
   const formatCurrency = (value: number | null | undefined) => {
-    return !!value ? `$${roundToDecimals(value)}` : '-';
+    if (value === null || value === undefined) return '-';
+    const roundedValue = roundToDecimals(value) as number;
+    return roundedValue < 0
+      ? `($${Math.abs(roundedValue)})`
+      : `$${roundedValue}`;
   };
 
   const formatPercent = (value: number | null | undefined) => {

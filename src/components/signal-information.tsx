@@ -41,6 +41,7 @@ type BacktestSpikeVolumeProps = {
 const periodOptions = ['10M', '15M', '30M', '1H'];
 
 export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
+  console.log({ expectCandleEntry: signal.expectCandleEntry });
   const t = useTranslations();
   const { notifyError } = useNotification();
   const { width } = useWindowSize();
@@ -376,6 +377,65 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
                   : '--'
               },
               {
+                label: t('aiRecommendation'),
+                value: signal.AIRecommendationSignal ? (
+                  <PositiveNegativeText
+                    isPositive={
+                      signal.AIRecommendationSignal === Recommendation.BUY
+                    }
+                    isNegative={
+                      signal.AIRecommendationSignal === Recommendation.SELL
+                    }
+                  >
+                    <span css={styles.recommendation}>
+                      {RecommendationText[signal.AIRecommendationSignal]}
+                    </span>
+                  </PositiveNegativeText>
+                ) : (
+                  <span>-</span>
+                )
+              },
+              {
+                label: t('manualRecommendation'),
+                value: signal.manualRecommendation ? (
+                  <PositiveNegativeText
+                    isPositive={
+                      signal.manualRecommendation === Recommendation.BUY ||
+                      signal.manualRecommendation === Recommendation.STRONG_BUY
+                    }
+                    isNegative={
+                      signal.manualRecommendation === Recommendation.SELL
+                    }
+                  >
+                    <span css={styles.recommendationText}>
+                      {RecommendationText[signal.manualRecommendation]}
+                    </span>
+                  </PositiveNegativeText>
+                ) : (
+                  '--'
+                )
+              },
+              {
+                label: t('aiExplain'),
+                value: signal.AIExplain ? (
+                  <Button
+                    css={styles.AIExplainBtn}
+                    type='link'
+                    onClick={() =>
+                      modal.confirm({
+                        title: t('aiExplain'),
+                        content: signal.AIExplain,
+                        cancelText: t('close')
+                      })
+                    }
+                  >
+                    {t('viewDetails')}
+                  </Button>
+                ) : (
+                  '--'
+                )
+              },
+              {
                 label: t('exitDate'),
                 value: signal.exitDate
                   ? dayjs(signal.exitDate)
@@ -528,65 +588,6 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
                 value: signal.AIRating ?? '--'
               },
               {
-                label: t('aiRecommendation'),
-                value: signal.AIRecommendationSignal ? (
-                  <PositiveNegativeText
-                    isPositive={
-                      signal.AIRecommendationSignal === Recommendation.BUY
-                    }
-                    isNegative={
-                      signal.AIRecommendationSignal === Recommendation.SELL
-                    }
-                  >
-                    <span css={styles.recommendation}>
-                      {RecommendationText[signal.AIRecommendationSignal]}
-                    </span>
-                  </PositiveNegativeText>
-                ) : (
-                  <span>-</span>
-                )
-              },
-              {
-                label: t('manualRecommendation'),
-                value: signal.manualRecommendation ? (
-                  <PositiveNegativeText
-                    isPositive={
-                      signal.manualRecommendation === Recommendation.BUY ||
-                      signal.manualRecommendation === Recommendation.STRONG_BUY
-                    }
-                    isNegative={
-                      signal.manualRecommendation === Recommendation.SELL
-                    }
-                  >
-                    <span css={styles.recommendationText}>
-                      {RecommendationText[signal.manualRecommendation]}
-                    </span>
-                  </PositiveNegativeText>
-                ) : (
-                  '--'
-                )
-              },
-              {
-                label: t('aiExplain'),
-                value: signal.AIExplain ? (
-                  <Button
-                    css={styles.AIExplainBtn}
-                    type='link'
-                    onClick={() =>
-                      modal.confirm({
-                        title: t('aiExplain'),
-                        content: signal.AIExplain,
-                        cancelText: t('close')
-                      })
-                    }
-                  >
-                    {t('viewDetails')}
-                  </Button>
-                ) : (
-                  '--'
-                )
-              },
-              {
                 label: t('totalScore'),
                 value: signal.totalScore ? (
                   <PositiveNegativeText
@@ -682,22 +683,6 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
                 ) : (
                   '--'
                 )
-              },
-              {
-                label: t('isNews'),
-                value: signal.isNews ? t('yes') : t('no')
-              },
-              {
-                label: t('isNewsNegative'),
-                value: signal.isNewsNegative ? t('yes') : t('no')
-              },
-              {
-                label: t('earningDate'),
-                value: signal.earningDate
-                  ? dayjs(signal.earningDate)
-                      .tz(TimeZone.NEW_YORK)
-                      .format('MM-DD-YYYY')
-                  : '--'
               }
             ].map((item, index) => (
               <Col
