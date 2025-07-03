@@ -21,6 +21,8 @@ const periodOptions = ['10M', '15M', '30M', '1H'];
 type ExtendedCandlestickData = CandlestickData & {
   volume?: number;
   sma_volume?: number;
+  sma8_volume?: number;
+  sma20_volume?: number;
 };
 
 type BacktestSpikeVolumeProps = {
@@ -61,11 +63,14 @@ export const ChartBackTest = ({ signal }: BacktestSpikeVolumeProps) => {
     [selectedPeriod]
   );
 
-  const calculateSMA = (data: number[], period: number): (number | null)[] => {
-    const sma: (number | null)[] = [];
+  const calculateSMA = (
+    data: number[],
+    period: number
+  ): (number | undefined)[] => {
+    const sma: (number | undefined)[] = [];
     for (let i = 0; i < data.length; i++) {
       if (i < period - 1) {
-        sma.push(null);
+        sma.push(undefined);
       } else {
         const sum = data
           .slice(i - period + 1, i + 1)
@@ -113,7 +118,17 @@ export const ChartBackTest = ({ signal }: BacktestSpikeVolumeProps) => {
         sma_volume: item.sma_volume
       }));
 
-      setCandlestickData(transformed);
+      const volumes = transformed.map((d) => d.volume ?? 0);
+      const sma8Values = calculateSMA(volumes, 8);
+      const sma20Values = calculateSMA(volumes, 20);
+
+      const transformedWithSMA = transformed.map((d, i) => ({
+        ...d,
+        sma8_volume: sma8Values[i],
+        sma20_volume: sma20Values[i]
+      }));
+
+      setCandlestickData(transformedWithSMA);
     } catch (err) {
       notifyError('Error fetching stock chart');
       console.error('Error fetching stock chart:', err);
@@ -291,6 +306,16 @@ export const ChartBackTest = ({ signal }: BacktestSpikeVolumeProps) => {
         <strong>Volume: </strong>${formatNumberShort(
           volumeItem.volume || 0
         )}<br/>
+        <strong>SMA8 Volume: </strong>${
+          volumeItem.sma8_volume
+            ? formatNumberShort(volumeItem.sma8_volume)
+            : 'N/A'
+        }<br/>
+        <strong>SMA20 Volume: </strong>${
+          volumeItem.sma20_volume
+            ? formatNumberShort(volumeItem.sma20_volume)
+            : 'N/A'
+        }<br/>
         <strong>Open: </strong>${candle.open} <br/>
         <strong>High: </strong>${candle.high} <br/>
         <strong>Low: </strong>${candle.low} <br/>
