@@ -16,6 +16,8 @@ import { formatNumberShort } from '@/utils/common';
 import { useNotification } from '@/hooks/notification.hook';
 import { Empty, Select, Spin } from 'antd';
 
+const periodOptions = ['10M', '15M', '30M', '1H'];
+
 type ExtendedCandlestickData = CandlestickData & {
   volume?: number;
   sma_volume?: number;
@@ -24,8 +26,6 @@ type ExtendedCandlestickData = CandlestickData & {
 type BacktestSpikeVolumeProps = {
   signal: Signal;
 };
-
-const periodOptions = ['10M', '15M', '30M', '1H'];
 
 export const ChartBackTest = ({ signal }: BacktestSpikeVolumeProps) => {
   const { notifyError } = useNotification();
@@ -41,7 +41,6 @@ export const ChartBackTest = ({ signal }: BacktestSpikeVolumeProps) => {
     entryDate
   } = signal;
   let animationFrameId: number | null = null;
-
   const [selectedPeriod, setSelectedPeriod] = useState(
     periodOptions.includes(signal.timeFrame) ? period : '1H'
   );
@@ -61,6 +60,21 @@ export const ChartBackTest = ({ signal }: BacktestSpikeVolumeProps) => {
     },
     [selectedPeriod]
   );
+
+  const calculateSMA = (data: number[], period: number): (number | null)[] => {
+    const sma: (number | null)[] = [];
+    for (let i = 0; i < data.length; i++) {
+      if (i < period - 1) {
+        sma.push(null);
+      } else {
+        const sum = data
+          .slice(i - period + 1, i + 1)
+          .reduce((acc, val) => acc + val, 0);
+        sma.push(sum / period);
+      }
+    }
+    return sma;
+  };
 
   const fetchCandlestickChartData = useCallback(async () => {
     if (!entryDate) return;
@@ -237,6 +251,19 @@ export const ChartBackTest = ({ signal }: BacktestSpikeVolumeProps) => {
       }));
     smaVolumeSeries.setData(smaVolumeData);
 
+    const volumes = candlestickData.map((d) => d.volume ?? 0);
+    const sma20Values = calculateSMA(volumes, 20);
+    const sma20VolumeData = candlestickData
+      .map((d, i) => ({ time: d.time, value: sma20Values[i] }))
+      .filter((d) => d.value !== null);
+
+    const sma20VolumeSeries = chart.addLineSeries({
+      color: '#2196f3',
+      lineWidth: 2,
+      priceScaleId: 'volume'
+    });
+    sma20VolumeSeries.setData(sma20VolumeData);
+
     chart.subscribeClick((param) => {
       if (!param || !param.time || !param.seriesData.size) {
         tooltipRef.current!.style.display = 'none';
@@ -341,7 +368,6 @@ const styles = {
     padding: 10px;
     border-radius: 4px;
     pointer-events: none;
-    font-size: 0.875rem;
     display: none;
     white-space: nowrap;
     z-index: 10;
