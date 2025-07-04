@@ -471,6 +471,23 @@ export const LedgerEntryTable = () => {
     }
   ];
 
+  const columnsTable = isMobile
+    ? columns.filter((col) =>
+        [
+          'symbol',
+          'period',
+          'entryPrice',
+          'exitPrice',
+          'winOrLoss',
+          'investment',
+          'plAmount',
+          'cumulative',
+          'balance',
+          'actions'
+        ].includes(col.key as string)
+      )
+    : columns;
+
   return (
     <div css={rootStyles}>
       <div css={tableTopStyles}>
@@ -492,7 +509,7 @@ export const LedgerEntryTable = () => {
         size={isMobile ? 'small' : 'middle'}
         css={tableStyles}
         rowKey='id'
-        columns={columns}
+        columns={columnsTable}
         dataSource={LedgerEntry}
         loading={loading}
         scroll={{
