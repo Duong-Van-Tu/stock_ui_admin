@@ -117,7 +117,7 @@ const contentStyles = (background: string, collapsed: boolean) => css`
   transition: margin-inline-start 0.25s ease;
   min-height: calc(100vh - var(--header-height));
   background: var(--white-color);
-  padding: ${isMobile ? '2rem 1rem' : '2rem'};
+  padding: ${isMobile ? '2rem 1rem' : '1.4rem 1.6rem'};
 `;
 
 const layoutStyles = css`

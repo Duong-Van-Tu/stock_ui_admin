@@ -56,6 +56,7 @@ import { TableRowSelection } from 'antd/es/table/interface';
 import { AIExplain } from '../ai-explain';
 import { SignalInformation } from '../signal-information';
 import { isDesktop, isMobile } from 'react-device-detect';
+import { watchSideBarCollapsed } from '@/redux/slices/app.slice';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -64,8 +65,9 @@ export const AlertLogsTable = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { height } = useWindowSize();
+  const { height, width } = useWindowSize();
   const modal = useModal();
+  const sideBarCollapsed = useAppSelector(watchSideBarCollapsed);
 
   const isOption = searchParams.get('isOption')
     ? Number(searchParams.get('isOption'))
@@ -1005,7 +1007,14 @@ export const AlertLogsTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: alertLogsData.length > 0 ? height - 280 : undefined
+            y:
+              alertLogsData.length > 0
+                ? width >= 1624
+                  ? height - 340
+                  : sideBarCollapsed
+                  ? height - 340
+                  : height - 380
+                : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
