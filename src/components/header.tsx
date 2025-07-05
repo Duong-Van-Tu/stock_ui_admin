@@ -70,11 +70,11 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
 
   const languages: MenuProps['items'] = [
     {
-      label: t('english'),
+      label: 'English',
       key: 'en'
     },
     {
-      label: t('vietnamese'),
+      label: 'Tiếng việt',
       key: 'vi',
       disabled: true
     }
