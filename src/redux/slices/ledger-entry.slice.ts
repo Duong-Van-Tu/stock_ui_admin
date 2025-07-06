@@ -15,6 +15,8 @@ export type ledgerEntryState = {
   balanceMap: Record<string, number>;
   cumulativeMap: Record<string, number>;
   selectedEntry: LedgerEntry | null;
+  initialBalance: number;
+  totalProfitLoss: number;
 };
 
 const initialState: ledgerEntryState = {
@@ -25,7 +27,9 @@ const initialState: ledgerEntryState = {
   selectedEntry: null,
   ledgerEntry: [],
   balanceMap: {},
-  cumulativeMap: {}
+  cumulativeMap: {},
+  initialBalance: 0,
+  totalProfitLoss: 0
 };
 
 export const ledgerEntrySlice = createAppSlice({
@@ -48,12 +52,13 @@ export const ledgerEntrySlice = createAppSlice({
           const transformedEntries = transformLedgerEntry(
             action.payload.data.result
           );
-          const { balanceMap, cumulativeMap } =
-            computeLedgerBalances(transformedEntries);
+          const { balanceMap, cumulativeMap, totalProfitLoss } =
+            computeLedgerBalances(transformedEntries, state.initialBalance);
 
           state.ledgerEntry = transformedEntries;
           state.balanceMap = balanceMap;
           state.cumulativeMap = cumulativeMap;
+          state.totalProfitLoss = totalProfitLoss;
         },
         rejected: (state) => {
           state.loading = false;
@@ -101,12 +106,13 @@ export const ledgerEntrySlice = createAppSlice({
           )[0];
           if (newEntry) {
             const updatedEntries = [...state.ledgerEntry, newEntry];
-            const { balanceMap, cumulativeMap } =
-              computeLedgerBalances(updatedEntries);
+            const { balanceMap, cumulativeMap, totalProfitLoss } =
+              computeLedgerBalances(updatedEntries, state.initialBalance);
 
             state.ledgerEntry = updatedEntries;
             state.balanceMap = balanceMap;
             state.cumulativeMap = cumulativeMap;
+            state.totalProfitLoss = totalProfitLoss;
           }
         },
         rejected: (state) => {
@@ -150,11 +156,11 @@ export const ledgerEntrySlice = createAppSlice({
           if (state.selectedEntry?.id === action.payload) {
             state.selectedEntry = null;
           }
-          const { balanceMap, cumulativeMap } = computeLedgerBalances(
-            state.ledgerEntry
-          );
+          const { balanceMap, cumulativeMap, totalProfitLoss } =
+            computeLedgerBalances(state.ledgerEntry, state.initialBalance);
           state.balanceMap = balanceMap;
           state.cumulativeMap = cumulativeMap;
+          state.totalProfitLoss = totalProfitLoss;
         },
         rejected: (state) => {
           state.updating = false;
@@ -188,6 +194,17 @@ export const ledgerEntrySlice = createAppSlice({
         }
       }
     ),
+    setInitialBalance: create.reducer((state, action: { payload: number }) => {
+      state.initialBalance = action.payload;
+      if (state.ledgerEntry.length > 0) {
+        const { balanceMap, cumulativeMap } = computeLedgerBalances(
+          state.ledgerEntry,
+          state.initialBalance
+        );
+        state.balanceMap = balanceMap;
+        state.cumulativeMap = cumulativeMap;
+      }
+    }),
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -201,7 +218,9 @@ export const ledgerEntrySlice = createAppSlice({
     watchLedgerEntry: (state) => state.ledgerEntry,
     watchSelectedLedgerEntry: (state) => state.selectedEntry,
     watchBalanceMap: (state) => state.balanceMap,
-    watchCumulativeMap: (state) => state.cumulativeMap
+    watchCumulativeMap: (state) => state.cumulativeMap,
+    watchTotalProfitLoss: (state) => state.totalProfitLoss,
+    watchInitialBalance: (state) => state.initialBalance
   }
 });
 
@@ -213,7 +232,9 @@ export const {
   watchLedgerEntry,
   watchSelectedLedgerEntry,
   watchBalanceMap,
-  watchCumulativeMap
+  watchCumulativeMap,
+  watchTotalProfitLoss,
+  watchInitialBalance
 } = ledgerEntrySlice.selectors;
 
 export const {
@@ -223,5 +244,6 @@ export const {
   deleteLedgerEntry,
   createLedgerEntry,
   sendAlertLedger,
-  resetState
+  resetState,
+  setInitialBalance
 } = ledgerEntrySlice.actions;

@@ -418,5 +418,20 @@
   "confirmExitOne": "Bạn có chắc chắn muốn exit tín hiệu này không?",
   "allIndustry": "Tất cả Industry",
   "holdingTime": "DIM",
-  "companyName": "Tên công ty"
+  "companyName": "Tên công ty",
+  "depositMoney": "Nạp tiền",
+  "withdrawMoney": "Rút tiền",
+  "depositFunds": "Nạp tiền",
+  "withdrawFunds": "Rút tiền",
+  "totalBalance": "Tổng số dư",
+  "profitLoss": "Lãi/Lỗ",
+  "amount": "Số tiền",
+  "amountErrorInvalid": "Vui lòng nhập số tiền hợp lệ",
+  "amountErrorExceedsBalance": "Số tiền rút vượt quá số dư khả dụng",
+  "noteOptional": "Ghi chú (Tùy chọn)",
+  "notePlaceholder": "Nhập ghi chú (tùy chọn)",
+  "maxButton": "Tối đa",
+  "cancelButton": "Hủy",
+  "depositButton": "Nạp tiền",
+  "withdrawButton": "Rút tiền"
 }

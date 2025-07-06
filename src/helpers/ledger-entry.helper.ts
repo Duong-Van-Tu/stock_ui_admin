@@ -30,9 +30,13 @@ export const transformLedgerEntry = (entries: any[]): LedgerEntry[] => {
   }));
 };
 
-export const computeLedgerBalances = (entries: LedgerEntry[]) => {
-  let balance = 5000;
+export const computeLedgerBalances = (
+  entries: LedgerEntry[],
+  initialBalance: number
+) => {
+  let balance = initialBalance;
   let cumulative = 0;
+  let totalProfitLoss = 0;
   const balanceMap: Record<string, number> = {};
   const cumulativeMap: Record<string, number> = {};
 
@@ -49,10 +53,15 @@ export const computeLedgerBalances = (entries: LedgerEntry[]) => {
     const gainLoss = investmentCashIn - investmentCashOut - commission;
     cumulative += gainLoss;
     balance += gainLoss;
+    totalProfitLoss += gainLoss;
 
     balanceMap[id] = balance;
     cumulativeMap[id] = cumulative;
   }
 
-  return { balanceMap, cumulativeMap };
+  return {
+    balanceMap,
+    cumulativeMap,
+    totalProfitLoss
+  };
 };

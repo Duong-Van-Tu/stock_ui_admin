@@ -417,5 +417,6 @@ const styles = {
   `,
   AIExplainBtn: css`
     padding: 0;
+    height: unset;
   `
 };

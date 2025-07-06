@@ -418,5 +418,20 @@
   "confirmExitOne": "Are you sure you want to exit this signal?",
   "allIndustry": "All Industry",
   "holdingTime": "DIM",
-  "companyName": "Company name"
+  "companyName": "Company name",
+  "depositMoney": "Deposit",
+  "withdrawMoney": "Withdraw",
+  "depositFunds": "Deposit Funds",
+  "withdrawFunds": "Withdraw Funds",
+  "totalBalance": "Total Balance",
+  "profitLoss": "P/L",
+  "amount": "Amount",
+  "amountErrorInvalid": "Please enter a valid amount",
+  "amountErrorExceedsBalance": "Withdrawal amount exceeds available balance",
+  "noteOptional": "Note (Optional)",
+  "notePlaceholder": "Enter a note (optional)",
+  "maxButton": "Max",
+  "cancelButton": "Cancel",
+  "depositButton": "Deposit",
+  "withdrawButton": "Withdraw"
 }

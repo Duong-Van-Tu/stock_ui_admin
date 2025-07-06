@@ -16,7 +16,9 @@ export const StockChangeCell = ({
       isNegative={percentage < 0}
     >
       <div>{typeof value === 'string' ? value : roundToDecimals(value, 2)}</div>
-      <div>({formatPercent(percentage, 2)})</div>
+      {!isFinite(percentage) ? null : (
+        <div>({formatPercent(percentage, 2)})</div>
+      )}
     </PositiveNegativeText>
   );
 };

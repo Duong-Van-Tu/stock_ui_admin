@@ -19,7 +19,10 @@ import {
   watchCumulativeMap,
   watchBalanceMap,
   deleteLedgerEntry,
-  resetState
+  resetState,
+  setInitialBalance,
+  watchTotalProfitLoss,
+  watchInitialBalance
 } from '@/redux/slices/ledger-entry.slice';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
@@ -45,8 +48,9 @@ import { useNotification } from '@/hooks/notification.hook';
 import { PlusOutlined } from '@ant-design/icons';
 import { ExportExcelLedgerEntry } from '../export-excel-ledger-entry';
 import { isDesktop, isMobile } from 'react-device-detect';
-
-const initialBalance = 5000;
+import { useModal } from '@/hooks/modal.hook';
+import DepositWithdrawForm from '../forms/deposit-withdraw.form';
+import { defaultApiFetcher } from '@/utils/api-instances';
 
 export const LedgerEntryTable = () => {
   const t = useTranslations();
@@ -55,14 +59,17 @@ export const LedgerEntryTable = () => {
   const { notifySuccess, notifyError } = useNotification();
   const router = useRouter();
   const { height } = useWindowSize();
+  const modal = useModal();
 
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
 
-  const LedgerEntry = useAppSelector(watchLedgerEntry);
+  const ledgerEntry = useAppSelector(watchLedgerEntry);
   const loading = useAppSelector(watchLedgerEntryLoading);
   const cumulativeMap = useAppSelector(watchCumulativeMap);
   const balanceMap = useAppSelector(watchBalanceMap);
+  const totalProfitLoss = useAppSelector(watchTotalProfitLoss);
+  const initialBalance = useAppSelector(watchInitialBalance);
 
   const handleDelete = async (id: number) => {
     const res = await dispatch(deleteLedgerEntry(id));
@@ -92,20 +99,38 @@ export const LedgerEntryTable = () => {
     [symbol]
   );
 
+  const getUserBalance = useCallback(async () => {
+    const response = await defaultApiFetcher.get('users/balance');
+    if (response?.success) {
+      const { totalWithdraw = 0, totalDeposit = 0 } = response.data;
+      const balance =
+        totalWithdraw > totalProfitLoss
+          ? totalDeposit + totalProfitLoss - totalWithdraw
+          : totalDeposit;
+
+      dispatch(setInitialBalance(balance));
+    }
+  }, [totalProfitLoss, dispatch]);
+
   useEffect(() => {
-    fetchDataStockScore({});
+    const fetchData = async () => {
+      await fetchDataStockScore({});
+      getUserBalance();
+    };
+
+    fetchData();
 
     return () => {
       dispatch(resetState());
     };
-  }, [fetchDataStockScore, dispatch]);
+  }, [fetchDataStockScore, getUserBalance, dispatch]);
 
   useEffect(() => {
-    LedgerEntry.forEach((row) => {
+    ledgerEntry.forEach((row) => {
       setWatchList(row.symbol);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [LedgerEntry]);
+  }, [ledgerEntry]);
 
   const columns: TableColumnsType<LedgerEntry> = [
     {
@@ -494,7 +519,26 @@ export const LedgerEntryTable = () => {
         <TableTitle customStyles={titleStyles}>
           {t('ledgerEntryTitle')}
         </TableTitle>
-        <Space>
+        <Space css={actionStyles}>
+          <Button
+            icon={<Icon icon='deposit' width={18} height={18} />}
+            onClick={() =>
+              modal.openModal(<DepositWithdrawForm type='deposit' />)
+            }
+            type='primary'
+            ghost
+          >
+            {t('depositMoney')}
+          </Button>
+          <Button
+            icon={<Icon icon='withdraw' width={18} height={18} />}
+            onClick={() =>
+              modal.openModal(<DepositWithdrawForm type='withdraw' />)
+            }
+            danger
+          >
+            {t('withdrawMoney')}
+          </Button>
           <Button
             icon={<PlusOutlined />}
             type='primary'
@@ -510,11 +554,11 @@ export const LedgerEntryTable = () => {
         css={tableStyles}
         rowKey='id'
         columns={columnsTable}
-        dataSource={LedgerEntry}
+        dataSource={ledgerEntry}
         loading={loading}
         scroll={{
           x: 1200,
-          y: LedgerEntry.length > 0 ? height - 250 : undefined
+          y: ledgerEntry.length > 0 ? height - 250 : undefined
         }}
         sortDirections={['descend', 'ascend']}
         locale={{
@@ -552,6 +596,11 @@ const tableTopStyles = css`
   flex-wrap: wrap;
   padding: 1.2rem 1.4rem;
   gap: 1.4rem;
+`;
+
+const actionStyles = css`
+  flex: 1;
+  justify-content: flex-end;
 `;
 
 const emptyStyles = (height: number) => css`
