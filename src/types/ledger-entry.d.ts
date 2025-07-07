@@ -21,3 +21,16 @@ type LedgerEntry = {
   notes: string;
   createDate: string;
 };
+
+type UserBalance = {
+  userId: number;
+  username: string;
+  balance: number;
+  balanceGain: number;
+  totalAvailable: number;
+  totalDeposit: number;
+  totalDepositBalanceGain: number;
+  totalWithdraw: number;
+  totalWithdrawBalanceGain: number;
+  timestamp: string;
+};

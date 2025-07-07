@@ -36,6 +36,8 @@ import Download from '@/assets/svg/download.svg';
 import Upload from '@/assets/svg/upload.svg';
 import Menu from '@/assets/svg/menu.svg';
 import Clock from '@/assets/svg/clock.svg';
+import Deposit from '@/assets/svg/deposit.svg';
+import Withdraw from '@/assets/svg/withdraw.svg';
 
 type IconProps = {
   width?: number | string;
@@ -81,7 +83,9 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   download: Download,
   upload: Upload,
   menu: Menu,
-  clock: Clock
+  clock: Clock,
+  deposit: Deposit,
+  withdraw: Withdraw
 };
 
 export const Icon = ({

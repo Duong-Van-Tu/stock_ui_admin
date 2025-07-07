@@ -19,7 +19,9 @@ import {
   watchCumulativeMap,
   watchBalanceMap,
   deleteLedgerEntry,
-  resetState
+  resetState,
+  watchInitialBalance,
+  getUserBalance
 } from '@/redux/slices/ledger-entry.slice';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
@@ -45,8 +47,8 @@ import { useNotification } from '@/hooks/notification.hook';
 import { PlusOutlined } from '@ant-design/icons';
 import { ExportExcelLedgerEntry } from '../export-excel-ledger-entry';
 import { isDesktop, isMobile } from 'react-device-detect';
-
-const initialBalance = 5000;
+import { useModal } from '@/hooks/modal.hook';
+import DepositWithdrawForm from '../forms/deposit-withdraw.form';
 
 export const LedgerEntryTable = () => {
   const t = useTranslations();
@@ -55,14 +57,16 @@ export const LedgerEntryTable = () => {
   const { notifySuccess, notifyError } = useNotification();
   const router = useRouter();
   const { height } = useWindowSize();
+  const modal = useModal();
 
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
 
-  const LedgerEntry = useAppSelector(watchLedgerEntry);
+  const ledgerEntry = useAppSelector(watchLedgerEntry);
   const loading = useAppSelector(watchLedgerEntryLoading);
   const cumulativeMap = useAppSelector(watchCumulativeMap);
   const balanceMap = useAppSelector(watchBalanceMap);
+  const initialBalance = useAppSelector(watchInitialBalance);
 
   const handleDelete = async (id: number) => {
     const res = await dispatch(deleteLedgerEntry(id));
@@ -73,12 +77,12 @@ export const LedgerEntryTable = () => {
     }
   };
 
-  const fetchDataStockScore = useCallback(
-    ({
+  const fetchLegerEntry = useCallback(
+    async ({
       page = PAGINATION_PARAMS.offset,
       pageSize = PAGINATION_PARAMS.unLimit
     }: PageChangeParams = {}) => {
-      dispatch(
+      await dispatch(
         getLedgerEntry({
           page,
           limit: pageSize,
@@ -87,25 +91,31 @@ export const LedgerEntryTable = () => {
           sortType: 'asc'
         })
       );
+      dispatch(getUserBalance());
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [symbol]
+    [dispatch, symbol]
   );
 
   useEffect(() => {
-    fetchDataStockScore({});
+    fetchLegerEntry({});
+  }, [fetchLegerEntry]);
 
-    return () => {
-      dispatch(resetState());
-    };
-  }, [fetchDataStockScore, dispatch]);
+  // useEffect(() => {
+  //   dispatch(getUserBalance());
+  // }, [dispatch]);
 
   useEffect(() => {
-    LedgerEntry.forEach((row) => {
+    ledgerEntry.forEach((row) => {
       setWatchList(row.symbol);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [LedgerEntry]);
+  }, [ledgerEntry]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetState());
+    };
+  }, [dispatch]);
 
   const columns: TableColumnsType<LedgerEntry> = [
     {
@@ -376,7 +386,16 @@ export const LedgerEntryTable = () => {
       }
     },
     {
-      title: <span dangerouslySetInnerHTML={{ __html: t('balance') }}></span>,
+      title: (
+        <span>
+          {t('balance')}
+          {initialBalance > 0 && (
+            <>
+              <br /> ${initialBalance}
+            </>
+          )}
+        </span>
+      ),
       dataIndex: 'balance',
       key: 'balance',
       width: 120,
@@ -494,7 +513,26 @@ export const LedgerEntryTable = () => {
         <TableTitle customStyles={titleStyles}>
           {t('ledgerEntryTitle')}
         </TableTitle>
-        <Space>
+        <Space css={actionStyles}>
+          <Button
+            icon={<Icon icon='deposit' width={18} height={18} />}
+            onClick={() =>
+              modal.openModal(<DepositWithdrawForm type='deposit' />)
+            }
+            type='primary'
+            ghost
+          >
+            {t('depositMoney')}
+          </Button>
+          <Button
+            icon={<Icon icon='withdraw' width={18} height={18} />}
+            onClick={() =>
+              modal.openModal(<DepositWithdrawForm type='withdraw' />)
+            }
+            danger
+          >
+            {t('withdrawMoney')}
+          </Button>
           <Button
             icon={<PlusOutlined />}
             type='primary'
@@ -510,11 +548,11 @@ export const LedgerEntryTable = () => {
         css={tableStyles}
         rowKey='id'
         columns={columnsTable}
-        dataSource={LedgerEntry}
+        dataSource={ledgerEntry}
         loading={loading}
         scroll={{
           x: 1200,
-          y: LedgerEntry.length > 0 ? height - 250 : undefined
+          y: ledgerEntry.length > 0 ? height - 250 : undefined
         }}
         sortDirections={['descend', 'ascend']}
         locale={{
@@ -552,6 +590,11 @@ const tableTopStyles = css`
   flex-wrap: wrap;
   padding: 1.2rem 1.4rem;
   gap: 1.4rem;
+`;
+
+const actionStyles = css`
+  flex: 1;
+  justify-content: flex-end;
 `;
 
 const emptyStyles = (height: number) => css`
