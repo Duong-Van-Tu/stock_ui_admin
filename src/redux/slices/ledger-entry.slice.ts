@@ -17,6 +17,13 @@ export type ledgerEntryState = {
   selectedEntry: LedgerEntry | null;
   initialBalance: number;
   totalProfitLoss: number;
+  balanceLoading: boolean;
+  processingBalance: boolean;
+  userBalance: {
+    totalWithdraw: number;
+    totalDeposit: number;
+    currentBalance: number;
+  };
 };
 
 const initialState: ledgerEntryState = {
@@ -24,12 +31,19 @@ const initialState: ledgerEntryState = {
   updating: false,
   creating: false,
   sending: false,
+  balanceLoading: false,
   selectedEntry: null,
   ledgerEntry: [],
   balanceMap: {},
   cumulativeMap: {},
   initialBalance: 0,
-  totalProfitLoss: 0
+  totalProfitLoss: 0,
+  processingBalance: false,
+  userBalance: {
+    totalWithdraw: 0,
+    totalDeposit: 0,
+    currentBalance: 0
+  }
 };
 
 export const ledgerEntrySlice = createAppSlice({
@@ -194,17 +208,90 @@ export const ledgerEntrySlice = createAppSlice({
         }
       }
     ),
-    setInitialBalance: create.reducer((state, action: { payload: number }) => {
-      state.initialBalance = action.payload;
-      if (state.ledgerEntry.length > 0) {
-        const { balanceMap, cumulativeMap } = computeLedgerBalances(
-          state.ledgerEntry,
-          state.initialBalance
-        );
-        state.balanceMap = balanceMap;
-        state.cumulativeMap = cumulativeMap;
+    getUserBalance: create.asyncThunk(
+      async () => {
+        const response = await defaultApiFetcher.get('users/balance');
+        return response;
+      },
+      {
+        pending: (state) => {
+          state.balanceLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.balanceLoading = false;
+          if (action.payload?.success) {
+            const { totalWithdraw = 0, totalDeposit = 0 } = action.payload.data;
+            const currentTotalProfitLoss = state.totalProfitLoss;
+
+            const balance =
+              totalWithdraw > currentTotalProfitLoss
+                ? totalDeposit + currentTotalProfitLoss - totalWithdraw
+                : totalDeposit;
+
+            state.userBalance = {
+              totalWithdraw,
+              totalDeposit,
+              currentBalance: balance
+            };
+
+            state.initialBalance = balance;
+
+            if (state.ledgerEntry.length > 0) {
+              const { balanceMap, cumulativeMap } = computeLedgerBalances(
+                state.ledgerEntry,
+                state.initialBalance
+              );
+              state.balanceMap = balanceMap;
+              state.cumulativeMap = cumulativeMap;
+            }
+          }
+        },
+        rejected: (state) => {
+          state.balanceLoading = false;
+        }
       }
-    }),
+    ),
+    deposit: create.asyncThunk(
+      async (payload: { amount: number; description?: string }) => {
+        const response = await defaultApiFetcher.post(
+          'users/balance/deposit',
+          convertParamsByMapping(payload)
+        );
+        return response;
+      },
+      {
+        pending: (state) => {
+          state.processingBalance = true;
+        },
+        fulfilled: (state) => {
+          state.processingBalance = false;
+        },
+        rejected: (state) => {
+          state.processingBalance = false;
+        }
+      }
+    ),
+
+    withdraw: create.asyncThunk(
+      async (payload: { amount: number; description?: string }) => {
+        const response = await defaultApiFetcher.post(
+          'users/balance/withdraw',
+          convertParamsByMapping(payload)
+        );
+        return response;
+      },
+      {
+        pending: (state) => {
+          state.processingBalance = true;
+        },
+        fulfilled: (state) => {
+          state.processingBalance = false;
+        },
+        rejected: (state) => {
+          state.processingBalance = false;
+        }
+      }
+    ),
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -220,7 +307,10 @@ export const ledgerEntrySlice = createAppSlice({
     watchBalanceMap: (state) => state.balanceMap,
     watchCumulativeMap: (state) => state.cumulativeMap,
     watchTotalProfitLoss: (state) => state.totalProfitLoss,
-    watchInitialBalance: (state) => state.initialBalance
+    watchInitialBalance: (state) => state.initialBalance,
+    watchBalanceLoading: (state) => state.balanceLoading,
+    watchUserBalance: (state) => state.userBalance,
+    watchProcessingBalance: (state) => state.processingBalance
   }
 });
 
@@ -234,7 +324,10 @@ export const {
   watchBalanceMap,
   watchCumulativeMap,
   watchTotalProfitLoss,
-  watchInitialBalance
+  watchInitialBalance,
+  watchBalanceLoading,
+  watchUserBalance,
+  watchProcessingBalance
 } = ledgerEntrySlice.selectors;
 
 export const {
@@ -245,5 +338,7 @@ export const {
   createLedgerEntry,
   sendAlertLedger,
   resetState,
-  setInitialBalance
+  getUserBalance,
+  deposit,
+  withdraw
 } = ledgerEntrySlice.actions;

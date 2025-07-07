@@ -20,9 +20,8 @@ import {
   watchBalanceMap,
   deleteLedgerEntry,
   resetState,
-  setInitialBalance,
-  watchTotalProfitLoss,
-  watchInitialBalance
+  watchInitialBalance,
+  getUserBalance
 } from '@/redux/slices/ledger-entry.slice';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
@@ -50,7 +49,6 @@ import { ExportExcelLedgerEntry } from '../export-excel-ledger-entry';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { useModal } from '@/hooks/modal.hook';
 import DepositWithdrawForm from '../forms/deposit-withdraw.form';
-import { defaultApiFetcher } from '@/utils/api-instances';
 
 export const LedgerEntryTable = () => {
   const t = useTranslations();
@@ -68,7 +66,6 @@ export const LedgerEntryTable = () => {
   const loading = useAppSelector(watchLedgerEntryLoading);
   const cumulativeMap = useAppSelector(watchCumulativeMap);
   const balanceMap = useAppSelector(watchBalanceMap);
-  const totalProfitLoss = useAppSelector(watchTotalProfitLoss);
   const initialBalance = useAppSelector(watchInitialBalance);
 
   const handleDelete = async (id: number) => {
@@ -80,12 +77,12 @@ export const LedgerEntryTable = () => {
     }
   };
 
-  const fetchDataStockScore = useCallback(
-    ({
+  const fetchLegerEntry = useCallback(
+    async ({
       page = PAGINATION_PARAMS.offset,
       pageSize = PAGINATION_PARAMS.unLimit
     }: PageChangeParams = {}) => {
-      dispatch(
+      await dispatch(
         getLedgerEntry({
           page,
           limit: pageSize,
@@ -94,36 +91,18 @@ export const LedgerEntryTable = () => {
           sortType: 'asc'
         })
       );
+      dispatch(getUserBalance());
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [symbol]
+    [dispatch, symbol]
   );
 
-  const getUserBalance = useCallback(async () => {
-    const response = await defaultApiFetcher.get('users/balance');
-    if (response?.success) {
-      const { totalWithdraw = 0, totalDeposit = 0 } = response.data;
-      const balance =
-        totalWithdraw > totalProfitLoss
-          ? totalDeposit + totalProfitLoss - totalWithdraw
-          : totalDeposit;
-
-      dispatch(setInitialBalance(balance));
-    }
-  }, [totalProfitLoss, dispatch]);
-
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchDataStockScore({});
-      getUserBalance();
-    };
+    fetchLegerEntry({});
+  }, [fetchLegerEntry]);
 
-    fetchData();
-
-    return () => {
-      dispatch(resetState());
-    };
-  }, [fetchDataStockScore, getUserBalance, dispatch]);
+  // useEffect(() => {
+  //   dispatch(getUserBalance());
+  // }, [dispatch]);
 
   useEffect(() => {
     ledgerEntry.forEach((row) => {
@@ -131,6 +110,12 @@ export const LedgerEntryTable = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ledgerEntry]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetState());
+    };
+  }, [dispatch]);
 
   const columns: TableColumnsType<LedgerEntry> = [
     {
@@ -401,7 +386,16 @@ export const LedgerEntryTable = () => {
       }
     },
     {
-      title: <span dangerouslySetInnerHTML={{ __html: t('balance') }}></span>,
+      title: (
+        <span>
+          {t('balance')}
+          {initialBalance > 0 && (
+            <>
+              <br /> ${initialBalance}
+            </>
+          )}
+        </span>
+      ),
       dataIndex: 'balance',
       key: 'balance',
       width: 120,

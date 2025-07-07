@@ -2,15 +2,22 @@
 import { css } from '@emotion/react';
 import { useMemo } from 'react';
 import { Button, Input, Typography, Form, Row, Space } from 'antd';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
+  deposit,
+  getUserBalance,
   watchInitialBalance,
-  watchTotalProfitLoss
+  watchTotalProfitLoss,
+  watchUserBalance,
+  withdraw
 } from '@/redux/slices/ledger-entry.slice';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { useModal } from '@/hooks/modal.hook';
 import { Icon } from '../icons';
 import { useTranslations } from 'next-intl';
+import CurrencyInput from '../currency-input';
+import { isRequestSuccess } from '@/utils/request-status';
+import { useNotification } from '@/hooks/notification.hook';
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -29,13 +36,16 @@ export default function DepositWithdrawForm({
 }: DepositWithdrawFormProps) {
   const t = useTranslations();
   const [form] = Form.useForm();
+  const { notifySuccess } = useNotification();
+  const { closeModal } = useModal();
+  const dispatch = useAppDispatch();
   const totalProfitLoss = useAppSelector(watchTotalProfitLoss);
   const initialBalance = useAppSelector(watchInitialBalance);
-  const { closeModal } = useModal();
+  const userBalance = useAppSelector(watchUserBalance);
 
   const availableBalance = useMemo(
-    () => totalProfitLoss + initialBalance,
-    [totalProfitLoss, initialBalance]
+    () => totalProfitLoss + initialBalance - userBalance.totalWithdraw,
+    [totalProfitLoss, initialBalance, userBalance.totalWithdraw]
   );
 
   const handleSetMax = () => {
@@ -43,9 +53,24 @@ export default function DepositWithdrawForm({
   };
 
   const handleSubmit = async (values: DepositWithdrawFormValues) => {
-    console.log({ values });
-    form.resetFields();
-    closeModal();
+    let res;
+    if (type === 'deposit') {
+      res = await dispatch(deposit(values));
+    }
+    if (type === 'withdraw') {
+      res = await dispatch(withdraw(values));
+    }
+    if (isRequestSuccess(res)) {
+      notifySuccess(
+        type === 'deposit' ? t('depositSuccess') : t('withdrawSuccess')
+      );
+      await dispatch(getUserBalance());
+      closeModal();
+    } else {
+      notifySuccess(
+        type === 'deposit' ? t('depositError') : t('withdrawError')
+      );
+    }
   };
 
   const validateAmount = (_: any, value: number) => {
@@ -95,10 +120,22 @@ export default function DepositWithdrawForm({
           rules={[{ validator: validateAmount }]}
           required
         >
-          <Input
-            type='number'
+          <CurrencyInput
             step='0.01'
+            min='0.01'
             size='large'
+            onKeyPress={(e) => {
+              if (e.key === '-' || e.key === '+') {
+                e.preventDefault();
+              }
+            }}
+            onPaste={(e) => {
+              const pasteData = e.clipboardData.getData('text');
+              if (pasteData.startsWith('-') || isNaN(Number(pasteData))) {
+                e.preventDefault();
+              }
+            }}
+            addonBefore='$'
             addonAfter={
               type === 'withdraw' ? (
                 <Button type='link' onClick={handleSetMax} size='small'>
@@ -110,7 +147,7 @@ export default function DepositWithdrawForm({
         </Form.Item>
 
         <Form.Item name='description' label={t('noteOptional')}>
-          <TextArea rows={2} size='large' placeholder={t('notePlaceholder')} />
+          <TextArea rows={4} size='large' placeholder={t('notePlaceholder')} />
         </Form.Item>
 
         <Form.Item>
@@ -142,6 +179,9 @@ const formStyles = css`
   margin-top: 1.4rem;
   .ant-form-item:last-child {
     margin-bottom: unset;
+  }
+  .ant-form-item-label {
+    font-weight: 500;
   }
 `;
 
