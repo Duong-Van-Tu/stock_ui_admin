@@ -157,9 +157,9 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
           css={searchStyles}
         />
       </div>
-      {isDesktop && (
-        <div css={rightSectionStyles}>
-          {<TimeZoneClock />}
+      <div css={rightSectionStyles}>
+        {isDesktop && <TimeZoneClock />}
+        {isDesktop && (
           <Dropdown
             menu={{ items: languages, onClick: handleLanguageChange }}
             trigger={['click']}
@@ -186,17 +186,24 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
               </Space>
             </Button>
           </Dropdown>
-          <Dropdown.Button
-            menu={userMenus}
-            placement='bottomRight'
-            trigger={['click']}
-            icon={<Icon icon='user' width={22} height={22} />}
-            arrow
-          >
-            {user?.fullname}
-          </Dropdown.Button>
-        </div>
-      )}
+        )}
+        <Dropdown.Button
+          menu={userMenus}
+          placement='bottomRight'
+          trigger={['click']}
+          icon={
+            <Icon
+              icon='user'
+              width={isMobile ? 26 : 22}
+              height={isMobile ? 26 : 22}
+            />
+          }
+          arrow
+          css={isMobile && userDropdownBtnStyles}
+        >
+          {isDesktop && <span>{user?.fullname}</span>}
+        </Dropdown.Button>
+      </div>
     </Layout.Header>
   );
 }
@@ -221,8 +228,8 @@ const rootStyles = (background: string, collapsed: boolean) => css`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: ${isMobile ? '0 1.4rem' : '0 2rem'};
-  gap: 2rem;
+  padding: ${isMobile ? '0 1rem' : '0 2rem'};
+  gap: ${isMobile ? '1.2rem' : '2rem'};
 `;
 
 const leftSectionStyles = css`
@@ -263,5 +270,19 @@ const menuIconStyles = css`
   margin-right: 0.6rem;
   &:hover {
     opacity: 0.85;
+  }
+`;
+
+const userDropdownBtnStyles = css`
+  .ant-btn-compact-first-item {
+    display: none;
+  }
+
+  .ant-btn-compact-last-item {
+    border: none;
+    border-radius: 50% !important;
+    padding: 0;
+    width: 2.8;
+    box-shadow: none;
   }
 `;
