@@ -112,7 +112,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: isMobile ? 90 : 200,
+      width: isMobile ? 100 : 200,
       fixed: 'left',
       render: (value, record) => (
         <SymbolCell
