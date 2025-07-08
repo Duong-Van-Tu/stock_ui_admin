@@ -925,6 +925,8 @@ export const AlertLogsTable = () => {
     'strategyName',
     'timeFrame',
     'entryDate',
+    'AIRecommendationSignal',
+    'manualRecommendation',
     'entryPrice',
     'exitDate',
     'exitPrice',
