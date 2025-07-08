@@ -12,7 +12,7 @@ import {
 } from 'lightweight-charts';
 import { TimeZone } from '@/constants/timezone.constant';
 import { defaultApiFetcher } from '@/utils/api-instances';
-import { formatNumberShort } from '@/utils/common';
+import { formatNumberShort, formatPercent } from '@/utils/common';
 import { useNotification } from '@/hooks/notification.hook';
 import { Empty, Select, Spin } from 'antd';
 
@@ -288,6 +288,31 @@ export const ChartBackTest = ({ signal }: BacktestSpikeVolumeProps) => {
       const candle = param.seriesData.get(candleSeries) as CandlestickData;
       const volumeItem = candlestickData.find((d) => d.time === param.time);
 
+      const currentIndex = candlestickData.findIndex(
+        (d) => d.time === param.time
+      );
+      const prevCandle =
+        currentIndex > 0 ? candlestickData[currentIndex - 1] : undefined;
+
+      const percentChange =
+        prevCandle && prevCandle.close
+          ? ((candle.close - prevCandle.close) / prevCandle.close) * 100
+          : null;
+
+      const formattedPercent = formatPercent(percentChange);
+      console.log({
+        prev: prevCandle?.close,
+        close: candle.close,
+        change: formattedPercent
+      });
+
+      const closeChangeColor =
+        percentChange !== null
+          ? percentChange >= 0
+            ? 'var(--positive-color)'
+            : 'var(--negative-color)'
+          : 'var(--black-color)';
+
       if (!candle || !volumeItem) {
         tooltipRef.current!.style.display = 'none';
         return;
@@ -319,7 +344,11 @@ export const ChartBackTest = ({ signal }: BacktestSpikeVolumeProps) => {
         <strong>Open: </strong>${candle.open} <br/>
         <strong>High: </strong>${candle.high} <br/>
         <strong>Low: </strong>${candle.low} <br/>
-        <strong>Close: </strong>${candle.close}
+        <strong>Close: </strong>${candle.close} ${
+        formattedPercent
+          ? `<span style="color:${closeChangeColor}">(${formattedPercent})</span>`
+          : ''
+      }
       `;
     });
 
