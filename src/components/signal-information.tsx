@@ -38,7 +38,7 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
           {[
             {
               label: t('companyName'),
-              value: signal.companyName.trim() ? signal.companyName : '--'
+              value: signal.companyName?.trim() ? signal.companyName : '--'
             },
             { label: t('strategy'), value: signal.strategyName || '--' },
             { label: t('period'), value: signal.timeFrame },
