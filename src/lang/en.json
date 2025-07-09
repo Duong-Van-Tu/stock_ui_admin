@@ -437,5 +437,7 @@
   "depositSuccess": "Deposit successful!",
   "withdrawSuccess": "Withdrawal successful!",
   "depositError": "Deposit failed. Please try again.",
-  "withdrawError": "Withdrawal failed. Please try again."
+  "withdrawError": "Withdrawal failed. Please try again.",
+  "takeProfit": "Take Profit",
+  "stopLoss": "Stop Loss"
 }

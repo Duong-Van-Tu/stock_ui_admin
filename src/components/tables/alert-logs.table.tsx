@@ -388,6 +388,36 @@ export const AlertLogsTable = () => {
       render: (value) => (value ? roundToDecimals(value, 2) : '-')
     },
     {
+      title: t('takeProfit'),
+      dataIndex: 'takeProfit',
+      key: 'takeProfit',
+      width: 116,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'takeProfit' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('takeProfit')
+      }),
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
+    },
+    {
+      title: t('stopLoss'),
+      dataIndex: 'stopLoss',
+      key: 'stopLoss',
+      width: 114,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'stopLoss' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('stopLoss')
+      }),
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
+    },
+    {
       title: t('exitDate'),
       dataIndex: 'exitDate',
       key: 'exitDate',
@@ -924,10 +954,12 @@ export const AlertLogsTable = () => {
     'symbol',
     'strategyName',
     'timeFrame',
-    'entryDate',
     'AIRecommendationSignal',
     'manualRecommendation',
+    'entryDate',
     'entryPrice',
+    'stopLoss',
+    'takeProfit',
     'exitDate',
     'exitPrice',
     'currentPrice',

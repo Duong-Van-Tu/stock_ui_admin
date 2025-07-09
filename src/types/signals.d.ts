@@ -49,6 +49,8 @@ type Signal = {
   realCandleEntry: string;
   expectCandleEntry: string;
   manualRecommendation: string;
+  stopLoss: number;
+  takeProfit: number;
 };
 
 type AlertLogsFilter = Filter & {

@@ -437,5 +437,7 @@
   "depositSuccess": "Nạp tiền thành công!",
   "withdrawSuccess": "Rút tiền thành công!",
   "depositError": "Nạp tiền thất bại. Vui lòng thử lại.",
-  "withdrawError": "Rút tiền thất bại. Vui lòng thử lại."
+  "withdrawError": "Rút tiền thất bại. Vui lòng thử lại.",
+  "takeProfit": "Chốt lời",
+  "stopLoss": "Cắt lỗ"
 }

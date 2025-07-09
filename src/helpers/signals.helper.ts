@@ -69,6 +69,8 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     AIExplain: stock[fieldMapping.AIExplain],
     realCandleEntry: parseToUTC(stock[fieldMapping.realCandleEntry]),
     expectCandleEntry: parseToUTC(stock[fieldMapping.expectCandleEntry]),
-    manualRecommendation: stock[fieldMapping.manualRecommendation]
+    manualRecommendation: stock[fieldMapping.manualRecommendation],
+    stopLoss: Number(stock[fieldMapping.stopLoss]),
+    takeProfit: Number(stock[fieldMapping.takeProfit])
   }));
 };

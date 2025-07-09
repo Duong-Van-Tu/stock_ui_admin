@@ -73,6 +73,18 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
                 : '--'
             },
             {
+              label: t('takeProfit'),
+              value: signal.takeProfit
+                ? `$${roundToDecimals(signal.takeProfit, 2)}`
+                : '--'
+            },
+            {
+              label: t('stopLoss'),
+              value: signal.stopLoss
+                ? `$${roundToDecimals(signal.stopLoss, 2)}`
+                : '--'
+            },
+            {
               label: t('aiRecommendation'),
               value: signal.AIRecommendationSignal ? (
                 <PositiveNegativeText
