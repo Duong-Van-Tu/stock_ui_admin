@@ -532,15 +532,15 @@ export const WatchlistIn50DaysTable = () => {
     },
     {
       title: t('marketCap'),
-      dataIndex: 'marketCap',
-      key: 'marketCap',
+      dataIndex: 'marketCapWatchList',
+      key: 'marketCapWatchList',
       width: 130,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'marketCap' ? sortType : null,
+      sortOrder: sortField === 'marketCapWatchList' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('marketCap')
+        onClick: () => handleSortOrder('marketCapWatchList')
       }),
       align: 'center',
       render: (value) => (value ? formatMarketCap(value) : '-')

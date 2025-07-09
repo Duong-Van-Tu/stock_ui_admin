@@ -39,7 +39,7 @@ export const transformWatchlist50Days = (data: any[]): WatchlistIn50Days[] => {
     sell: item.sell,
     strongSell: item.strongSell,
     hold: item.hold,
-    marketCap: Number(item.marketCap),
+    marketCapWatchList: Number(item[fieldMapping.marketCapWatchList]),
     sector: item.sector,
     industry: item.industry,
     subindustry: item.subindustry,

@@ -158,5 +158,6 @@ export const fieldMapping: Record<string, string> = {
   strongBuy: 'sbuy',
   previousPrice: 'prev_price',
   currentPriceWatchlist: 'price',
-  hashIds: 'hids'
+  hashIds: 'hids',
+  marketCapWatchList: 'marketCap'
 };

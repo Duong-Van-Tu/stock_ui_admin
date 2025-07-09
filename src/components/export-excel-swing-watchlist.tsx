@@ -71,7 +71,9 @@ export const ExportExcelSwingWatchlist = () => {
           'Yahoo Price Target Mean': formatCurrency(item.yahooPriceTargetMean),
           'Yahoo Price Target High': formatCurrency(item.yahooPriceTargetHigh),
           'Yahoo Price Target Low': formatCurrency(item.yahooPriceTargetLow),
-          'Market Cap': item.marketCap ? formatMarketCap(item.marketCap) : '-',
+          'Market Cap': item.marketCapWatchList
+            ? formatMarketCap(item.marketCapWatchList)
+            : '-',
           Industry: item.industry || '-',
           Subindustry: item.subindustry || '-',
           Sector: item.sector || '-',
