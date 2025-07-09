@@ -93,7 +93,7 @@ export const OptionSignal = () => {
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: 90,
+      width: 100,
       fixed: 'left',
       render: (value) => <SymbolCell symbol={value} />
     },

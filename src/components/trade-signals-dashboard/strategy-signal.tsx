@@ -124,7 +124,7 @@ export const StrategySignal = ({
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: 80,
+      width: 100,
       fixed: 'left',
       render: (value, record) => (
         <SymbolCell
