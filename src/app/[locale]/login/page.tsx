@@ -11,7 +11,7 @@ import {
   ConfigProvider
 } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { PageURLs } from '@/utils/navigate';
 import AuthLayout from '@/layout/auth.layout';
 import { useTranslations } from 'next-intl';
@@ -58,10 +58,16 @@ export default function Login() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const loading = useAppSelector(watchAuthLoading);
+  const searchParams = useSearchParams();
 
   const onFinish = (values: LoginFormValues) => {
     dispatch(loginUser(values));
-    router.push(PageURLs.ofIndex());
+    const redirectPath = searchParams.get('redirect');
+    if (redirectPath) {
+      router.push(redirectPath);
+    } else {
+      router.push(PageURLs.ofIndex());
+    }
   };
 
   return (
