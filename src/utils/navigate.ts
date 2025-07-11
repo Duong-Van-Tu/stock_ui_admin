@@ -62,8 +62,4 @@ export namespace PageURLs {
   export function ofSendAlertLedgerEntry(id: number) {
     return withPrefix(`/ledger-entry/${id}/send-alert`);
   }
-
-  export function ofSpikeVolumeBackTest() {
-    return withPrefix('/spike-volume');
-  }
 }
