@@ -52,10 +52,12 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
   const handleUserMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === UserMenu.LOGOUT.toString()) {
       dispatch(logoutUser());
-      const currentUrl = window.location.pathname + window.location.search;
-      window.location.href = `/login?redirect=${encodeURIComponent(
-        currentUrl
-      )}`;
+      if (pathname !== PageURLs.ofIndex()) {
+        const currentUrl =
+          pathname +
+          (searchParams?.toString() ? `?${searchParams.toString()}` : '');
+        router.push(`/login?redirect=${encodeURIComponent(currentUrl)}`);
+      }
     }
   };
 
