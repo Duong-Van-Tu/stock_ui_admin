@@ -9,6 +9,7 @@ import MiniStockChart from '@/components/charts/stock-mini.chart';
 import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
 import { isMobile } from 'react-device-detect';
+import EllipsisText from '@/components/ellipsis-text';
 
 enum ContentType {
   NEWS = 'news',
@@ -112,7 +113,11 @@ export const SymbolCell = ({
           </Tooltip>
         )}
       </div>
-      <div css={companyNameStyles}>{companyName}</div>
+      {companyName && (
+        <div css={companyNameStyles}>
+          <EllipsisText text={companyName} maxLines={1} />
+        </div>
+      )}
 
       <SymbolDetailsDrawer
         symbol={symbol}

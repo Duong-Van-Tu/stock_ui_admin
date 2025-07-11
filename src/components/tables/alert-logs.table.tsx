@@ -57,6 +57,7 @@ import { AIExplain } from '../ai-explain';
 import { SignalInformation } from '../signal-information';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { watchSideBarCollapsed } from '@/redux/slices/app.slice';
+import EllipsisText from '../ellipsis-text';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -220,14 +221,16 @@ export const AlertLogsTable = () => {
       title: t('strategy'),
       dataIndex: 'strategyName',
       key: 'strategyName',
-      width: 180,
+      width: 160,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'strategyName' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('strategyName')
-      })
+      }),
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
     },
     {
       title: t('period'),

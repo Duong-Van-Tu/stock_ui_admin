@@ -303,7 +303,7 @@ export const EarningsTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: earnings.length > 0 ? height - 354 : undefined
+            y: earnings.length > 0 ? height - 344 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{

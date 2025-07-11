@@ -447,6 +447,7 @@ const tableTopStyles = css`
   flex-wrap: wrap;
   padding: 1.2rem 1.4rem;
   gap: 1.4rem;
+  align-items: flex-start;
 `;
 
 const actionStyles = css`
@@ -454,6 +455,7 @@ const actionStyles = css`
   justify-content: flex-end;
   gap: 1.2rem;
   flex: 1;
+  flex-wrap: wrap;
 `;
 
 const legendStatusStyles = css`
