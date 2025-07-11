@@ -52,6 +52,7 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
   const handleUserMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === UserMenu.LOGOUT.toString()) {
       dispatch(logoutUser());
+      window.location.reload();
     }
   };
 
