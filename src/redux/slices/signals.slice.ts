@@ -16,6 +16,7 @@ export type SignalsState = {
   exitLoading: boolean;
   pagination: Pagination;
   paginationByStrategyId: Record<number, Pagination>;
+  signal: Signal | null;
   alertLogsData: Signal[];
   signalOptions: Signal[];
   signalByStrategyId: Record<string, Signal[]>;
@@ -32,7 +33,8 @@ const initialState: SignalsState = {
   signalOptions: [],
   signalByStrategyId: {},
   pagination: PAGINATION,
-  paginationByStrategyId: {}
+  paginationByStrategyId: {},
+  signal: null
 };
 
 export const signalSlice = createAppSlice({
@@ -137,6 +139,27 @@ export const signalSlice = createAppSlice({
         }
       }
     ),
+    getSignalById: create.asyncThunk(
+      async (id: number) => {
+        const response = await defaultApiFetcher.get(
+          `tickers/get-stock-alert-log/${id}`
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loading = true;
+        },
+        fulfilled: (state, action) => {
+          state.loading = false;
+          state.signal = transformSignalsData([action.payload])[0];
+        },
+        rejected: (state) => {
+          state.loading = false;
+          state.signal = null;
+        }
+      }
+    ),
     exitNow: create.asyncThunk(
       async (params: { hashIds: string[] }) => {
         await defaultApiFetcher.post(
@@ -223,7 +246,8 @@ export const signalSlice = createAppSlice({
     watchSignalByStrategyId: (state) => state.signalByStrategyId,
     watchSignalPaginationByStrategyId: (state) => (strategyId: number) =>
       state.paginationByStrategyId[strategyId] || PAGINATION,
-    watchExitLoading: (state) => state.exitLoading
+    watchExitLoading: (state) => state.exitLoading,
+    watchSignal: (state) => state.signal
   }
 });
 
@@ -237,7 +261,8 @@ export const {
   watchSignalStrategyLoading,
   watchSignalPaginationByStrategyId,
   watchSignalOptions,
-  watchExitLoading
+  watchExitLoading,
+  watchSignal
 } = signalSlice.selectors;
 
 export const {
@@ -247,7 +272,8 @@ export const {
   updateAlertLogsData,
   exitNow,
   updateSignalsData,
-  resetState
+  resetState,
+  getSignalById
 } = signalSlice.actions;
 
 export const autoUpdateSignalData =

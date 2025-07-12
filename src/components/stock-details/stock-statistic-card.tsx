@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Card, Row, Col, Typography, Divider } from 'antd';
+import { Card, Row, Col, Typography, Divider, Button } from 'antd';
 import { useAppSelector } from '@/redux/hooks';
 import { watchStockDetails } from '@/redux/slices/stock-details.slice';
 import {
@@ -10,9 +10,11 @@ import {
   roundToDecimals
 } from '@/utils/common';
 import { PositiveNegativeText } from '../positive-negative-text';
-import dayjs from 'dayjs';
 import { useTranslations } from 'next-intl';
-import { TimeZone } from '@/constants/timezone.constant';
+import AIRatingChart from '../charts/AI-rating.chart';
+import { useModal } from '@/hooks/modal.hook';
+import { AIExplain } from '../ai-explain';
+import { Icon } from '../icons';
 
 const { Text } = Typography;
 
@@ -40,9 +42,6 @@ const renderValue = (
   );
 };
 
-const renderDate = (value?: string) =>
-  value ? dayjs(value).tz(TimeZone.NEW_YORK).format('MM/DD/YYYY HH:mm') : '--';
-
 const StatRow = ({
   label,
   value
@@ -64,8 +63,10 @@ const StatRow = ({
 
 export const StatisticCard = () => {
   const t = useTranslations();
+  const modal = useModal();
   const stockDetails = useAppSelector(watchStockDetails);
   const {
+    ticker,
     marketCap,
     marketCapTitle,
     volume,
@@ -77,15 +78,46 @@ export const StatisticCard = () => {
     lw,
     week52Low,
     week52High,
-    entryDate,
-    entryPrice,
-    exitDate,
-    exitPrice
+    aiRating,
+    aiExplain
   } = stockDetails || {};
 
   return (
-    <Card title={t('statistic')} bordered size='small' css={cardStyle}>
+    <Card title={t('statistic')} bordered size='small' css={cardStyles}>
       <Row gutter={[8, 8]}>
+        {aiRating && aiExplain && (
+          <div css={chartContainer}>
+            <Col span={24}>
+              <Typography.Title css={aiRatingStyles}>
+                {t('aiRating')}{' '}
+                <Icon
+                  icon='aiStar'
+                  fill={'var(--orange-color)'}
+                  width={26}
+                  height={26}
+                />
+              </Typography.Title>
+            </Col>
+            <AIRatingChart rating={aiRating} />
+            <Col span={24}>
+              <Button
+                css={aiExplainBtnStyles}
+                onClick={() =>
+                  modal.openModal(
+                    <AIExplain symbol={ticker!} text={aiExplain} />
+                  )
+                }
+                type='link'
+                block
+              >
+                {t('aiExplain')}
+              </Button>
+            </Col>
+            <Col span={24}>
+              <Divider css={dividerStyles} />
+            </Col>
+          </div>
+        )}
         <StatRow
           label={t('marketCapIntraday')}
           value={
@@ -135,44 +167,18 @@ export const StatisticCard = () => {
               : '--'
           }
         />
-
-        <Col span={24}>
-          <Divider css={dividerStyles} />
-        </Col>
-
-        <StatRow label={t('entryDate')} value={renderDate(entryDate)} />
-        <StatRow
-          label={t('entryPrice')}
-          value={entryPrice ? `${roundToDecimals(entryPrice)}$` : '--'}
-        />
-        <StatRow label={t('exitDate')} value={renderDate(exitDate)} />
-        <StatRow
-          label={t('exitPrice')}
-          value={
-            exitPrice && entryPrice ? (
-              <PositiveNegativeText
-                isPositive={exitPrice >= entryPrice}
-                isNegative={exitPrice < entryPrice}
-              >
-                <span>
-                  {`${roundToDecimals(exitPrice)}$ `}(
-                  {formatPercent(((exitPrice - entryPrice) / entryPrice) * 100)}
-                  )
-                </span>
-              </PositiveNegativeText>
-            ) : (
-              '--'
-            )
-          }
-        />
       </Row>
     </Card>
   );
 };
 
-const cardStyle = css`
+const cardStyles = css`
   border: 1px solid var(--border-card-color);
   border-radius: 2px;
+  height: 100%;
+  .ant-card-head-title {
+    font-size: 1.8rem;
+  }
 `;
 
 const colLeftStyles = css`
@@ -188,4 +194,29 @@ const colRightStyles = css`
 const dividerStyles = css`
   margin: 0.2rem 0;
   padding: 0;
+`;
+
+const chartContainer = css`
+  position: relative;
+  width: 100%;
+`;
+
+const aiExplainBtnStyles = css`
+  padding: 0;
+  height: unset;
+  position: absolute;
+  bottom: 4rem;
+`;
+
+const aiRatingStyles = css`
+  margin-bottom: 0 !important;
+  text-align: center;
+  position: relative;
+  margin-top: 1rem;
+  color: var(--orange-color) !important;
+  font-size: 1.8rem !important;
+  svg {
+    top: -0.5rem;
+    position: absolute;
+  }
 `;

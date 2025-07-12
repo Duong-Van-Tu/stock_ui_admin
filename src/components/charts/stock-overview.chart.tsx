@@ -41,7 +41,7 @@ const StockChartOverview = ({ symbol }: StockChartOverviewProps) => {
     <div
       className='tradingview-widget-container'
       ref={container}
-      style={{ height: '100%', width: '100%' }}
+      style={{ height: '100%', width: '100%', minHeight: '450px' }}
     >
       <div
         className='tradingview-widget-container__widget'

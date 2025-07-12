@@ -165,12 +165,12 @@ export default function GaugeChart({ value, label }: GaugeChartProps) {
       lazyUpdate={true}
       theme={'theme_name'}
       opts={{}}
-      css={chartContainerStyle}
+      css={chartContainerStyles}
     />
   );
 }
 
-const chartContainerStyle = css`
+const chartContainerStyles = css`
   max-width: 25rem;
   width: 100%;
   max-height: 20rem;
