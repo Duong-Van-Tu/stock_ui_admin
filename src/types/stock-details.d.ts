@@ -28,6 +28,9 @@ type StockDetails = {
   week52HighDate: string;
   week52Low: number;
   week52LowDate: string;
+  aiRating: number;
+  aiRecommendationSignal: string;
+  aiExplain: string;
 };
 
 type FundamentalDetails = {
