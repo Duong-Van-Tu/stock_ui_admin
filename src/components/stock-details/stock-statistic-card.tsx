@@ -17,6 +17,7 @@ import { AIExplain } from '../ai-explain';
 import { Icon } from '../icons';
 import { watchSignal } from '@/redux/slices/signals.slice';
 import { SignalInformation } from '../signal-information';
+import { useSearchParams } from 'next/navigation';
 
 const { Text } = Typography;
 
@@ -68,6 +69,8 @@ const StatRow = ({
 
 export const StatisticCard = () => {
   const t = useTranslations();
+  const searchParams = useSearchParams();
+  const signalId = Number(searchParams.get('signalId')) ?? null;
   const modal = useModal();
   const stockDetails = useAppSelector(watchStockDetails);
   const signal = useAppSelector(watchSignal);
@@ -117,8 +120,8 @@ export const StatisticCard = () => {
               <Button
                 css={signalBtnStyles}
                 onClick={() =>
-                  signal
-                    ? modal.openModal(<SignalInformation signal={signal} />, {
+                  signalId
+                    ? modal.openModal(<SignalInformation signal={signal!} />, {
                         width: 1200
                       })
                     : modal.openModal(
@@ -128,7 +131,7 @@ export const StatisticCard = () => {
                 type='link'
                 block
               >
-                {signal ? t('viewDetails') : t('aiExplain')}
+                {signalId ? t('viewDetails') : t('aiExplain')}
               </Button>
             </Col>
             <Col span={24}>
