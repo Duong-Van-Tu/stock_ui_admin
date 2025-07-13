@@ -16,8 +16,12 @@ import { useModal } from '@/hooks/modal.hook';
 import { AIExplain } from '../ai-explain';
 import { Icon } from '../icons';
 import { watchSignal } from '@/redux/slices/signals.slice';
+import { SignalInformation } from '../signal-information';
 
 const { Text } = Typography;
+
+// const renderDate = (value?: string) =>
+//   value ? dayjs(value).tz(TimeZone.NEW_YORK).format('MM/DD/YYYY HH:mm') : '--';
 
 const renderValue = (
   value?: number,
@@ -83,6 +87,10 @@ export const StatisticCard = () => {
     week52High,
     aiRating: stockAiRating,
     aiExplain: stockAiExplain
+    // entryDate,
+    // entryPrice,
+    // exitDate,
+    // exitPrice
   } = stockDetails || {};
 
   const aiRating = signal?.AIRating || stockAiRating;
@@ -107,16 +115,20 @@ export const StatisticCard = () => {
             <AIRatingChart rating={aiRating} />
             <Col span={24}>
               <Button
-                css={aiExplainBtnStyles}
+                css={signalBtnStyles}
                 onClick={() =>
-                  modal.openModal(
-                    <AIExplain symbol={ticker!} text={aiExplain} />
-                  )
+                  signal
+                    ? modal.openModal(<SignalInformation signal={signal} />, {
+                        width: 1200
+                      })
+                    : modal.openModal(
+                        <AIExplain symbol={ticker!} text={aiExplain} />
+                      )
                 }
                 type='link'
                 block
               >
-                {t('aiExplain')}
+                {signal ? t('viewDetails') : t('aiExplain')}
               </Button>
             </Col>
             <Col span={24}>
@@ -124,6 +136,32 @@ export const StatisticCard = () => {
             </Col>
           </div>
         )}
+        {/* <StatRow label={t('entryDate')} value={renderDate(entryDate)} />
+        <StatRow
+          label={t('entryPrice')}
+          value={entryPrice ? `${roundToDecimals(entryPrice)}$` : '--'}
+        />
+        <StatRow label={t('exitDate')} value={renderDate(exitDate)} />
+        <StatRow
+          label={t('exitPrice')}
+          value={
+            exitPrice && entryPrice ? (
+              <PositiveNegativeText
+                isPositive={exitPrice >= entryPrice}
+                isNegative={exitPrice < entryPrice}
+              >
+                <span>
+                  {`${roundToDecimals(exitPrice)}$ `}(
+                  {formatPercent(((exitPrice - entryPrice) / entryPrice) * 100)}
+                  )
+                </span>
+              </PositiveNegativeText>
+            ) : (
+              '--'
+            )
+          }
+        />
+         */}
         <StatRow
           label={t('marketCapIntraday')}
           value={
@@ -142,7 +180,6 @@ export const StatisticCard = () => {
         />
         <StatRow label={t('atr')} value={renderValue(atr)} />
         <StatRow label={t('beta')} value={renderValue(beta)} />
-
         <Col span={24}>
           <Divider css={dividerStyles} />
         </Col>
@@ -207,7 +244,7 @@ const chartContainer = css`
   width: 100%;
 `;
 
-const aiExplainBtnStyles = css`
+const signalBtnStyles = css`
   padding: 0;
   height: unset;
   position: absolute;
