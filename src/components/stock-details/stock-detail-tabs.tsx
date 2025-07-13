@@ -13,9 +13,13 @@ import { useTranslations } from 'next-intl';
 
 type StockDetailTabsProps = {
   symbol: string;
+  onTabChange?: () => void;
 };
 
-export const StockDetailTabs = ({ symbol }: StockDetailTabsProps) => {
+export const StockDetailTabs = ({
+  symbol,
+  onTabChange
+}: StockDetailTabsProps) => {
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -26,6 +30,7 @@ export const StockDetailTabs = ({ symbol }: StockDetailTabsProps) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     current.set('tab', key);
     router.replace(`?${current.toString()}`);
+    onTabChange?.();
   };
 
   const items: TabsProps['items'] = useMemo(
