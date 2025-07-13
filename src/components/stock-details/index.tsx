@@ -5,7 +5,7 @@ import { useAppSelector } from '@/redux/hooks';
 import StockOverviewChart from '../charts/stock-overview.chart';
 import { useParams, useRouter } from 'next/navigation';
 import { watchSearchSymbol } from '@/redux/slices/search';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { PageURLs } from '@/utils/navigate';
 import { watchSectorLoading } from '@/redux/slices/stock-score.slice';
 import { Spin } from 'antd';
@@ -17,8 +17,24 @@ export default function StockDetail() {
   const params = useParams();
   const symbol = params.symbol as string;
   const router = useRouter();
+  const tabWrapperRef = useRef<HTMLDivElement>(null);
   const loading = useAppSelector(watchSectorLoading);
   const searchSymbol = useAppSelector(watchSearchSymbol);
+
+  const scrollToTabs = () => {
+    setTimeout(() => {
+      if (!tabWrapperRef.current) return;
+
+      const elementRect = tabWrapperRef.current.getBoundingClientRect();
+      const absoluteElementTop = elementRect.top + window.scrollY;
+      const headerOffset = 64;
+
+      window.scrollTo({
+        top: absoluteElementTop - headerOffset,
+        behavior: 'smooth'
+      });
+    }, 100);
+  };
 
   useEffect(() => {
     if (searchSymbol) {
@@ -38,8 +54,8 @@ export default function StockDetail() {
             <StatisticCard />
           </div>
         </div>
-        <div css={tabWrapperStyles}>
-          <StockDetailTabs symbol={symbol} />
+        <div css={tabWrapperStyles} ref={tabWrapperRef}>
+          <StockDetailTabs symbol={symbol} onTabChange={scrollToTabs} />
         </div>
       </div>
     </Spin>
