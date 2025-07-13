@@ -95,7 +95,15 @@ export const OptionSignal = () => {
       key: 'symbol',
       width: 100,
       fixed: 'left',
-      render: (value) => <SymbolCell symbol={value} />
+      render: (value, record) => (
+        <SymbolCell
+          isNews={record.isNews}
+          earningDate={record.earningDate}
+          isNewsNegative={record.isNewsNegative}
+          symbol={value}
+          signalId={record.id}
+        />
+      )
     },
     {
       title: t('period'),
