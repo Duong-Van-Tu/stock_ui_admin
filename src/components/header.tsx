@@ -16,6 +16,7 @@ import { getPathnameSegment } from '@/utils/common';
 import { isMobile, isDesktop } from 'react-device-detect';
 import { setSideBarCollapsed } from '@/redux/slices/app.slice';
 import TimeZoneClock from './time-zone-clock';
+import { regex } from '@/utils/regex';
 
 enum UserMenu {
   PROFILE,
@@ -118,7 +119,10 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
 
     params.set('symbol', upperCaseValue);
     router.push(`${pathname}?${params.toString()}`);
-    dispatch(searchSymbol(upperCaseValue));
+
+    if (regex.stockDetailPath.test(pathname)) {
+      dispatch(searchSymbol(upperCaseValue));
+    }
   };
 
   const handleClear = () => {

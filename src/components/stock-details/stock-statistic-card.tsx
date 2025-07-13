@@ -15,6 +15,7 @@ import AIRatingChart from '../charts/AI-rating.chart';
 import { useModal } from '@/hooks/modal.hook';
 import { AIExplain } from '../ai-explain';
 import { Icon } from '../icons';
+import { watchSignal } from '@/redux/slices/signals.slice';
 
 const { Text } = Typography;
 
@@ -65,6 +66,8 @@ export const StatisticCard = () => {
   const t = useTranslations();
   const modal = useModal();
   const stockDetails = useAppSelector(watchStockDetails);
+  const signal = useAppSelector(watchSignal);
+
   const {
     ticker,
     marketCap,
@@ -78,9 +81,12 @@ export const StatisticCard = () => {
     lw,
     week52Low,
     week52High,
-    aiRating,
-    aiExplain
+    aiRating: stockAiRating,
+    aiExplain: stockAiExplain
   } = stockDetails || {};
+
+  const aiRating = signal?.AIRating || stockAiRating;
+  const aiExplain = signal?.AIExplain || stockAiExplain;
 
   return (
     <Card title={t('statistic')} bordered size='small' css={cardStyles}>

@@ -24,6 +24,7 @@ type SymbolCellProps = {
   earningDate?: string;
   isNewsNegative?: boolean;
   showRecentNewsEarnings?: boolean;
+  signalId?: number;
 };
 
 export const SymbolCell = ({
@@ -32,7 +33,8 @@ export const SymbolCell = ({
   isNews,
   earningDate,
   isNewsNegative,
-  showRecentNewsEarnings
+  showRecentNewsEarnings,
+  signalId
 }: SymbolCellProps) => {
   const t = useTranslations();
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -60,7 +62,10 @@ export const SymbolCell = ({
           {isMobile ? (
             <span css={stockLinkStyles}>{symbol}</span>
           ) : (
-            <Link css={stockLinkStyles} href={PageURLs.ofStockDetail(symbol)}>
+            <Link
+              css={stockLinkStyles}
+              href={PageURLs.ofStockDetail(symbol, signalId)}
+            >
               {symbol}
             </Link>
           )}
