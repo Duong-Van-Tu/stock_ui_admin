@@ -871,7 +871,7 @@ export const AlertLogsTable = () => {
       render: (_, record) => {
         const isExit = !!record.exitDate;
         return (
-          <Space size={'small'}>
+          <Space size='small'>
             <Tooltip title={isMobile ? null : t('notes')}>
               <Button
                 onClick={() =>

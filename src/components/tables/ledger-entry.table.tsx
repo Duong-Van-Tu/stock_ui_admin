@@ -100,10 +100,6 @@ export const LedgerEntryTable = () => {
     fetchLegerEntry({});
   }, [fetchLegerEntry]);
 
-  // useEffect(() => {
-  //   dispatch(getUserBalance());
-  // }, [dispatch]);
-
   useEffect(() => {
     ledgerEntry.forEach((row) => {
       setWatchList(row.symbol);
@@ -513,7 +509,7 @@ export const LedgerEntryTable = () => {
         <TableTitle customStyles={titleStyles}>
           {t('ledgerEntryTitle')}
         </TableTitle>
-        <Space css={actionStyles}>
+        <Space css={actionStyles} wrap>
           <Button
             icon={<Icon icon='deposit' width={18} height={18} />}
             onClick={() =>
@@ -581,6 +577,7 @@ const tableStyles = css`
 
 const titleStyles = css`
   min-width: 30%;
+  width: ${isMobile && '100%'};
 `;
 
 const tableTopStyles = css`
@@ -595,6 +592,7 @@ const tableTopStyles = css`
 const actionStyles = css`
   flex: 1;
   justify-content: flex-end;
+  width: 100%;
 `;
 
 const emptyStyles = (height: number) => css`
