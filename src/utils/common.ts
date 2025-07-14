@@ -247,3 +247,13 @@ export const convertParamsByMapping = <T extends Record<string, any>>(
 
 export const parseToUTC = (date?: string) =>
   date ? dayjs.utc(date, 'YYYY-MM-DD HH:mm:ss').format() : '';
+
+export const getThumbnail = (
+  url: string,
+  width = 200,
+  height = 120
+): string => {
+  return `https://s.wordpress.com/mshots/v1/${encodeURIComponent(
+    url
+  )}?w=${width}&h=${height}`;
+};
