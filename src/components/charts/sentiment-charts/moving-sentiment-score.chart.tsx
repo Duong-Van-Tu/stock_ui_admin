@@ -14,7 +14,7 @@ import {
 import LineChart from '../line.chart';
 import { getRangeDateOptions } from '@/utils/stock-filter';
 
-type FundamentalDetailProps = {
+type MovingSentimentScoreProps = {
   symbol: string;
 };
 
@@ -28,8 +28,9 @@ const series = [
   { name: 'Score 3 months', color: '#2196f3', key: 'score3m' }
 ];
 
-
-export function MovingSentimentScoreChart({ symbol }: FundamentalDetailProps) {
+export function MovingSentimentScoreChart({
+  symbol
+}: MovingSentimentScoreProps) {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const movingSentimentScores = useAppSelector(watchMovingSentimentScore);

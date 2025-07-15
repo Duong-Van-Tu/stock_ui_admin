@@ -11,11 +11,11 @@ import {
   watchEarningsDetails
 } from '@/redux/slices/stock-details.slice';
 
-type FundamentalDetailProps = {
+type EarningsDetailsProps = {
   symbol: string;
 };
 
-export function EarningsDetailsChart({ symbol }: FundamentalDetailProps) {
+export function EarningsDetailsChart({ symbol }: EarningsDetailsProps) {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const earningsDetails = useAppSelector(watchEarningsDetails);

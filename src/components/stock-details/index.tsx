@@ -48,7 +48,6 @@ export default function StockDetail() {
   }, [searchSymbol, router]);
 
   useEffect(() => {
-    console.log({ signalId });
     if (signalId) {
       dispatch(getSignalById(signalId));
     }
