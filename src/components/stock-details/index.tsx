@@ -38,7 +38,7 @@ export default function StockDetail() {
         top: absoluteElementTop - headerOffset,
         behavior: 'smooth'
       });
-    }, 100);
+    }, 500);
   };
 
   useEffect(() => {
