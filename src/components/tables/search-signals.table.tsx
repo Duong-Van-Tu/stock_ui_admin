@@ -2,12 +2,13 @@
 import { css } from '@emotion/react';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Table, TableColumnsType } from 'antd';
+import { Button, Table, TableColumnsType } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   calculatePercentage,
   cleanFalsyValues,
   formatMarketCap,
+  formatNumberShort,
   roundToDecimals
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -32,6 +33,13 @@ import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { isMobile } from 'react-device-detect';
+import EllipsisText from '../ellipsis-text';
+import {
+  Recommendation,
+  RecommendationText
+} from '@/constants/common.constant';
+import { useModal } from '@/hooks/modal.hook';
+import { AIExplain } from '../ai-explain';
 
 type SearchSignalTable = {
   symbol: string;
@@ -42,6 +50,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
   const dispatch = useAppDispatch();
   const { setWatchList, resFromWS } = useContext(SocketContext);
   const { height } = useWindowSize();
+  const modal = useModal();
 
   const alertLogsData = useAppSelector(watchAlertLogsData);
   const pagination = useAppSelector(watchAlertLogsPagination);
@@ -114,13 +123,14 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       key: 'symbol',
       width: isMobile ? 100 : 200,
       fixed: 'left',
-      render: (value, record) => (
+      render: (_, record) => (
         <SymbolCell
-          symbol={value}
+          symbol={record.symbol}
           companyName={isMobile ? undefined : record.companyName}
           isNews={record.isNews}
           earningDate={record.earningDate}
           isNewsNegative={record.isNewsNegative}
+          signalId={record.id}
         />
       )
     },
@@ -128,21 +138,22 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       title: t('strategy'),
       dataIndex: 'strategyName',
       key: 'strategyName',
-      width: 180,
+      width: 160,
       align: 'center',
-      fixed: 'left',
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'strategyName' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('strategyName')
-      })
+      }),
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
     },
     {
       title: t('period'),
       dataIndex: 'timeFrame',
       key: 'timeFrame',
-      width: isMobile ? 80 : 110,
+      width: 110,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -152,10 +163,126 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       })
     },
     {
+      title: t('realCandleEntry'),
+      dataIndex: 'realCandleEntry',
+      key: 'realCandleEntry',
+      width: 156,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'realCandleEntry' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('realCandleEntry')
+      }),
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
+      title: t('expectCandleEntry'),
+      dataIndex: 'expectCandleEntry',
+      key: 'expectCandleEntry',
+      width: 174,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'expectCandleEntry' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('expectCandleEntry')
+      }),
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
+      title: t('aiRating'),
+      dataIndex: 'AIRating',
+      key: 'AIRating',
+      width: 100,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'AIRating' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('AIRating')
+      }),
+      align: 'center'
+    },
+    {
+      title: t('aiRecommendation'),
+      dataIndex: 'AIRecommendationSignal',
+      key: 'AIRecommendationSignal',
+      width: 180,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'AIRecommendationSignal' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('AIRecommendationSignal')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText
+            isPositive={value === Recommendation.BUY}
+            isNegative={value === Recommendation.SELL}
+          >
+            <span css={recommendationStyles}>{RecommendationText[value]}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
+      title: t('manualRecommendation'),
+      dataIndex: 'manualRecommendation',
+      key: 'manualRecommendation',
+      width: 160,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'manualRecommendation' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('manualRecommendation')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText
+            isPositive={
+              value === Recommendation.BUY ||
+              value === Recommendation.STRONG_BUY
+            }
+            isNegative={value === Recommendation.SELL}
+          >
+            <span css={recommendationStyles}>{RecommendationText[value]}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
+      title: t('aiExplain'),
+      dataIndex: 'AIExplain',
+      key: 'AIExplain',
+      width: 110,
+      align: 'center',
+      render: (value, record) =>
+        value ? (
+          <Button
+            onClick={() =>
+              modal.openModal(<AIExplain symbol={record.symbol} text={value} />)
+            }
+            type='link'
+            block
+          >
+            {t('viewDetails')}
+          </Button>
+        ) : (
+          '-'
+        )
+    },
+    {
       title: t('entryDate'),
       dataIndex: 'entryDate',
       key: 'entryDate',
-      width: isMobile ? 108 : 134,
+      width: 140,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -169,7 +296,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       title: t('entryPrice'),
       dataIndex: 'entryPrice',
       key: 'entryPrice',
-      width: isMobile ? 110 : 130,
+      width: 140,
       align: 'center',
       defaultSortOrder: 'descend',
       sorter: true,
@@ -181,10 +308,40 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       render: (value) => (value ? roundToDecimals(value, 2) : '-')
     },
     {
+      title: t('takeProfit'),
+      dataIndex: 'takeProfit',
+      key: 'takeProfit',
+      width: 116,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'takeProfit' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('takeProfit')
+      }),
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
+    },
+    {
+      title: t('stopLoss'),
+      dataIndex: 'stopLoss',
+      key: 'stopLoss',
+      width: 114,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'stopLoss' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('stopLoss')
+      }),
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
+    },
+    {
       title: t('exitDate'),
       dataIndex: 'exitDate',
       key: 'exitDate',
-      width: isMobile ? 110 : 130,
+      width: 150,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -198,13 +355,13 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       title: t('exitPrice'),
       dataIndex: 'exitPrice',
       key: 'exitPrice',
-      width: isMobile ? 110 : 140,
+      width: 140,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'exitPrice' ? sortType : null,
+      sortOrder: sortField === 'plPercent' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('exitPrice')
+        onClick: () => handleSortOrder('plPercent')
       }),
       render: (value, record) => {
         const percentage = calculatePercentage(record.entryPrice, value);
@@ -266,6 +423,76 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
+      title: t('highestPrice3Days'),
+      dataIndex: 'highestPrice3Days',
+      key: 'highestPrice3Days',
+      width: 136,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highestPrice3Days' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highestPrice3Days')
+      }),
+      align: 'center',
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-     '
+        );
+      }
+    },
+    {
+      title: t('highest3DaysUpdateAt'),
+      dataIndex: 'highest3DaysUpdateAt',
+      key: 'highest3DaysUpdateAt',
+      width: 164,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highest3DaysUpdateAt' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highest3DaysUpdateAt')
+      }),
+      align: 'center',
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
+      title: t('highestPrice7Days'),
+      dataIndex: 'highestPrice7Days',
+      key: 'highestPrice7Days',
+      width: 136,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highestPrice7Days' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highestPrice7Days')
+      }),
+      align: 'center',
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-     '
+        );
+      }
+    },
+    {
+      title: t('highest7DaysUpdateAt'),
+      dataIndex: 'highest7DaysUpdateAt',
+      key: 'highest7DaysUpdateAt',
+      width: 164,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highest7DaysUpdateAt' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highest7DaysUpdateAt')
+      }),
+      align: 'center',
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
       title: t('lowestPrice'),
       dataIndex: 'lowestPrice',
       key: 'lowestPrice',
@@ -297,6 +524,94 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
       render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
+      title: t('lowestPrice3Days'),
+      dataIndex: 'lowestPrice3Days',
+      key: 'lowestPrice3Days',
+      width: 130,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'lowestPrice3Days' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('lowestPrice3Days')
+      }),
+      align: 'center',
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
+      title: t('lowest3DaysUpdateAt'),
+      dataIndex: 'lowest3DaysUpdateAt',
+      key: 'lowest3DaysUpdateAt',
+      width: 160,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'lowest3DaysUpdateAt' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('lowest3DaysUpdateAt')
+      }),
+      align: 'center',
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
+      title: t('lowestPrice7Days'),
+      dataIndex: 'lowestPrice7Days',
+      key: 'lowestPrice7Days',
+      width: 130,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'lowestPrice7Days' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('lowestPrice7Days')
+      }),
+      align: 'center',
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
+      title: t('lowest7DaysUpdateAt'),
+      dataIndex: 'lowest7DaysUpdateAt',
+      key: 'lowest7DaysUpdateAt',
+      width: 160,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'lowest7DaysUpdateAt' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('lowest7DaysUpdateAt')
+      }),
+      align: 'center',
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
+      title: t('earningsNext3Days'),
+      dataIndex: 'earningDate3days',
+      key: 'earningDate3days',
+      width: 136,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'earningDate3days' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('earningDate3days')
+      }),
+      align: 'center',
+      render: (value) => (
+        <PositiveNegativeText isPositive={!!value} isNegative={!value}>
+          <span>{value ? t('yes') : t('no')}</span>
+        </PositiveNegativeText>
+      )
+    },
+    {
       title: t('marketCap'),
       dataIndex: 'marketCap',
       key: 'marketCap',
@@ -322,7 +637,7 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
         onClick: () => handleSortOrder('volumeAVG')
       }),
       align: 'center',
-      render: (value) => (value ? roundToDecimals(value, 2) : '-')
+      render: (value) => (value ? formatNumberShort(value) : '-')
     },
     {
       title: t('beta'),
@@ -489,13 +804,18 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
 
   const mobileColumnKeys = [
     'symbol',
+    'strategyName',
     'timeFrame',
+    'AIRecommendationSignal',
+    'manualRecommendation',
     'entryDate',
     'entryPrice',
+    'stopLoss',
+    'takeProfit',
     'exitDate',
     'exitPrice',
     'currentPrice',
-    'winOrLoss'
+    'action'
   ];
 
   const columns: TableColumnsType<Signal> = isMobile
@@ -586,4 +906,8 @@ const emptyStyles = (height: number) => css`
   display: flex;
   flex-direction: column;
   justify-content: center;
+`;
+
+const recommendationStyles = css`
+  text-transform: uppercase;
 `;
