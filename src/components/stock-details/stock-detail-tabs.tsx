@@ -10,6 +10,7 @@ import SentimentCharts from '../charts/sentiment-charts';
 import EarningsCharts from '../charts/earnings-charts';
 import { NewDetails } from '../news-details';
 import { useTranslations } from 'next-intl';
+import { SearchSignalTable } from '../tables/search-signals.table';
 
 type StockDetailTabsProps = {
   symbol: string;
@@ -24,7 +25,7 @@ export const StockDetailTabs = ({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const tabParam = searchParams.get('tab') || StockDetailTabKey.Fundamental;
+  const tabParam = searchParams.get('tab') || StockDetailTabKey.Signal;
 
   const handleChangeTab = (key: string) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -36,18 +37,23 @@ export const StockDetailTabs = ({
   const items: TabsProps['items'] = useMemo(
     () => [
       {
+        key: StockDetailTabKey.Signal,
+        label: <span css={tabLabelStyles}>{t('signals')}</span>,
+        children: <SearchSignalTable symbol={symbol} showTitle={false} />
+      },
+      {
         key: StockDetailTabKey.Fundamental,
-        label: <span css={tabLabelStyles}>Fundamental</span>,
+        label: <span css={tabLabelStyles}>{t('fundamental')}</span>,
         children: <FundamentalCharts symbol={symbol} />
       },
       {
         key: StockDetailTabKey.Earnings,
-        label: <span css={tabLabelStyles}>Earnings</span>,
+        label: <span css={tabLabelStyles}>{t('earnings')}</span>,
         children: <EarningsCharts symbol={symbol} />
       },
       {
         key: StockDetailTabKey.Sentiment,
-        label: <span css={tabLabelStyles}>Sentiment</span>,
+        label: <span css={tabLabelStyles}>{t('sentiment')}</span>,
         children: (
           <div css={sentimentContainerStyles}>
             <SentimentCharts symbol={symbol} />

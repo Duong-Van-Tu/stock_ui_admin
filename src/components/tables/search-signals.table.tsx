@@ -43,9 +43,13 @@ import { AIExplain } from '../ai-explain';
 
 type SearchSignalTable = {
   symbol: string;
+  showTitle?: boolean;
 };
 
-export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
+export const SearchSignalTable = ({
+  symbol,
+  showTitle = true
+}: SearchSignalTable) => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const { setWatchList, resFromWS } = useContext(SocketContext);
@@ -825,9 +829,11 @@ export const SearchSignalTable = ({ symbol }: SearchSignalTable) => {
   return (
     <div css={rootStyles}>
       <div css={tableWrapperStyles}>
-        <TableTitle customStyles={titleStyles(alertLogsData.length === 0)}>
-          {t('searchResult')} {`"${symbol}"`}
-        </TableTitle>
+        {showTitle && (
+          <TableTitle customStyles={titleStyles(alertLogsData.length === 0)}>
+            {t('searchResult')} {`"${symbol}"`}
+          </TableTitle>
+        )}
         <Table<Signal>
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
