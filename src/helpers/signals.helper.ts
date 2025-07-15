@@ -2,7 +2,7 @@ import { v4 as uuid } from 'uuid';
 import { fieldMapping } from './field-mapping.helper';
 import { parseToUTC } from '@/utils/common';
 
-const UNUSED_IDS = [4, 7, 8, 13, 16];
+const UNUSED_IDS = [4, 7, 8, 16];
 
 export const transformStrategyData = (strategies: any[]): Strategies => {
   return strategies
