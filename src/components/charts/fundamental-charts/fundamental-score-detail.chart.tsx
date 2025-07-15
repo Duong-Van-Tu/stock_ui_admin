@@ -25,23 +25,23 @@ export function FundamentalScoreDetailChart({
   const series = [
     // EBIT
     { name: t('ebitMomentum'), color: '#1ba622' },
-    { name: t('ebitRecent'), color: '#77dd7d' },
+    { name: t('ebitRecent'), color: '#77dd7d', enabled: false },
 
     // Gross Income
     { name: t('grossIncomeMomentum'), color: '#1976d2' },
-    { name: t('grossIncomeRecent'), color: '#64b0ef' },
+    { name: t('grossIncomeRecent'), color: '#64b0ef', enabled: false },
 
     // Net Income
     { name: t('netIncomeMomentum'), color: '#fc4689' },
-    { name: t('netIncomeRecent'), color: '#ff8bb9' },
+    { name: t('netIncomeRecent'), color: '#ff8bb9', enabled: false },
 
     // Revenue
     { name: t('revenueMomentum'), color: '#f57c00' },
-    { name: t('revenueRecent'), color: '#f8b95b' },
+    { name: t('revenueRecent'), color: '#f8b95b', enabled: false },
 
     // Net Margin
     { name: t('netMarginMomentum'), color: '#017c6e' },
-    { name: t('netMarginRecent'), color: '#12bcab' }
+    { name: t('netMarginRecent'), color: '#12bcab', enabled: false }
   ];
 
   const fetchFundamentalScoreDetails = useCallback(() => {
