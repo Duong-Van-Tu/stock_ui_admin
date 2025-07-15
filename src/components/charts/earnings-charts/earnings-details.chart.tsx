@@ -39,12 +39,14 @@ export function EarningsDetailsChart({ symbol }: FundamentalDetailProps) {
       {earningsDetails.length === 0 ? (
         <Empty css={emptyStyles} />
       ) : (
-        <BarChart
-          data={earningsDetails}
-          series={series}
-          height={350}
-          grid={{ left: 60, bottom: 80 }}
-        />
+        <div css={chartContainerStyles}>
+          <BarChart
+            data={earningsDetails}
+            series={series}
+            height={350}
+            grid={{ left: 60, bottom: 80 }}
+          />
+        </div>
       )}
     </Card>
   );
@@ -54,8 +56,12 @@ const titleStyles = css`
   font-size: 2rem;
 `;
 
+const chartContainerStyles = css`
+  min-height: 35rem;
+`;
+
 const emptyStyles = css`
-  height: 350px;
+  height: 35rem;
   display: flex;
   flex-direction: column;
   justify-content: center;

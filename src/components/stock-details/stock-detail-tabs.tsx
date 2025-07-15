@@ -61,9 +61,24 @@ export const StockDetailTabs = ({
     [symbol, t]
   );
 
-  return <Tabs activeKey={tabParam} items={items} onChange={handleChangeTab} />;
+  return (
+    <Tabs
+      css={rootStyles}
+      activeKey={tabParam}
+      items={items}
+      onChange={handleChangeTab}
+    />
+  );
 };
 
+const rootStyles = css`
+  .ant-tabs-nav {
+    position: sticky;
+    z-index: 2;
+    top: 6rem;
+    background: var(--white-color);
+  }
+`;
 const tabLabelStyles = css`
   text-transform: uppercase;
   font-weight: 500;

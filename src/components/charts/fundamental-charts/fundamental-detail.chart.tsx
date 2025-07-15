@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { Card } from 'antd';
+import { Card, Empty } from 'antd';
 import BarChart from '../bar.chart';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect } from 'react';
@@ -37,16 +37,35 @@ export function FundamentalDetailChart({ symbol }: FundamentalDetailProps) {
 
   return (
     <Card title={<span css={titleStyles}>{t('fundamentalDetailTitle')}</span>}>
-      <BarChart
-        data={fundamentalDetails}
-        series={series}
-        height={350}
-        grid={{ left: 60 }}
-      />
+      <div css={chartContainerStyles}>
+        {fundamentalDetails.length === 0 ? (
+          <Empty css={emptyStyles} />
+        ) : (
+          <div css={chartContainerStyles}>
+            <BarChart
+              data={fundamentalDetails}
+              series={series}
+              height={350}
+              grid={{ left: 60 }}
+            />
+          </div>
+        )}
+      </div>
     </Card>
   );
 }
 
 const titleStyles = css`
   font-size: 2rem;
+`;
+
+const chartContainerStyles = css`
+  min-height: 35rem;
+`;
+
+const emptyStyles = css`
+  height: 35rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;

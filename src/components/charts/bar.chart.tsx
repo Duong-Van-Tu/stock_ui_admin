@@ -39,6 +39,12 @@ export default function BarChart({
   width
 }: BarChartProps) {
   const [isChartReady, setIsChartReady] = useState(false);
+
+  const selected: Record<string, boolean> = {};
+  series.forEach((s) => {
+    selected[s.name] = s.enabled !== false;
+  });
+
   const option = {
     tooltip: {
       trigger: 'axis',
@@ -51,7 +57,8 @@ export default function BarChart({
       left: 0,
       bottom: 0,
       itemGap: 16,
-      textStyle: { color: '#1e1e1e' }
+      textStyle: { color: '#1e1e1e' },
+      selected
     },
     dataset: {
       source: data

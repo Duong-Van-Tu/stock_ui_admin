@@ -9,4 +9,5 @@ type SeriesItem = {
   name: string;
   color: string;
   key?: string;
+  enabled?: boolean;
 };
