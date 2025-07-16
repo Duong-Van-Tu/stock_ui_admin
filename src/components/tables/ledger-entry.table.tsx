@@ -606,7 +606,9 @@ const emptyStyles = (height: number) => css`
 `;
 
 const addLedgerEntryBtnStyles = css`
-  position: absolute;
-  top: -4.6rem;
-  right: 0;
+  @media (max-width: 460px) {
+    position: absolute;
+    top: -4.6rem;
+    right: 0;
+  }
 `;
