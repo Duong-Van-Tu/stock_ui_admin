@@ -1,11 +1,11 @@
-.hl-add-symbol {
-  td {
-    background: var(--added-portfolio-color) !important;
-  }
-}
-
 .hl-watchList-symbol{
   td {
     background: var(--watching-color) !important;
+  }
+}
+
+.hl-add-symbol {
+  td {
+    background: var(--added-portfolio-color) !important;
   }
 }
