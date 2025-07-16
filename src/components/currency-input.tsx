@@ -1,6 +1,6 @@
 import { Input } from 'antd';
 import { InputProps } from 'antd';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type CurrencyInputProps = Omit<InputProps, 'onChange' | 'value'> & {
   value?: number;
@@ -12,43 +12,59 @@ export default function CurrencyInput({
   onChange,
   ...rest
 }: CurrencyInputProps) {
-  const [isFocusing, setIsFocusing] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 
-  const formatNumber = (num: number) =>
-    num.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-
-  const getDisplayValue = () => {
-    if (isFocusing) {
-      return value !== undefined ? String(value) : '';
+  useEffect(() => {
+    if (
+      !document.activeElement ||
+      (document.activeElement as HTMLElement).tagName !== 'INPUT'
+    ) {
+      if (typeof value === 'number') {
+        setInputValue(
+          value.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          })
+        );
+      } else {
+        setInputValue('');
+      }
     }
-    return typeof value === 'number' ? formatNumber(value) : '';
-  };
+  }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value.replace(/,/g, '');
+    let raw = e.target.value;
 
-    if (raw === '') {
+    raw = raw.replace(',', '.');
+
+    if (!/^\d*(\.\d{0,})?$/.test(raw)) return;
+
+    setInputValue(e.target.value);
+
+    const numericValue = Number(raw);
+    if (raw === '' || isNaN(numericValue)) {
       onChange?.(undefined);
-      return;
-    }
-
-    if (!/^\d*\.?\d*$/.test(raw)) return;
-
-    const num = Number(raw);
-    if (!isNaN(num)) {
-      onChange?.(num);
+    } else {
+      onChange?.(numericValue);
     }
   };
 
   const handleBlur = () => {
-    setIsFocusing(false);
+    if (typeof value === 'number') {
+      setInputValue(
+        value.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      );
+    }
   };
 
   const handleFocus = () => {
-    setIsFocusing(true);
+    if (typeof value === 'number') {
+      const isInteger = Number.isInteger(value);
+      setInputValue(isInteger ? String(Math.trunc(value)) : String(value));
+    }
   };
 
   return (
@@ -56,7 +72,7 @@ export default function CurrencyInput({
       {...rest}
       type='text'
       inputMode='decimal'
-      value={getDisplayValue()}
+      value={inputValue}
       onChange={handleChange}
       onBlur={handleBlur}
       onFocus={handleFocus}
@@ -67,7 +83,8 @@ export default function CurrencyInput({
       }}
       onPaste={(e) => {
         const pasteData = e.clipboardData.getData('text');
-        if (pasteData.startsWith('-') || isNaN(Number(pasteData))) {
+        const normalized = pasteData.replace(',', '.');
+        if (normalized.startsWith('-') || isNaN(Number(normalized))) {
           e.preventDefault();
         }
       }}
