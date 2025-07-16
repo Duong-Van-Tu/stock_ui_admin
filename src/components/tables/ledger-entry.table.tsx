@@ -501,8 +501,9 @@ export const LedgerEntryTable = () => {
         <TableTitle customStyles={titleStyles}>
           {t('ledgerEntryTitle')}
         </TableTitle>
-        <Space css={actionStyles} wrap>
+        <Space css={actionStyles}>
           <Button
+            css={depositBtnStyles}
             icon={<Icon icon='deposit' width={18} height={18} />}
             onClick={() =>
               modal.openModal(<DepositWithdrawForm type='deposit' />)
@@ -525,6 +526,7 @@ export const LedgerEntryTable = () => {
             icon={<PlusOutlined />}
             type='primary'
             onClick={() => router.push(PageURLs.ofAddLedgerEntry())}
+            css={addLedgerEntryBtnStyles}
           >
             {t('addLedgerEntry')}
           </Button>
@@ -578,13 +580,22 @@ const tableTopStyles = css`
   align-items: center;
   flex-wrap: wrap;
   padding: 1.2rem 1.4rem;
-  gap: 1.4rem;
+  gap: ${isMobile ? '2rem' : '1.4rem'};
 `;
 
 const actionStyles = css`
   flex: 1;
   justify-content: flex-end;
   width: 100%;
+  position: relative;
+  @media (max-width: 460px) {
+    flex-wrap: ${isMobile ? 'wrap-reverse' : 'wrap'};
+    gap: unset;
+  }
+`;
+
+const depositBtnStyles = css`
+  margin-right: 1.4rem;
 `;
 
 const emptyStyles = (height: number) => css`
@@ -592,4 +603,10 @@ const emptyStyles = (height: number) => css`
   display: flex;
   flex-direction: column;
   justify-content: center;
+`;
+
+const addLedgerEntryBtnStyles = css`
+  position: absolute;
+  top: -4.6rem;
+  right: 0;
 `;

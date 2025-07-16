@@ -140,7 +140,9 @@ export default function AddLedgerEntry() {
                         size={isMobile ? 'middle' : 'large'}
                         showTime
                         css={css`
-                          width: calc(100% - 4rem);
+                          width: ${isMobile
+                            ? 'calc(100% - 3.2rem)'
+                            : 'calc(100% - 4rem)'};
                         `}
                       />
                     </Form.Item>
@@ -208,7 +210,6 @@ export default function AddLedgerEntry() {
                   />
                 </Form.Item>
               </div>
-
               <div css={formColumnStyles}>
                 <Form.Item name='strategy' label={t('strategy')}>
                   <Input
@@ -251,7 +252,9 @@ export default function AddLedgerEntry() {
                         size={isMobile ? 'middle' : 'large'}
                         showTime
                         css={css`
-                          width: calc(100% - 4rem);
+                          width: ${isMobile
+                            ? 'calc(100% - 3.2rem)'
+                            : 'calc(100% - 4rem)'};
                         `}
                       />
                     </Form.Item>
@@ -391,9 +394,10 @@ const rootStyles = css`
 
 const goBackStyles = css`
   position: absolute;
-  top: 0;
-  left: 1rem;
+  top: ${isMobile ? '-0.4rem' : 0};
+  left: ${isMobile ? '0.4rem' : '1rem'};
 `;
+
 const formStyles = css`
   margin-top: 1.6rem;
   width: 100%;
@@ -412,10 +416,16 @@ const formStyles = css`
 const formRowStyles = css`
   display: flex;
   gap: 2rem;
+  @media (max-width: 480px) {
+    flex-wrap: wrap;
+  }
 `;
 
 const formColumnStyles = css`
   width: 50%;
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 `;
 
 const formContainerStyles = css`

@@ -220,7 +220,9 @@ export default function EditLedgerEntry() {
                           size={isMobile ? 'middle' : 'large'}
                           showTime
                           css={css`
-                            width: calc(100% - 4rem);
+                            width: ${isMobile
+                              ? 'calc(100% - 3.2rem)'
+                              : 'calc(100% - 4rem)'};
                           `}
                         />
                       </Form.Item>
@@ -289,11 +291,7 @@ export default function EditLedgerEntry() {
                   </Form.Item>
                 </div>
 
-                <div
-                  css={css`
-                    width: 50%;
-                  `}
-                >
+                <div css={formColumnStyles}>
                   <Form.Item name='strategy' label={t('strategy')}>
                     <Input
                       placeholder={isMobile ? '' : t('enterStrategy')}
@@ -327,7 +325,9 @@ export default function EditLedgerEntry() {
                           size={isMobile ? 'middle' : 'large'}
                           showTime
                           css={css`
-                            width: calc(100% - 4rem);
+                            width: ${isMobile
+                              ? 'calc(100% - 3.2rem)'
+                              : 'calc(100% - 4rem)'};
                           `}
                         />
                       </Form.Item>
@@ -504,8 +504,8 @@ const rootStyles = css`
 
 const goBackStyles = css`
   position: absolute;
-  top: 0;
-  left: 1rem;
+  top: ${isMobile ? '-0.4rem' : 0};
+  left: ${isMobile ? '0.4rem' : '1rem'};
 `;
 const formStyles = css`
   margin-top: 1.6rem;
@@ -525,10 +525,16 @@ const formStyles = css`
 const formRowStyles = css`
   display: flex;
   gap: 2rem;
+  @media (max-width: 480px) {
+    flex-wrap: wrap;
+  }
 `;
 
 const formColumnStyles = css`
   width: 50%;
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 `;
 
 const formContainerStyles = css`
