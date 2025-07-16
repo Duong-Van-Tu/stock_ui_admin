@@ -16,6 +16,7 @@ import {
   cleanFalsyValues,
   formatMarketCap,
   formatNumberShort,
+  formatPercent,
   roundToDecimals
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -404,7 +405,23 @@ export const AlertLogsTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('takeProfit')
       }),
-      render: (value) => (value ? roundToDecimals(value, 2) : '-')
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return value ? (
+          <div>
+            {roundToDecimals(value, 2)}
+            <br />
+            <PositiveNegativeText
+              isPositive={percentage > 0}
+              isNegative={percentage < 0}
+            >
+              <span>({formatPercent(percentage, 2)})</span>
+            </PositiveNegativeText>
+          </div>
+        ) : (
+          '-'
+        );
+      }
     },
     {
       title: t('stopLoss'),
@@ -419,7 +436,23 @@ export const AlertLogsTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('stopLoss')
       }),
-      render: (value) => (value ? roundToDecimals(value, 2) : '-')
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return value ? (
+          <div>
+            {roundToDecimals(value, 2)}
+            <br />
+            <PositiveNegativeText
+              isPositive={percentage > 0}
+              isNegative={percentage < 0}
+            >
+              <span>({formatPercent(percentage, 2)})</span>
+            </PositiveNegativeText>
+          </div>
+        ) : (
+          '-'
+        );
+      }
     },
     {
       title: t('exitDate'),
@@ -523,7 +556,7 @@ export const AlertLogsTable = () => {
         return value ? (
           <StockChangeCell value={value} percentage={percentage} />
         ) : (
-          '-     '
+          '-'
         );
       }
     },

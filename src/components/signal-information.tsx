@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import { useTranslations } from 'next-intl';
 import { TimeZone } from '@/constants/timezone.constant';
 import {
+  calculatePercentage,
   formatMarketCap,
   formatNumberShort,
   formatPercent,
@@ -74,15 +75,50 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
             },
             {
               label: t('takeProfit'),
-              value: signal.takeProfit
-                ? `$${roundToDecimals(signal.takeProfit, 2)}`
-                : '--'
+              value:
+                signal.takeProfit && signal.entryPrice ? (
+                  <div>
+                    {roundToDecimals(signal.takeProfit, 2)}&nbsp;
+                    <PositiveNegativeText
+                      isPositive={signal.takeProfit > signal.entryPrice}
+                      isNegative={signal.takeProfit < signal.entryPrice}
+                    >
+                      (
+                      {formatPercent(
+                        calculatePercentage(
+                          signal.entryPrice,
+                          signal.takeProfit
+                        ),
+                        2
+                      )}
+                      )
+                    </PositiveNegativeText>
+                  </div>
+                ) : (
+                  '--'
+                )
             },
             {
               label: t('stopLoss'),
-              value: signal.stopLoss
-                ? `$${roundToDecimals(signal.stopLoss, 2)}`
-                : '--'
+              value:
+                signal.stopLoss && signal.entryPrice ? (
+                  <div>
+                    {roundToDecimals(signal.stopLoss, 2)}&nbsp;
+                    <PositiveNegativeText
+                      isPositive={signal.stopLoss > signal.entryPrice}
+                      isNegative={signal.stopLoss < signal.entryPrice}
+                    >
+                      (
+                      {formatPercent(
+                        calculatePercentage(signal.entryPrice, signal.stopLoss),
+                        2
+                      )}
+                      )
+                    </PositiveNegativeText>
+                  </div>
+                ) : (
+                  '--'
+                )
             },
             {
               label: t('aiRecommendation'),
