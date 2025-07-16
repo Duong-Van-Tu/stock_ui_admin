@@ -203,13 +203,28 @@ export default function EditLedgerEntry() {
                       css={fullWidthStyles}
                     />
                   </Form.Item>
-                  <Form.Item name='entryDate' label={t('entryDate')}>
-                    <DatePicker
-                      placeholder={isMobile ? '' : t('selectEntryDate')}
-                      size={isMobile ? 'middle' : 'large'}
-                      showTime
-                      css={fullWidthStyles}
-                    />
+                  <Form.Item label={t('entryDate')}>
+                    <Input.Group compact>
+                      <Button
+                        icon={<Icon icon='realtime' width={20} height={20} />}
+                        onClick={() => form.setFieldValue('entryDate', dayjs())}
+                        size={isMobile ? 'middle' : 'large'}
+                      />
+                      <Form.Item
+                        name='entryDate'
+                        noStyle
+                        rules={[{ required: false }]}
+                      >
+                        <DatePicker
+                          placeholder={isMobile ? '' : t('selectEntryDate')}
+                          size={isMobile ? 'middle' : 'large'}
+                          showTime
+                          css={css`
+                            width: calc(100% - 4rem);
+                          `}
+                        />
+                      </Form.Item>
+                    </Input.Group>
                   </Form.Item>
                   <Form.Item name='entryPrice' label={t('entryPrice')}>
                     <InputNumber
@@ -295,13 +310,28 @@ export default function EditLedgerEntry() {
                       css={fullWidthStyles}
                     />
                   </Form.Item>
-                  <Form.Item name='exitDate' label={t('exitDate')}>
-                    <DatePicker
-                      placeholder={isMobile ? '' : t('selectExitDate')}
-                      size={isMobile ? 'middle' : 'large'}
-                      showTime
-                      css={fullWidthStyles}
-                    />
+                  <Form.Item label={t('exitDate')}>
+                    <Input.Group compact>
+                      <Button
+                        icon={<Icon icon='realtime' width={20} height={20} />}
+                        onClick={() => form.setFieldValue('exitDate', dayjs())}
+                        size={isMobile ? 'middle' : 'large'}
+                      />
+                      <Form.Item
+                        name='exitDate'
+                        noStyle
+                        rules={[{ required: false }]}
+                      >
+                        <DatePicker
+                          placeholder={isMobile ? '' : t('selectExitDate')}
+                          size={isMobile ? 'middle' : 'large'}
+                          showTime
+                          css={css`
+                            width: calc(100% - 4rem);
+                          `}
+                        />
+                      </Form.Item>
+                    </Input.Group>
                   </Form.Item>
                   <Form.Item name='exitPrice' label={t('exitPrice')}>
                     <InputNumber

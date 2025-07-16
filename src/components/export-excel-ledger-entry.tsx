@@ -19,6 +19,7 @@ import {
 import { Icon } from './icons';
 import { useTranslations } from 'next-intl';
 import { TimeZone } from '@/constants/timezone.constant';
+import { calculateDIM } from '@/helpers/ledger-entry.helper';
 
 const initialBalance = 5000;
 
@@ -39,17 +40,6 @@ export const ExportExcelLedgerEntry = () => {
 
   const formatPercent = (value: number | null | undefined) => {
     return !!value ? `${roundToDecimals(value)}%` : '-';
-  };
-
-  const calculateHoldingDays = (
-    entryDate: string | null,
-    exitDate: string | null
-  ) => {
-    if (!entryDate || !exitDate) return '-';
-    const entry = new Date(entryDate);
-    const exit = new Date(exitDate);
-    const diffTime = Math.abs(exit.getTime() - entry.getTime());
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
   const handleExportLedger = async () => {
@@ -89,7 +79,7 @@ export const ExportExcelLedgerEntry = () => {
         exitPrice &&
         ((exitPrice - entryPrice) / entryPrice) * 100;
 
-      const holdingDays = calculateHoldingDays(entryDate, exitDate);
+      const holdingDays = calculateDIM(entryDate, exitDate);
 
       return {
         Symbol: item.strategy || '-',

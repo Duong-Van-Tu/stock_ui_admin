@@ -65,3 +65,12 @@ export const computeLedgerBalances = (
     totalProfitLoss
   };
 };
+
+export const calculateDIM = (entryDate: string, exitDate: string) => {
+  if (!entryDate || !exitDate) return '-';
+
+  const start = new Date(entryDate).setHours(0, 0, 0, 0);
+  const end = new Date(exitDate).setHours(0, 0, 0, 0);
+
+  return Math.floor((end - start) / (1000 * 60 * 60 * 24));
+};

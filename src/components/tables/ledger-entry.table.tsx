@@ -49,6 +49,7 @@ import { ExportExcelLedgerEntry } from '../export-excel-ledger-entry';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { useModal } from '@/hooks/modal.hook';
 import DepositWithdrawForm from '../forms/deposit-withdraw.form';
+import { calculateDIM } from '@/helpers/ledger-entry.helper';
 
 export const LedgerEntryTable = () => {
   const t = useTranslations();
@@ -208,16 +209,7 @@ export const LedgerEntryTable = () => {
       key: 'holdingTime',
       width: 60,
       align: 'center',
-      render: (_, record) => {
-        if (!record.entryDate || !record.exitDate) return '-';
-
-        const entryDate = new Date(record.entryDate);
-        const exitDate = new Date(record.exitDate);
-        const diffTime = Math.abs(exitDate.getTime() - entryDate.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        return diffDays;
-      }
+      render: (_, record) => calculateDIM(record.entryDate, record.exitDate)
     },
     {
       title: t('exitPrice'),

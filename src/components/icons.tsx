@@ -39,6 +39,7 @@ import Clock from '@/assets/svg/clock.svg';
 import Deposit from '@/assets/svg/deposit.svg';
 import Withdraw from '@/assets/svg/withdraw.svg';
 import AIStar from '@/assets/svg/ai-star.svg';
+import Realtime from '@/assets/svg/realtime.svg';
 
 type IconProps = {
   width?: number | string;
@@ -87,7 +88,8 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   clock: Clock,
   deposit: Deposit,
   withdraw: Withdraw,
-  aiStar: AIStar
+  aiStar: AIStar,
+  realtime: Realtime
 };
 
 export const Icon = ({
