@@ -429,21 +429,6 @@ export const LedgerEntryTable = () => {
       align: 'center',
       render: (_, record) => (
         <Space>
-          <Tooltip title={isMobile ? null : t('sendAlert')}>
-            <Button
-              icon={
-                <Icon
-                  fill='var(--sky-pulse)'
-                  icon='send'
-                  width={18}
-                  height={18}
-                />
-              }
-              onClick={() =>
-                router.push(PageURLs.ofSendAlertLedgerEntry(record.id))
-              }
-            />
-          </Tooltip>
           <Tooltip title={isMobile ? null : t('edit')}>
             <Button
               type='primary'
@@ -472,6 +457,21 @@ export const LedgerEntryTable = () => {
                 icon={<Icon icon='trash' width={18} height={18} />}
               />
             </Popconfirm>
+          </Tooltip>
+          <Tooltip title={isMobile ? null : t('sendAlert')}>
+            <Button
+              icon={
+                <Icon
+                  fill='var(--sky-pulse)'
+                  icon='send'
+                  width={18}
+                  height={18}
+                />
+              }
+              onClick={() =>
+                router.push(PageURLs.ofSendAlertLedgerEntry(record.id))
+              }
+            />
           </Tooltip>
         </Space>
       )
