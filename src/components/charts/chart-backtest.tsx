@@ -383,7 +383,7 @@ export const ChartBackTest = ({
 
   return (
     <Spin spinning={loading}>
-      {candlestickData.length === 0 ? (
+      {candlestickData.length === 0 && !loading ? (
         <div css={styles.chartOverviewStyles}>
           <StockOverviewChart symbol={symbol} />
         </div>
