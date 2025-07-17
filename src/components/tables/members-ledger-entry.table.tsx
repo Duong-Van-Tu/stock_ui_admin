@@ -411,7 +411,7 @@ const rootStyles = css`
 const actionHeaderStyles = css`
   padding: 2.4rem 0 1.2rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: ${isMobile ? 'flex-end' : 'space-between'};
 `;
 
 const titleStyles = css`
