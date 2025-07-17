@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { css, SerializedStyles } from '@emotion/react';
+import camelCase from 'lodash/camelCase';
 import Logo from '@/assets/svg/logo.svg';
 import ExpandLeft from '@/assets/svg/expand-left.svg';
 import ExpandRight from '@/assets/svg/expand-right.svg';
@@ -50,47 +51,54 @@ type IconProps = {
   onClick?: () => void;
 };
 
-const iconMap: Record<string, React.ComponentType<any>> = {
-  logo: Logo,
-  expandLeft: ExpandLeft,
-  expandRight: ExpandRight,
-  home: Home,
-  stockRanking: StockRanking,
-  calendar: Calendar,
-  bell: Bell,
-  language: Language,
-  user: User,
-  logout: Logout,
-  userProfile: UserProfile,
-  exportExcel: ExportExcel,
-  alertLogs: AlertLogs,
-  refresh: Refresh,
-  earnings: Earnings,
-  news: News,
-  recent: Recent,
-  arrowRight: ArrowRight,
-  AISentiment: AISentiment,
-  notes: Notes,
-  listHighActivity: ListHighActivity,
-  exit: Exit,
-  watchlist50Days: Watchlist50Days,
-  ledgerEntry: LedgerEntry,
-  save: Save,
-  edit: Edit,
-  trash: Trash,
-  back: Back,
-  send: Send,
-  volume: Volume,
-  tv: TV,
-  download: Download,
-  upload: Upload,
-  menu: Menu,
-  clock: Clock,
-  deposit: Deposit,
-  withdraw: Withdraw,
-  aiStar: AIStar,
-  realtime: Realtime
+const svgList = {
+  Logo,
+  ExpandLeft,
+  ExpandRight,
+  Home,
+  StockRanking,
+  Calendar,
+  Bell,
+  Language,
+  User,
+  Logout,
+  UserProfile,
+  ExportExcel,
+  AlertLogs,
+  Refresh,
+  Earnings,
+  News,
+  Recent,
+  ArrowRight,
+  AISentiment,
+  Notes,
+  ListHighActivity,
+  Exit,
+  Watchlist50Days,
+  LedgerEntry,
+  Save,
+  Edit,
+  Trash,
+  Back,
+  Send,
+  Volume,
+  TV,
+  Download,
+  Upload,
+  Menu,
+  Clock,
+  Deposit,
+  Withdraw,
+  AIStar,
+  Realtime
 };
+
+const iconMap: Record<string, React.ComponentType<any>> = Object.entries(
+  svgList
+).reduce((acc, [name, component]) => {
+  acc[camelCase(name)] = component;
+  return acc;
+}, {} as Record<string, React.ComponentType<any>>);
 
 export const Icon = ({
   icon,
