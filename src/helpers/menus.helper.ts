@@ -70,7 +70,7 @@ export const getMenuStructure = (
     {
       label: t('AISentiment'),
       key: 'AI-sentiment',
-      iconType: 'AISentiment',
+      iconType: 'aiSentiment',
       link: PageURLs.ofAISentiment()
     },
     ...(!isMobile
