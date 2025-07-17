@@ -14,7 +14,8 @@ import { TimeZone } from '@/constants/timezone.constant';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { formatNumberShort, formatPercent } from '@/utils/common';
 import { useNotification } from '@/hooks/notification.hook';
-import { Empty, Select, Spin } from 'antd';
+import { Select, Spin } from 'antd';
+import StockOverviewChart from './stock-overview.chart';
 
 const periodOptions = ['10M', '15M', '30M', '1H'];
 
@@ -26,25 +27,30 @@ type ExtendedCandlestickData = CandlestickData & {
 };
 
 type BacktestSpikeVolumeProps = {
-  signal: Signal;
+  symbol: string;
+  period: string;
+  exitPrice: number;
+  exitDate: string;
+  entryPrice: number;
+  entryDate: string;
 };
 
-export const ChartBackTest = ({ signal }: BacktestSpikeVolumeProps) => {
+export const ChartBackTest = ({
+  symbol,
+  period,
+  exitPrice,
+  exitDate,
+  entryPrice,
+  entryDate
+}: BacktestSpikeVolumeProps) => {
   const { notifyError } = useNotification();
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
-  const {
-    symbol,
-    timeFrame: period,
-    exitPrice,
-    exitDate,
-    entryPrice,
-    entryDate
-  } = signal;
+
   let animationFrameId: number | null = null;
   const [selectedPeriod, setSelectedPeriod] = useState(
-    periodOptions.includes(signal.timeFrame) ? period : '1H'
+    periodOptions.includes(period) ? period : '1H'
   );
   const [candlestickData, setCandlestickData] = useState<
     ExtendedCandlestickData[]
@@ -377,25 +383,28 @@ export const ChartBackTest = ({ signal }: BacktestSpikeVolumeProps) => {
 
   return (
     <Spin spinning={loading}>
-      <div css={styles.selectWrapper}>
-        <Select
-          value={selectedPeriod}
-          onChange={setSelectedPeriod}
-          css={styles.selectPeriod}
-          options={periodOptions.map((p) => ({
-            value: p,
-            label: `${p}`
-          }))}
-          size='small'
-        />
-      </div>
-
       {candlestickData.length === 0 ? (
-        <Empty css={styles.empty} />
-      ) : (
-        <div ref={chartContainerRef} css={styles.chartContainer}>
-          <div ref={tooltipRef} css={styles.tooltip} />
+        <div css={styles.chartOverviewStyles}>
+          <StockOverviewChart symbol={symbol} />
         </div>
+      ) : (
+        <>
+          <div css={styles.selectWrapper}>
+            <Select
+              value={selectedPeriod}
+              onChange={setSelectedPeriod}
+              css={styles.selectPeriod}
+              options={periodOptions.map((p) => ({
+                value: p,
+                label: `${p}`
+              }))}
+              size='small'
+            />
+          </div>
+          <div ref={chartContainerRef} css={styles.chartContainer}>
+            <div ref={tooltipRef} css={styles.tooltip} />
+          </div>
+        </>
       )}
     </Spin>
   );
@@ -408,7 +417,7 @@ const styles = {
   chartContainer: css`
     margin-top: 2rem;
     width: 100%;
-    height: 400px;
+    height: 40rem;
     position: relative;
 
     #tv-attr-logo {
@@ -435,5 +444,9 @@ const styles = {
   `,
   selectPeriod: css`
     width: 8rem;
+  `,
+  chartOverviewStyles: css`
+    height: 50rem;
+    margin-top: 1.6rem;
   `
 };

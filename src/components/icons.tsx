@@ -41,6 +41,7 @@ import Deposit from '@/assets/svg/deposit.svg';
 import Withdraw from '@/assets/svg/withdraw.svg';
 import AIStar from '@/assets/svg/ai-star.svg';
 import Realtime from '@/assets/svg/realtime.svg';
+import Entry from '@/assets/svg/entry.svg';
 
 type IconProps = {
   width?: number | string;
@@ -90,7 +91,8 @@ const svgList = {
   Deposit,
   Withdraw,
   AIStar,
-  Realtime
+  Realtime,
+  Entry
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = Object.entries(

@@ -441,5 +441,9 @@
   "takeProfit": "Take Profit",
   "stopLoss": "Stop Loss",
   "signals": "Signals",
-  "fundamental": "Fundamental"
+  "fundamental": "Fundamental",
+  "downloadUserTemplate": "Download User Template",
+  "importUserTemplate": "Import User Template",
+  "entry": "Entry",
+  "pl": "P/L Amount"
 }

@@ -19,6 +19,8 @@ import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { isDesktop, isMobile } from 'react-device-detect';
+import { useModal } from '@/hooks/modal.hook';
+import { LedgerEntryInformation } from '../ledger-entry-information';
 
 export function MembersLedgerEntry() {
   const t = useTranslations();
@@ -27,6 +29,7 @@ export function MembersLedgerEntry() {
   const id = params.id as string;
   const { height } = useWindowSize();
   const [modal, contextHolder] = Modal.useModal();
+  const { openModal } = useModal();
 
   const dispatch = useAppDispatch();
   const { notifySuccess, notifyError } = useNotification();
@@ -38,10 +41,15 @@ export function MembersLedgerEntry() {
   const [downloading, setDownloading] = useState<boolean>(false);
   const [importing, setImporting] = useState<boolean>(false);
 
-  const uniqueMembers = members.filter(
-    (member, index, self) =>
-      index === self.findIndex((m) => m.email === member.email)
-  );
+  const uniqueMembers = members
+    .filter(
+      (member): member is Member =>
+        !!member && !!member.email && !!member.username
+    )
+    .filter(
+      (member, index, self) =>
+        index === self.findIndex((m) => m.email === member.email)
+    );
 
   const confirmSendAlert = (member: Member) => {
     modal.confirm({
@@ -289,26 +297,47 @@ export function MembersLedgerEntry() {
           />
         </Tooltip>
         <div css={actionHeaderStyles}>
-          <Button
-            type='primary'
-            css={sendBtnStyles}
-            disabled={selectedRowKeys.length === 0}
-            onClick={confirmSendBulkAlert}
-            icon={
-              <Icon
-                fill={
-                  selectedRowKeys.length === 0
-                    ? 'var(--separator-color)'
-                    : 'var(--white-color)'
-                }
-                icon='send'
-                width={18}
-                height={18}
-              />
-            }
-          >
-            {t('sendSelected')}
-          </Button>
+          <Space>
+            <Button
+              type='primary'
+              css={sendBtnStyles}
+              disabled={selectedRowKeys.length === 0}
+              onClick={confirmSendBulkAlert}
+              icon={
+                <Icon
+                  fill={
+                    selectedRowKeys.length === 0
+                      ? 'var(--separator-color)'
+                      : 'var(--white-color)'
+                  }
+                  icon='send'
+                  width={18}
+                  height={18}
+                />
+              }
+            >
+              {t('sendSelected')}
+            </Button>
+            <Button
+              type='primary'
+              css={entryInfoBtnStyles}
+              icon={
+                <Icon
+                  icon='entry'
+                  fill='var(--white-color)'
+                  width={18}
+                  height={18}
+                />
+              }
+              onClick={() =>
+                openModal(<LedgerEntryInformation entry={ledgerEntry!} />, {
+                  width: 1200
+                })
+              }
+            >
+              {t('entry')}
+            </Button>
+          </Space>
           {isDesktop && (
             <Space>
               <Button
@@ -325,7 +354,7 @@ export function MembersLedgerEntry() {
                 }
                 ghost
               >
-                Download User Template
+                {t('downloadUserTemplate')}
               </Button>
               <Button
                 type='primary'
@@ -341,7 +370,7 @@ export function MembersLedgerEntry() {
                 }
                 onClick={() => inputImportRef.current?.click()}
               >
-                Import User Template
+                {t('importUserTemplate')}
                 <input
                   ref={inputImportRef}
                   type='file'
@@ -366,7 +395,7 @@ export function MembersLedgerEntry() {
           }}
           scroll={{
             x: 1100,
-            y: members.length > 0 ? height - 250 : undefined
+            y: members.length > 0 ? height - 240 : undefined
           }}
         />
       </div>
@@ -417,6 +446,14 @@ const importUserBtnStyles = css`
   background: var(--electric-indigo-color);
   &:hover {
     background: var(--electric-indigo-color) !important;
+    opacity: 0.9;
+  }
+`;
+
+const entryInfoBtnStyles = css`
+  background: var(--green-color);
+  &:hover {
+    background: var(--green-color) !important;
     opacity: 0.9;
   }
 `;

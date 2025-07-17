@@ -441,5 +441,9 @@
   "takeProfit": "Chốt lời",
   "stopLoss": "Cắt lỗ",
   "signals": "Tín hiệu",
-  "fundamental": "Fundamental"
+  "fundamental": "Fundamental",
+  "downloadUserTemplate": "Tải mẫu người dùng",
+  "importUserTemplate": "Nhập mẫu người dùng",
+  "entry": "Lệnh vào",
+  "pl": "Tổng Lãi/ Lỗ"
 }

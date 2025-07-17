@@ -38,7 +38,6 @@ import {
   formatPercent,
   roundToDecimals
 } from '@/utils/common';
-import { getCurrentPrice } from '@/helpers/socket.helper';
 import { Icon } from '../icons';
 import EllipsisText from '../ellipsis-text';
 import { PageURLs } from '@/utils/navigate';
@@ -54,7 +53,7 @@ import { calculateDIM } from '@/helpers/ledger-entry.helper';
 export const LedgerEntryTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const { setWatchList, resFromWS } = useContext(SocketContext);
+  const { setWatchList } = useContext(SocketContext);
   const { notifySuccess, notifyError } = useNotification();
   const router = useRouter();
   const { height } = useWindowSize();
@@ -232,15 +231,8 @@ export const LedgerEntryTable = () => {
       key: 'stockPL',
       width: 120,
       align: 'center',
-      render: (value, record) => {
-        const currPrice = getCurrentPrice(resFromWS, record.symbol);
-        const price = currPrice;
-        const percentage = price
-          ? calculatePercentage(record.entryPrice, price)
-          : value;
-        return price ? (
-          <StockChangeCell value={price} percentage={percentage} />
-        ) : value ? (
+      render: (value) => {
+        return value ? (
           <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
             <span>{formatPercent(value, 2)}</span>
           </PositiveNegativeText>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, memo } from 'react';
 import { TimeZone } from '@/constants/timezone.constant';
+import { isMobile } from 'react-device-detect';
 
 interface StockChartOverviewProps {
   symbol: string;
@@ -26,7 +27,7 @@ const StockChartOverview = ({ symbol }: StockChartOverviewProps) => {
           "locale": "en",
           "allow_symbol_change": true,
           "studies": [],  
-          "hide_side_toolbar": false,
+          "hide_side_toolbar": ${isMobile ? 'true' : 'false'},
           "hide_top_toolbar": false,
           "withdateranges": true,
           "details": false,

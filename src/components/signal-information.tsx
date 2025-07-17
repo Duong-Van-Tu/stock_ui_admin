@@ -33,7 +33,14 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
     <>
       {contextHolder}
       <h3 css={styles.title}>{`${t('symbol')}: ${signal.symbol}`}</h3>
-      <ChartBackTest signal={signal} />
+      <ChartBackTest
+        symbol={signal.symbol}
+        period={signal.timeFrame}
+        exitPrice={signal.exitPrice}
+        exitDate={signal.exitDate}
+        entryPrice={signal.entryPrice}
+        entryDate={signal.entryDate}
+      />
       <div css={styles.infoGroup}>
         <Row gutter={[32, 8]}>
           {[
