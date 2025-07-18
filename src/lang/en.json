@@ -447,9 +447,9 @@
   "entry": "Entry",
   "pl": "P/L Amount",
   "downloadTradeSignalTemplate": "Download Template",
-  "downloadSuccess": "Downloaded successfully",
-  "downloadError": "Download failed",
+  "downloadSuccess": "Download template successfully!",
+  "downloadError": "Download template failed!",
   "importExcel": "Import Excel",
-  "importSuccess": "Import Excel successful!",
+  "importSuccess": "Import Excel successfully!",
   "importError": "Import Excel failed!"
 }
