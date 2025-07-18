@@ -1180,10 +1180,10 @@ const segmentedStyles = css`
     background: var(--primary-color);
     color: var(--white-color);
   }
-  position: absolute;
+  position: ${!isMobile && 'absolute'};
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: ${!isMobile && 'translate(-50%, -50%)'};
 `;
 
 const segmentedLabelStyles = css`
