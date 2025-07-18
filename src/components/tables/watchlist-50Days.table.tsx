@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Table, TableColumnsType } from 'antd';
+import { Button, Segmented, Table, TableColumnsType } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   cleanFalsyValues,
@@ -26,9 +26,9 @@ import { TableTitle } from './title.table';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { PositiveNegativeText } from '../positive-negative-text';
-import { Recommendation } from '@/constants/common.constant';
+import { Recommendation, WatchlistView } from '@/constants/common.constant';
 import { useModal } from '@/hooks/modal.hook';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import dayjs from 'dayjs';
@@ -37,7 +37,7 @@ import { AIExplain } from '../ai-explain';
 import EllipsisText from '../ellipsis-text';
 import { Watchlist50DaysFilter } from '../filters/watchlist-50-days.filter';
 import { ExportExcelSwingWatchlist } from '../export-excel-swing-watchlist';
-import { isMobile } from 'react-device-detect';
+import { isDesktop, isMobile } from 'react-device-detect';
 import { startCase } from 'lodash';
 
 export const WatchlistIn50DaysTable = () => {
@@ -45,9 +45,13 @@ export const WatchlistIn50DaysTable = () => {
   const dispatch = useAppDispatch();
   const { height } = useWindowSize();
   const modal = useModal();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
+
+  const isETF = searchParams.get('isETF') ?? undefined;
 
   const watchlistIn50Days = useAppSelector(watchWatchlistIn50Days);
   const pagination = useAppSelector(watchWatchlistIn50DaysPagination);
@@ -72,6 +76,21 @@ export const WatchlistIn50DaysTable = () => {
 
   const filteredFilter = useMemo(() => cleanFalsyValues(filter), [filter]);
 
+  const handleChangeView = useCallback(
+    (view: WatchlistView) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (view === WatchlistView.STOCKS) {
+        params.delete('isETF');
+      } else {
+        params.set('isETF', 'true');
+      }
+
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, searchParams, router]
+  );
+
   const fetchDataWatchList = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
@@ -86,12 +105,13 @@ export const WatchlistIn50DaysTable = () => {
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           symbol: symbol ? symbol : undefined,
+          isETF,
           ...filteredFilter
         })
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [symbol]
+    [symbol, isETF]
   );
 
   const handleFilter = useCallback(
@@ -675,6 +695,26 @@ export const WatchlistIn50DaysTable = () => {
               )}
             </div>
           </div>
+          {isDesktop && (
+            <Segmented
+              css={segmentedStyles}
+              options={[
+                {
+                  label: (
+                    <div css={segmentedLabelStyles}>{t('regularStocks')}</div>
+                  ),
+                  value: WatchlistView.STOCKS
+                },
+                {
+                  label: <div css={segmentedLabelStyles}>{t('etfStocks')}</div>,
+                  value: WatchlistView.ETF
+                }
+              ]}
+              defaultValue={isETF ? WatchlistView.ETF : WatchlistView.STOCKS}
+              onChange={(value) => handleChangeView(value)}
+            />
+          )}
+
           {!isMobile && <ExportExcelSwingWatchlist />}
         </div>
         <Table<WatchlistIn50Days>
@@ -750,6 +790,7 @@ const tableTopStyles = css`
   flex-wrap: wrap;
   padding: ${isMobile ? '1.2rem' : '1.2rem 1.4rem'};
   gap: 1.4rem;
+  position: relative;
 `;
 
 const tableTopRightStyles = css`
@@ -788,4 +829,24 @@ const dateTextStyles = css`
 
 const filterContainerStyles = css`
   padding: ${isMobile && '1.6rem 1.4rem'};
+`;
+
+const segmentedStyles = css`
+  padding: 0;
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -70%);
+  .ant-segmented-item {
+    width: 8.8rem;
+  }
+  .ant-segmented-item-selected {
+    background: var(--primary-color);
+    color: var(--white-color);
+  }
+`;
+
+const segmentedLabelStyles = css`
+  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
+  font-weight: 500;
 `;

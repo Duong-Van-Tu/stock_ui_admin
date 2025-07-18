@@ -161,5 +161,6 @@ export const fieldMapping: Record<string, string> = {
   hashIds: 'hids',
   marketCapWatchList: 'marketCap',
   stopLoss: 'stop_loss',
-  takeProfit: 'take_profit'
+  takeProfit: 'take_profit',
+  isETF: 'isTypeEFT'
 };

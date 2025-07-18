@@ -5,6 +5,11 @@ export enum AlertLogsView {
   OPTIONS
 }
 
+export enum WatchlistView {
+  STOCKS,
+  ETF
+}
+
 export enum Sentiment {
   VeryNegative = 'very_negative',
   Negative = 'negative',

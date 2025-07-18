@@ -451,5 +451,7 @@
   "downloadError": "Tải thất bại",
   "importExcel": "Nhập Excel",
   "importSuccess": "Nhập Excel Thành công!",
-  "importError": "Nhập Excel Thất bại!"
+  "importError": "Nhập Excel Thất bại!",
+  "etfStocks": "ETF",
+  "regularStocks": "STOCKS"
 }
