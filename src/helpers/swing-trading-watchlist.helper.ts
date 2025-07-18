@@ -44,6 +44,7 @@ export const transformWatchlist50Days = (data: any[]): WatchlistIn50Days[] => {
     industry: item.industry,
     subindustry: item.subindustry,
     currentPriceWatchlist: item[fieldMapping.currentPriceWatchlist],
-    previousPrice: item[fieldMapping.previousPrice]
+    previousPrice: item[fieldMapping.previousPrice],
+    companyName: item.description
   }));
 };

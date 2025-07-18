@@ -38,6 +38,7 @@ import EllipsisText from '../ellipsis-text';
 import { Watchlist50DaysFilter } from '../filters/watchlist-50-days.filter';
 import { ExportExcelSwingWatchlist } from '../export-excel-swing-watchlist';
 import { isMobile } from 'react-device-detect';
+import { startCase } from 'lodash';
 
 export const WatchlistIn50DaysTable = () => {
   const t = useTranslations();
@@ -51,16 +52,6 @@ export const WatchlistIn50DaysTable = () => {
   const watchlistIn50Days = useAppSelector(watchWatchlistIn50Days);
   const pagination = useAppSelector(watchWatchlistIn50DaysPagination);
   const loading = useAppSelector(watchWatchlistIn50DaysLoading);
-
-  // console.log(
-  //   watchlistIn50Days
-  //     .filter((item) => item.currentPriceWatchlist > 200 && item.AIRating > 78)
-  //     .map((item) => ({
-  //       symbol: item.symbol,
-  //       entry: item.previousClose,
-  //       exit: item.currentPriceWatchlist
-  //     }))
-  // );
 
   const [filter, setFilter] = useState<Watchlist50DaysFilter>({});
 
@@ -152,9 +143,14 @@ export const WatchlistIn50DaysTable = () => {
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: 100,
+      width: isMobile ? 100 : 200,
       fixed: 'left',
-      render: (_, record) => <SymbolCell symbol={record.symbol} />
+      render: (_, record) => (
+        <SymbolCell
+          symbol={record.symbol}
+          companyName={startCase(record.companyName)}
+        />
+      )
     },
     {
       title: t('period'),

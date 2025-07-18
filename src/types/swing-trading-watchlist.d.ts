@@ -9,6 +9,7 @@ type Watchlist50DaysFilter = Filter & {
 type WatchlistIn50Days = {
   key: string;
   symbol: string;
+  companyName: string;
   period: string;
   AIRating: number;
   AIRecommendation: string;

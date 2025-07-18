@@ -59,6 +59,8 @@ import { SignalInformation } from '../signal-information';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { watchSideBarCollapsed } from '@/redux/slices/app.slice';
 import EllipsisText from '../ellipsis-text';
+import { DownloadSymbolTemplateButton } from '../download-symbol-template';
+import { ImportSymbolButton } from '../import-symbol-template';
 
 export const AlertLogsTable = () => {
   const t = useTranslations();
@@ -1012,7 +1014,45 @@ export const AlertLogsTable = () => {
       <AlertLogsFilter defaultStrategyId={strategyId} onFilter={handleFilter} />
       <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
-          <TableTitle customStyles={titleStyles}>{t('alertLogs')}</TableTitle>
+          <div css={titleContainerStyles}>
+            <TableTitle customStyles={titleStyles}>{t('alertLogs')}</TableTitle>
+            <div css={exitBtnContainerStyles}>
+              {selectedIds.size > 0 && (
+                <Button
+                  onClick={() =>
+                    modal.openModal(
+                      <ExitSignal
+                        ids={Array.from(selectedIds)}
+                        setSelectedIds={setSelectedIds}
+                        title={t('exitSelectedSignals')}
+                        description={t('confirmExitSelected')}
+                      />,
+                      { width: 400 }
+                    )
+                  }
+                  icon={
+                    <Icon
+                      icon='exit'
+                      fill={
+                        selectedIds.size <= 0
+                          ? 'var(--gray-light-color)'
+                          : 'var(--orange-color)'
+                      }
+                      width={18}
+                      height={18}
+                    />
+                  }
+                  css={exitBtnStyles}
+                  disabled={selectedIds.size <= 0}
+                  size={isMobile ? 'small' : 'middle'}
+                  danger
+                >
+                  {t('exitSelected')}
+                </Button>
+              )}
+            </div>
+          </div>
+
           <Segmented
             css={segmentedStyles}
             options={[
@@ -1032,39 +1072,13 @@ export const AlertLogsTable = () => {
           />
           {(isDesktop || (isMobile && selectedIds.size > 0)) && (
             <div css={actionStyles}>
-              <Button
-                onClick={() =>
-                  modal.openModal(
-                    <ExitSignal
-                      ids={Array.from(selectedIds)}
-                      setSelectedIds={setSelectedIds}
-                      title={t('exitSelectedSignals')}
-                      description={t('confirmExitSelected')}
-                    />,
-                    { width: 400 }
-                  )
-                }
-                icon={
-                  <Icon
-                    icon='exit'
-                    fill={
-                      selectedIds.size <= 0
-                        ? 'var(--gray-light-color)'
-                        : 'var(--orange-color)'
-                    }
-                    width={18}
-                    height={18}
-                  />
-                }
-                css={exitBtnStyles}
-                disabled={selectedIds.size <= 0}
-                size={isMobile ? 'small' : 'middle'}
-                danger
-              >
-                {t('exitSelected')}
-              </Button>
-
-              {isDesktop && <ExportExcelLog />}
+              {isDesktop && (
+                <Space>
+                  <ExportExcelLog />
+                  <DownloadSymbolTemplateButton />
+                  <ImportSymbolButton />
+                </Space>
+              )}
             </div>
           )}
         </div>
@@ -1196,4 +1210,14 @@ const exitTitleStyles = css`
 
 const recommendationStyles = css`
   text-transform: uppercase;
+`;
+
+const titleContainerStyles = css`
+  display: flex;
+  gap: 1.4rem;
+  align-items: center;
+`;
+
+const exitBtnContainerStyles = css`
+  width: 14.5rem;
 `;

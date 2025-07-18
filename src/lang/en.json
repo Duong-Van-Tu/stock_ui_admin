@@ -445,5 +445,11 @@
   "downloadUserTemplate": "Download User Template",
   "importUserTemplate": "Import User Template",
   "entry": "Entry",
-  "pl": "P/L Amount"
+  "pl": "P/L Amount",
+  "downloadTradeSignalTemplate": "Download Template",
+  "downloadSuccess": "Downloaded successfully",
+  "downloadError": "Download failed",
+  "importExcel": "Import Excel",
+  "importSuccess": "Import Excel successful!",
+  "importError": "Import Excel failed!"
 }

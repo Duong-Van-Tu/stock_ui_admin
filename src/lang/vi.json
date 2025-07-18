@@ -445,5 +445,11 @@
   "downloadUserTemplate": "Tải mẫu người dùng",
   "importUserTemplate": "Nhập mẫu người dùng",
   "entry": "Lệnh vào",
-  "pl": "Tổng Lãi/ Lỗ"
+  "pl": "Tổng Lãi/ Lỗ",
+  "downloadTradeSignalTemplate": "Tải mẫu",
+  "downloadSuccess": "Tải thành công",
+  "downloadError": "Tải thất bại",
+  "importExcel": "Nhập Excel",
+  "importSuccess": "Nhập Excel Thành công!",
+  "importError": "Nhập Excel Thất bại!"
 }
