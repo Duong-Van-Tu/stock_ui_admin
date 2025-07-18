@@ -1075,8 +1075,8 @@ export const AlertLogsTable = () => {
               {isDesktop && (
                 <Space>
                   <ExportExcelLog />
-                  <DownloadSymbolTemplateButton />
                   <ImportSymbolButton />
+                  <DownloadSymbolTemplateButton />
                 </Space>
               )}
             </div>
