@@ -1164,6 +1164,7 @@ const tableTopStyles = css`
   align-items: center;
   padding: 1.2rem 1.6rem;
   gap: 1.4rem;
+  position: relative;
 `;
 
 const actionStyles = css`
@@ -1179,6 +1180,10 @@ const segmentedStyles = css`
     background: var(--primary-color);
     color: var(--white-color);
   }
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const segmentedLabelStyles = css`
