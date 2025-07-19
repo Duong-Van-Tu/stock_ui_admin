@@ -1221,6 +1221,7 @@ const titleContainerStyles = css`
   display: flex;
   gap: 1.4rem;
   align-items: center;
+  width: ${isMobile && '100%'};
 `;
 
 const exitBtnContainerStyles = css`
