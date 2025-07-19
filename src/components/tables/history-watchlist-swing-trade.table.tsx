@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, Table, TableColumnsType, Tooltip } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
@@ -32,7 +32,6 @@ import { AIExplain } from '../ai-explain';
 import { isMobile } from 'react-device-detect';
 import { Icon } from '../icons';
 import { PageURLs } from '@/utils/navigate';
-import { HistoryWatchlistSwingTradeFilter } from '../filters/history-watchlist-swing-trade.filter';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 
@@ -71,7 +70,7 @@ export const HistoryWatchlistSwingTradeTable = () => {
       }
     });
 
-  const filteredFilter = useMemo(() => cleanFalsyValues(filter), [filter]);
+  // const filteredFilter = useMemo(() => cleanFalsyValues(filter), [filter]);
 
   const fetchDataHistoryWatchList = useCallback(
     ({
@@ -96,25 +95,26 @@ export const HistoryWatchlistSwingTradeTable = () => {
     [symbol]
   );
 
-  const handleFilter = useCallback(
-    (values: WatchlistSwingTradeFilter) => {
-      setFilter((prev) => {
-        const newFilter = {
-          ...prev,
-          ...values
-        };
-        fetchDataHistoryWatchList({ filter: newFilter });
-        return newFilter;
-      });
-    },
-    [fetchDataHistoryWatchList]
-  );
+  // const handleFilter = useCallback(
+  //   (values: WatchlistSwingTradeFilter) => {
+  //     setFilter((prev) => {
+  //       const newFilter = {
+  //         ...prev,
+  //         ...values
+  //       };
+  //       fetchDataHistoryWatchList({ filter: newFilter });
+  //       return newFilter;
+  //     });
+  //   },
+  //   [fetchDataHistoryWatchList]
+  // );
 
   const handleGoBack = () => {
     router.push(PageURLs.ofWatchListSwingTrade());
   };
 
   useEffect(() => {
+    fetchDataHistoryWatchList({ filter });
     return () => {
       dispatch(resetState());
     };
@@ -474,10 +474,10 @@ export const HistoryWatchlistSwingTradeTable = () => {
 
   return (
     <div css={rootStyles}>
-      <HistoryWatchlistSwingTradeFilter
+      {/* <HistoryWatchlistSwingTradeFilter
         customStyles={filterContainerStyles}
         onFilter={handleFilter}
-      />
+      /> */}
       <div css={tableContainerStyles}>
         <div css={tableTopStyles}>
           <div css={tableTopRightStyles}>
@@ -506,7 +506,7 @@ export const HistoryWatchlistSwingTradeTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: historyWatchlistSwingTrade.length > 0 ? height - 320 : undefined
+            y: historyWatchlistSwingTrade.length > 0 ? height - 244 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -597,6 +597,6 @@ const recommendationStyles = css`
   text-transform: uppercase;
 `;
 
-const filterContainerStyles = css`
-  padding: ${isMobile && '1.6rem 1.4rem'};
-`;
+// const filterContainerStyles = css`
+//   padding: ${isMobile && '1.6rem 1.4rem'};
+// `;
