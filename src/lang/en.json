@@ -150,8 +150,8 @@
   "searchResult": "Search results for symbol:",
   "listHighActivity": "List High Activity",
   "listHighActivityDesc": "List High Activity Page",
-  "watchlistIn50Days": "Watchlist In 50 Days",
-  "watchlistIn50DaysDesc": "Watchlist In 50 Days Page",
+  "watchlistSwingTrade": "Watchlist Swing Trade",
+  "watchlistSwingTradeDesc": "Watchlist Swing Trade Page",
   "noSignalsForSymbol": "No available signals for symbol",
   "reloadData": "Reload Data",
   "stockDetailDesc": "Stock Details Page",
@@ -285,7 +285,7 @@
   "strongBuy": "Strong Buy",
   "sell": "Sell",
   "strongSell": "Strong Sell",
-  "watchlistIn50DaysTitle": "Watchlist (in 50 days)",
+  "watchlistSwingTradeTitle": "Watchlist Swing Trade",
   "ledgerEntry": "Ledger Entry",
   "ledgerEntryDesc": "Ledger Entry Page",
   "ledgerEntryDetail": "Ledger Entry Detail",
@@ -453,5 +453,9 @@
   "importSuccess": "Import Excel successfully!",
   "importError": "Import Excel failed!",
   "etfStocks": "ETF",
-  "regularStocks": "STOCKS"
+  "regularStocks": "STOCKS",
+  "history": "History",
+  "historyWatchlist": "History Watchlist",
+  "historyWatchlistPage": "History Watchlist Page",
+  "viewChart": "View Chart"
 }

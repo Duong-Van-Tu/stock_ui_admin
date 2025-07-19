@@ -47,8 +47,12 @@ export namespace PageURLs {
     return withPrefix(url);
   }
 
-  export function ofWatchListIn50days() {
-    return withPrefix(`/watchlist-50-days`);
+  export function ofWatchListSwingTrade() {
+    return withPrefix('/watchlist-swing-trade');
+  }
+
+  export function ofHistoryWatchListSwingTrade(symbol: string) {
+    return withPrefix(`/watchlist-swing-trade/history/${symbol}`);
   }
 
   export function ofLedgerEntry() {

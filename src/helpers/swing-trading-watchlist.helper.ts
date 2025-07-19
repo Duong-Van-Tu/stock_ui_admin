@@ -1,7 +1,9 @@
 import { fieldMapping } from './field-mapping.helper';
 import { v4 as uuid } from 'uuid';
 
-export const transformWatchlist50Days = (data: any[]): WatchlistIn50Days[] => {
+export const transformWatchlistSwingTrade = (
+  data: any[]
+): WatchlistSwingTrade[] => {
   if (data.length <= 0) {
     return [];
   }
@@ -46,5 +48,43 @@ export const transformWatchlist50Days = (data: any[]): WatchlistIn50Days[] => {
     currentPriceWatchlist: item[fieldMapping.currentPriceWatchlist],
     previousPrice: item[fieldMapping.previousPrice],
     companyName: item.description
+  }));
+};
+
+export const transformHistoryWatchlistSwingTrade = (
+  data: any[]
+): HistoryWatchlistSwingTrade[] => {
+  if (data.length === 0) return [];
+
+  return data.map((item) => ({
+    key: uuid(),
+    id: item.id,
+    symbol: item.symbol,
+    period: item.period,
+    lowest50: item[fieldMapping.lowest50],
+    highest50: item[fieldMapping.highest50],
+    average: item.average,
+    current: item.current,
+    median: item.median,
+    sma50: item[fieldMapping.sma50],
+    suggestLowBuy50: item[fieldMapping.suggestLowBuy50],
+    suggestHighBuy50: item[fieldMapping.suggestHighBuy50],
+    createdAt: item[fieldMapping.createdAt],
+    aiRating: item[fieldMapping.AIRating],
+    aiRecommendation: item[fieldMapping.AIRecommendation],
+    aiExplain: item[fieldMapping.AIExplain],
+    sma20: item[fieldMapping.sma20],
+    highest20: item[fieldMapping.highest20],
+    lowest20: item[fieldMapping.lowest20],
+    changePctLowest20: item[fieldMapping.changeLowest20],
+    changePctLowest50: item[fieldMapping.changeLowest50],
+    suggestLowBuy20: item[fieldMapping.suggestLowBuy20],
+    suggestHighBuy20: item[fieldMapping.suggestHighBuy20],
+    sma10: item[fieldMapping.sma10],
+    highest10: item[fieldMapping.highest10],
+    lowest10: item[fieldMapping.lowest10],
+    changePctLowest10: item[fieldMapping.changeLowest10],
+    suggestLowBuy10: item[fieldMapping.suggestLowBuy10],
+    suggestHighBuy10: item[fieldMapping.suggestHighBuy10]
   }));
 };

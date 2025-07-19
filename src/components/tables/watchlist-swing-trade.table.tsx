@@ -11,12 +11,12 @@ import {
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  watchWatchlistIn50DaysLoading,
-  watchWatchlistIn50Days,
-  watchWatchlistIn50DaysPagination,
-  getWatchlistIn50Days,
+  watchWatchlistSwingTradeLoading,
+  watchWatchlistSwingTrade,
+  watchWatchlistSwingTradePagination,
+  getWatchlistSwingTrade,
   resetState,
-  autoUpdateWatchlistIn50days
+  autoUpdateWatchlistSwingTrade
 } from '@/redux/slices/swing-trading-watchlist.slice';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
@@ -35,12 +35,14 @@ import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
 import { AIExplain } from '../ai-explain';
 import EllipsisText from '../ellipsis-text';
-import { Watchlist50DaysFilter } from '../filters/watchlist-50-days.filter';
 import { ExportExcelSwingWatchlist } from '../export-excel-swing-watchlist';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { startCase } from 'lodash';
+import { Icon } from '../icons';
+import { PageURLs } from '@/utils/navigate';
+import { WatchlistSwingTradeFilter } from '../filters/watchlist-swing-trade.filter';
 
-export const WatchlistIn50DaysTable = () => {
+export const WatchlistSwingTradeTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const { height } = useWindowSize();
@@ -53,14 +55,14 @@ export const WatchlistIn50DaysTable = () => {
 
   const isETF = searchParams.get('isETF') ?? undefined;
 
-  const watchlistIn50Days = useAppSelector(watchWatchlistIn50Days);
-  const pagination = useAppSelector(watchWatchlistIn50DaysPagination);
-  const loading = useAppSelector(watchWatchlistIn50DaysLoading);
+  const watchlistSwingTrade = useAppSelector(watchWatchlistSwingTrade);
+  const pagination = useAppSelector(watchWatchlistSwingTradePagination);
+  const loading = useAppSelector(watchWatchlistSwingTradeLoading);
 
-  const [filter, setFilter] = useState<Watchlist50DaysFilter>({});
+  const [filter, setFilter] = useState<WatchlistSwingTradeFilter>({});
 
   const { sortField, sortType, handleSortOrder } =
-    useSortOrder<Watchlist50DaysFilter>({
+    useSortOrder<WatchlistSwingTradeFilter>({
       defaultField: 'AIRating',
       defaultOrder: 'descend',
       currentFilter: filter,
@@ -99,7 +101,7 @@ export const WatchlistIn50DaysTable = () => {
     }: PageChangeParams = {}) => {
       const filteredFilter = cleanFalsyValues(filter);
       dispatch(
-        getWatchlistIn50Days({
+        getWatchlistSwingTrade({
           page,
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
@@ -115,7 +117,7 @@ export const WatchlistIn50DaysTable = () => {
   );
 
   const handleFilter = useCallback(
-    (values: Watchlist50DaysFilter) => {
+    (values: WatchlistSwingTradeFilter) => {
       setFilter((prev) => {
         const newFilter = {
           ...prev,
@@ -137,7 +139,7 @@ export const WatchlistIn50DaysTable = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       dispatch(
-        autoUpdateWatchlistIn50days({
+        autoUpdateWatchlistSwingTrade({
           page: pagination.currentPage,
           limit: pagination.pageSize,
           ...filteredFilter
@@ -148,7 +150,7 @@ export const WatchlistIn50DaysTable = () => {
     return () => clearInterval(intervalId);
   }, [dispatch, filteredFilter, pagination.currentPage, pagination.pageSize]);
 
-  const columns: TableColumnsType<WatchlistIn50Days> = [
+  const columns: TableColumnsType<WatchlistSwingTrade> = [
     {
       title: t('stt'),
       dataIndex: 'index',
@@ -168,7 +170,11 @@ export const WatchlistIn50DaysTable = () => {
       render: (_, record) => (
         <SymbolCell
           symbol={record.symbol}
-          companyName={startCase(record.companyName)}
+          companyName={
+            record.companyName
+              ? startCase(record.companyName.toLowerCase())
+              : undefined
+          }
         />
       )
     },
@@ -665,12 +671,39 @@ export const WatchlistIn50DaysTable = () => {
       }),
       align: 'center',
       render: (value) => (value ? roundToDecimals(value) : '-')
+    },
+    {
+      title: t('actions'),
+      dataIndex: 'action',
+      key: 'action',
+      fixed: isMobile ? undefined : 'right',
+      align: 'center',
+      width: 124,
+      render: (_, record) => (
+        <Button
+          type='primary'
+          ghost
+          icon={
+            <Icon
+              icon='history'
+              width={18}
+              height={18}
+              fill='var(--primary-color)'
+            />
+          }
+          onClick={() =>
+            router.push(PageURLs.ofHistoryWatchListSwingTrade(record.symbol))
+          }
+        >
+          {t('history')}
+        </Button>
+      )
     }
   ];
 
   return (
     <div css={rootStyles}>
-      <Watchlist50DaysFilter
+      <WatchlistSwingTradeFilter
         customStyles={filterContainerStyles}
         onFilter={handleFilter}
       />
@@ -678,19 +711,19 @@ export const WatchlistIn50DaysTable = () => {
         <div css={tableTopStyles}>
           <div css={tableTopRightStyles}>
             <TableTitle customStyles={titleStyles}>
-              {t('watchlistIn50DaysTitle')}
+              {t('watchlistSwingTradeTitle')}
             </TableTitle>
             <div css={updatedAtStyles}>
-              {watchlistIn50Days.length > 0 && (
+              {watchlistSwingTrade.length > 0 && (
                 <>
                   <strong>{t('updatedAt')}:</strong>&nbsp;
                   <span css={dateTextStyles}>
-                    {dayjs(watchlistIn50Days[0].createdAt)
+                    {dayjs(watchlistSwingTrade[0].createdAt)
                       .tz(TimeZone.NEW_YORK)
                       .format('MMM D, YYYY h:mm A')}
                   </span>
                   <strong>{t('period')}:</strong>&nbsp;
-                  {watchlistIn50Days[0].period}
+                  {watchlistSwingTrade[0].period}
                 </>
               )}
             </div>
@@ -717,16 +750,16 @@ export const WatchlistIn50DaysTable = () => {
 
           {!isMobile && <ExportExcelSwingWatchlist />}
         </div>
-        <Table<WatchlistIn50Days>
+        <Table<WatchlistSwingTrade>
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey='key'
           columns={columns}
-          dataSource={watchlistIn50Days}
+          dataSource={watchlistSwingTrade}
           loading={loading}
           scroll={{
             x: 1200,
-            y: watchlistIn50Days.length > 0 ? height - 374 : undefined
+            y: watchlistSwingTrade.length > 0 ? height - 374 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{

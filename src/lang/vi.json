@@ -150,8 +150,8 @@
   "searchResult": "Kết quả tìm kiếm cho mã chứng khoán:",
   "listHighActivity": "Danh sách cổ phiếu giao dịch cao",
   "listHighActivityDesc": "Trang danh sách cổ phiếu giao dịch cao",
-  "watchlistIn50Days": "Danh sách theo dõi trong 50 ngày",
-  "watchlistIn50DaysDesc": "Trang danh sách theo dõi cổ phiếu trong 50 ngày",
+  "watchlistInSwingTrade": "Danh sách theo dõi trong 50 ngày",
+  "watchlistInSwingTradeDesc": "Trang danh sách theo dõi cổ phiếu trong 50 ngày",
   "noSignalsForSymbol": "Không tìm thấy tín hiệu nào với mã",
   "reloadData": "Tải lại dữ liệu",
   "stockDetailDesc": "Trang chi tiết cổ phiếu",
@@ -285,7 +285,7 @@
   "strongBuy": "Mua mạnh",
   "sell": "Bán",
   "strongSell": "Bán mạnh",
-  "watchlistIn50DaysTitle": "Danh sách theo dõi (trong 50 ngày)",
+  "watchlistInSwingTradeTitle": "Danh sách theo dõi (trong 50 ngày)",
   "ledgerEntry": "Sổ tay giao dịch",
   "ledgerEntryDesc": "Trang quản lý giao dịch sổ tay",
   "ledgerEntryDetail": "Chi tiết giao dịch sổ tay",
@@ -453,5 +453,9 @@
   "importSuccess": "Nhập Excel Thành công!",
   "importError": "Nhập Excel Thất bại!",
   "etfStocks": "ETF",
-  "regularStocks": "STOCKS"
+  "regularStocks": "STOCKS",
+  "history": "Lịch sử",
+  "historyWatchlist": "Lịch sử theo dõi stock 50 ngày",
+  "historyWatchlistPage": "Lịch sử theo dõi stock 50 ngày",
+  "viewChart": "Xem Chart"
 }
