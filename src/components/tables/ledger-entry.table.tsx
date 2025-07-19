@@ -534,7 +534,7 @@ export const LedgerEntryTable = () => {
         loading={loading}
         scroll={{
           x: 1200,
-          y: ledgerEntry.length > 0 ? height - 250 : undefined
+          y: ledgerEntry.length > 0 ? height - 232 : undefined
         }}
         sortDirections={['descend', 'ascend']}
         locale={{

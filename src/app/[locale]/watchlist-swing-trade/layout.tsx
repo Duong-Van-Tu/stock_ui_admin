@@ -6,8 +6,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await import('next-intl/server').then((m) => m.getTranslations());
 
   return {
-    title: t('watchlistSwingtrade'),
-    description: t('watchlistInSwingtradeDesc')
+    title: t('watchlistSwingTrade'),
+    description: t('watchlistSwingTradeDesc')
   };
 }
 
