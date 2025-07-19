@@ -4,7 +4,11 @@ import { css } from '@emotion/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Table, TableColumnsType, Tooltip } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
-import { cleanFalsyValues, roundToDecimals } from '@/utils/common';
+import {
+  calculatePercentage,
+  cleanFalsyValues,
+  roundToDecimals
+} from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   watchWatchlistSwingTradeLoading,
@@ -13,7 +17,6 @@ import {
   getHistoryWatchlistSwingTrade,
   watchHistoryWatchlistSwingTrade
 } from '@/redux/slices/swing-trading-watchlist.slice';
-import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
 import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
@@ -25,13 +28,13 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { Recommendation } from '@/constants/common.constant';
 import { useModal } from '@/hooks/modal.hook';
-import dayjs from 'dayjs';
-import { TimeZone } from '@/constants/timezone.constant';
 import { AIExplain } from '../ai-explain';
 import { isMobile } from 'react-device-detect';
 import { Icon } from '../icons';
 import { PageURLs } from '@/utils/navigate';
 import { HistoryWatchlistSwingTradeFilter } from '../filters/history-watchlist-swing-trade.filter';
+import { DateTimeCell } from './columns/date-time-cell.column';
+import { StockChangeCell } from './columns/stock-change-cell.column';
 
 export const HistoryWatchlistSwingTradeTable = () => {
   const t = useTranslations();
@@ -48,7 +51,6 @@ export const HistoryWatchlistSwingTradeTable = () => {
     watchHistoryWatchlistSwingTrade
   );
 
-  console.log({ historyWatchlistSwingTrade });
   const pagination = useAppSelector(watchWatchlistSwingTradePagination);
   const loading = useAppSelector(watchWatchlistSwingTradeLoading);
 
@@ -56,12 +58,12 @@ export const HistoryWatchlistSwingTradeTable = () => {
 
   const { sortField, sortType, handleSortOrder } =
     useSortOrder<WatchlistSwingTradeFilter>({
-      defaultField: 'AIRating',
+      defaultField: 'createdAt',
       defaultOrder: 'descend',
       currentFilter: filter,
       onChange: (_field, _order, newFilter) => {
         setFilter(newFilter);
-        fetchDataWatchList({
+        fetchDataHistoryWatchList({
           page: PAGINATION.currentPage,
           pageSize: pagination.pageSize,
           filter: newFilter
@@ -71,11 +73,14 @@ export const HistoryWatchlistSwingTradeTable = () => {
 
   const filteredFilter = useMemo(() => cleanFalsyValues(filter), [filter]);
 
-  const fetchDataWatchList = useCallback(
+  const fetchDataHistoryWatchList = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
-      pageSize = PAGINATION_PARAMS.limit
+      pageSize = PAGINATION_PARAMS.limit,
+      filter
     }: PageChangeParams = {}) => {
+      const filteredFilter = cleanFalsyValues(filter);
+
       dispatch(
         getHistoryWatchlistSwingTrade({
           page,
@@ -98,11 +103,11 @@ export const HistoryWatchlistSwingTradeTable = () => {
           ...prev,
           ...values
         };
-        fetchDataWatchList({ filter: newFilter });
+        fetchDataHistoryWatchList({ filter: newFilter });
         return newFilter;
       });
     },
-    [fetchDataWatchList]
+    [fetchDataHistoryWatchList]
   );
 
   const handleGoBack = () => {
@@ -141,18 +146,26 @@ export const HistoryWatchlistSwingTradeTable = () => {
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
     },
     {
-      title: t('symbol'),
-      dataIndex: 'symbol',
-      key: 'symbol',
-      width: 100,
+      title: t('createdAt'),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 128,
       fixed: 'left',
-      render: (_, record) => <SymbolCell symbol={record.symbol} />
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'createdAt' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('createdAt')
+      }),
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
       title: t('period'),
       dataIndex: 'period',
       key: 'period',
       width: 80,
+      fixed: 'left',
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
@@ -250,7 +263,14 @@ export const HistoryWatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('lowest50')
       }),
-      render: (value) => (value ? value.toLocaleString() : '-')
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.current, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
+      }
     },
     {
       title: t('highest50'),
@@ -265,7 +285,14 @@ export const HistoryWatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('highest50')
       }),
-      render: (value) => (value ? roundToDecimals(value) : '-')
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.current, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
+      }
     },
     {
       title: t('lowest20'),
@@ -280,7 +307,14 @@ export const HistoryWatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('lowest20')
       }),
-      render: (value) => (value ? roundToDecimals(value) : '-')
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.current, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
+      }
     },
     {
       title: t('highest20'),
@@ -295,8 +329,13 @@ export const HistoryWatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('highest20')
       }),
-      render: (value) => {
-        return value ? roundToDecimals(value) : '-';
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.current, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
       }
     },
     {
@@ -312,7 +351,14 @@ export const HistoryWatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('lowest10')
       }),
-      render: (value) => (value ? roundToDecimals(value) : '-')
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.current, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
+      }
     },
     {
       title: t('highest10'),
@@ -327,8 +373,13 @@ export const HistoryWatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('highest10')
       }),
-      render: (value) => {
-        return value ? roundToDecimals(value) : '-';
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.current, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
       }
     },
     {
@@ -392,6 +443,21 @@ export const HistoryWatchlistSwingTradeTable = () => {
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
+      title: t('sma10Days'),
+      dataIndex: 'sma10',
+      key: 'sma10',
+      width: 130,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'sma10' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('sma10')
+      }),
+      align: 'center',
+      render: (value) => (value ? roundToDecimals(value) : '-')
+    },
+    {
       title: t('actions'),
       dataIndex: 'action',
       key: 'action',
@@ -425,22 +491,9 @@ export const HistoryWatchlistSwingTradeTable = () => {
                 />
               </Tooltip>
               <TableTitle customStyles={titleStyles}>
-                {t('history')} - {t('watchlistSwingTradeTitle')}
+                {t('history')} {t('symbol')}: <i>{`"${symbol}"`}</i> -{' '}
+                {t('watchlistSwingTradeTitle')}
               </TableTitle>
-            </div>
-            <div css={updatedAtStyles}>
-              {historyWatchlistSwingTrade.length > 0 && (
-                <>
-                  <strong>{t('updatedAt')}:</strong>&nbsp;
-                  <span css={dateTextStyles}>
-                    {dayjs(historyWatchlistSwingTrade[0].createdAt)
-                      .tz(TimeZone.NEW_YORK)
-                      .format('MMM D, YYYY h:mm A')}
-                  </span>
-                  <strong>{t('period')}:</strong>&nbsp;
-                  {historyWatchlistSwingTrade[0].period}
-                </>
-              )}
             </div>
           </div>
         </div>
@@ -453,7 +506,7 @@ export const HistoryWatchlistSwingTradeTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: historyWatchlistSwingTrade.length > 0 ? height - 340 : undefined
+            y: historyWatchlistSwingTrade.length > 0 ? height - 320 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -481,7 +534,7 @@ export const HistoryWatchlistSwingTradeTable = () => {
             pageSize: pagination.pageSize,
             total: pagination.total,
             onChange: (page, pageSize) => {
-              fetchDataWatchList({ page, pageSize, filter });
+              fetchDataHistoryWatchList({ page, pageSize, filter });
             }
           }}
         />
@@ -542,14 +595,6 @@ const emptyStyles = (height: number) => css`
 
 const recommendationStyles = css`
   text-transform: uppercase;
-`;
-
-const updatedAtStyles = css`
-  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
-`;
-
-const dateTextStyles = css`
-  margin-right: 0.6rem;
 `;
 
 const filterContainerStyles = css`

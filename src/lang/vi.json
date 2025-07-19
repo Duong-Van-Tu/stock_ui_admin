@@ -322,7 +322,8 @@
   "lowest20": "Thấp nhất 20 ngày",
   "highest20": "Cao nhất 20 ngày",
   "highest10": "Cao nhất 10 ngày",
-  "sma20Days": "Trung bình động 20 ngày",
+  "sma20Days": "Trung bình 20 ngày",
+  "sma10Days": "Trung bình 10 ngày",
   "updatedAt": "Ngày cập nhật",
   "StockP/L": "Lãi/Lỗ",
   "edit": "Chỉnh sửa",
@@ -457,5 +458,6 @@
   "history": "Lịch sử",
   "historyWatchlist": "Lịch sử theo dõi stock 50 ngày",
   "historyWatchlistPage": "Lịch sử theo dõi stock 50 ngày",
-  "viewChart": "Xem Chart"
+  "viewChart": "Xem Chart",
+  "createdAt": "Ngày tạo"
 }
