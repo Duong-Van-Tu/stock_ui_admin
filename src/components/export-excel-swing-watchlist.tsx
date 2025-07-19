@@ -10,7 +10,7 @@ import { Icon } from './icons';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
-import { transformWatchlist50Days } from '@/helpers/swing-trading-watchlist.helper';
+import { transformWatchlistSwingTrade } from '@/helpers/swing-trading-watchlist.helper';
 import { useTranslations } from 'next-intl';
 import { TimeZone } from '@/constants/timezone.constant';
 
@@ -39,11 +39,11 @@ export const ExportExcelSwingWatchlist = () => {
         }
       }
     );
-    handleExport(transformWatchlist50Days(response.data.result));
+    handleExport(transformWatchlistSwingTrade(response.data.result));
     setLoading(false);
   };
 
-  const handleExport = async (watchlist: WatchlistIn50Days[]) => {
+  const handleExport = async (watchlist: WatchlistSwingTrade[]) => {
     if (watchlist.length > 0) {
       const processedData = watchlist.map((item) => {
         return {

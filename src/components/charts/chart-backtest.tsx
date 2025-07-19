@@ -306,11 +306,6 @@ export const ChartBackTest = ({
           : null;
 
       const formattedPercent = formatPercent(percentChange);
-      console.log({
-        prev: prevCandle?.close,
-        close: candle.close,
-        change: formattedPercent
-      });
 
       const closeChangeColor =
         percentChange !== null

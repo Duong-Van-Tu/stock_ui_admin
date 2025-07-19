@@ -1,4 +1,4 @@
-type Watchlist50DaysFilter = Filter & {
+type WatchlistSwingTradeFilter = Filter & {
   period?: string;
   fromMarketCap?: number;
   toMarketCap?: number;
@@ -6,7 +6,7 @@ type Watchlist50DaysFilter = Filter & {
   sector?: string;
 };
 
-type WatchlistIn50Days = {
+type WatchlistSwingTrade = {
   key: string;
   symbol: string;
   companyName: string;
@@ -46,4 +46,36 @@ type WatchlistIn50Days = {
   industry: string;
   subindustry: string;
   createdAt: string;
+};
+
+type HistoryWatchlistSwingTrade = {
+  key: string;
+  id: number;
+  symbol: string;
+  lowest50: number;
+  highest50: number;
+  average: number;
+  current: number;
+  median: number;
+  sma50: number;
+  suggestLowBuy50: number;
+  suggestHighBuy50: number;
+  createdAt: string;
+  aiRating: number;
+  aiRecommendation: string;
+  aiExplain: string;
+  sma20: number;
+  highest20: number;
+  lowest20: number;
+  changePctLowest20: number;
+  changePctLowest50: number;
+  period: string;
+  suggestLowBuy20: number;
+  suggestHighBuy20: number;
+  sma10: number;
+  highest10: number;
+  lowest10: number;
+  changePctLowest10: number;
+  suggestLowBuy10: number;
+  suggestHighBuy10: number;
 };

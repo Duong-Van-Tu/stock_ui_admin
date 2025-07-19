@@ -24,7 +24,7 @@ import AISentiment from '@/assets/svg/ai-sentiment.svg';
 import Notes from '@/assets/svg/notes.svg';
 import ListHighActivity from '@/assets/svg/high-activity.svg';
 import Exit from '@/assets/svg/exit.svg';
-import Watchlist50Days from '@/assets/svg/Watchlist50Days.svg';
+import WatchlistSwingTrade from '@/assets/svg/watch-list-swing-trade.svg';
 import LedgerEntry from '@/assets/svg/ledgerEntry.svg';
 import Save from '@/assets/svg/save.svg';
 import Edit from '@/assets/svg/edit.svg';
@@ -42,6 +42,7 @@ import Withdraw from '@/assets/svg/withdraw.svg';
 import AIStar from '@/assets/svg/ai-star.svg';
 import Realtime from '@/assets/svg/realtime.svg';
 import Entry from '@/assets/svg/entry.svg';
+import History from '@/assets/svg/history.svg';
 
 type IconProps = {
   width?: number | string;
@@ -75,7 +76,7 @@ const svgList = {
   Notes,
   ListHighActivity,
   Exit,
-  Watchlist50Days,
+  WatchlistSwingTrade,
   LedgerEntry,
   Save,
   Edit,
@@ -92,7 +93,8 @@ const svgList = {
   Withdraw,
   AIStar,
   Realtime,
-  Entry
+  Entry,
+  History
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = Object.entries(

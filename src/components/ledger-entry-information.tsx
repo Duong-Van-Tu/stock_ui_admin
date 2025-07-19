@@ -13,11 +13,13 @@ import { PositiveNegativeText } from './positive-negative-text';
 import { calculateDIM } from '@/helpers/ledger-entry.helper';
 import EllipsisText from './ellipsis-text';
 
-type BacktestSpikeVolumeProps = {
+type LedgerEntryInformationProps = {
   entry: LedgerEntry;
 };
 
-export const LedgerEntryInformation = ({ entry }: BacktestSpikeVolumeProps) => {
+export const LedgerEntryInformation = ({
+  entry
+}: LedgerEntryInformationProps) => {
   const t = useTranslations();
   const { width } = useWindowSize();
   const {

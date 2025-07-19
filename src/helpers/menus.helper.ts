@@ -84,10 +84,10 @@ export const getMenuStructure = (
         ]
       : []),
     {
-      label: t('watchlistIn50Days'),
-      key: 'watchlist-50-days',
-      iconType: 'watchlist50Days',
-      link: PageURLs.ofWatchListIn50days()
+      label: t('watchlistSwingTrade'),
+      key: 'watchlist-swing-trade',
+      iconType: 'watchlistSwingTrade',
+      link: PageURLs.ofWatchListSwingTrade()
     },
     {
       label: t('ledgerEntry'),
@@ -97,6 +97,5 @@ export const getMenuStructure = (
     }
   ];
 
-  // Lọc bỏ phần tử false hoặc undefined (tức là item bị ẩn)
   return menu.filter(Boolean);
 };

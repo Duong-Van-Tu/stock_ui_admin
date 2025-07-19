@@ -18,17 +18,17 @@ import {
 import { parseRangeValue } from '@/utils/common';
 import { isMobile } from 'react-device-detect';
 
-type Watchlist50DaysFilterProps = {
+type WatchlistSwingTradeFilterProps = {
   customStyles?: SerializedStyles;
-  onFilter: (values: Watchlist50DaysFilter) => void;
+  onFilter: (values: WatchlistSwingTradeFilter) => void;
 };
 
 const DEFAULT_PERIOD = '1h';
 
-export const Watchlist50DaysFilter = ({
+export const WatchlistSwingTradeFilter = ({
   customStyles,
   onFilter
-}: Watchlist50DaysFilterProps) => {
+}: WatchlistSwingTradeFilterProps) => {
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
