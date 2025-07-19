@@ -679,6 +679,7 @@ export const WatchlistSwingTradeTable = () => {
       fixed: isMobile ? undefined : 'right',
       align: 'center',
       width: 124,
+      hidden: isMobile,
       render: (_, record) => (
         <Button
           type='primary'

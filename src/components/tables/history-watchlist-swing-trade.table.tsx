@@ -34,6 +34,7 @@ import { Icon } from '../icons';
 import { PageURLs } from '@/utils/navigate';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
+import { WatchlistSwingTradeInformation } from '../watchlist-swing-trade-information';
 
 export const HistoryWatchlistSwingTradeTable = () => {
   const t = useTranslations();
@@ -118,7 +119,7 @@ export const HistoryWatchlistSwingTradeTable = () => {
     return () => {
       dispatch(resetState());
     };
-  }, [dispatch]);
+  }, [dispatch, fetchDataHistoryWatchList]);
 
   // useEffect(() => {
   //   const intervalId = setInterval(() => {
@@ -464,8 +465,17 @@ export const HistoryWatchlistSwingTradeTable = () => {
       fixed: isMobile ? undefined : 'right',
       align: 'center',
       width: 140,
-      render: () => (
-        <Button type='primary' ghost onClick={() => {}}>
+      render: (_, record) => (
+        <Button
+          type='primary'
+          ghost
+          onClick={() =>
+            modal.openModal(
+              <WatchlistSwingTradeInformation history={record} />,
+              { width: 1200 }
+            )
+          }
+        >
           {t('viewChart')}
         </Button>
       )
