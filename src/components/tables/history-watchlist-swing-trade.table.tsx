@@ -33,7 +33,6 @@ import { isMobile } from 'react-device-detect';
 import { Icon } from '../icons';
 import { PageURLs } from '@/utils/navigate';
 import { DateTimeCell } from './columns/date-time-cell.column';
-import { StockChangeCell } from './columns/stock-change-cell.column';
 import StockOverviewChart from '../charts/stock-overview.chart';
 import { watchSearchSymbol } from '@/redux/slices/search';
 
@@ -116,7 +115,7 @@ export const HistoryWatchlistSwingTradeTable = ({
         dispatch(resetState());
       };
     }
-  }, [searchSymbol, router]);
+  }, [searchSymbol, router, dispatch]);
 
   const columns: TableColumnsType<HistoryWatchlistSwingTrade> = [
     {
@@ -250,7 +249,14 @@ export const HistoryWatchlistSwingTradeTable = ({
       render: (value, record) => {
         const percentage = calculatePercentage(record.current, value);
         return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
+          <div>
+            {value}
+            {percentage !== undefined && percentage !== null && (
+              <>
+                <br /> ({roundToDecimals(Math.abs(percentage))}%)
+              </>
+            )}
+          </div>
         ) : (
           '-'
         );
@@ -272,7 +278,14 @@ export const HistoryWatchlistSwingTradeTable = ({
       render: (value, record) => {
         const percentage = calculatePercentage(record.current, value);
         return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
+          <div>
+            {value}
+            {percentage !== undefined && percentage !== null && (
+              <>
+                <br /> ({roundToDecimals(Math.abs(percentage))}%)
+              </>
+            )}
+          </div>
         ) : (
           '-'
         );
@@ -294,7 +307,14 @@ export const HistoryWatchlistSwingTradeTable = ({
       render: (value, record) => {
         const percentage = calculatePercentage(record.current, value);
         return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
+          <div>
+            {value}
+            {percentage !== undefined && percentage !== null && (
+              <>
+                <br /> ({roundToDecimals(Math.abs(percentage))}%)
+              </>
+            )}
+          </div>
         ) : (
           '-'
         );
@@ -316,7 +336,14 @@ export const HistoryWatchlistSwingTradeTable = ({
       render: (value, record) => {
         const percentage = calculatePercentage(record.current, value);
         return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
+          <div>
+            {value}
+            {percentage !== undefined && percentage !== null && (
+              <>
+                <br /> ({roundToDecimals(Math.abs(percentage))}%)
+              </>
+            )}
+          </div>
         ) : (
           '-'
         );
@@ -338,7 +365,14 @@ export const HistoryWatchlistSwingTradeTable = ({
       render: (value, record) => {
         const percentage = calculatePercentage(record.current, value);
         return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
+          <div>
+            {value}
+            {percentage !== undefined && percentage !== null && (
+              <>
+                <br /> ({roundToDecimals(Math.abs(percentage))}%)
+              </>
+            )}
+          </div>
         ) : (
           '-'
         );
@@ -360,7 +394,14 @@ export const HistoryWatchlistSwingTradeTable = ({
       render: (value, record) => {
         const percentage = calculatePercentage(record.current, value);
         return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
+          <div>
+            {value}
+            {percentage !== undefined && percentage !== null && (
+              <>
+                <br /> ({roundToDecimals(Math.abs(percentage))}%)
+              </>
+            )}
+          </div>
         ) : (
           '-'
         );

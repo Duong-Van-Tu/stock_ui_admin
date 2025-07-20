@@ -30,7 +30,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { Recommendation, WatchlistView } from '@/constants/common.constant';
 import { useModal } from '@/hooks/modal.hook';
-import { StockChangeCell } from './columns/stock-change-cell.column';
 import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
 import { AIExplain } from '../ai-explain';
@@ -327,14 +326,16 @@ export const WatchlistSwingTradeTable = () => {
       }),
       render: (value, record) => {
         return value ? (
-          <StockChangeCell
-            value={value}
-            percentage={
-              record.changeLowest50Realtime < 0
-                ? record.changeLowest50Realtime
-                : -record.changeLowest50Realtime
-            }
-          />
+          <div>
+            {value}
+            {record.changeLowest50Realtime !== undefined &&
+              record.changeLowest50Realtime !== null && (
+                <>
+                  <br /> (
+                  {roundToDecimals(Math.abs(record.changeLowest50Realtime))}%)
+                </>
+              )}
+          </div>
         ) : (
           '-'
         );
@@ -372,14 +373,16 @@ export const WatchlistSwingTradeTable = () => {
       }),
       render: (value, record) => {
         return value ? (
-          <StockChangeCell
-            value={value}
-            percentage={
-              record.changeLowest20Realtime < 0
-                ? record.changeLowest20Realtime
-                : -record.changeLowest20Realtime
-            }
-          />
+          <div>
+            {value}
+            {record.changeLowest20Realtime !== undefined &&
+              record.changeLowest20Realtime !== null && (
+                <>
+                  <br /> (
+                  {roundToDecimals(Math.abs(record.changeLowest20Realtime))}%)
+                </>
+              )}
+          </div>
         ) : (
           '-'
         );
@@ -417,14 +420,16 @@ export const WatchlistSwingTradeTable = () => {
       }),
       render: (value, record) => {
         return value ? (
-          <StockChangeCell
-            value={value}
-            percentage={
-              record.changeLowest10Realtime < 0
-                ? record.changeLowest10Realtime
-                : -record.changeLowest10Realtime
-            }
-          />
+          <div>
+            {value}
+            {record.changeLowest10Realtime !== undefined &&
+              record.changeLowest10Realtime !== null && (
+                <>
+                  <br /> (
+                  {roundToDecimals(Math.abs(record.changeLowest10Realtime))}%)
+                </>
+              )}
+          </div>
         ) : (
           '-'
         );
