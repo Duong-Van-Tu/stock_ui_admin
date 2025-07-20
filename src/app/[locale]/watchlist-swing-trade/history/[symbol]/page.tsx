@@ -7,16 +7,17 @@ import { HistoryWatchlistSwingTradeTable } from '@/components/tables/history-wat
 
 export default function HistoryWatchlistPage() {
   const params = useParams();
-  const symbol = params?.symbol;
+  const symbol = params?.symbol as string;
 
   useEffect(() => {
     if (symbol) {
       document.title = `history: ${symbol}`;
     }
   }, [symbol]);
+
   return (
     <MainLayout>
-      <HistoryWatchlistSwingTradeTable />
+      <HistoryWatchlistSwingTradeTable symbol={symbol} />
     </MainLayout>
   );
 }
