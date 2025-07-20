@@ -24,7 +24,7 @@ import { TableTitle } from './title.table';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { Recommendation } from '@/constants/common.constant';
 import { useModal } from '@/hooks/modal.hook';
@@ -34,18 +34,22 @@ import { Icon } from '../icons';
 import { PageURLs } from '@/utils/navigate';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
-import { WatchlistSwingTradeInformation } from '../watchlist-swing-trade-information';
+import StockOverviewChart from '../charts/stock-overview.chart';
+import { watchSearchSymbol } from '@/redux/slices/search';
 
-export const HistoryWatchlistSwingTradeTable = () => {
+type HistoryWatchlistSwingTradeTableProps = {
+  symbol: string;
+};
+
+export const HistoryWatchlistSwingTradeTable = ({
+  symbol
+}: HistoryWatchlistSwingTradeTableProps) => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const { height } = useWindowSize();
   const modal = useModal();
   const router = useRouter();
-  const params = useParams();
-
-  const searchParams = useSearchParams();
-  const symbol = params?.symbol ?? searchParams.get('symbol');
+  const searchSymbol = useAppSelector(watchSearchSymbol);
 
   const historyWatchlistSwingTrade = useAppSelector(
     watchHistoryWatchlistSwingTrade
@@ -71,8 +75,6 @@ export const HistoryWatchlistSwingTradeTable = () => {
       }
     });
 
-  // const filteredFilter = useMemo(() => cleanFalsyValues(filter), [filter]);
-
   const fetchDataHistoryWatchList = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
@@ -96,20 +98,6 @@ export const HistoryWatchlistSwingTradeTable = () => {
     [symbol]
   );
 
-  // const handleFilter = useCallback(
-  //   (values: WatchlistSwingTradeFilter) => {
-  //     setFilter((prev) => {
-  //       const newFilter = {
-  //         ...prev,
-  //         ...values
-  //       };
-  //       fetchDataHistoryWatchList({ filter: newFilter });
-  //       return newFilter;
-  //     });
-  //   },
-  //   [fetchDataHistoryWatchList]
-  // );
-
   const handleGoBack = () => {
     router.push(PageURLs.ofWatchListSwingTrade());
   };
@@ -119,21 +107,16 @@ export const HistoryWatchlistSwingTradeTable = () => {
     return () => {
       dispatch(resetState());
     };
-  }, [dispatch, fetchDataHistoryWatchList]);
+  }, [dispatch, fetchDataHistoryWatchList, filter]);
 
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     dispatch(
-  //       autoUpdateWatchlistSwingTrade({
-  //         page: pagination.currentPage,
-  //         limit: pagination.pageSize,
-  //         ...filteredFilter
-  //       })
-  //     );
-  //   }, 60000);
-
-  //   return () => clearInterval(intervalId);
-  // }, [dispatch, filteredFilter, pagination.currentPage, pagination.pageSize]);
+  useEffect(() => {
+    if (searchSymbol) {
+      router.push(PageURLs.ofHistoryWatchListSwingTrade(searchSymbol));
+      return () => {
+        dispatch(resetState());
+      };
+    }
+  }, [searchSymbol, router]);
 
   const columns: TableColumnsType<HistoryWatchlistSwingTrade> = [
     {
@@ -457,28 +440,6 @@ export const HistoryWatchlistSwingTradeTable = () => {
       }),
       align: 'center',
       render: (value) => (value ? roundToDecimals(value) : '-')
-    },
-    {
-      title: t('actions'),
-      dataIndex: 'action',
-      key: 'action',
-      fixed: isMobile ? undefined : 'right',
-      align: 'center',
-      width: 140,
-      render: (_, record) => (
-        <Button
-          type='primary'
-          ghost
-          onClick={() =>
-            modal.openModal(
-              <WatchlistSwingTradeInformation history={record} />,
-              { width: 1200 }
-            )
-          }
-        >
-          {t('viewChart')}
-        </Button>
-      )
     }
   ];
 
@@ -488,6 +449,9 @@ export const HistoryWatchlistSwingTradeTable = () => {
         customStyles={filterContainerStyles}
         onFilter={handleFilter}
       /> */}
+      <div css={chartOverviewStyles}>
+        <StockOverviewChart symbol={symbol} />
+      </div>
       <div css={tableContainerStyles}>
         <div css={tableTopStyles}>
           <div css={tableTopRightStyles}>
@@ -605,6 +569,10 @@ const emptyStyles = (height: number) => css`
 
 const recommendationStyles = css`
   text-transform: uppercase;
+`;
+
+const chartOverviewStyles = css`
+  height: 45rem;
 `;
 
 // const filterContainerStyles = css`

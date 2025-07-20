@@ -120,7 +120,11 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
     params.set('symbol', upperCaseValue);
     router.push(`${pathname}?${params.toString()}`);
 
-    if (regex.stockDetailPath.test(pathname)) {
+    if (
+      regex.stockDetailPath.test(pathname) ||
+      regex.watchlistSwingTradeHistoryPath.test(pathname)
+    ) {
+      console.log('search path');
       dispatch(searchSymbol(upperCaseValue));
     }
   };

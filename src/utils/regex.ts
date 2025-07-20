@@ -6,5 +6,7 @@ export const regex = {
   url: /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/,
   ein: /^\d{2}-\d{7}$/,
   ssn: /^\d{3}-\d{2}-\d{4}$/,
-  stockDetailPath: /^(\/[a-z]{2})?\/symbol\/[A-Za-z0-9.-]+$/
+  stockDetailPath: /^(\/[a-z]{2})?\/symbol\/[A-Za-z0-9.-]+$/,
+  watchlistSwingTradeHistoryPath:
+    /^(\/[a-z]{2})?\/watchlist-swing-trade\/history\/[A-Za-z0-9.-]+$/
 };
