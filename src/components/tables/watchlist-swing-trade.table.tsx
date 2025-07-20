@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, Segmented, Table, TableColumnsType } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
@@ -15,8 +15,8 @@ import {
   watchWatchlistSwingTrade,
   watchWatchlistSwingTradePagination,
   getWatchlistSwingTrade,
-  resetState,
-  autoUpdateWatchlistSwingTrade
+  resetState
+  // autoUpdateWatchlistSwingTrade
 } from '@/redux/slices/swing-trading-watchlist.slice';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
@@ -75,7 +75,7 @@ export const WatchlistSwingTradeTable = () => {
       }
     });
 
-  const filteredFilter = useMemo(() => cleanFalsyValues(filter), [filter]);
+  // const filteredFilter = useMemo(() => cleanFalsyValues(filter), [filter]);
 
   const handleChangeView = useCallback(
     (view: WatchlistView) => {
@@ -135,19 +135,19 @@ export const WatchlistSwingTradeTable = () => {
     };
   }, [dispatch]);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      dispatch(
-        autoUpdateWatchlistSwingTrade({
-          page: pagination.currentPage,
-          limit: pagination.pageSize,
-          ...filteredFilter
-        })
-      );
-    }, 60000);
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     dispatch(
+  //       autoUpdateWatchlistSwingTrade({
+  //         page: pagination.currentPage,
+  //         limit: pagination.pageSize,
+  //         ...filteredFilter
+  //       })
+  //     );
+  //   }, 60000);
 
-    return () => clearInterval(intervalId);
-  }, [dispatch, filteredFilter, pagination.currentPage, pagination.pageSize]);
+  //   return () => clearInterval(intervalId);
+  // }, [dispatch, filteredFilter, pagination.currentPage, pagination.pageSize]);
 
   const columns: TableColumnsType<WatchlistSwingTrade> = [
     {
