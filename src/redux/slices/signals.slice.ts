@@ -63,10 +63,16 @@ export const signalSlice = createAppSlice({
     getAlertLogs: create.asyncThunk(
       async ({
         isOptions,
+        isSymbolSpecific,
         ...query
-      }: { isOptions?: boolean } & Record<string, any>) => {
+      }: { isOptions?: boolean; isSymbolSpecific?: boolean } & Record<
+        string,
+        any
+      >) => {
         const response = await defaultApiFetcher.get(
-          'tickers/get-stock-alert-log',
+          isSymbolSpecific
+            ? 'tickers/get-stock-alert-log-fix'
+            : 'tickers/get-stock-alert-log',
           {
             query: {
               isImport: isOptions === undefined ? undefined : isOptions ? 1 : 0,

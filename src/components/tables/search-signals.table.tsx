@@ -40,6 +40,8 @@ import {
 } from '@/constants/common.constant';
 import { useModal } from '@/hooks/modal.hook';
 import { AIExplain } from '../ai-explain';
+import { regex } from '@/utils/regex';
+import { usePathname } from 'next/navigation';
 
 type SearchSignalTable = {
   symbol: string;
@@ -51,6 +53,7 @@ export const SearchSignalTable = ({
   showTitle = true
 }: SearchSignalTable) => {
   const t = useTranslations();
+  const pathname = usePathname();
   const dispatch = useAppDispatch();
   const { setWatchList, resFromWS } = useContext(SocketContext);
   const { height } = useWindowSize();
@@ -91,6 +94,7 @@ export const SearchSignalTable = ({
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           symbol,
+          isSymbolSpecific: !!regex.stockDetailPath.test(pathname),
           ...filteredFilter
         })
       );

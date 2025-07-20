@@ -46,7 +46,7 @@ export function FundamentalDetailChart({ symbol }: FundamentalDetailProps) {
               data={fundamentalDetails}
               series={series}
               height={350}
-              grid={{ left: 60 }}
+              grid={{ left: 80, right: 10 }}
             />
           </div>
         )}
