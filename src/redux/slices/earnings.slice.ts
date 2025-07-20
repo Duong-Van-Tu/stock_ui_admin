@@ -103,7 +103,14 @@ export const earningsSlice = createAppSlice({
       }
     ),
     resetState: create.reducer((state) => {
-      Object.assign(state, initialState);
+      // Preserve the current earningsSummary before resetting
+      const { earningsSummary } = state;
+
+      // Reset the state to its initial values, but keep earningsSummary unchanged
+      Object.assign(state, {
+        ...initialState,
+        earningsSummary
+      });
     })
   }),
 
