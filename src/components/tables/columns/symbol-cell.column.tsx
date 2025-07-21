@@ -5,7 +5,7 @@ import { Button, Popover, Tooltip } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details.drawer';
-import MiniStockChart from '@/components/charts/stock-mini.chart';
+import ChartMiniTradingview from '@/components/charts/trading-view-mini.chart';
 import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
 import { isMobile } from 'react-device-detect';
@@ -54,7 +54,7 @@ export const SymbolCell = ({
     <div css={symbolCellStyles}>
       <div css={symbolStyles}>
         <Popover
-          content={<MiniStockChart symbol={symbol} />}
+          content={<ChartMiniTradingview symbol={symbol} />}
           trigger='hover'
           placement='rightTop'
           overlayStyle={{ padding: 0 }}
