@@ -169,5 +169,8 @@ export const fieldMapping: Record<string, string> = {
   suggestHighBuy20: 'suggest_high_buy_20',
   sma10: 'sma_10',
   suggestLowBuy10: 'suggest_low_buy_10',
-  suggestHighBuy10: 'suggest_high_buy_10'
+  suggestHighBuy10: 'suggest_high_buy_10',
+  highestPricePercent: 'pl_highest_price_percent',
+  lowestPricePercent: 'pl_lowest_price_percent',
+  currentPricePercent: 'pl_price_percent'
 };

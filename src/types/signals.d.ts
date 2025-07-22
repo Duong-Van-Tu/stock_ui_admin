@@ -51,6 +51,9 @@ type Signal = {
   manualRecommendation: string;
   stopLoss: number;
   takeProfit: number;
+  highestPricePercent: number;
+  lowestPricePercent: number;
+  currentPricePercent: number;
 };
 
 type AlertLogsFilter = Filter & {

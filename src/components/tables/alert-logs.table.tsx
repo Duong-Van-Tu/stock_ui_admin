@@ -498,16 +498,20 @@ export const AlertLogsTable = () => {
       width: 140,
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'currentPrice' ? sortType : null,
+      sortOrder: sortField === 'currentPricePercent' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('currentPrice')
+        onClick: () => handleSortOrder('currentPricePercent')
       }),
       align: 'center',
       render: (value, record) => {
         const currPrice = getCurrentPrice(resFromWS, record.symbol);
         const price = currPrice ?? value;
-        const percentage = calculatePercentage(record.entryPrice, price);
-        return <StockChangeCell value={price} percentage={percentage} />;
+        return (
+          <StockChangeCell
+            value={price}
+            percentage={record.currentPricePercent}
+          />
+        );
       }
     },
     {
@@ -517,14 +521,18 @@ export const AlertLogsTable = () => {
       width: 140,
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'highestPrice' ? sortType : null,
+      sortOrder: sortField === 'highestPricePercent' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('highestPrice')
+        onClick: () => handleSortOrder('highestPricePercent')
       }),
       align: 'center',
       render: (value, record) => {
-        const percentage = calculatePercentage(record.entryPrice, value);
-        return <StockChangeCell value={value} percentage={percentage} />;
+        return (
+          <StockChangeCell
+            value={value}
+            percentage={record.highestPricePercent}
+          />
+        );
       }
     },
     {
@@ -618,14 +626,18 @@ export const AlertLogsTable = () => {
       width: 140,
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'lowestPrice' ? sortType : null,
+      sortOrder: sortField === 'lowestPricePercent' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('lowestPrice')
+        onClick: () => handleSortOrder('lowestPricePercent')
       }),
       align: 'center',
       render: (value, record) => {
-        const percentage = calculatePercentage(record.entryPrice, value);
-        return <StockChangeCell value={value} percentage={percentage} />;
+        return (
+          <StockChangeCell
+            value={value}
+            percentage={record.lowestPricePercent}
+          />
+        );
       }
     },
     {
