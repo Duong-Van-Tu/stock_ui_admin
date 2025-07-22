@@ -23,7 +23,7 @@ type WatchlistSwingTradeFilterProps = {
   onFilter: (values: WatchlistSwingTradeFilter) => void;
 };
 
-const DEFAULT_PERIOD = '1h';
+const DEFAULT_PERIOD = '1day';
 
 export const WatchlistSwingTradeFilter = ({
   customStyles,
@@ -84,7 +84,7 @@ export const WatchlistSwingTradeFilter = ({
   };
 
   useEffect(() => {
-    const period = params.get('period') ?? '';
+    const period = params.get('period') ?? DEFAULT_PERIOD;
     const marketCap = params.get('marketCap') ?? '';
     const industry = params.get('industry') ?? '';
     const sector = params.get('sector') ?? '';

@@ -79,7 +79,7 @@ export const getRangeDateOptions = (t: (key: string) => string) => [
 ];
 
 export const getPeriodOptions = (t: (key: string) => string) => [
-  { value: '', label: t('allPeriod') },
+  // { value: '', label: t('allPeriod') },
   { value: '1h', label: t('1hour') },
   { value: '1day', label: t('1Day') }
 ];
