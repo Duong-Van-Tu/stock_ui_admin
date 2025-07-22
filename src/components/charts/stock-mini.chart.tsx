@@ -1,54 +1,103 @@
-import { useEffect, useRef, memo } from 'react';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+import { useEffect, useRef } from 'react';
+import { createChart, Time } from 'lightweight-charts';
 
-interface MiniStockChartProps {
-  symbol: string;
-  width?: string | number;
-  height?: string | number;
-  colorTheme?: 'light' | 'dark';
-  locale?: string;
-}
+type DataPoint = {
+  time: Time;
+  value: number;
+};
 
-const MiniStockChart = ({
-  symbol,
-  width = '100%',
-  height = 200,
-  colorTheme = 'light',
-  locale = 'en'
-}: MiniStockChartProps) => {
-  const container = useRef<HTMLDivElement>(null);
+type StockMiniChartProps = {
+  data: DataPoint[];
+};
+
+export default function StockMiniChart({ data }: StockMiniChartProps) {
+  const chartContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (container.current) {
-      container.current.innerHTML = '';
+    if (!chartContainerRef.current || data.length === 0) return;
 
-      const script = document.createElement('script');
-      script.src =
-        'https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js';
-      script.type = 'text/javascript';
-      script.async = true;
-      script.innerHTML = `
-        {
-          "symbol": "${symbol}",
-          "width": "${width}",
-          "height": "${height}",
-          "locale": "${locale}",
-          "dateRange": "3M",
-          "colorTheme": "${colorTheme}",
-          "isTransparent": true,
-          "autosize": false
-        }`;
+    const chart = createChart(chartContainerRef.current, {
+      width: 180,
+      height: 60,
+      layout: {
+        background: { color: '#f5f5f5' },
+        textColor: '#999'
+      },
+      grid: {
+        vertLines: { visible: false },
+        horzLines: { visible: false }
+      },
+      crosshair: {
+        vertLine: { visible: false },
+        horzLine: { visible: false }
+      },
+      timeScale: {
+        visible: false
+      },
+      rightPriceScale: {
+        visible: false
+      }
+    });
 
-      container.current.appendChild(script);
+    const chartElement =
+      chartContainerRef.current.querySelector('canvas')?.parentElement;
+    if (chartElement) {
+      chartElement.addEventListener('wheel', (e) => e.preventDefault(), {
+        passive: false
+      });
+      chartElement.addEventListener('touchstart', (e) => e.preventDefault(), {
+        passive: false
+      });
+      chartElement.addEventListener('touchmove', (e) => e.preventDefault(), {
+        passive: false
+      });
     }
-  }, [symbol, width, height, colorTheme, locale]);
+
+    const basePrice = data[0].value;
+    const splitIndex = data.findIndex((d) => d.value > basePrice);
+
+    if (splitIndex === -1 || splitIndex === 0) {
+      const redSeries = chart.addAreaSeries({
+        lineColor: '#ff4d4f',
+        topColor: 'rgba(255, 77, 79, 0.4)',
+        bottomColor: 'rgba(255, 77, 79, 0)',
+        lineWidth: 2
+      });
+      redSeries.setData(data);
+    } else {
+      const redSeries = chart.addAreaSeries({
+        lineColor: '#ff4d4f',
+        topColor: 'rgba(255, 77, 79, 0.4)',
+        bottomColor: 'rgba(255, 77, 79, 0)',
+        lineWidth: 2
+      });
+
+      const greenSeries = chart.addAreaSeries({
+        lineColor: '#0ecb81',
+        topColor: 'rgba(14, 203, 129, 0.4)',
+        bottomColor: 'rgba(14, 203, 129, 0)',
+        lineWidth: 2
+      });
+
+      redSeries.setData(data.slice(0, splitIndex + 1));
+      greenSeries.setData(data.slice(splitIndex));
+    }
+
+    return () => {
+      chart.remove();
+    };
+  }, [data]);
 
   return (
     <div
-      className='tradingview-widget-container'
-      ref={container}
-      style={{ width, height }}
+      css={css`
+        #tv-attr-logo {
+          display: none;
+        }
+      `}
+      ref={chartContainerRef}
     />
   );
-};
-
-export default memo(MiniStockChart);
+}
