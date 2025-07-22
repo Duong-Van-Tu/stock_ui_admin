@@ -458,5 +458,6 @@
   "history": "History",
   "historyWatchlist": "History Watchlist",
   "historyWatchlistPage": "History Watchlist Page",
-  "createdAt": "Created At"
+  "createdAt": "Created At",
+  "dayChart": "Day Chart"
 }

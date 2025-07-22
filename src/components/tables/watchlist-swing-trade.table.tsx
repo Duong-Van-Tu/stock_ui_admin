@@ -191,6 +191,23 @@ export const WatchlistSwingTradeTable = () => {
       }),
       align: 'center'
     },
+    // {
+    //   title: t('dayChart'),
+    //   dataIndex: 'period',
+    //   key: 'period',
+    //   width: 160,
+    //   align: 'center',
+    //   render: () => (
+    //     <div
+    //       css={css`
+    //         width: 140px;
+    //         height: 40px;
+    //       `}
+    //     >
+    //       <StockMiniChart data={generateFakeData()} />
+    //     </div>
+    //   )
+    // },
     {
       title: t('aiRating'),
       dataIndex: 'AIRating',

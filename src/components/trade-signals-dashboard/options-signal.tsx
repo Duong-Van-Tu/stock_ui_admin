@@ -235,7 +235,7 @@ export const OptionSignal = () => {
           href={`${PageURLs.ofAlertLogs()}?isOption=1`}
           css={strategyLinkStyles}
         >
-          {t('strategyOptions')}
+          {t('strategyOptions').toUpperCase()}
         </Link>
       }
     >

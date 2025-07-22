@@ -44,6 +44,11 @@ export default function TradeSignalsDashboard() {
         {t('tradeSignalsDashboard')}
       </Typography.Title>
       <div css={gridStyles}>
+        {!loading && (
+          <div css={cardWrapperStyles}>
+            <OptionSignal />
+          </div>
+        )}
         {strategies.map((strategy) => (
           <div key={strategy.id} css={cardWrapperStyles}>
             <StrategySignal
@@ -52,11 +57,6 @@ export default function TradeSignalsDashboard() {
             />
           </div>
         ))}
-        {!loading && (
-          <div css={cardWrapperStyles}>
-            <OptionSignal />
-          </div>
-        )}
       </div>
     </div>
   );
