@@ -102,11 +102,11 @@ export const HistoryWatchlistSwingTradeTable = ({
   };
 
   useEffect(() => {
-    fetchDataHistoryWatchList({ filter });
+    fetchDataHistoryWatchList({});
     return () => {
       dispatch(resetState());
     };
-  }, [dispatch, fetchDataHistoryWatchList, filter]);
+  }, [dispatch, fetchDataHistoryWatchList]);
 
   useEffect(() => {
     if (searchSymbol) {

@@ -585,7 +585,7 @@ export const WatchlistSwingTradeTable = () => {
       }),
       align: 'center',
       render: (value) =>
-        value ? <EllipsisText text={value} maxLines={1} /> : '-'
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
     },
     {
       title: t('subIndustry'),
@@ -600,7 +600,7 @@ export const WatchlistSwingTradeTable = () => {
       }),
       align: 'center',
       render: (value) =>
-        value ? <EllipsisText text={value} maxLines={1} /> : '-'
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
     },
     {
       title: t('sector'),
@@ -615,7 +615,7 @@ export const WatchlistSwingTradeTable = () => {
       }),
       align: 'center',
       render: (value) =>
-        value ? <EllipsisText text={value} maxLines={1} /> : '-'
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
     },
     {
       title: t('buy'),
