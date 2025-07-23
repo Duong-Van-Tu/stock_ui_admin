@@ -40,6 +40,7 @@ import { startCase } from 'lodash';
 import { Icon } from '../icons';
 import { PageURLs } from '@/utils/navigate';
 import { WatchlistSwingTradeFilter } from '../filters/watchlist-swing-trade.filter';
+import { DateTimeCell } from './columns/date-time-cell.column';
 // import { Time } from 'lightweight-charts';
 // import StockMiniChart, { DataPoint } from '../charts/stock-mini.chart';
 
@@ -208,6 +209,99 @@ export const WatchlistSwingTradeTable = () => {
       )
     },
     {
+      title: 'priceBefore9am',
+      dataIndex: 'priceBefore9am',
+      key: 'priceBefore9am',
+      width: 130,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'priceBefore9am' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('priceBefore9am')
+      }),
+      align: 'center',
+      render: (value) => (value ? roundToDecimals(value) : '-'),
+      hidden: true
+    },
+    {
+      title: 'timeBefore9am',
+      dataIndex: 'timeBefore9am',
+      key: 'timeBefore9am',
+      width: 156,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'timeBefore9am' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('timeBefore9am')
+      }),
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-'),
+      hidden: true
+    },
+    {
+      title: 'priceAfter4pm',
+      dataIndex: 'priceAfter4pm',
+      key: 'priceAfter4pm',
+      width: 130,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'priceAfter4pm' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('priceAfter4pm')
+      }),
+      align: 'center',
+      render: (value) => (value ? roundToDecimals(value) : '-'),
+      hidden: true
+    },
+    {
+      title: 'timeAfter4pm',
+      dataIndex: 'timeAfter4pm',
+      key: 'timeAfter4pm',
+      width: 156,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'timeAfter4pm' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('timeAfter4pm')
+      }),
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-'),
+      hidden: true
+    },
+    {
+      title: 'priceAfter8pm',
+      dataIndex: 'priceAfter8pm',
+      key: 'priceAfter8pm',
+      width: 130,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'priceAfter8pm' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('priceAfter8pm')
+      }),
+      align: 'center',
+      render: (value) => (value ? roundToDecimals(value) : '-'),
+      hidden: true
+    },
+    {
+      title: 'timeAfter8pm',
+      dataIndex: 'timeAfter8pm',
+      key: 'timeAfter8pm',
+      width: 156,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'timeAfter8pm' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('timeAfter8pm')
+      }),
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-'),
+      hidden: true
+    },
+    {
       title: t('period'),
       dataIndex: 'period',
       key: 'period',
@@ -219,7 +313,8 @@ export const WatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('period')
       }),
-      align: 'center'
+      align: 'center',
+      hidden: true
     },
     // {
     //   title: t('dayChart'),
@@ -565,6 +660,69 @@ export const WatchlistSwingTradeTable = () => {
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
+      title: t('marketCap'),
+      dataIndex: 'marketCapWatchList',
+      key: 'marketCapWatchList',
+      width: 130,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'marketCapWatchList' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('marketCapWatchList')
+      }),
+      align: 'center',
+      render: (value) => (value ? formatMarketCap(value) : '-')
+    },
+    {
+      title: t('industry'),
+      dataIndex: 'industry',
+      key: 'industry',
+      width: 180,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'industry' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('industry')
+      }),
+      align: 'center',
+      hidden: !!isETF,
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
+    },
+    {
+      title: t('subIndustry'),
+      dataIndex: 'subindustry',
+      key: 'subindustry',
+      width: 180,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'subindustry' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('subindustry')
+      }),
+      align: 'center',
+      hidden: true,
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
+    },
+    {
+      title: t('sector'),
+      dataIndex: 'sector',
+      key: 'sector',
+      width: 200,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'sector' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('sector')
+      }),
+      align: 'center',
+      hidden: !!isETF,
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
+    },
+    {
       title: t('yahooPriceTargetMean'),
       dataIndex: 'yahooPriceTargetMean',
       key: 'yahooPriceTargetMean',
@@ -608,66 +766,6 @@ export const WatchlistSwingTradeTable = () => {
       }),
       align: 'center',
       render: (value) => (value ? roundToDecimals(value) : '-')
-    },
-    {
-      title: t('marketCap'),
-      dataIndex: 'marketCapWatchList',
-      key: 'marketCapWatchList',
-      width: 130,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'marketCapWatchList' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('marketCapWatchList')
-      }),
-      align: 'center',
-      render: (value) => (value ? formatMarketCap(value) : '-')
-    },
-    {
-      title: t('industry'),
-      dataIndex: 'industry',
-      key: 'industry',
-      width: 180,
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'industry' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('industry')
-      }),
-      align: 'center',
-      render: (value) =>
-        value ? <EllipsisText text={value} maxLines={2} /> : '-'
-    },
-    {
-      title: t('subIndustry'),
-      dataIndex: 'subindustry',
-      key: 'subindustry',
-      width: 180,
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'subindustry' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('subindustry')
-      }),
-      align: 'center',
-      render: (value) =>
-        value ? <EllipsisText text={value} maxLines={2} /> : '-'
-    },
-    {
-      title: t('sector'),
-      dataIndex: 'sector',
-      key: 'sector',
-      width: 200,
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'sector' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('sector')
-      }),
-      align: 'center',
-      render: (value) =>
-        value ? <EllipsisText text={value} maxLines={2} /> : '-'
     },
     {
       title: t('buy'),
