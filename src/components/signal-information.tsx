@@ -85,7 +85,7 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
               value:
                 signal.takeProfit && signal.entryPrice ? (
                   <div>
-                    {roundToDecimals(signal.takeProfit, 2)}&nbsp;
+                    ${roundToDecimals(signal.takeProfit, 2)}&nbsp;
                     <PositiveNegativeText
                       isPositive={signal.takeProfit > signal.entryPrice}
                       isNegative={signal.takeProfit < signal.entryPrice}
@@ -110,7 +110,7 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
               value:
                 signal.stopLoss && signal.entryPrice ? (
                   <div>
-                    {roundToDecimals(signal.stopLoss, 2)}&nbsp;
+                    ${roundToDecimals(signal.stopLoss, 2)}&nbsp;
                     <PositiveNegativeText
                       isPositive={signal.stopLoss > signal.entryPrice}
                       isNegative={signal.stopLoss < signal.entryPrice}
@@ -118,6 +118,36 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
                       (
                       {formatPercent(
                         calculatePercentage(signal.entryPrice, signal.stopLoss),
+                        2
+                      )}
+                      )
+                    </PositiveNegativeText>
+                  </div>
+                ) : (
+                  '--'
+                )
+            },
+            {
+              label: t('newStopLoss'),
+              value:
+                signal.consoleObject?.newStopLoss && signal.entryPrice ? (
+                  <div>
+                    ${roundToDecimals(signal.consoleObject.newStopLoss, 2)}
+                    &nbsp;
+                    <PositiveNegativeText
+                      isPositive={
+                        signal.consoleObject.newStopLoss > signal.entryPrice
+                      }
+                      isNegative={
+                        signal.consoleObject.newStopLoss < signal.entryPrice
+                      }
+                    >
+                      (
+                      {formatPercent(
+                        calculatePercentage(
+                          signal.entryPrice,
+                          signal.consoleObject.newStopLoss
+                        ),
                         2
                       )}
                       )
