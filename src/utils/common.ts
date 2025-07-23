@@ -257,3 +257,19 @@ export const getThumbnail = (
     url
   )}?w=${width}&h=${height}`;
 };
+
+export const parseConsoleObject = (rawString: string) => {
+  let depth = 0;
+  for (let i = 0; i < rawString.length; i++) {
+    const char = rawString[i];
+    if (char === '{') depth++;
+    if (char === '}') depth--;
+
+    if (depth === 0) {
+      const jsonStr = rawString.slice(0, i + 1);
+      return JSON.parse(jsonStr);
+    }
+  }
+
+  throw new Error('Invalid JSON structure');
+};
