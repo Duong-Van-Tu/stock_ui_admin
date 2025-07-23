@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useEffect, useRef } from 'react';
-import { createChart, Time } from 'lightweight-charts';
+import { createChart, LineStyle, Time } from 'lightweight-charts';
 
 export type DataPoint = {
   time: Time;
@@ -10,9 +10,15 @@ export type DataPoint = {
 
 type StockMiniChartProps = {
   data: DataPoint[];
+  width?: number;
+  height?: number;
 };
 
-export default function StockMiniChart({ data }: StockMiniChartProps) {
+export default function StockMiniChart({
+  data,
+  width = 138,
+  height = 40
+}: StockMiniChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ReturnType<typeof createChart>>();
 
@@ -85,7 +91,7 @@ export default function StockMiniChart({ data }: StockMiniChartProps) {
         topColor: 'rgba(255, 77, 79, 0.4)',
         bottomColor: 'rgba(255, 77, 79, 0)',
         lineWidth: 2,
-        priceLineVisible: true
+        priceLineVisible: false
       });
 
       const greenSeries = chart.addAreaSeries({
@@ -96,11 +102,30 @@ export default function StockMiniChart({ data }: StockMiniChartProps) {
         priceLineVisible: true
       });
 
-      redSeries.setData(data.slice(0, splitIndex + 1));
-      greenSeries.setData(data.slice(splitIndex));
+      const redData = data.slice(0, splitIndex + 1);
+      const greenData = data.slice(splitIndex);
+
+      redSeries.setData(redData);
+      greenSeries.setData(greenData);
       applyMargins(redSeries);
       applyMargins(greenSeries);
+
+      const open = data[0].value;
+      redSeries.createPriceLine({
+        price: open,
+        color: '#999',
+        lineWidth: 1,
+        lineStyle: LineStyle.Dashed,
+        axisLabelVisible: false,
+        title: 'Open'
+      });
     }
+
+    const times = data.map((d) => d.time as number);
+    chart.timeScale().setVisibleRange({
+      from: Math.min(...times) as Time,
+      to: Math.max(...times) as Time
+    });
 
     return () => {
       resizeObserver.disconnect();
@@ -111,19 +136,18 @@ export default function StockMiniChart({ data }: StockMiniChartProps) {
   return (
     <div
       css={css`
-        width: 100%;
-        height: 100%;
+        width: ${width}px;
+        height: ${height}px;
         margin-top: 2px;
+        background-color: transparent;
+        transition: background-color 0.3s;
 
         #tv-attr-logo {
           display: none;
         }
 
-        background-color: transparent;
-        transition: background-color 0.3s;
-
         &:hover {
-          background-color: 'var(--background-Row-table-color)';
+          background-color: var(--background-Row-table-color);
         }
       `}
       ref={chartContainerRef}
