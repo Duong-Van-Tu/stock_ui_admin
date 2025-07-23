@@ -459,5 +459,6 @@
   "historyWatchlist": "Lịch sử theo dõi stock 50 ngày",
   "historyWatchlistPage": "Lịch sử theo dõi stock 50 ngày",
   "createdAt": "Ngày tạo",
-  "dayChart": "Chart Ngày"
+  "dayChart": "Chart Ngày",
+  "newStopLoss": "Điểm cắt lỗ mới"
 }

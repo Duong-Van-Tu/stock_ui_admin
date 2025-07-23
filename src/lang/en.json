@@ -459,5 +459,6 @@
   "historyWatchlist": "History Watchlist",
   "historyWatchlistPage": "History Watchlist Page",
   "createdAt": "Created At",
-  "dayChart": "Day Chart"
+  "dayChart": "Day Chart",
+  "newStopLoss": "New Stop Loss"
 }

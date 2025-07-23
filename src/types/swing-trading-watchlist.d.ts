@@ -45,6 +45,14 @@ type WatchlistSwingTrade = {
   sector: string;
   industry: string;
   subindustry: string;
+  priceAfter4pm: number;
+  timeAfter4pm: string;
+  priceAfter8pm: number;
+  timeAfter8pm: string;
+  priceBefore9am: number;
+  timeBefore9am: string;
+  percentGap: number;
+  gapType: string;
   createdAt: string;
 };
 

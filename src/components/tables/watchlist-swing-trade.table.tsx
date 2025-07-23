@@ -40,6 +40,36 @@ import { startCase } from 'lodash';
 import { Icon } from '../icons';
 import { PageURLs } from '@/utils/navigate';
 import { WatchlistSwingTradeFilter } from '../filters/watchlist-swing-trade.filter';
+// import { Time } from 'lightweight-charts';
+// import StockMiniChart, { DataPoint } from '../charts/stock-mini.chart';
+
+// const generateFakeData = (): DataPoint[] => {
+//   const marketOpen = new Date();
+//   marketOpen.setHours(9, 30, 0, 0);
+//   const timestamps: Time[] = [];
+
+//   const intervalMinutes = 15;
+//   const totalPoints = 26;
+
+//   for (let i = 0; i < totalPoints; i++) {
+//     const timestamp = new Date(
+//       marketOpen.getTime() + i * intervalMinutes * 60 * 1000
+//     );
+//     timestamps.push(Math.floor(timestamp.getTime() / 1000) as Time);
+//   }
+
+//   const data: DataPoint[] = [];
+//   let currentValue = 100;
+
+//   for (const time of timestamps) {
+//     // Tăng độ dao động lên ±5 thay vì ±1
+//     const change = (Math.random() - 0.5) * 10; // ~ ±5
+//     currentValue = Math.max(85, Math.min(115, currentValue + change));
+//     data.push({ time, value: parseFloat(currentValue.toFixed(2)) });
+//   }
+
+//   return data;
+// };
 
 export const WatchlistSwingTradeTable = () => {
   const t = useTranslations();
@@ -106,7 +136,7 @@ export const WatchlistSwingTradeTable = () => {
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           symbol: symbol ? symbol : undefined,
-          isETF,
+          isETF: isETF ?? false,
           ...filteredFilter
         })
       );
@@ -198,14 +228,19 @@ export const WatchlistSwingTradeTable = () => {
     //   width: 160,
     //   align: 'center',
     //   render: () => (
-    //     <div
+    //     <Button
+    //       type='text'
     //       css={css`
     //         width: 140px;
     //         height: 40px;
+    //         padding: 0;
+    //         &:hover {
+    //           background: unset !important;
+    //         }
     //       `}
     //     >
     //       <StockMiniChart data={generateFakeData()} />
-    //     </div>
+    //     </Button>
     //   )
     // },
     {

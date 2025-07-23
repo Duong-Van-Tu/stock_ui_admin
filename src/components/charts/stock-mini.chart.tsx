@@ -121,10 +121,10 @@ export default function StockMiniChart({
     }
 
     segments.forEach(({ data: segment, isDown }) => {
-      const lineColor = isDown ? '#ff4d4f' : '#0ecb81';
+      const lineColor = isDown ? '#fa080c' : '#10ba08';
       const topColor = isDown
-        ? 'rgba(193, 26, 29, 0.4)'
-        : 'rgba(14, 203, 129, 0.4)';
+        ? 'rgba(227, 1, 5, 0.4)'
+        : 'rgba(4, 193, 120, 0.4)';
       const bottomColor = isDown
         ? 'rgba(255, 77, 79, 0)'
         : 'rgba(14, 203, 129, 0)';

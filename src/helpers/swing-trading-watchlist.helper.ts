@@ -47,7 +47,15 @@ export const transformWatchlistSwingTrade = (
     subindustry: item.subindustry,
     currentPriceWatchlist: item[fieldMapping.currentPriceWatchlist],
     previousPrice: item[fieldMapping.previousPrice],
-    companyName: item.description
+    companyName: item.description,
+    priceAfter4pm: item[fieldMapping.priceAfter4pm],
+    timeAfter4pm: item[fieldMapping.timeAfter4pm],
+    priceAfter8pm: item[fieldMapping.priceAfter8pm],
+    timeAfter8pm: item[fieldMapping.timeAfter8pm],
+    priceBefore9am: item[fieldMapping.priceBefore9am],
+    timeBefore9am: item[fieldMapping.timeBefore9am],
+    percentGap: item[fieldMapping.percentGap],
+    gapType: item[fieldMapping.gapType]
   }));
 };
 

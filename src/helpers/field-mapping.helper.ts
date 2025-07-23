@@ -162,7 +162,6 @@ export const fieldMapping: Record<string, string> = {
   marketCapWatchList: 'marketCap',
   stopLoss: 'stop_loss',
   takeProfit: 'take_profit',
-  isETF: 'isTypeEFT',
   suggestLowBuy50: 'suggest_low_buy_50',
   suggestHighBuy50: 'suggest_high_buy_50',
   suggestLowBuy20: 'suggest_low_buy_20',
