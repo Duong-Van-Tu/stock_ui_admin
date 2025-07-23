@@ -105,7 +105,7 @@ export const WatchlistSwingTradeTable = () => {
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
-          symbol: symbol ? symbol : false,
+          symbol: symbol ? symbol : undefined,
           isETF,
           ...filteredFilter
         })
