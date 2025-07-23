@@ -172,5 +172,14 @@ export const fieldMapping: Record<string, string> = {
   suggestHighBuy10: 'suggest_high_buy_10',
   highestPricePercent: 'pl_highest_price_percent',
   lowestPricePercent: 'pl_lowest_price_percent',
-  currentPricePercent: 'pl_price_percent'
+  currentPricePercent: 'pl_price_percent',
+  priceAfter4pm: 'price_after_4pm',
+  timeAfter4pm: 'time_after_4pm',
+  priceAfter8pm: 'price_after_8pm',
+  timeAfter8pm: 'time_after_8pm',
+  priceBefore9am: 'price_before_9am',
+  timeBefore9am: 'time_before_9am',
+  percentGap: 'percent_gap',
+  gapType: 'gap_type',
+  consoleObject: 'console_object'
 };
