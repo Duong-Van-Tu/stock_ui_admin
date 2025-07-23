@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { fieldMapping } from './field-mapping.helper';
-import { parseToUTC } from '@/utils/common';
+import { parseConsoleObject, parseToUTC } from '@/utils/common';
 
 const UNUSED_IDS = [4, 7, 8];
 
@@ -74,6 +74,9 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     takeProfit: Number(stock[fieldMapping.takeProfit]),
     highestPricePercent: stock[fieldMapping.highestPricePercent],
     lowestPricePercent: stock[fieldMapping.lowestPricePercent],
-    currentPricePercent: stock[fieldMapping.currentPricePercent]
+    currentPricePercent: stock[fieldMapping.currentPricePercent],
+    consoleObject: stock[fieldMapping.consoleObject]
+      ? parseConsoleObject(stock[fieldMapping.consoleObject])
+      : ''
   }));
 };
