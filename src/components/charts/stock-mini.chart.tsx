@@ -63,8 +63,7 @@ export default function StockMiniChart({
 
     resizeObserver.observe(container);
 
-    const basePrice = data[0].value;
-    const splitIndex = data.findIndex((d) => d.value > basePrice);
+    const open = data[0].value;
 
     const applyMargins = (series: ReturnType<typeof chart.addAreaSeries>) => {
       series.priceScale().applyOptions({
@@ -75,51 +74,81 @@ export default function StockMiniChart({
       });
     };
 
-    if (splitIndex === -1 || splitIndex === 0) {
-      const redSeries = chart.addAreaSeries({
-        lineColor: '#ff4d4f',
-        topColor: 'rgba(255, 77, 79, 0.4)',
-        bottomColor: 'rgba(255, 77, 79, 0)',
+    const segments: { data: DataPoint[]; isDown: boolean }[] = [];
+    let currentSegment: DataPoint[] = [];
+    let prevValue = data[0].value;
+    let currentIsDown = prevValue < open;
+
+    for (let i = 0; i < data.length; i++) {
+      const point = data[i];
+      const isDown = point.value < open;
+
+      if (i === 0 || isDown !== currentIsDown) {
+        if (i > 0) {
+          const crossoverTime = (point.time as number) - 0.000001;
+          const crossoverValue = open;
+
+          currentSegment.push({
+            time: crossoverTime as Time,
+            value: crossoverValue
+          });
+
+          segments.push({
+            data: [...currentSegment],
+            isDown: currentIsDown
+          });
+
+          currentSegment = [
+            {
+              time: crossoverTime as Time,
+              value: crossoverValue
+            }
+          ];
+        }
+
+        currentIsDown = isDown;
+      }
+
+      currentSegment.push(point);
+      prevValue = point.value;
+    }
+
+    if (currentSegment.length > 0) {
+      segments.push({
+        data: currentSegment,
+        isDown: currentIsDown
+      });
+    }
+
+    segments.forEach(({ data: segment, isDown }) => {
+      const lineColor = isDown ? '#ff4d4f' : '#0ecb81';
+      const topColor = isDown
+        ? 'rgba(193, 26, 29, 0.4)'
+        : 'rgba(14, 203, 129, 0.4)';
+      const bottomColor = isDown
+        ? 'rgba(255, 77, 79, 0)'
+        : 'rgba(14, 203, 129, 0)';
+
+      const series = chart.addAreaSeries({
+        lineColor,
+        topColor,
+        bottomColor,
         lineWidth: 2,
         priceLineVisible: false
       });
-      redSeries.setData(data);
-      applyMargins(redSeries);
-    } else {
-      const redSeries = chart.addAreaSeries({
-        lineColor: '#ff4d4f',
-        topColor: 'rgba(255, 77, 79, 0.4)',
-        bottomColor: 'rgba(255, 77, 79, 0)',
-        lineWidth: 2,
-        priceLineVisible: false
-      });
 
-      const greenSeries = chart.addAreaSeries({
-        lineColor: '#0ecb81',
-        topColor: 'rgba(14, 203, 129, 0.4)',
-        bottomColor: 'rgba(14, 203, 129, 0)',
-        lineWidth: 2,
-        priceLineVisible: true
-      });
+      series.setData(segment);
+      applyMargins(series);
+    });
 
-      const redData = data.slice(0, splitIndex + 1);
-      const greenData = data.slice(splitIndex);
-
-      redSeries.setData(redData);
-      greenSeries.setData(greenData);
-      applyMargins(redSeries);
-      applyMargins(greenSeries);
-
-      const open = data[0].value;
-      redSeries.createPriceLine({
-        price: open,
+    chart
+      .addLineSeries({
         color: '#999',
         lineWidth: 1,
         lineStyle: LineStyle.Dashed,
-        axisLabelVisible: false,
-        title: 'Open'
-      });
-    }
+        priceLineVisible: false
+      })
+      .setData(data.map((d) => ({ time: d.time, value: open })));
 
     const times = data.map((d) => d.time as number);
     chart.timeScale().setVisibleRange({
