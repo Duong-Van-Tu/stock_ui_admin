@@ -7,6 +7,7 @@ import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   cleanFalsyValues,
   formatMarketCap,
+  formatPercent,
   roundToDecimals
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -28,7 +29,11 @@ import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { PositiveNegativeText } from '../positive-negative-text';
-import { Recommendation, WatchlistView } from '@/constants/common.constant';
+import {
+  GapDirection,
+  Recommendation,
+  WatchlistView
+} from '@/constants/common.constant';
 import { useModal } from '@/hooks/modal.hook';
 import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
@@ -209,7 +214,7 @@ export const WatchlistSwingTradeTable = () => {
       )
     },
     {
-      title: 'priceBefore9am',
+      title: t('priceBefore9am'),
       dataIndex: 'priceBefore9am',
       key: 'priceBefore9am',
       width: 130,
@@ -221,14 +226,13 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('priceBefore9am')
       }),
       align: 'center',
-      render: (value) => (value ? roundToDecimals(value) : '-'),
-      hidden: true
+      render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
-      title: 'timeBefore9am',
+      title: t('timeBefore9am'),
       dataIndex: 'timeBefore9am',
       key: 'timeBefore9am',
-      width: 156,
+      width: 130,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -236,11 +240,10 @@ export const WatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('timeBefore9am')
       }),
-      render: (value) => (value ? <DateTimeCell value={value} /> : '-'),
-      hidden: true
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
-      title: 'priceAfter4pm',
+      title: t('priceAfter4pm'),
       dataIndex: 'priceAfter4pm',
       key: 'priceAfter4pm',
       width: 130,
@@ -252,14 +255,13 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('priceAfter4pm')
       }),
       align: 'center',
-      render: (value) => (value ? roundToDecimals(value) : '-'),
-      hidden: true
+      render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
-      title: 'timeAfter4pm',
+      title: t('timeAfter4pm'),
       dataIndex: 'timeAfter4pm',
       key: 'timeAfter4pm',
-      width: 156,
+      width: 130,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -267,11 +269,10 @@ export const WatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('timeAfter4pm')
       }),
-      render: (value) => (value ? <DateTimeCell value={value} /> : '-'),
-      hidden: true
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
-      title: 'priceAfter8pm',
+      title: t('priceAfter8pm'),
       dataIndex: 'priceAfter8pm',
       key: 'priceAfter8pm',
       width: 130,
@@ -283,14 +284,13 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('priceAfter8pm')
       }),
       align: 'center',
-      render: (value) => (value ? roundToDecimals(value) : '-'),
-      hidden: true
+      render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
-      title: 'timeAfter8pm',
+      title: t('timeAfter8pm'),
       dataIndex: 'timeAfter8pm',
       key: 'timeAfter8pm',
-      width: 156,
+      width: 130,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -298,23 +298,34 @@ export const WatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('timeAfter8pm')
       }),
-      render: (value) => (value ? <DateTimeCell value={value} /> : '-'),
-      hidden: true
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
-      title: t('period'),
-      dataIndex: 'period',
-      key: 'period',
-      width: 80,
-      defaultSortOrder: 'descend',
+      title: t('gapType'),
+      dataIndex: 'gapType',
+      key: 'gapType',
+      width: 110,
+      align: 'center',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'period' ? sortType : null,
+      sortOrder: sortField === 'gapType' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('period')
+        onClick: () => handleSortOrder('gapType')
       }),
-      align: 'center',
-      hidden: true
+      render: (value, record) =>
+        value === GapDirection.NO_CHANGE ? (
+          t('noChange')
+        ) : (
+          <PositiveNegativeText
+            isPositive={value === GapDirection.GAP_UP}
+            isNegative={value === GapDirection.GAP_DOWN}
+          >
+            <span>
+              {value === GapDirection.GAP_UP ? t('gapUp') : t('gapDown')}
+              <br /> ({formatPercent(record.percentGap)})
+            </span>
+          </PositiveNegativeText>
+        )
     },
     // {
     //   title: t('dayChart'),
@@ -338,6 +349,20 @@ export const WatchlistSwingTradeTable = () => {
     //     </Button>
     //   )
     // },
+    {
+      title: t('period'),
+      dataIndex: 'period',
+      key: 'period',
+      width: 80,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'period' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('period')
+      }),
+      align: 'center'
+    },
     {
       title: t('aiRating'),
       dataIndex: 'AIRating',

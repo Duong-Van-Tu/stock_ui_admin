@@ -54,7 +54,7 @@ export const transformWatchlistSwingTrade = (
     timeAfter8pm: item[fieldMapping.timeAfter8pm],
     priceBefore9am: item[fieldMapping.priceBefore9am],
     timeBefore9am: item[fieldMapping.timeBefore9am],
-    percentGap: item[fieldMapping.percentGap],
+    percentGap: Number(item[fieldMapping.percentGap]),
     gapType: item[fieldMapping.gapType]
   }));
 };

@@ -38,3 +38,9 @@ export const RecommendationText: Record<string, string> = {
   [Recommendation.STRONG_BUY]: 'Strong Buy',
   [Recommendation.SELL]: 'Sell'
 };
+
+export enum GapDirection {
+  GAP_UP = 'UP',
+  GAP_DOWN = 'DOWN',
+  NO_CHANGE = 'NO_CHANGE'
+}

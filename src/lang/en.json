@@ -460,5 +460,15 @@
   "historyWatchlistPage": "History Watchlist Page",
   "createdAt": "Created At",
   "dayChart": "Day Chart",
-  "newStopLoss": "New Stop Loss"
+  "newStopLoss": "New Stop Loss",
+  "gapType": "Gap Type",
+  "noChange": "No Change",
+  "gapUp": "GAP UP",
+  "gapDown": "GAP DOWN",
+  "priceBefore9am": "Price before 9AM",
+  "timeBefore9am": "Time before 9AM",
+  "priceAfter4pm": "Price after 4PM",
+  "timeAfter4pm": "Time after 4PM",
+  "priceAfter8pm": "Price after 8PM",
+  "timeAfter8pm": "Time after 8PM"
 }

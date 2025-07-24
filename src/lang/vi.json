@@ -460,5 +460,15 @@
   "historyWatchlistPage": "Lịch sử theo dõi stock 50 ngày",
   "createdAt": "Ngày tạo",
   "dayChart": "Chart Ngày",
-  "newStopLoss": "Điểm cắt lỗ mới"
+  "newStopLoss": "Điểm cắt lỗ mới",
+  "gapType": "Loại Gap",
+  "noChange": "Không thay đổi",
+  "gapUp": "GAP Tăng",
+  "gapDown": "GAP Giảm",
+  "priceBefore9am": "Giá trước 9h",
+  "timeBefore9am": "Thời gian trước 9h",
+  "priceAfter4pm": "Giá sau 16h",
+  "timeAfter4pm": "Thời gian sau 16h",
+  "priceAfter8pm": "Giá sau 20h",
+  "timeAfter8pm": "Thời gian sau 20h"
 }
