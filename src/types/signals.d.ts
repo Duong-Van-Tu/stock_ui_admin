@@ -54,7 +54,7 @@ type Signal = {
   highestPricePercent: number;
   lowestPricePercent: number;
   currentPricePercent: number;
-  consoleObject: any;
+  newStopLoss: number;
 };
 
 type AlertLogsFilter = Filter & {

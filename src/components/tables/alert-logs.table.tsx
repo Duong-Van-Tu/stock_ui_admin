@@ -458,18 +458,15 @@ export const AlertLogsTable = () => {
     },
     {
       title: t('newStopLoss'),
-      dataIndex: 'consoleObject',
-      key: 'consoleObject',
+      dataIndex: 'newStopLoss',
+      key: 'newStopLoss',
       width: 124,
       align: 'center',
       render: (value, record) => {
-        const percentage = calculatePercentage(
-          record.entryPrice,
-          value?.newStopLoss
-        );
-        return value?.newStopLoss ? (
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return value ? (
           <div>
-            {roundToDecimals(value.newStopLoss, 2)}
+            {roundToDecimals(value, 2)}
             <br />
             <PositiveNegativeText
               isPositive={percentage > 0}
@@ -1037,7 +1034,7 @@ export const AlertLogsTable = () => {
     'entryDate',
     'entryPrice',
     'stopLoss',
-    'consoleObject',
+    'newStopLoss',
     'takeProfit',
     'exitDate',
     'exitPrice',

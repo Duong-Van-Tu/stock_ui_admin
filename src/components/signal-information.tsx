@@ -130,23 +130,19 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
             {
               label: t('newStopLoss'),
               value:
-                signal.consoleObject?.newStopLoss && signal.entryPrice ? (
+                signal?.newStopLoss && signal.entryPrice ? (
                   <div>
-                    ${roundToDecimals(signal.consoleObject.newStopLoss, 2)}
+                    ${roundToDecimals(signal.newStopLoss, 2)}
                     &nbsp;
                     <PositiveNegativeText
-                      isPositive={
-                        signal.consoleObject.newStopLoss > signal.entryPrice
-                      }
-                      isNegative={
-                        signal.consoleObject.newStopLoss < signal.entryPrice
-                      }
+                      isPositive={signal.newStopLoss > signal.entryPrice}
+                      isNegative={signal.newStopLoss < signal.entryPrice}
                     >
                       (
                       {formatPercent(
                         calculatePercentage(
                           signal.entryPrice,
-                          signal.consoleObject.newStopLoss
+                          signal.newStopLoss
                         ),
                         2
                       )}

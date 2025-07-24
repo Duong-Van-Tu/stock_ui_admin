@@ -75,8 +75,8 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     highestPricePercent: stock[fieldMapping.highestPricePercent],
     lowestPricePercent: stock[fieldMapping.lowestPricePercent],
     currentPricePercent: stock[fieldMapping.currentPricePercent],
-    consoleObject: stock[fieldMapping.consoleObject]
-      ? parseConsoleObject(stock[fieldMapping.consoleObject])
+    newStopLoss: stock[fieldMapping.consoleObject]
+      ? parseConsoleObject(stock[fieldMapping.consoleObject])?.newStopLoss
       : ''
   }));
 };
