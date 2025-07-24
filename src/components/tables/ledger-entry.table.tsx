@@ -124,20 +124,38 @@ export const LedgerEntryTable = () => {
       render: (_, __, index) => index + 1
     },
     {
-      title: t('symbol'),
-      dataIndex: 'symbol',
-      key: 'symbol',
-      width: 90,
-      fixed: !isMobile && 'left',
-      render: (_, record) => <SymbolCell symbol={record.symbol} />
-    },
-    {
       title: t('strategy'),
       dataIndex: 'strategy',
       key: 'strategy',
-      width: 120,
+      width: 130,
       align: 'center',
-      showSorterTooltip: false
+      fixed: !isMobile && 'left'
+    },
+    {
+      title: t('entryDate'),
+      dataIndex: 'entryDate',
+      key: 'entryDate',
+      align: 'center',
+      width: 130,
+      render: (value) =>
+        value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
+    },
+    {
+      title: t('exitDate'),
+      dataIndex: 'exitDate',
+      key: 'exitDate',
+      width: 130,
+      align: 'center',
+      render: (value) =>
+        value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
+    },
+    {
+      title: t('holdingTime'),
+      dataIndex: 'holdingTime',
+      key: 'holdingTime',
+      width: 60,
+      align: 'center',
+      render: (_, record) => calculateDIM(record.entryDate, record.exitDate)
     },
     {
       title: t('period'),
@@ -145,6 +163,14 @@ export const LedgerEntryTable = () => {
       key: 'period',
       width: 80,
       align: 'center'
+    },
+    {
+      title: t('symbol'),
+      dataIndex: 'symbol',
+      key: 'symbol',
+      width: 90,
+      align: 'center',
+      render: (_, record) => <SymbolCell symbol={record.symbol} />
     },
     {
       title: t('winOrLoss'),
@@ -176,73 +202,7 @@ export const LedgerEntryTable = () => {
       }
     },
     {
-      title: t('entryDate'),
-      dataIndex: 'entryDate',
-      key: 'entryDate',
-      align: 'center',
-      width: 130,
-      render: (value) =>
-        value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
-    },
-    {
-      title: t('entryPrice'),
-      dataIndex: 'entryPrice',
-      key: 'entryPrice',
-      width: 130,
-      align: 'center',
-      defaultSortOrder: 'descend',
-      render: (value) => (value ? roundToDecimals(value, 2) : '-')
-    },
-    {
-      title: t('exitDate'),
-      dataIndex: 'exitDate',
-      key: 'exitDate',
-      width: 130,
-      align: 'center',
-      render: (value) =>
-        value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
-    },
-    {
-      title: t('holdingTime'),
-      dataIndex: 'holdingTime',
-      key: 'holdingTime',
-      width: 60,
-      align: 'center',
-      render: (_, record) => calculateDIM(record.entryDate, record.exitDate)
-    },
-    {
-      title: t('exitPrice'),
-      dataIndex: 'exitPrice',
-      key: 'exitPrice',
-      width: 130,
-      align: 'center',
-      render: (value, record) => {
-        const percentage = calculatePercentage(record.entryPrice, value);
-        return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
-        ) : (
-          '-'
-        );
-      }
-    },
-    {
-      title: t('StockP/L'),
-      dataIndex: 'stockPL',
-      key: 'stockPL',
-      width: 120,
-      align: 'center',
-      render: (value) => {
-        return value ? (
-          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-            <span>{formatPercent(value, 2)}</span>
-          </PositiveNegativeText>
-        ) : (
-          '-'
-        );
-      }
-    },
-    {
-      title: t('actions'),
+      title: t('action'),
       dataIndex: 'action',
       key: 'action',
       width: 160,
@@ -292,6 +252,14 @@ export const LedgerEntryTable = () => {
       )
     },
     {
+      title: t('contracts'),
+      dataIndex: 'contracts',
+      key: 'contracts',
+      width: 134,
+      align: 'center',
+      render: (value) => (value ? value : '-')
+    },
+    {
       title: (
         <span dangerouslySetInnerHTML={{ __html: t('investmentCash') }}></span>
       ),
@@ -305,14 +273,6 @@ export const LedgerEntryTable = () => {
           {record.investmentCashIn ?? '-'}
         </>
       )
-    },
-    {
-      title: t('contracts'),
-      dataIndex: 'contracts',
-      key: 'contracts',
-      width: 134,
-      align: 'center',
-      render: (value) => (value ? value : '-')
     },
     {
       title: t('commission'),
@@ -388,6 +348,46 @@ export const LedgerEntryTable = () => {
             isNegative={balance < initialBalance}
           >
             {roundToDecimals(balance)}
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
+      title: t('entryPrice'),
+      dataIndex: 'entryPrice',
+      key: 'entryPrice',
+      width: 130,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
+    },
+    {
+      title: t('exitPrice'),
+      dataIndex: 'exitPrice',
+      key: 'exitPrice',
+      width: 130,
+      align: 'center',
+      render: (value, record) => {
+        const percentage = calculatePercentage(record.entryPrice, value);
+        return value ? (
+          <StockChangeCell value={value} percentage={percentage} />
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
+      title: t('StockP/L'),
+      dataIndex: 'stockPL',
+      key: 'stockPL',
+      width: 120,
+      align: 'center',
+      render: (value) => {
+        return value ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            <span>{formatPercent(value, 2)}</span>
           </PositiveNegativeText>
         ) : (
           '-'
@@ -522,7 +522,9 @@ export const LedgerEntryTable = () => {
           >
             {t('addLedgerEntry')}
           </Button>
-          {isDesktop && <ExportExcelLedgerEntry />}
+          {isDesktop && (
+            <ExportExcelLedgerEntry initialBalance={initialBalance} />
+          )}
         </Space>
       </div>
       <Table<LedgerEntry>

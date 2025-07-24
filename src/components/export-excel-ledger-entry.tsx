@@ -21,9 +21,13 @@ import { useTranslations } from 'next-intl';
 import { TimeZone } from '@/constants/timezone.constant';
 import { calculateDIM } from '@/helpers/ledger-entry.helper';
 
-const initialBalance = 5000;
+type ExportExcelLedgerEntryProps = {
+  initialBalance: number;
+};
 
-export const ExportExcelLedgerEntry = () => {
+export const ExportExcelLedgerEntry = ({
+  initialBalance
+}: ExportExcelLedgerEntryProps) => {
   const t = useTranslations();
   const [loading, setLoading] = useState(false);
   const LedgerEntry = useAppSelector(watchLedgerEntry);
@@ -82,16 +86,13 @@ export const ExportExcelLedgerEntry = () => {
       const holdingDays = calculateDIM(entryDate, exitDate);
 
       return {
-        Symbol: item.strategy || '-',
         Strategy: item.strategy || '-',
-        Period: item.period || '-',
-        'Win/Loss': winOrLoss ? (winOrLoss >= 0 ? 'Win' : 'Loss') : '-',
         'Entry Date': item.entryDate ? formatDateTime(item.entryDate) : '-',
-        'Entry Price': formatCurrency(item.entryPrice),
         'Exit Date': formatDateTime(item.exitDate),
         DIM: holdingDays,
-        'Exit Price': formatCurrency(item.exitPrice),
-        'Stock P/L (%)': formatPercent(stockPLPercent),
+        Period: item.period || '-',
+        Symbol: item.symbol || '-',
+        'Win/Loss': winOrLoss ? (winOrLoss >= 0 ? 'Win' : 'Loss') : '-',
         Action: item.action ? item.action : '-',
         Strike: formatCurrency(item.strike),
         Expiration: item.expiration
@@ -99,15 +100,18 @@ export const ExportExcelLedgerEntry = () => {
           : '-',
         'Premium Paid': formatCurrency(item.premiumPaid),
         'Premium Received': formatCurrency(item.premiumReceive),
+        'No. of Contracts': item.contracts ?? '-',
         'Investment Cash Out': formatCurrency(item.investmentCashOut),
         'Investment Cash In': formatCurrency(item.investmentCashIn),
-        'No. of Contracts': item.contracts ?? '-',
         Commission: formatCurrency(item.commission),
         'P/L Amount': formatCurrency(plAmount),
         'P/L (%)': formatPercent(plPercent),
         'Cumulative Gain/Loss': formatCurrency(cumulative),
         'Cumulative Gain/Loss (%)': formatPercent(cumulativePercent),
         'Balance (5000$)': formatCurrency(balance),
+        'Entry Price': formatCurrency(item.entryPrice),
+        'Exit Price': formatCurrency(item.exitPrice),
+        'Stock P/L (%)': formatPercent(stockPLPercent),
         Sector: item.sector || '-',
         Notes: item.notes || '-'
       };
