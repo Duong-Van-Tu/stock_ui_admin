@@ -7,11 +7,11 @@ import { formatPercent, roundToDecimals } from '@/utils/common';
 import { Row, Col } from 'antd';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { PriceWithChange } from './price-with-change';
-import { ChartBackTest } from './charts/chart-backtest';
 import { useMemo } from 'react';
 import { PositiveNegativeText } from './positive-negative-text';
 import { calculateDIM } from '@/helpers/ledger-entry.helper';
 import EllipsisText from './ellipsis-text';
+import StockOverviewChart from './charts/stock-overview.chart';
 
 type LedgerEntryInformationProps = {
   entry: LedgerEntry;
@@ -70,14 +70,9 @@ export const LedgerEntryInformation = ({
   return (
     <>
       <h3 css={styles.title}>{`${t('symbol')}: ${symbol}`}</h3>
-      <ChartBackTest
-        symbol={symbol}
-        period={period}
-        exitPrice={exitPrice}
-        exitDate={exitDate}
-        entryPrice={entryPrice}
-        entryDate={entryDate}
-      />
+      <div css={styles.stockOverviewChart}>
+        <StockOverviewChart symbol={symbol} />
+      </div>
       <div css={styles.infoGroup}>
         <Row gutter={[32, 8]}>
           {[
@@ -238,5 +233,8 @@ const styles = {
     display: flex;
     justify-content: space-between;
     gap: 0.8rem;
+  `,
+  stockOverviewChart: css`
+    height: 50rem;
   `
 };

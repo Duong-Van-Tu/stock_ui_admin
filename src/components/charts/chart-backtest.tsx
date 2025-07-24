@@ -14,8 +14,7 @@ import { TimeZone } from '@/constants/timezone.constant';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { formatNumberShort, formatPercent } from '@/utils/common';
 import { useNotification } from '@/hooks/notification.hook';
-import { Select, Spin } from 'antd';
-import StockOverviewChart from './stock-overview.chart';
+import { Empty, Select, Spin } from 'antd';
 
 const periodOptions = ['10M', '15M', '30M', '1H'];
 
@@ -378,28 +377,24 @@ export const ChartBackTest = ({
 
   return (
     <Spin spinning={loading}>
-      {candlestickData.length === 0 && !loading ? (
-        <div css={styles.chartOverviewStyles}>
-          <StockOverviewChart symbol={symbol} />
-        </div>
+      <div css={styles.selectWrapper}>
+        <Select
+          value={selectedPeriod}
+          onChange={setSelectedPeriod}
+          css={styles.selectPeriod}
+          options={periodOptions.map((p) => ({
+            value: p,
+            label: `${p}`
+          }))}
+          size='small'
+        />
+      </div>
+      {candlestickData.length === 0 ? (
+        <Empty css={styles.empty} />
       ) : (
-        <>
-          <div css={styles.selectWrapper}>
-            <Select
-              value={selectedPeriod}
-              onChange={setSelectedPeriod}
-              css={styles.selectPeriod}
-              options={periodOptions.map((p) => ({
-                value: p,
-                label: `${p}`
-              }))}
-              size='small'
-            />
-          </div>
-          <div ref={chartContainerRef} css={styles.chartContainer}>
-            <div ref={tooltipRef} css={styles.tooltip} />
-          </div>
-        </>
+        <div ref={chartContainerRef} css={styles.chartContainer}>
+          <div ref={tooltipRef} css={styles.tooltip} />
+        </div>
       )}
     </Spin>
   );
@@ -439,9 +434,5 @@ const styles = {
   `,
   selectPeriod: css`
     width: 8rem;
-  `,
-  chartOverviewStyles: css`
-    height: 50rem;
-    margin-top: 1.6rem;
   `
 };
