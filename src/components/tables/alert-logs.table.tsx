@@ -1037,7 +1037,7 @@ export const AlertLogsTable = () => {
     'entryDate',
     'entryPrice',
     'stopLoss',
-    'newStopLoss',
+    'consoleObject',
     'takeProfit',
     'exitDate',
     'exitPrice',
