@@ -167,6 +167,14 @@ export const AlertLogsTable = () => {
     [pathname, searchParams, router]
   );
 
+  const handleRefresh = useCallback(() => {
+    fetchDataAlertLogs({
+      page: pagination.currentPage,
+      pageSize: pagination.pageSize,
+      filter
+    });
+  }, [fetchDataAlertLogs, pagination.currentPage, pagination.pageSize, filter]);
+
   useEffect(() => {
     setFilter((prev) => ({
       ...prev,
@@ -1052,7 +1060,24 @@ export const AlertLogsTable = () => {
       <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
           <div css={titleContainerStyles}>
-            <TableTitle customStyles={titleStyles}>{t('alertLogs')}</TableTitle>
+            <TableTitle customStyles={titleStyles}>
+              <span>{t('alertLogs')}</span>
+              <Tooltip title={!isMobile && t('refresh')}>
+                <Button
+                  onClick={handleRefresh}
+                  type='text'
+                  icon={
+                    <Icon
+                      customStyles={refreshIconStyles}
+                      icon='refresh'
+                      width={22}
+                      height={22}
+                    />
+                  }
+                  shape='circle'
+                />
+              </Tooltip>
+            </TableTitle>
             <div css={exitBtnContainerStyles}>
               {selectedIds.size > 0 && (
                 <Button
@@ -1181,6 +1206,12 @@ const rootStyles = css`
 
 const titleStyles = css`
   width: ${isMobile ? '100%' : 'unset'};
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  span {
+    line-height: 2rem;
+  }
 `;
 
 const tableWrapperStyles = css`
@@ -1263,4 +1294,8 @@ const titleContainerStyles = css`
 
 const exitBtnContainerStyles = css`
   width: 14.5rem;
+`;
+
+const refreshIconStyles = css`
+  margin-top: 0.2rem;
 `;
