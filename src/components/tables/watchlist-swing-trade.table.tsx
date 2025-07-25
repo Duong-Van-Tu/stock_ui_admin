@@ -697,7 +697,7 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('marketCapWatchList')
       }),
       align: 'center',
-      render: (value) => (value ? formatMarketCap(value) : '-')
+      render: (value) => (value ? formatMarketCap(value / 1000000) : '-')
     },
     {
       title: t('industry'),
