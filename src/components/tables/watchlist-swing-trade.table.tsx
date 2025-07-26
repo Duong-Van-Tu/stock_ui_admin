@@ -327,6 +327,21 @@ export const WatchlistSwingTradeTable = () => {
         )
     },
     {
+      title: t('marketCap'),
+      dataIndex: 'marketCapWatchList',
+      key: 'marketCapWatchList',
+      width: 130,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'marketCapWatchList' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('marketCapWatchList')
+      }),
+      align: 'center',
+      render: (value) => (value ? formatMarketCap(value / 1000000) : '-')
+    },
+    {
       title: t('period'),
       dataIndex: 'period',
       key: 'period',
@@ -660,21 +675,6 @@ export const WatchlistSwingTradeTable = () => {
       }),
       align: 'center',
       render: (value) => (value ? roundToDecimals(value) : '-')
-    },
-    {
-      title: t('marketCap'),
-      dataIndex: 'marketCapWatchList',
-      key: 'marketCapWatchList',
-      width: 130,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'marketCapWatchList' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('marketCapWatchList')
-      }),
-      align: 'center',
-      render: (value) => (value ? formatMarketCap(value / 1000000) : '-')
     },
     {
       title: t('industry'),
