@@ -16,9 +16,10 @@ type StockMiniChartProps = {
 
 export default function StockMiniChart({
   data,
-  width = 138,
+  width = 140,
   height = 40
 }: StockMiniChartProps) {
+  console.log({ data });
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ReturnType<typeof createChart>>();
 
@@ -85,7 +86,7 @@ export default function StockMiniChart({
 
       if (i === 0 || isDown !== currentIsDown) {
         if (i > 0) {
-          const crossoverTime = (point.time as number) - 0.000001;
+          const crossoverTime = (point.time as number) - 1;
           const crossoverValue = open;
 
           currentSegment.push({

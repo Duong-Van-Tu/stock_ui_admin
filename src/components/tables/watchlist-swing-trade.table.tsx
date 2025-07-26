@@ -46,36 +46,8 @@ import { Icon } from '../icons';
 import { PageURLs } from '@/utils/navigate';
 import { WatchlistSwingTradeFilter } from '../filters/watchlist-swing-trade.filter';
 import { DateTimeCell } from './columns/date-time-cell.column';
-// import { Time } from 'lightweight-charts';
-// import StockMiniChart, { DataPoint } from '../charts/stock-mini.chart';
-
-// const generateFakeData = (): DataPoint[] => {
-//   const marketOpen = new Date();
-//   marketOpen.setHours(9, 30, 0, 0);
-//   const timestamps: Time[] = [];
-
-//   const intervalMinutes = 15;
-//   const totalPoints = 26;
-
-//   for (let i = 0; i < totalPoints; i++) {
-//     const timestamp = new Date(
-//       marketOpen.getTime() + i * intervalMinutes * 60 * 1000
-//     );
-//     timestamps.push(Math.floor(timestamp.getTime() / 1000) as Time);
-//   }
-
-//   const data: DataPoint[] = [];
-//   let currentValue = 100;
-
-//   for (const time of timestamps) {
-//     // Tăng độ dao động lên ±5 thay vì ±1
-//     const change = (Math.random() - 0.5) * 10; // ~ ±5
-//     currentValue = Math.max(85, Math.min(115, currentValue + change));
-//     data.push({ time, value: parseFloat(currentValue.toFixed(2)) });
-//   }
-
-//   return data;
-// };
+import StockMiniChart, { DataPoint } from '../charts/stock-mini.chart';
+import { setSideBarCollapsed } from '@/redux/slices/app.slice';
 
 export const WatchlistSwingTradeTable = () => {
   const t = useTranslations();
@@ -214,6 +186,32 @@ export const WatchlistSwingTradeTable = () => {
       )
     },
     {
+      title: t('dayChart'),
+      dataIndex: 'intradayStockChart',
+      key: 'intradayStockChart',
+      width: 160,
+      align: 'center',
+      render: (value, record) =>
+        value?.dayChart ? (
+          <Button
+            type='text'
+            css={dayChartBtnStyles}
+            onClick={() => {
+              dispatch(setSideBarCollapsed(true));
+              router.push(
+                `${PageURLs.ofWatchListSwingTradeChart()}?symbol=${
+                  record.symbol
+                }`
+              );
+            }}
+          >
+            <StockMiniChart data={value.dayChart as DataPoint[]} />
+          </Button>
+        ) : (
+          t('noData')
+        )
+    },
+    {
       title: t('priceBefore9am'),
       dataIndex: 'priceBefore9am',
       key: 'priceBefore9am',
@@ -327,28 +325,6 @@ export const WatchlistSwingTradeTable = () => {
           </PositiveNegativeText>
         )
     },
-    // {
-    //   title: t('dayChart'),
-    //   dataIndex: 'period',
-    //   key: 'period',
-    //   width: 160,
-    //   align: 'center',
-    //   render: () => (
-    //     <Button
-    //       type='text'
-    //       css={css`
-    //         width: 140px;
-    //         height: 40px;
-    //         padding: 0;
-    //         &:hover {
-    //           background: unset !important;
-    //         }
-    //       `}
-    //     >
-    //       <StockMiniChart data={generateFakeData()} />
-    //     </Button>
-    //   )
-    // },
     {
       title: t('period'),
       dataIndex: 'period',
@@ -1063,4 +1039,13 @@ const segmentedStyles = css`
 const segmentedLabelStyles = css`
   font-size: ${isMobile ? '1.4rem' : '1.6rem'};
   font-weight: 500;
+`;
+
+const dayChartBtnStyles = css`
+  width: 140px;
+  height: 40px;
+  padding: 0;
+  &:hover {
+    background: unset !important;
+  }
 `;

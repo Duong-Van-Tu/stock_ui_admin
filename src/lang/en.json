@@ -457,7 +457,6 @@
   "regularStocks": "STOCKS",
   "history": "History",
   "historyWatchlist": "History Watchlist",
-  "historyWatchlistPage": "History Watchlist Page",
   "createdAt": "Created At",
   "dayChart": "Day Chart",
   "newStopLoss": "New Stop Loss",
@@ -470,5 +469,7 @@
   "priceAfter4pm": "Price after 4PM",
   "timeAfter4pm": "Time after 4PM",
   "priceAfter8pm": "Price after 8PM",
-  "timeAfter8pm": "Time after 8PM"
+  "timeAfter8pm": "Time after 8PM",
+  "chart": "Chart",
+  "noData": "No Data"
 }

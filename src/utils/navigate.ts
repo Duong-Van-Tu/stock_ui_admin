@@ -55,6 +55,10 @@ export namespace PageURLs {
     return withPrefix(`/watchlist-swing-trade/history/${symbol}`);
   }
 
+  export function ofWatchListSwingTradeChart() {
+    return withPrefix(`/watchlist-swing-trade/chart`);
+  }
+
   export function ofLedgerEntry() {
     return withPrefix('/ledger-entry');
   }

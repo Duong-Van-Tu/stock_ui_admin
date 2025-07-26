@@ -53,6 +53,7 @@ type WatchlistSwingTrade = {
   timeBefore9am: string;
   percentGap: number;
   gapType: string;
+  intradayStockChart: IntradayStockChart;
   createdAt: string;
 };
 

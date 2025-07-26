@@ -457,7 +457,6 @@
   "regularStocks": "STOCKS",
   "history": "Lịch sử",
   "historyWatchlist": "Lịch sử theo dõi stock 50 ngày",
-  "historyWatchlistPage": "Lịch sử theo dõi stock 50 ngày",
   "createdAt": "Ngày tạo",
   "dayChart": "Chart Ngày",
   "newStopLoss": "Điểm cắt lỗ mới",
@@ -470,5 +469,7 @@
   "priceAfter4pm": "Giá sau 16h",
   "timeAfter4pm": "Thời gian sau 16h",
   "priceAfter8pm": "Giá sau 20h",
-  "timeAfter8pm": "Thời gian sau 20h"
+  "timeAfter8pm": "Thời gian sau 20h",
+  "chart": "Biểu đồ",
+  "noData": "Không có dữ liệu"
 }

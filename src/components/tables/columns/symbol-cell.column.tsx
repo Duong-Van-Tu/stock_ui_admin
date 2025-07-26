@@ -51,7 +51,7 @@ export const SymbolCell = ({
   };
 
   return (
-    <div css={symbolCellStyles}>
+    <>
       <div css={symbolStyles}>
         <Popover
           content={<ChartMiniTradingview symbol={symbol} />}
@@ -130,16 +130,14 @@ export const SymbolCell = ({
         contentType={drawerContent}
         onClose={handleDrawerClose}
       />
-    </div>
+    </>
   );
 };
-
-const symbolCellStyles = css``;
 
 const symbolStyles = css`
   display: flex;
   align-items: center;
-  font-weight: bold;
+  font-weight: 600;
 `;
 
 const stockLinkStyles = css`

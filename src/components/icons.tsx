@@ -43,6 +43,10 @@ import AIStar from '@/assets/svg/ai-star.svg';
 import Realtime from '@/assets/svg/realtime.svg';
 import Entry from '@/assets/svg/entry.svg';
 import History from '@/assets/svg/history.svg';
+import Buy from '@/assets/svg/buy.svg';
+import Sell from '@/assets/svg/sell.svg';
+import Hold from '@/assets/svg/hold.svg';
+import New from '@/assets/svg/new.svg';
 
 type IconProps = {
   width?: number | string;
@@ -94,7 +98,11 @@ const svgList = {
   AIStar,
   Realtime,
   Entry,
-  History
+  History,
+  Buy,
+  Sell,
+  Hold,
+  New
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = Object.entries(

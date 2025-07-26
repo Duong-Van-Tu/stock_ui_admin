@@ -7,3 +7,15 @@ type Filter = {
   page?: number;
   limit?: number;
 };
+
+type DayChartPoint = {
+  time: number;
+  value: number;
+};
+
+type IntradayStockChart = {
+  symbol: string;
+  dayLow: number;
+  dayHigh: number;
+  dayChart: DayChartPoint[];
+};
