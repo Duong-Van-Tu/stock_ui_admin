@@ -70,7 +70,7 @@ export const WatchlistSwingTradeTable = () => {
 
   const { sortField, sortType, handleSortOrder } =
     useSortOrder<WatchlistSwingTradeFilter>({
-      defaultField: 'AIRating',
+      defaultField: 'marketCapWatchList',
       defaultOrder: 'descend',
       currentFilter: filter,
       onChange: (_field, _order, newFilter) => {
@@ -191,6 +191,7 @@ export const WatchlistSwingTradeTable = () => {
       key: 'intradayStockChart',
       width: 160,
       align: 'center',
+      fixed: 'left',
       render: (value, record) =>
         value?.dayChart ? (
           <Button
@@ -736,6 +737,7 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('yahooPriceTargetMean')
       }),
       align: 'center',
+      hidden: !!isETF,
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
@@ -751,6 +753,7 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('yahooPriceTargetHigh')
       }),
       align: 'center',
+      hidden: !!isETF,
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
@@ -766,6 +769,7 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('yahooPriceTargetLow')
       }),
       align: 'center',
+      hidden: !!isETF,
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
@@ -781,6 +785,7 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('buy')
       }),
       align: 'center',
+      hidden: !!isETF,
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
@@ -796,6 +801,7 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('strongBuy')
       }),
       align: 'center',
+      hidden: !!isETF,
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
@@ -811,6 +817,7 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('sell')
       }),
       align: 'center',
+      hidden: !!isETF,
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
@@ -826,6 +833,7 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('strongSell')
       }),
       align: 'center',
+      hidden: !!isETF,
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
