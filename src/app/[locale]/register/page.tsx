@@ -1,6 +1,9 @@
 'use client';
+
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+
+import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import {
   Form,
@@ -63,6 +66,10 @@ export default function Register() {
     dispatch(registerAndLogin(values));
     router.push(PageURLs.ofIndex());
   };
+
+  useEffect(() => {
+    document.title = t('register');
+  }, []);
 
   return (
     <AuthLayout title={t('register')}>

@@ -1,7 +1,9 @@
 'use client';
+
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
+import { useEffect } from 'react';
 import {
   Form,
   Input,
@@ -11,7 +13,6 @@ import {
   ConfigProvider
 } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-// import { useRouter, useSearchParams } from 'next/navigation';
 import { PageURLs } from '@/utils/navigate';
 import AuthLayout from '@/layout/auth.layout';
 import { useTranslations } from 'next-intl';
@@ -69,6 +70,10 @@ export default function Login() {
     //   router.push(PageURLs.ofIndex());
     // }
   };
+
+  useEffect(() => {
+    document.title = t('login');
+  }, []);
 
   return (
     <AuthLayout title={t('login')}>
