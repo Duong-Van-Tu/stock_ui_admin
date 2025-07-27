@@ -29,6 +29,8 @@ import { StockChangeCell } from './columns/stock-change-cell.column';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { useSearchParams } from 'next/navigation';
 import { isMobile } from 'react-device-detect';
+import { fieldMapping } from '@/helpers/field-mapping.helper';
+import { convertSortType } from '@/utils/sort-table';
 
 export const EarningsTable = () => {
   const t = useTranslations();
@@ -87,6 +89,8 @@ export const EarningsTable = () => {
         getEarnings({
           page,
           limit: pageSize,
+          sortField: fieldMapping[sortField] ?? sortField,
+          sortType: convertSortType(sortType),
           symbol: symbol ? symbol : undefined,
           ...filteredFilter
         })
