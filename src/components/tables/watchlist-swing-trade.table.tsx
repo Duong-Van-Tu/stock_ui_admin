@@ -237,7 +237,8 @@ export const WatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('timeBefore9am')
       }),
-      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+      render: (value) =>
+        value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
     },
     {
       title: t('priceAfter4pm'),
@@ -266,7 +267,8 @@ export const WatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('timeAfter4pm')
       }),
-      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+      render: (value) =>
+        value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
     },
     {
       title: t('priceAfter8pm'),
@@ -295,7 +297,8 @@ export const WatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('timeAfter8pm')
       }),
-      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+      render: (value) =>
+        value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
     },
     {
       title: t('gapType'),
