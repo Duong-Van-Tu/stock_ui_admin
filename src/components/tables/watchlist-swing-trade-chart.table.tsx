@@ -329,10 +329,12 @@ export const WatchlistSwingTradeChartTable = () => {
 const rootStyles = css`
   display: flex;
   gap: 1.6rem;
+  flex-wrap: wrap;
 `;
 
 const chartWrapperStyles = css`
   flex: 1;
+  min-width: 50rem;
 `;
 
 const tableWrapperStyles = css`
@@ -340,6 +342,9 @@ const tableWrapperStyles = css`
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
+  @media (max-width: 1258px) {
+    max-width: 100%;
+  }
 `;
 const tableContainerStyles = css`
   border: 1px solid var(--border-table-color);

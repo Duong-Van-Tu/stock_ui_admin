@@ -100,6 +100,11 @@ export const WatchlistSwingTradeTable = () => {
     [pathname, searchParams, router]
   );
 
+  const handleChartButtonClick = (symbol: string) => {
+    dispatch(setSideBarCollapsed(true));
+    router.push(`${PageURLs.ofWatchListSwingTradeChart()}?symbol=${symbol}`);
+  };
+
   const fetchDataWatchList = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
@@ -197,14 +202,7 @@ export const WatchlistSwingTradeTable = () => {
           <Button
             type='text'
             css={dayChartBtnStyles}
-            onClick={() => {
-              dispatch(setSideBarCollapsed(true));
-              router.push(
-                `${PageURLs.ofWatchListSwingTradeChart()}?symbol=${
-                  record.symbol
-                }`
-              );
-            }}
+            onClick={() => handleChartButtonClick(record.symbol)}
           >
             <StockMiniChart data={value.dayChart as DataPoint[]} />
           </Button>
