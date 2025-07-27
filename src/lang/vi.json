@@ -471,5 +471,6 @@
   "priceAfter8pm": "Giá sau 20h",
   "timeAfter8pm": "Thời gian sau 20h",
   "chart": "Biểu đồ",
-  "noData": "Không có dữ liệu"
+  "noData": "Không có dữ liệu",
+  "days": "Ngày"
 }

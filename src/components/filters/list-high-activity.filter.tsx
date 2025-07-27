@@ -109,6 +109,9 @@ export const ListHighActivityFilter = ({
               options={avgVolumeOptions}
               onSelect={(value) => updateSearchParams('avgVolume', value)}
               onClear={() => updateSearchParams('avgVolume')}
+              value={form.getFieldValue('avgVolume') ?? ''}
+              width='12rem'
+              labelFloating
             />
           </Col>
           <Col>
@@ -118,6 +121,9 @@ export const ListHighActivityFilter = ({
               options={atrOptions}
               onSelect={(value) => updateSearchParams('atr', value)}
               onClear={() => updateSearchParams('atr')}
+              value={form.getFieldValue('atr') ?? ''}
+              width='12rem'
+              labelFloating
             />
           </Col>
           <Col>
@@ -127,6 +133,9 @@ export const ListHighActivityFilter = ({
               options={betaOptions}
               onSelect={(value) => updateSearchParams('beta', value)}
               onClear={() => updateSearchParams('beta')}
+              value={form.getFieldValue('beta') ?? ''}
+              width='12rem'
+              labelFloating
             />
           </Col>
           <Col>
@@ -136,6 +145,9 @@ export const ListHighActivityFilter = ({
               options={booleanOptions}
               onSelect={(value) => updateSearchParams('drop1_5Pct', value)}
               onClear={() => updateSearchParams('drop1_5Pct')}
+              value={form.getFieldValue('drop1_5Pct') ?? ''}
+              width='12rem'
+              labelFloating
             />
           </Col>
           <Col>
@@ -143,10 +155,14 @@ export const ListHighActivityFilter = ({
               name='rangeDate'
               options={rangeDateOptions.map((option) => ({
                 label: option.label,
-                value: String(option.value)
+                value: `${option.value}`
               }))}
               onSelect={(value) => updateSearchParams('rangeDate', value)}
               onClear={() => updateSearchParams('rangeDate')}
+              value={form.getFieldValue('rangeDate') ?? ''}
+              label={t('days')}
+              width='12rem'
+              labelFloating
             />
           </Col>
           <Col>

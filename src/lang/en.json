@@ -471,5 +471,6 @@
   "priceAfter8pm": "Price after 8PM",
   "timeAfter8pm": "Time after 8PM",
   "chart": "Chart",
-  "noData": "No Data"
+  "noData": "No Data",
+  "days": "Days"
 }
