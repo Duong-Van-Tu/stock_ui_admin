@@ -38,7 +38,7 @@ export const ExportExcelSwingWatchlist = () => {
         query: {
           page: 1,
           limit: PAGINATION_PARAMS.unLimit,
-          sortField: fieldMapping.AIRating,
+          sortField: fieldMapping.marketCapWatchList,
           sortType: 'desc'
         }
       }
@@ -54,6 +54,20 @@ export const ExportExcelSwingWatchlist = () => {
           'No.': watchlist.indexOf(item) + 1,
           Symbol: item.symbol || '-',
           Period: item.period || '-',
+          'Price before 9AM': formatCurrency(item.priceBefore9am),
+          'Time before 9AM': item.timeBefore9am
+            ? dayjs(item.timeBefore9am).utc().format('YYYY-MM-DD HH:mm')
+            : '-',
+          'Price after 4PM': formatCurrency(item.priceAfter4pm),
+          'Time after 4PM': item.timeAfter4pm
+            ? dayjs(item.timeAfter4pm).utc().format('YYYY-MM-DD HH:mm')
+            : '-',
+          'Price after 8PM': formatCurrency(item.priceAfter8pm),
+          'Time after 8PM': item.timeAfter8pm
+            ? dayjs(item.timeAfter8pm).utc().format('YYYY-MM-DD HH:mm')
+            : '-',
+          'Gap type': item.gapType || '-',
+          'Gap percent': formatPercent(item.percentGap),
           'AI Rating': item.AIRating || '-',
           'AI Recommendation': item.AIRecommendation
             ? capitalizeAllLetters(item.AIRecommendation)
@@ -87,7 +101,9 @@ export const ExportExcelSwingWatchlist = () => {
           'Strong Buy': item.strongBuy || '-',
           Sell: item.sell || '-',
           'Strong Sell': item.strongSell || '-',
-          'Created At': item.createdAt || '-'
+          'Created At': item.createdAt
+            ? dayjs(item.createdAt).utc().format('YYYY-MM-DD HH:mm')
+            : '-'
         };
       });
 
