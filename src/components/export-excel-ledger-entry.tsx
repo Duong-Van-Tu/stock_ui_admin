@@ -136,23 +136,23 @@ export const ExportExcelLedgerEntry = ({
       const worksheet = workbook.addWorksheet('Ledger Entry');
 
       const headers = Object.keys(processedData[0]);
-      worksheet.addRow(headers);
+
+      worksheet.columns = headers.map((header) => ({
+        header,
+        key: header,
+        width: header.length + 2
+      }));
+
+      processedData.forEach((item) => {
+        const rowData = headers.map((key) => {
+          const value = item[key as keyof typeof item];
+          return value === undefined || value === null ? '-' : value;
+        });
+        worksheet.addRow(rowData).commit();
+      });
 
       worksheet.getRow(1).eachCell((cell) => {
         cell.font = { bold: true };
-      });
-
-      processedData.forEach((item) => {
-        worksheet.addRow(Object.values(item));
-      });
-
-      worksheet.columns.forEach((column) => {
-        if (column.values) {
-          const maxLength = Math.max(
-            ...column.values.map((v) => (v != null ? v.toString().length : 0))
-          );
-          column.width = maxLength + 2;
-        }
       });
 
       const buffer = await workbook.xlsx.writeBuffer();
