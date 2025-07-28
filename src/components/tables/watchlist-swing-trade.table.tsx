@@ -177,7 +177,7 @@ export const WatchlistSwingTradeTable = () => {
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: isMobile ? 100 : 200,
+      width: isMobile ? 100 : 160,
       fixed: 'left',
       render: (_, record) => (
         <SymbolCell
@@ -194,9 +194,8 @@ export const WatchlistSwingTradeTable = () => {
       title: t('dayChart'),
       dataIndex: 'intradayStockChart',
       key: 'intradayStockChart',
-      width: 160,
+      width: 140,
       align: 'center',
-      fixed: 'left',
       render: (value, record) =>
         value?.dayChart ? (
           <Button
@@ -204,7 +203,7 @@ export const WatchlistSwingTradeTable = () => {
             css={dayChartBtnStyles}
             onClick={() => handleChartButtonClick(record.symbol)}
           >
-            <StockMiniChart data={value.dayChart as DataPoint[]} />
+            <StockMiniChart width={100} data={value.dayChart as DataPoint[]} />
           </Button>
         ) : (
           t('noData')
