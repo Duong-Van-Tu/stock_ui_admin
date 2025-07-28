@@ -16,7 +16,7 @@ export const DateTimeCell = ({
 }: DateTimeCellProps) => {
   const date = convertTimeZone
     ? dayjs(value).tz(TimeZone.NEW_YORK)
-    : dayjs(value);
+    : dayjs(value).utc();
 
   const formattedDate = date.format('MM/DD/YYYY');
   const formattedTime = date.format('HH:mm');
