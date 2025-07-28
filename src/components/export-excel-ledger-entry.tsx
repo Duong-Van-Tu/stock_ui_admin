@@ -144,14 +144,13 @@ export const ExportExcelLedgerEntry = ({
     const blob = new Blob([buffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Ledger_Entry_${dayjs()
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    const fileName = `Ledger_Entry_${dayjs()
       .tz(TimeZone.NEW_YORK)
       .format('MM-DD-YYYY_HH-mm')}.xlsx`;
-    a.click();
-    URL.revokeObjectURL(url);
+    link.download = fileName;
+    link.click();
     setLoading(false);
   };
 

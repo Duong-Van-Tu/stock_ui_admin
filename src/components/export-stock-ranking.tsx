@@ -12,6 +12,7 @@ import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { useTranslations } from 'next-intl';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { transformStockScoreData } from '@/helpers/stock-core.helper';
+import { TimeZone } from '@/constants/timezone.constant';
 
 export const ExportExcelStockRanking = () => {
   const t = useTranslations();
@@ -85,17 +86,17 @@ export const ExportExcelStockRanking = () => {
         width: header.length + 10 // Add some padding
       }));
 
-      // Generate and download file
       const buffer = await workbook.xlsx.writeBuffer();
       const blob = new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Stock_Ranking_${dayjs().format('MM-DD-YYYY_HH-mm')}.xlsx`;
-      a.click();
-      URL.revokeObjectURL(url);
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      const fileName = `Stock_Ranking_${dayjs()
+        .tz(TimeZone.NEW_YORK)
+        .format('MM-DD-YYYY_HH-mm')}.xlsx`;
+      link.download = fileName;
+      link.click();
     } else {
       console.log('Failed to fetch data for export.', { variant: 'error' });
     }

@@ -59,6 +59,7 @@ export const ExportExcelLog = () => {
         'Expect Candle Entry',
         'AI Rating',
         'AI Recommendation',
+        'Manual Recommendation',
         'AI Explain',
         'Entry date',
         'Entry price',

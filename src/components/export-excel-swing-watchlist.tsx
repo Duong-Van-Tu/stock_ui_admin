@@ -5,7 +5,11 @@ import { useState } from 'react';
 import ExcelJS from 'exceljs';
 import dayjs from 'dayjs';
 import { Button } from 'antd';
-import { formatMarketCap, roundToDecimals } from '@/utils/common';
+import {
+  capitalizeAllLetters,
+  formatMarketCap,
+  roundToDecimals
+} from '@/utils/common';
 import { Icon } from './icons';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
@@ -51,7 +55,9 @@ export const ExportExcelSwingWatchlist = () => {
           Symbol: item.symbol || '-',
           Period: item.period || '-',
           'AI Rating': item.AIRating || '-',
-          'AI Recommendation': item.AIRecommendation || '-',
+          'AI Recommendation': item.AIRecommendation
+            ? capitalizeAllLetters(item.AIRecommendation)
+            : '-',
           'AI Explanation': item.AIExplain || '-',
           'Previous Close': formatCurrency(item.previousClose),
           'Current Price': formatCurrency(item.currentPriceWatchlist),
@@ -102,19 +108,17 @@ export const ExportExcelSwingWatchlist = () => {
         worksheet.addRow(Object.values(item));
       });
 
-      // Generate and download file
       const buffer = await workbook.xlsx.writeBuffer();
       const blob = new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Swing_Watchlist_${dayjs()
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      const fileName = `Swing_watchlist_${dayjs()
         .tz(TimeZone.NEW_YORK)
         .format('MM-DD-YYYY_HH-mm')}.xlsx`;
-      a.click();
-      URL.revokeObjectURL(url);
+      link.download = fileName;
+      link.click();
     } else {
       console.log('Failed to fetch data for export.', { variant: 'error' });
     }
