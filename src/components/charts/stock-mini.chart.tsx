@@ -19,7 +19,6 @@ export default function StockMiniChart({
   width = 140,
   height = 40
 }: StockMiniChartProps) {
-  console.log({ data });
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ReturnType<typeof createChart>>();
 
