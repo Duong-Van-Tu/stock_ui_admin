@@ -1,7 +1,6 @@
 import { Key, ReactNode } from 'react';
 import { MenuProps } from 'antd';
 import { PageURLs } from '@/utils/navigate';
-import { isMobile } from 'react-device-detect';
 
 export type LevelKeysProps = {
   key?: string;
@@ -73,16 +72,16 @@ export const getMenuStructure = (
       iconType: 'aiSentiment',
       link: PageURLs.ofAISentiment()
     },
-    ...(!isMobile
-      ? [
-          {
-            label: t('listHighActivity'),
-            key: 'high-activity',
-            iconType: 'listHighActivity',
-            link: PageURLs.ofHighActivity()
-          }
-        ]
-      : []),
+    // ...(!isMobile
+    //   ? [
+    //       {
+    //         label: t('listHighActivity'),
+    //         key: 'high-activity',
+    //         iconType: 'listHighActivity',
+    //         link: PageURLs.ofHighActivity()
+    //       }
+    //     ]
+    //   : []),
     {
       label: t('watchlistSwingTrade'),
       key: 'watchlist-swing-trade',
