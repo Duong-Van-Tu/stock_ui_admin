@@ -11,7 +11,6 @@ import { useMemo } from 'react';
 import { PositiveNegativeText } from './positive-negative-text';
 import { calculateDIM } from '@/helpers/ledger-entry.helper';
 import EllipsisText from './ellipsis-text';
-import StockOverviewChart from './charts/stock-overview.chart';
 
 type LedgerEntryInformationProps = {
   entry: LedgerEntry;
@@ -70,9 +69,9 @@ export const LedgerEntryInformation = ({
   return (
     <>
       <h3 css={styles.title}>{`${t('symbol')}: ${symbol}`}</h3>
-      <div css={styles.stockOverviewChart}>
+      {/* <div css={styles.stockOverviewChart}>
         <StockOverviewChart symbol={symbol} />
-      </div>
+      </div> */}
       <div css={styles.infoGroup}>
         <Row gutter={[32, 8]}>
           {[
@@ -233,8 +232,8 @@ const styles = {
     display: flex;
     justify-content: space-between;
     gap: 0.8rem;
-  `,
-  stockOverviewChart: css`
-    height: 50rem;
   `
+  // stockOverviewChart: css`
+  //   height: 50rem;
+  // `
 };

@@ -213,7 +213,7 @@ export function MembersLedgerEntry() {
       key: 'action',
       align: 'center',
       fixed: 'right',
-      width: isMobile ? 120 : 150,
+      width: isMobile ? 70 : 150,
       render: (_, record) => {
         const isSending = sendingMap[record.id] ?? false;
 
@@ -233,7 +233,7 @@ export function MembersLedgerEntry() {
               />
             }
           >
-            {isMobile ? t('send') : t('sendAlert')}
+            {isMobile ? '' : t('sendAlert')}
           </Button>
         );
       }
@@ -349,7 +349,8 @@ export function MembersLedgerEntry() {
           pagination={false}
           rowSelection={{
             selectedRowKeys,
-            onChange: (keys) => setSelectedRowKeys(keys)
+            onChange: (keys) => setSelectedRowKeys(keys),
+            fixed: 'left'
           }}
           scroll={{
             x: 1100,
@@ -370,6 +371,10 @@ const actionHeaderStyles = css`
   padding: 2.4rem 0 1.2rem;
   display: flex;
   justify-content: ${isMobile ? 'flex-end' : 'space-between'};
+  .ant-space {
+    width: ${isMobile && '100%'};
+    justify-content: ${isMobile && 'space-between'};
+  }
 `;
 
 const titleStyles = css`

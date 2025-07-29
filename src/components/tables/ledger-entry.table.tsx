@@ -4,6 +4,9 @@ import { css } from '@emotion/react';
 import { useCallback, useContext, useEffect } from 'react';
 import {
   Button,
+  Dropdown,
+  MenuProps,
+  Modal,
   Popconfirm,
   Space,
   Table,
@@ -49,6 +52,8 @@ import { isDesktop, isMobile } from 'react-device-detect';
 import { useModal } from '@/hooks/modal.hook';
 import DepositWithdrawForm from '../forms/deposit-withdraw.form';
 import { calculateDIM } from '@/helpers/ledger-entry.helper';
+import { LedgerEntryAction } from '@/constants/ledger-entry.constant';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 export const LedgerEntryTable = () => {
   const t = useTranslations();
@@ -57,7 +62,8 @@ export const LedgerEntryTable = () => {
   const { notifySuccess, notifyError } = useNotification();
   const router = useRouter();
   const { height } = useWindowSize();
-  const modal = useModal();
+  const modalCustom = useModal();
+  const [modal, contextHolder] = Modal.useModal();
 
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
@@ -75,6 +81,14 @@ export const LedgerEntryTable = () => {
     } else {
       notifyError(t('deleteError'));
     }
+  };
+
+  const handleEditLedgerEntry = (ledgerId: number) => {
+    router.push(PageURLs.ofEditLedgerEntry(ledgerId));
+  };
+
+  const handleSendAlert = (ledgerId: number) => {
+    router.push(PageURLs.ofSendAlertLedgerEntry(ledgerId));
   };
 
   const fetchLegerEntry = useCallback(
@@ -95,6 +109,84 @@ export const LedgerEntryTable = () => {
     },
     [dispatch, symbol]
   );
+
+  const ledgerEntryActionMenuItems = (ledgerId: number): MenuProps['items'] => [
+    {
+      key: LedgerEntryAction.EDIT,
+      label: (
+        <span
+          css={css`
+            color: var(--electric-indigo-color);
+          `}
+        >
+          {t('edit')}
+        </span>
+      ),
+      icon: (
+        <Icon
+          customStyles={menuIconStyles}
+          icon='edit'
+          fill='var(--electric-indigo-color)'
+          width={16}
+          height={16}
+        />
+      ),
+      onClick: () => handleEditLedgerEntry(ledgerId)
+    },
+    { type: 'divider' },
+    {
+      key: LedgerEntryAction.DELETE,
+      label: (
+        <span
+          css={css`
+            color: var(--negative-color);
+          `}
+        >
+          {t('delete')}
+        </span>
+      ),
+      icon: (
+        <Icon
+          customStyles={menuIconStyles}
+          icon='trash'
+          width={16}
+          height={16}
+        />
+      ),
+      onClick: () =>
+        modal.confirm({
+          title: t('deleteConfirmationTitle'),
+          icon: <ExclamationCircleOutlined />,
+          content: t('deleteConfirmationDescription'),
+          okText: t('yes'),
+          cancelText: t('no'),
+          onOk: () => handleDelete(ledgerId)
+        })
+    },
+    { type: 'divider' },
+    {
+      key: LedgerEntryAction.SEND,
+      label: (
+        <span
+          css={css`
+            color: var(--sky-pulse);
+          `}
+        >
+          {t('sendAlert')}
+        </span>
+      ),
+      icon: (
+        <Icon
+          customStyles={menuIconStyles}
+          icon='send'
+          width={16}
+          height={16}
+          fill='var(--sky-pulse)'
+        />
+      ),
+      onClick: () => handleSendAlert(ledgerId)
+    }
+  ];
 
   useEffect(() => {
     fetchLegerEntry({});
@@ -417,122 +509,139 @@ export const LedgerEntryTable = () => {
       title: t('actions'),
       dataIndex: 'actions',
       key: 'actions',
-      width: 130,
+      width: isMobile ? 76 : 130,
       fixed: 'right',
       align: 'center',
-      render: (_, record) => (
-        <Space>
-          <Tooltip title={isMobile ? null : t('edit')}>
+      render: (_, record) =>
+        isMobile ? (
+          <Dropdown
+            trigger={['click']}
+            menu={{
+              items: ledgerEntryActionMenuItems(record.id)
+            }}
+            placement='bottomRight'
+            arrow
+          >
             <Button
-              type='primary'
-              icon={
-                <Icon
-                  icon='edit'
-                  width={18}
-                  height={18}
-                  fill='var(--white-color)'
-                />
-              }
-              onClick={() => router.push(PageURLs.ofEditLedgerEntry(record.id))}
+              type='text'
+              icon={<Icon icon='dotsVertical' width={18} height={18} />}
+              shape='circle'
             />
-          </Tooltip>
-          <Tooltip title={isMobile ? null : t('delete')}>
-            <Popconfirm
-              placement='topRight'
-              title={t('deleteConfirmationTitle')}
-              description={t('deleteConfirmationDescription')}
-              okText={t('yes')}
-              cancelText={t('no')}
-              onConfirm={() => handleDelete(record.id)}
-            >
+          </Dropdown>
+        ) : (
+          <Space>
+            <Tooltip title={isMobile ? null : t('edit')}>
               <Button
-                danger
-                icon={<Icon icon='trash' width={18} height={18} />}
+                type='primary'
+                icon={
+                  <Icon
+                    icon='edit'
+                    width={18}
+                    height={18}
+                    fill='var(--white-color)'
+                  />
+                }
+                onClick={() => handleEditLedgerEntry(record.id)}
               />
-            </Popconfirm>
-          </Tooltip>
-          <Tooltip title={isMobile ? null : t('sendAlert')}>
-            <Button
-              icon={
-                <Icon
-                  fill='var(--sky-pulse)'
-                  icon='send'
-                  width={18}
-                  height={18}
+            </Tooltip>
+            <Tooltip title={isMobile ? null : t('delete')}>
+              <Popconfirm
+                placement='topRight'
+                title={t('deleteConfirmationTitle')}
+                description={t('deleteConfirmationDescription')}
+                okText={t('yes')}
+                cancelText={t('no')}
+                onConfirm={() => handleDelete(record.id)}
+              >
+                <Button
+                  danger
+                  icon={<Icon icon='trash' width={18} height={18} />}
                 />
-              }
-              onClick={() =>
-                router.push(PageURLs.ofSendAlertLedgerEntry(record.id))
-              }
-            />
-          </Tooltip>
-        </Space>
-      )
+              </Popconfirm>
+            </Tooltip>
+            <Tooltip title={isMobile ? null : t('sendAlert')}>
+              <Button
+                icon={
+                  <Icon
+                    fill='var(--sky-pulse)'
+                    icon='send'
+                    width={18}
+                    height={18}
+                  />
+                }
+                onClick={() => handleSendAlert(record.id)}
+              />
+            </Tooltip>
+          </Space>
+        )
     }
   ];
 
   return (
-    <div css={rootStyles}>
-      <div css={tableTopStyles}>
-        <TableTitle customStyles={titleStyles}>
-          {t('ledgerEntryTitle')}
-        </TableTitle>
-        <Space css={actionStyles}>
-          <Button
-            css={depositBtnStyles}
-            icon={<Icon icon='deposit' width={18} height={18} />}
-            onClick={() =>
-              modal.openModal(<DepositWithdrawForm type='deposit' />)
-            }
-            type='primary'
-            ghost
-          >
-            {t('depositMoney')}
-          </Button>
-          <Button
-            icon={<Icon icon='withdraw' width={18} height={18} />}
-            onClick={() =>
-              modal.openModal(<DepositWithdrawForm type='withdraw' />)
-            }
-            danger
-          >
-            {t('withdrawMoney')}
-          </Button>
-          <Button
-            icon={<PlusOutlined />}
-            type='primary'
-            onClick={() => router.push(PageURLs.ofAddLedgerEntry())}
-            css={addLedgerEntryBtnStyles}
-          >
-            {t('addLedgerEntry')}
-          </Button>
-          {isDesktop && (
-            <ExportExcelLedgerEntry initialBalance={initialBalance} />
-          )}
-        </Space>
+    <>
+      {contextHolder}
+      <div css={rootStyles}>
+        <div css={tableTopStyles}>
+          <TableTitle customStyles={titleStyles}>
+            {t('ledgerEntryTitle')}
+          </TableTitle>
+          <Space css={actionStyles}>
+            <Button
+              css={depositBtnStyles}
+              icon={<Icon icon='deposit' width={18} height={18} />}
+              onClick={() =>
+                modalCustom.openModal(<DepositWithdrawForm type='deposit' />)
+              }
+              type='primary'
+              ghost
+            >
+              {t('depositMoney')}
+            </Button>
+            <Button
+              icon={<Icon icon='withdraw' width={18} height={18} />}
+              onClick={() =>
+                modalCustom.openModal(<DepositWithdrawForm type='withdraw' />)
+              }
+              danger
+            >
+              {t('withdrawMoney')}
+            </Button>
+            <Button
+              icon={<PlusOutlined />}
+              type='primary'
+              onClick={() => router.push(PageURLs.ofAddLedgerEntry())}
+              css={addLedgerEntryBtnStyles}
+            >
+              {t('addLedgerEntry')}
+            </Button>
+            {isDesktop && (
+              <ExportExcelLedgerEntry initialBalance={initialBalance} />
+            )}
+          </Space>
+        </div>
+        <Table<LedgerEntry>
+          size={isMobile ? 'small' : 'middle'}
+          css={tableStyles}
+          rowKey='id'
+          columns={columns}
+          dataSource={ledgerEntry}
+          loading={loading}
+          scroll={{
+            x: 1200,
+            y: ledgerEntry.length > 0 ? height - 232 : undefined
+          }}
+          sortDirections={['descend', 'ascend']}
+          locale={{
+            emptyText: (
+              <div css={emptyStyles(height - 400)}>
+                <EmptyDataTable />
+              </div>
+            )
+          }}
+          pagination={false}
+        />
       </div>
-      <Table<LedgerEntry>
-        size={isMobile ? 'small' : 'middle'}
-        css={tableStyles}
-        rowKey='id'
-        columns={columns}
-        dataSource={ledgerEntry}
-        loading={loading}
-        scroll={{
-          x: 1200,
-          y: ledgerEntry.length > 0 ? height - 232 : undefined
-        }}
-        sortDirections={['descend', 'ascend']}
-        locale={{
-          emptyText: (
-            <div css={emptyStyles(height - 400)}>
-              <EmptyDataTable />
-            </div>
-          )
-        }}
-        pagination={false}
-      />
-    </div>
+    </>
   );
 };
 
@@ -589,4 +698,9 @@ const addLedgerEntryBtnStyles = css`
     top: -4.6rem;
     right: 0;
   }
+`;
+
+const menuIconStyles = css`
+  margin-right: 0.8rem;
+  margin-bottom: 0.4rem;
 `;
