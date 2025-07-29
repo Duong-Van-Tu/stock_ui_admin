@@ -170,6 +170,7 @@ export const LedgerEntryTable = () => {
       key: 'symbol',
       width: 90,
       align: 'center',
+      fixed: isMobile && 'left',
       render: (_, record) => <SymbolCell symbol={record.symbol} />
     },
     {
@@ -470,23 +471,6 @@ export const LedgerEntryTable = () => {
     }
   ];
 
-  const columnsTable = isMobile
-    ? columns.filter((col) =>
-        [
-          'symbol',
-          'period',
-          'entryPrice',
-          'exitPrice',
-          'winOrLoss',
-          'investment',
-          'plAmount',
-          'cumulative',
-          'balance',
-          'actions'
-        ].includes(col.key as string)
-      )
-    : columns;
-
   return (
     <div css={rootStyles}>
       <div css={tableTopStyles}>
@@ -531,7 +515,7 @@ export const LedgerEntryTable = () => {
         size={isMobile ? 'small' : 'middle'}
         css={tableStyles}
         rowKey='id'
-        columns={columnsTable}
+        columns={columns}
         dataSource={ledgerEntry}
         loading={loading}
         scroll={{
