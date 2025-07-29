@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { Key, useCallback, useContext, useEffect, useState } from 'react';
+import { Key, useCallback, useEffect, useState } from 'react';
 import { Table, TableColumnsType } from 'antd';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   cleanFalsyValues,
   roundToDecimals,
-  getRowClassName,
-  formatPercent
+  getRowClassName
+  // formatPercent
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -28,9 +28,9 @@ import { TableTitle } from './title.table';
 import { LegendStatus } from '../legend-status';
 import { StockRankingFilter } from '../filters/stock-ranking.filter';
 // import { Icon } from '../icons';
-import { SocketContext } from '@/providers/socket.provider';
-import { getCurrentPrice } from '@/helpers/socket.helper';
-import { StockChangeCell } from './columns/stock-change-cell.column';
+// import { SocketContext } from '@/providers/socket.provider';
+// import { getCurrentPrice } from '@/helpers/socket.helper';
+// import { StockChangeCell } from './columns/stock-change-cell.column';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { useSortOrder } from '@/hooks/sort-order.hook';
@@ -41,7 +41,7 @@ import { ExportExcelStockRanking } from '../export-stock-ranking';
 export const StockRankingTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const { setWatchList, resFromWS } = useContext(SocketContext);
+  // const { setWatchList, resFromWS } = useContext(SocketContext);
   const { height } = useWindowSize();
 
   const searchParams = useSearchParams();
@@ -131,12 +131,12 @@ export const StockRankingTable = () => {
     };
   }, [fetchDataStockScore, dispatch]);
 
-  useEffect(() => {
-    stockScoreData.forEach((row) => {
-      setWatchList(row.symbol);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stockScoreData]);
+  // useEffect(() => {
+  //   stockScoreData.forEach((row) => {
+  //     setWatchList(row.symbol);
+  //   });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [stockScoreData]);
 
   const columns: TableColumnsType<StockScore> = [
     {
@@ -271,27 +271,27 @@ export const StockRankingTable = () => {
           <span>-</span>
         )
     },
-    {
-      title: t('dayChange'),
-      dataIndex: 'dayChangePercent',
-      key: 'dayChangePercent',
-      width: 140,
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'dayChangePercent' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('dayChangePercent')
-      }),
-      align: 'center',
-      render: (value) =>
-        value ? (
-          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-            <span>{formatPercent(value, 2)}</span>
-          </PositiveNegativeText>
-        ) : (
-          <span>-</span>
-        )
-    },
+    // {
+    //   title: t('dayChange'),
+    //   dataIndex: 'dayChangePercent',
+    //   key: 'dayChangePercent',
+    //   width: 140,
+    //   sorter: true,
+    //   showSorterTooltip: false,
+    //   sortOrder: sortField === 'dayChangePercent' ? sortType : null,
+    //   onHeaderCell: () => ({
+    //     onClick: () => handleSortOrder('dayChangePercent')
+    //   }),
+    //   align: 'center',
+    //   render: (value) =>
+    //     value ? (
+    //       <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+    //         <span>{formatPercent(value, 2)}</span>
+    //       </PositiveNegativeText>
+    //     ) : (
+    //       <span>-</span>
+    //     )
+    // },
     {
       title: t('currentPrice'),
       dataIndex: 'price',
@@ -303,17 +303,17 @@ export const StockRankingTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('price')
       }),
-      align: 'center',
-      render: (value, record) => {
-        const currPrice = getCurrentPrice(resFromWS, record.symbol);
-        const price = currPrice ?? value;
-        return (
-          <StockChangeCell
-            value={price}
-            percentage={record.dayChangePercent ? record.dayChangePercent : 0}
-          />
-        );
-      }
+      align: 'center'
+      // render: (value, record) => {
+      //   const currPrice = getCurrentPrice(resFromWS, record.symbol);
+      //   const price = currPrice ?? value;
+      //   return (
+      //     <StockChangeCell
+      //       value={price}
+      //       percentage={record.dayChangePercent ? record.dayChangePercent : 0}
+      //     />
+      //   );
+      // }
     },
     {
       title: t('volume'),
