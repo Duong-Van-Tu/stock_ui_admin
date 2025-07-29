@@ -21,6 +21,7 @@ import { defaultApiFetcher } from '@/utils/api-instances';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { useModal } from '@/hooks/modal.hook';
 import { LedgerEntryInformation } from '../ledger-entry-information';
+import { stripHtmlFromQuill } from '@/utils/strip-html';
 
 export function MembersLedgerEntry() {
   const t = useTranslations();
@@ -96,10 +97,15 @@ export function MembersLedgerEntry() {
 
   const handleSendAlert = async (member: Member) => {
     setSendingMap((prev) => ({ ...prev, [member.id]: true }));
+
+    const cleanNotes = stripHtmlFromQuill(ledgerEntry?.notes || '');
     const res = await dispatch(
       sendAlertLedger({
         emails: [member.email],
-        ledgerEntry: ledgerEntry!,
+        ledgerEntry: {
+          ...ledgerEntry!,
+          notes: cleanNotes
+        },
         telegrams: member.telegram ? [member.telegram] : []
       })
     );
@@ -126,10 +132,15 @@ export function MembersLedgerEntry() {
       .filter(Boolean)
       .filter((tg, index, self) => self.indexOf(tg) === index);
 
+    const cleanNotes = stripHtmlFromQuill(ledgerEntry?.notes || '');
+
     const res = await dispatch(
       sendAlertLedger({
         emails,
-        ledgerEntry: ledgerEntry!,
+        ledgerEntry: {
+          ...ledgerEntry!,
+          notes: cleanNotes
+        },
         telegrams
       })
     );
