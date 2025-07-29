@@ -524,6 +524,7 @@ const formStyles = css`
     margin-bottom: 1rem;
   }
   .ant-form-item-label {
+    padding-bottom: 0.4rem !important;
     label {
       font-weight: 500;
       font-size: ${isMobile ? '1.4rem' : '1.6rem'};
@@ -533,7 +534,7 @@ const formStyles = css`
 
 const formRowStyles = css`
   display: flex;
-  gap: 2rem;
+  gap: ${!isMobile && '2rem'};
   @media (max-width: 480px) {
     flex-wrap: wrap;
   }
