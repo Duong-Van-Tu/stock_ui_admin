@@ -262,7 +262,6 @@ export const LedgerEntryTable = () => {
       key: 'symbol',
       width: 90,
       align: 'center',
-      fixed: isMobile && 'left',
       render: (_, record) => <SymbolCell symbol={record.symbol} />
     },
     {
@@ -460,7 +459,7 @@ export const LedgerEntryTable = () => {
       title: t('exitPrice'),
       dataIndex: 'exitPrice',
       key: 'exitPrice',
-      width: 130,
+      width: 120,
       align: 'center',
       render: (value, record) => {
         const percentage = calculatePercentage(record.entryPrice, value);
@@ -475,7 +474,7 @@ export const LedgerEntryTable = () => {
       title: t('StockP/L'),
       dataIndex: 'stockPL',
       key: 'stockPL',
-      width: 120,
+      width: 110,
       align: 'center',
       render: (value) => {
         return value ? (
