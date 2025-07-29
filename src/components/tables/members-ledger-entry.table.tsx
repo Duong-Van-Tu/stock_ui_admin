@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Table, Button, Tooltip, Modal, Space } from 'antd';
+import { Table, Button, Tooltip, Space } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -28,7 +28,6 @@ export function MembersLedgerEntry() {
   const params = useParams();
   const id = params.id as string;
   const { height } = useWindowSize();
-  const [modal, contextHolder] = Modal.useModal();
   const { openModal } = useModal();
 
   const dispatch = useAppDispatch();
@@ -37,9 +36,12 @@ export function MembersLedgerEntry() {
   const inputImportRef = useRef<HTMLInputElement>(null);
   const ledgerEntry = useAppSelector(watchSelectedLedgerEntry);
   const members = useAppSelector(watchMembers);
+
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [downloading, setDownloading] = useState<boolean>(false);
   const [importing, setImporting] = useState<boolean>(false);
+  const [sendingMap, setSendingMap] = useState<Record<string, boolean>>({});
+  const [bulkSending, setBulkSending] = useState(false);
 
   const uniqueMembers = members
     .filter(
@@ -50,71 +52,6 @@ export function MembersLedgerEntry() {
       (member, index, self) =>
         index === self.findIndex((m) => m.email === member.email)
     );
-
-  const confirmSendAlert = (member: Member) => {
-    modal.confirm({
-      title: (
-        <Title css={titleConfirmStyles} level={4}>
-          {t('sendNotification')}
-        </Title>
-      ),
-      icon: (
-        <Icon
-          customStyles={sendIconStyles}
-          fill='var(--sky-pulse)'
-          icon='send'
-          width={20}
-          height={20}
-        />
-      ),
-      content: (
-        <div>
-          {t('sendTo')}&nbsp;
-          <strong>
-            <i>{member.username}</i>
-          </strong>
-        </div>
-      ),
-      okText: t('send'),
-      cancelText: t('cancel'),
-      onOk: () => handleSendAlert(member)
-    });
-  };
-
-  const confirmSendBulkAlert = () => {
-    const selectedMembers = uniqueMembers.filter((member) =>
-      selectedRowKeys.includes(member.id)
-    );
-
-    if (selectedMembers.length === 0) return;
-
-    modal.confirm({
-      title: (
-        <Title css={titleConfirmStyles} level={4}>
-          {t('sendNotification')}
-        </Title>
-      ),
-      icon: (
-        <Icon
-          customStyles={sendIconStyles}
-          fill='var(--sky-pulse)'
-          icon='send'
-          width={20}
-          height={20}
-        />
-      ),
-      content: (
-        <div>
-          {t('sendBulkConfirmStart')} <strong>{selectedMembers.length}</strong>
-          &nbsp;
-          {t('sendBulkConfirmEnd')}
-        </div>
-      ),
-      okText: t('send'),
-      cancelText: t('cancel'),
-      onOk: () => handleSendBulkAlert()
-    });
-  };
 
   const handleDownloadUserTemplate = async () => {
     setDownloading(true);
@@ -158,6 +95,7 @@ export function MembersLedgerEntry() {
   };
 
   const handleSendAlert = async (member: Member) => {
+    setSendingMap((prev) => ({ ...prev, [member.id]: true }));
     const res = await dispatch(
       sendAlertLedger({
         emails: [member.email],
@@ -170,6 +108,7 @@ export function MembersLedgerEntry() {
     } else {
       notifyError(t('sendFail'));
     }
+    setSendingMap((prev) => ({ ...prev, [member.id]: false }));
   };
 
   const handleSendBulkAlert = async () => {
@@ -178,6 +117,8 @@ export function MembersLedgerEntry() {
     );
 
     if (selectedMembers.length === 0) return;
+
+    setBulkSending(true);
 
     const emails = selectedMembers.map((member) => member.email);
     const telegrams = selectedMembers
@@ -199,6 +140,7 @@ export function MembersLedgerEntry() {
     } else {
       notifySuccess(t('sendFail'));
     }
+    setBulkSending(false);
   };
 
   const handleGoBack = () => {
@@ -261,30 +203,34 @@ export function MembersLedgerEntry() {
       align: 'center',
       fixed: 'right',
       width: isMobile ? 120 : 150,
-      render: (_, record) => (
-        <Button
-          css={sendBtnStyles}
-          size='middle'
-          type='primary'
-          onClick={() => confirmSendAlert(record)}
-          icon={
-            <Icon
-              fill='var(--white-color)'
-              icon='send'
-              width={18}
-              height={18}
-            />
-          }
-        >
-          {isMobile ? t('send') : t('sendAlert')}
-        </Button>
-      )
+      render: (_, record) => {
+        const isSending = sendingMap[record.id] ?? false;
+
+        return (
+          <Button
+            css={sendBtnStyles}
+            size='middle'
+            type='primary'
+            onClick={() => handleSendAlert(record)}
+            loading={isSending}
+            icon={
+              <Icon
+                fill='var(--white-color)'
+                icon='send'
+                width={18}
+                height={18}
+              />
+            }
+          >
+            {isMobile ? t('send') : t('sendAlert')}
+          </Button>
+        );
+      }
     }
   ];
 
   return (
     <>
-      {contextHolder}
       <div css={rootStyles}>
         <Title level={3} css={titleStyles}>
           {t('membersList')}
@@ -302,7 +248,8 @@ export function MembersLedgerEntry() {
               type='primary'
               css={sendBtnStyles}
               disabled={selectedRowKeys.length === 0}
-              onClick={confirmSendBulkAlert}
+              onClick={handleSendBulkAlert}
+              loading={bulkSending}
               icon={
                 <Icon
                   fill={
@@ -432,14 +379,6 @@ const tableStyles = css`
 
 const sendBtnStyles = css`
   background: var(--sky-pulse);
-`;
-
-const sendIconStyles = css`
-  margin: 4px 4px 0 0;
-`;
-
-const titleConfirmStyles = css`
-  margin-bottom: 0 !important;
 `;
 
 const importUserBtnStyles = css`
