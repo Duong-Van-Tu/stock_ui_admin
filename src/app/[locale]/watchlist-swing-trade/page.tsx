@@ -7,9 +7,10 @@ import { useTranslations } from 'next-intl';
 
 export default function WatchlistSwingTrade() {
   const t = useTranslations();
+
   useEffect(() => {
     document.title = t('watchlistSwingTrade');
-  }, []);
+  }, [t]);
 
   return (
     <MainLayout>

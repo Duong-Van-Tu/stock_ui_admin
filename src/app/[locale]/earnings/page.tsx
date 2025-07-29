@@ -7,9 +7,10 @@ import { useTranslations } from 'next-intl';
 
 export default function Earnings() {
   const t = useTranslations();
+
   useEffect(() => {
     document.title = t('earnings');
-  }, []);
+  }, [t]);
 
   return (
     <MainLayout>

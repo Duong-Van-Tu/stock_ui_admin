@@ -69,7 +69,7 @@ export default function Register() {
 
   useEffect(() => {
     document.title = t('register');
-  }, []);
+  }, [t]);
 
   return (
     <AuthLayout title={t('register')}>

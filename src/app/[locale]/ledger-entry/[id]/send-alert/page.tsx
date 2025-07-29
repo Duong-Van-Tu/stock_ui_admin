@@ -7,9 +7,10 @@ import { useTranslations } from 'next-intl';
 
 export default function SendAlertLedgerEntry() {
   const t = useTranslations();
+
   useEffect(() => {
     document.title = t('sendAlertPageTitle');
-  }, []);
+  }, [t]);
 
   return (
     <MainLayout>

@@ -7,9 +7,10 @@ import { useTranslations } from 'next-intl';
 
 export default function HighActivity() {
   const t = useTranslations();
+
   useEffect(() => {
     document.title = t('listHighActivity');
-  }, []);
+  }, [t]);
 
   return (
     <MainLayout>

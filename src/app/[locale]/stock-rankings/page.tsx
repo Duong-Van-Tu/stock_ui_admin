@@ -7,9 +7,10 @@ import { useTranslations } from 'next-intl';
 
 export default function StockRanking() {
   const t = useTranslations();
+
   useEffect(() => {
     document.title = t('stockRanking');
-  }, []);
+  }, [t]);
 
   return (
     <MainLayout>

@@ -7,9 +7,10 @@ import { useTranslations } from 'next-intl';
 
 export default function AlertLogs() {
   const t = useTranslations();
+
   useEffect(() => {
     document.title = t('alertLogs');
-  }, []);
+  }, [t]);
 
   return (
     <MainLayout>

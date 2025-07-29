@@ -7,9 +7,10 @@ import { useTranslations } from 'next-intl';
 
 export default function ListLedgerEntry() {
   const t = useTranslations();
+
   useEffect(() => {
     document.title = t('ledgerEntry');
-  }, []);
+  }, [t]);
 
   return (
     <MainLayout>

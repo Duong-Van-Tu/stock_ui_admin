@@ -7,9 +7,10 @@ import { useTranslations } from 'next-intl';
 
 export default function AISentiment() {
   const t = useTranslations();
+
   useEffect(() => {
     document.title = t('AISentiment');
-  }, []);
+  }, [t]);
 
   return (
     <MainLayout>

@@ -7,9 +7,10 @@ import { useTranslations } from 'next-intl';
 
 export default function Home() {
   const t = useTranslations();
+
   useEffect(() => {
     document.title = t('tradeSignalsDashboard');
-  }, []);
+  }, [t]);
 
   return (
     <MainLayout>

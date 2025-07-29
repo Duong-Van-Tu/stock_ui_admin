@@ -73,7 +73,7 @@ export default function Login() {
 
   useEffect(() => {
     document.title = t('login');
-  }, []);
+  }, [t]);
 
   return (
     <AuthLayout title={t('login')}>

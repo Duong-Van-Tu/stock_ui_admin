@@ -7,9 +7,10 @@ import { useTranslations } from 'next-intl';
 
 export default function LedgerEntryDetail() {
   const t = useTranslations();
+
   useEffect(() => {
     document.title = t('ledgerEntryDetail');
-  }, []);
+  }, [t]);
 
   return (
     <MainLayout>
