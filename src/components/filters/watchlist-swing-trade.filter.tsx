@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
 
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Button, Col, Form, Row, Space } from 'antd';
@@ -35,6 +35,7 @@ export const WatchlistSwingTradeFilter = ({
   const params = new URLSearchParams(searchParams.toString());
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
+  const prevSectorRef = useRef<string | null>(null);
   const industries = useAppSelector(watchIndustries);
   const sectors = useAppSelector(watchSectors);
 
@@ -95,15 +96,20 @@ export const WatchlistSwingTradeFilter = ({
     const sector = params.get('sector') ?? '';
     const initialValues = { period, industry, sector, marketCap };
     form.setFieldsValue({ ...initialValues });
-    onFilter({
-      period: period!,
-      sector,
-      industry: industry?.includes(' & ')
-        ? industry.replace(/ & /g, ' @ ')
-        : industry,
-      fromMarketCap: parseRangeValue(marketCap).from,
-      toMarketCap: parseRangeValue(marketCap).to
-    });
+    const hasSector = !!sector;
+    const hasIndustry = !!industry;
+
+    if (hasSector || (!hasSector && !hasIndustry)) {
+      onFilter({
+        period: period!,
+        sector,
+        industry: industry?.includes(' & ')
+          ? industry.replace(/ & /g, ' @ ')
+          : industry,
+        fromMarketCap: parseRangeValue(marketCap).from,
+        toMarketCap: parseRangeValue(marketCap).to
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, form, onFilter]);
 
@@ -112,12 +118,18 @@ export const WatchlistSwingTradeFilter = ({
   }, [dispatch]);
 
   useEffect(() => {
-    if (selectedSector) {
-      dispatch(getIndustriesV2(selectedSector));
-    } else {
+    const prevSector = prevSectorRef.current;
+
+    if (selectedSector !== prevSector) {
       form.setFieldsValue({ industry: '' });
       updateSearchParams('industry', '');
+
+      if (selectedSector) {
+        dispatch(getIndustriesV2(selectedSector));
+      }
     }
+
+    prevSectorRef.current = selectedSector;
   }, [selectedSector, form, dispatch, updateSearchParams]);
 
   return (
