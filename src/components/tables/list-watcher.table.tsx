@@ -39,13 +39,15 @@ import { ListWatcherFilter } from '../filters/list-watcher.filter';
 import { useSearchParams } from 'next/navigation';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { isMobile } from 'react-device-detect';
+import { watchSideBarCollapsed } from '@/redux/slices/app.slice';
 
 export const ListWatcherTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
-  const { height } = useWindowSize();
+  const { height, width } = useWindowSize();
+  const sideBarCollapsed = useAppSelector(watchSideBarCollapsed);
   const loading = useAppSelector(watchListWatcherLoading);
   const listWatcher = useAppSelector(watchListWatcher);
   const pagination = useAppSelector(watchListWatcherPagination);
@@ -518,7 +520,10 @@ export const ListWatcherTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: listWatcher.length > 0 ? height - 370 : undefined
+            y:
+              listWatcher.length > 0
+                ? height - (width >= 1624 ? 352 : 382)
+                : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
