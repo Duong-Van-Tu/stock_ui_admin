@@ -96,6 +96,50 @@ export const stockScoreSlice = createAppSlice({
         }
       }
     ),
+    getSectorsV2: create.asyncThunk(
+      async () => {
+        const response = await defaultApiFetcher.get(
+          'tickers-profile/get-sector-v2'
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.sectorLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.sectorLoading = false;
+          state.sectors = action.payload;
+        },
+        rejected: (state) => {
+          state.sectorLoading = false;
+        }
+      }
+    ),
+
+    getIndustriesV2: create.asyncThunk(
+      async (sector: string) => {
+        const response = await defaultApiFetcher.get(
+          'tickers-profile/get-industry-v2',
+          {
+            query: { sector }
+          }
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.industryLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.industryLoading = false;
+          state.industries = action.payload;
+        },
+        rejected: (state) => {
+          state.industryLoading = false;
+        }
+      }
+    ),
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -122,5 +166,11 @@ export const {
   watchSectorLoading
 } = stockScoreSlice.selectors;
 
-export const { getStockScore, getIndustries, getSectors, resetState } =
-  stockScoreSlice.actions;
+export const {
+  getStockScore,
+  getIndustries,
+  getSectors,
+  getIndustriesV2,
+  getSectorsV2,
+  resetState
+} = stockScoreSlice.actions;

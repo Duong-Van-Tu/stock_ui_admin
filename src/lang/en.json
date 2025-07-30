@@ -418,6 +418,7 @@
   "confirmExitSelected": "Are you sure you want to exit the selected signals?",
   "confirmExitOne": "Are you sure you want to exit this signal?",
   "allIndustry": "All Industry",
+  "allSector": "All Sector",
   "holdingTime": "DIM",
   "companyName": "Company name",
   "depositMoney": "Deposit",

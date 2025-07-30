@@ -13,6 +13,7 @@ type SelectFilterProps = {
   onClear: () => void;
   labelFloating?: boolean;
   value?: string;
+  disabled?: boolean;
 };
 
 export const SelectFilter = ({
@@ -21,9 +22,10 @@ export const SelectFilter = ({
   options,
   width = '14rem',
   labelFloating = false,
+  disabled,
+  value,
   onSelect,
-  onClear,
-  value
+  onClear
 }: SelectFilterProps) => {
   const t = useTranslations();
   if (labelFloating) {
@@ -37,6 +39,7 @@ export const SelectFilter = ({
         placeholder=''
         onChange={(val) => onSelect(val)}
         onClear={onClear}
+        disabled={disabled}
       />
     );
   }
@@ -55,6 +58,7 @@ export const SelectFilter = ({
         value={value}
         onChange={(val) => onSelect(val)}
         onClear={onClear}
+        disabled={disabled}
       />
     </Form.Item>
   );

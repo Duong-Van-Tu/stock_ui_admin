@@ -48,7 +48,7 @@ export default function FloatSelect({
       />
       <label
         css={[
-          labelBaseStyle,
+          labelBaseStyle(restProps.disabled),
           isOccupied ? labelActiveStyle : labelPlaceholderStyle
         ]}
       >
@@ -67,15 +67,16 @@ const getInputStyles = (width: string) => css`
   width: ${width} !important;
 `;
 
-const labelBaseStyle = css`
+const labelBaseStyle = (hidden?: boolean) => css`
   font-weight: normal;
   position: absolute;
   pointer-events: none;
   left: 1.2rem;
   top: 0.4rem;
   transition: 0.2s ease all;
-  background: white;
+  background: var(--white-color);
   color: var(--gray-color);
+  display: ${hidden && 'none'};
 `;
 
 const labelPlaceholderStyle = css`
@@ -83,7 +84,7 @@ const labelPlaceholderStyle = css`
 `;
 
 const labelActiveStyle = css`
-  top: -1rem;
+  top: -1.2rem;
   font-size: 1.2rem !important;
   padding: 0 0.4rem;
   margin-left: -0.4rem;

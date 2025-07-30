@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
 
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Button, Col, Form, Row, Space } from 'antd';
@@ -10,8 +10,8 @@ import { SelectFilter } from './select-filter';
 import { getMarketCapOptions, getPeriodOptions } from '@/utils/stock-filter';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  getIndustries,
-  getSectors,
+  getIndustriesV2,
+  getSectorsV2,
   watchIndustries,
   watchSectors
 } from '@/redux/slices/stock-score.slice';
@@ -38,11 +38,13 @@ export const WatchlistSwingTradeFilter = ({
   const industries = useAppSelector(watchIndustries);
   const sectors = useAppSelector(watchSectors);
 
+  const selectedSector = params.get('sector');
+
   const periodOptions = getPeriodOptions(t);
   const marketCapOptions = getMarketCapOptions(t);
   const industryOptions = useMemo(
     () => [
-      { value: '', label: t('allIndustry') },
+      { value: '', label: t('searchSelectIndustry') },
       ...(industries?.map((item) => ({
         value: item.industry,
         label: item.industry
@@ -53,7 +55,7 @@ export const WatchlistSwingTradeFilter = ({
 
   const sectorOptions = useMemo(
     () => [
-      { value: '', label: t('allIndustry') },
+      { value: '', label: t('allSector') },
       ...(sectors?.map((item) => ({
         value: item.sector,
         label: item.sector
@@ -62,11 +64,14 @@ export const WatchlistSwingTradeFilter = ({
     [t, sectors]
   );
 
-  const updateSearchParams = (key: string, value?: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    value ? params.set(key, value) : params.delete(key);
-    router.push(`?${params.toString()}`, { scroll: false });
-  };
+  const updateSearchParams = useCallback(
+    (key: string, value?: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      value ? params.set(key, value) : params.delete(key);
+      router.push(`?${params.toString()}`, { scroll: false });
+    },
+    [router, searchParams]
+  );
 
   const handleSearch = () => {
     const values = form.getFieldsValue();
@@ -103,12 +108,17 @@ export const WatchlistSwingTradeFilter = ({
   }, [searchParams, form, onFilter]);
 
   useEffect(() => {
-    dispatch(getIndustries());
+    dispatch(getSectorsV2());
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getSectors());
-  }, [dispatch]);
+    if (selectedSector) {
+      dispatch(getIndustriesV2(selectedSector));
+    } else {
+      form.setFieldsValue({ industry: '' });
+      updateSearchParams('industry', '');
+    }
+  }, [selectedSector, form, dispatch, updateSearchParams]);
 
   return (
     <div css={[rootStyles, customStyles]}>
@@ -149,18 +159,6 @@ export const WatchlistSwingTradeFilter = ({
           </Col>
           <Col>
             <SelectFilter
-              name='industry'
-              label={t('industry')}
-              options={industryOptions}
-              onSelect={(value) => updateSearchParams('industry', value)}
-              onClear={() => updateSearchParams('industry')}
-              width={isMobile ? '15.4rem' : '20rem'}
-              labelFloating
-              value={form.getFieldValue('industry') ?? ''}
-            />
-          </Col>
-          <Col>
-            <SelectFilter
               name='sector'
               label={t('sector')}
               options={sectorOptions}
@@ -169,6 +167,19 @@ export const WatchlistSwingTradeFilter = ({
               width={isMobile ? '15.4rem' : '20rem'}
               value={form.getFieldValue('sector') ?? ''}
               labelFloating
+            />
+          </Col>
+          <Col>
+            <SelectFilter
+              name='industry'
+              label={t('industry')}
+              options={industryOptions}
+              onSelect={(value) => updateSearchParams('industry', value)}
+              onClear={() => updateSearchParams('industry')}
+              width={isMobile ? '15.4rem' : '20rem'}
+              labelFloating
+              value={form.getFieldValue('industry') ?? ''}
+              disabled={!form.getFieldValue('sector')}
             />
           </Col>
           <Col>
