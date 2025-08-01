@@ -4,7 +4,7 @@ import {
   computeLedgerBalances,
   transformLedgerEntry
 } from '@/helpers/ledger-entry.helper';
-import { convertParamsByMapping } from '@/utils/common';
+import { cleanFalsyValues, convertParamsByMapping } from '@/utils/common';
 
 export type ledgerEntryState = {
   loading: boolean;
@@ -191,7 +191,9 @@ export const ledgerEntrySlice = createAppSlice({
           'users/send-ledger-email',
           {
             ...payload,
-            ledgerEntry: convertParamsByMapping(payload.ledgerEntry)
+            ledgerEntry: cleanFalsyValues(
+              convertParamsByMapping(payload.ledgerEntry)
+            )
           }
         );
         return response;

@@ -349,8 +349,7 @@ export function MembersLedgerEntry() {
           pagination={false}
           rowSelection={{
             selectedRowKeys,
-            onChange: (keys) => setSelectedRowKeys(keys),
-            fixed: 'left'
+            onChange: (keys) => setSelectedRowKeys(keys)
           }}
           scroll={{
             x: 1100,

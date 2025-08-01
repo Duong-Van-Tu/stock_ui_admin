@@ -4,7 +4,7 @@ import { Icon } from '@/components/icons';
 import { Button, Popover, Tooltip } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details.drawer';
+import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details';
 import ChartMiniTradingview from '@/components/charts/trading-view-mini.chart';
 import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
