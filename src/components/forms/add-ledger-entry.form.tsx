@@ -479,7 +479,7 @@ const titleStyles = css`
 const formActionsStyles = css`
   padding: 1rem 2rem;
   display: flex;
-  justify-content: center;
+  justify-content: ${isMobile ? 'center' : 'flex-end'};
   position: absolute;
   right: -2rem;
   left: -2rem;
