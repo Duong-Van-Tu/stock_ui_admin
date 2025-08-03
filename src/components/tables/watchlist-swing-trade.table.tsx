@@ -215,6 +215,7 @@ export const WatchlistSwingTradeTable = () => {
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'timeAfter4pm' ? sortType : null,
+      hidden: filter.period === '1h',
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('timeAfter4pm')
       }),
@@ -234,10 +235,11 @@ export const WatchlistSwingTradeTable = () => {
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'priceAfter4pm' ? sortType : null,
+      align: 'center',
+      hidden: filter.period === '1h',
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('priceAfter4pm')
       }),
-      align: 'center',
       render: (value, record) => {
         const percentage = calculatePercentage(record.previousClose, value);
         return value ? (
@@ -256,6 +258,7 @@ export const WatchlistSwingTradeTable = () => {
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'timeAfter8pm' ? sortType : null,
+      hidden: filter.period === '1h',
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('timeAfter8pm')
       }),
@@ -275,6 +278,7 @@ export const WatchlistSwingTradeTable = () => {
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'priceAfter8pm' ? sortType : null,
+      hidden: filter.period === '1h',
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('priceAfter8pm')
       }),
