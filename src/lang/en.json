@@ -471,6 +471,10 @@
   "timeAfter4pm": "Time after 4PM",
   "priceAfter8pm": "Price after 8PM",
   "timeAfter8pm": "Time after 8PM",
+  "closingTime": "Closing Time",
+  "closingPrice": "Closing Price",
+  "afterHoursTime": "After-Hours Time",
+  "afterHoursPrice": "After-Hours Price",
   "chart": "Chart",
   "noData": "No Data",
   "days": "Days"

@@ -54,19 +54,14 @@ export const ExportExcelSwingWatchlist = () => {
           'No.': watchlist.indexOf(item) + 1,
           Symbol: item.symbol || '-',
           Period: item.period || '-',
-          'Price before 9AM': formatCurrency(item.priceBefore9am),
-          'Time before 9AM': item.timeBefore9am
-            ? dayjs(item.timeBefore9am).utc().format('YYYY-MM-DD HH:mm')
-            : '-',
-          'Price after 4PM': formatCurrency(item.priceAfter4pm),
-          'Time after 4PM': item.timeAfter4pm
+          'Closing Time': item.timeAfter4pm
             ? dayjs(item.timeAfter4pm).utc().format('YYYY-MM-DD HH:mm')
             : '-',
-          'Price after 8PM': formatCurrency(item.priceAfter8pm),
-          'Time after 8PM': item.timeAfter8pm
+          'Closing Price': formatCurrency(item.priceAfter4pm),
+          'After-Hours Time': item.timeAfter8pm
             ? dayjs(item.timeAfter8pm).utc().format('YYYY-MM-DD HH:mm')
             : '-',
-          'Gap type': item.gapType || '-',
+          'After-Hours Price': formatCurrency(item.priceAfter8pm),
           'Gap percent': formatPercent(item.percentGap),
           'AI Rating': item.AIRating || '-',
           'AI Recommendation': item.AIRecommendation

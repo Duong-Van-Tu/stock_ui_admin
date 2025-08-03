@@ -471,6 +471,10 @@
   "timeAfter4pm": "Thời gian sau 16h",
   "priceAfter8pm": "Giá sau 20h",
   "timeAfter8pm": "Thời gian sau 20h",
+  "closingTime": "Đóng cửa lúc",
+  "closingPrice": "Giá đóng cửa",
+  "afterHoursTime": "Sau giờ giao dịch",
+  "afterHoursPrice": "Giá sau giờ",
   "chart": "Biểu đồ",
   "noData": "Không có dữ liệu",
   "days": "Ngày"
