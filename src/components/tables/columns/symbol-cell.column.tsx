@@ -65,6 +65,7 @@ export const SymbolCell = ({
             <Link
               css={stockLinkStyles}
               href={PageURLs.ofStockDetail(symbol, signalId)}
+              target='_blank'
             >
               {symbol}
             </Link>
