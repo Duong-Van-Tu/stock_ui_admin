@@ -36,6 +36,9 @@ export const ImportSymbolButton = () => {
       notifyError(t('importError'));
     }
     setImporting(false);
+    if (inputImportRef.current) {
+      inputImportRef.current.value = '';
+    }
   };
 
   return (
