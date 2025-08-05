@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Form,
   Input,
@@ -35,6 +35,7 @@ import { getSectors, watchSectors } from '@/redux/slices/stock-score.slice';
 import { PageURLs } from '@/utils/navigate';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { isMobile } from 'react-device-detect';
+import MemberListDrawer from '../drawers/member-list.drawer';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -52,6 +53,7 @@ export default function EditLedgerEntry() {
   const loading = useAppSelector(watchLedgerEntryLoading);
   const updating = useAppSelector(watchUpdatingLedgerEntry);
   const sectors = useAppSelector(watchSectors);
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
   const handleDelete = async () => {
     const res = await dispatch(deleteLedgerEntry(Number(id)));
@@ -109,10 +111,6 @@ export default function EditLedgerEntry() {
     router.push(PageURLs.ofLedgerEntry());
   };
 
-  const handleSendAlert = () => {
-    router.push(PageURLs.ofSendAlertLedgerEntry(Number(id)));
-  };
-
   useEffect(() => {
     if (id) {
       dispatch(getLedgerEntryById(id));
@@ -159,6 +157,16 @@ export default function EditLedgerEntry() {
   return (
     <>
       {contextHolder}
+      <MemberListDrawer
+        visible={drawerVisible}
+        onClose={() => setDrawerVisible(false)}
+        ledgerEntry={{
+          ...form.getFieldsValue(),
+          entryDate: form.getFieldValue('entryDate')?.toISOString(),
+          exitDate: form.getFieldValue('exitDate')?.toISOString(),
+          expiration: form.getFieldValue('expiration')?.toISOString()
+        }}
+      />
       <Spin spinning={loading}>
         <div css={rootStyles}>
           <Title level={isMobile ? 4 : 3} css={titleStyles}>
@@ -478,7 +486,7 @@ export default function EditLedgerEntry() {
                       {t('delete')}
                     </Button>
                     <Button
-                      onClick={handleSendAlert}
+                      onClick={() => setDrawerVisible(true)}
                       type='primary'
                       size={isMobile ? 'middle' : 'large'}
                       icon={
