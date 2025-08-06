@@ -279,6 +279,21 @@ export const WatchlistSwingTradeTable = () => {
       }
     },
     {
+      title: t('previousClose'),
+      dataIndex: 'previousClose',
+      key: 'previousClose',
+      width: 140,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'previousClose' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('previousClose')
+      }),
+      render: (value) => (value ? roundToDecimals(value) : '-')
+    },
+    {
       title: t('currentPrice'),
       dataIndex: 'currentPriceWatchlist',
       key: 'currentPriceWatchlist',
@@ -654,21 +669,6 @@ export const WatchlistSwingTradeTable = () => {
         ) : (
           t('noData')
         )
-    },
-    {
-      title: t('previousClose'),
-      dataIndex: 'previousClose',
-      key: 'previousClose',
-      width: 140,
-      align: 'center',
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'previousClose' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('previousClose')
-      }),
-      render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
       title: t('averagePrice'),
