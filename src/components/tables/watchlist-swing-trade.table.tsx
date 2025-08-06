@@ -45,6 +45,7 @@ import { DateTimeCell } from './columns/date-time-cell.column';
 import StockMiniChart, { DataPoint } from '../charts/stock-mini.chart';
 import { setSideBarCollapsed } from '@/redux/slices/app.slice';
 import { StockChangeCell } from './columns/stock-change-cell.column';
+import PriceRangeSlider from '../charts/price-range.chart';
 
 export const WatchlistSwingTradeTable = () => {
   const t = useTranslations();
@@ -105,7 +106,7 @@ export const WatchlistSwingTradeTable = () => {
   const fetchDataWatchList = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
-      pageSize = PAGINATION_PARAMS.limit,
+      pageSize = 30,
       filter
     }: PageChangeParams = {}) => {
       const filteredFilter = cleanFalsyValues(filter);
@@ -188,23 +189,38 @@ export const WatchlistSwingTradeTable = () => {
       )
     },
     {
-      title: t('dayChart'),
-      dataIndex: 'intradayStockChart',
-      key: 'intradayStockChart',
-      width: 140,
+      title: t('lastPrice'),
+      dataIndex: 'currentPriceWatchlist',
+      key: 'currentPriceWatchlist',
+      width: 120,
       align: 'center',
-      render: (value, record) =>
-        value?.dayChart ? (
-          <Button
-            type='text'
-            css={dayChartBtnStyles}
-            onClick={() => handleChartButtonClick(record.symbol)}
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'currentPriceWatchlist' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('currentPriceWatchlist')
+      }),
+      render: (value, record) => {
+        value
+          ? roundToDecimals(value)
+          : record.previousClose
+          ? roundToDecimals(record.previousClose)
+          : null;
+
+        return !!value ? (
+          <span
+            css={currentPriceStyles(
+              value <= record.lowest20,
+              value > record.lowest20 && record.changeLowest20Realtime <= 2
+            )}
           >
-            <StockMiniChart width={100} data={value.dayChart as DataPoint[]} />
-          </Button>
+            {value}
+          </span>
         ) : (
-          t('noData')
-        )
+          '-'
+        );
+      }
     },
     {
       title: t('closingTime'),
@@ -296,19 +312,196 @@ export const WatchlistSwingTradeTable = () => {
       }
     },
     {
-      title: t('marketCap'),
-      dataIndex: 'marketCapWatchList',
-      key: 'marketCapWatchList',
-      width: 130,
+      title: t('lowest50'),
+      dataIndex: 'lowest50',
+      key: 'lowest50',
+      width: 110,
+      align: 'center',
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'marketCapWatchList' ? sortType : null,
+      sortOrder: sortField === 'changeLowest50Realtime' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('marketCapWatchList')
+        onClick: () => handleSortOrder('changeLowest50Realtime')
       }),
+      render: (value, record) => {
+        return value ? (
+          <div>
+            {value}
+            {record.changeLowest50Realtime !== undefined &&
+              record.changeLowest50Realtime !== null && (
+                <>
+                  <br /> (
+                  {roundToDecimals(Math.abs(record.changeLowest50Realtime))}%)
+                </>
+              )}
+          </div>
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
+      title: t('highest50'),
+      dataIndex: 'highest50',
+      key: 'highest50',
+      width: 120,
       align: 'center',
-      render: (value) => (value ? formatMarketCap(value / 1000000) : '-')
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highest50' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highest50')
+      }),
+      render: (value) => {
+        return value ? roundToDecimals(value) : '-';
+      }
+    },
+    {
+      title: t('50DayRange'),
+      dataIndex: '50DayRange',
+      key: '50DayRange',
+      width: 130,
+      align: 'center',
+      render: (_, record) =>
+        record.currentPriceWatchlist ? (
+          <PriceRangeSlider
+            lowest={record.lowest50}
+            highest={record.highest50}
+            current={record.currentPriceWatchlist}
+          />
+        ) : (
+          t('noData')
+        )
+    },
+    {
+      title: t('lowest20'),
+      dataIndex: 'lowest20',
+      key: 'lowest20',
+      width: 110,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'changeLowest20Realtime' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('changeLowest20Realtime')
+      }),
+      render: (value, record) => {
+        return value ? (
+          <div>
+            {value}
+            {record.changeLowest20Realtime !== undefined &&
+              record.changeLowest20Realtime !== null && (
+                <>
+                  <br /> (
+                  {roundToDecimals(Math.abs(record.changeLowest20Realtime))}%)
+                </>
+              )}
+          </div>
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
+      title: t('highest20'),
+      dataIndex: 'highest20',
+      key: 'highest20',
+      width: 120,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highest20' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highest20')
+      }),
+      render: (value) => {
+        return value ? roundToDecimals(value) : '-';
+      }
+    },
+    {
+      title: t('20DayRange'),
+      dataIndex: '20DayRange',
+      key: '20DayRange',
+      width: 130,
+      align: 'center',
+      render: (_, record) =>
+        record.currentPriceWatchlist ? (
+          <PriceRangeSlider
+            lowest={record.lowest20}
+            highest={record.highest20}
+            current={record.currentPriceWatchlist}
+          />
+        ) : (
+          t('noData')
+        )
+    },
+    {
+      title: t('lowest10'),
+      dataIndex: 'lowest10',
+      key: 'lowest10',
+      width: 120,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'changeLowest10Realtime' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('changeLowest10Realtime')
+      }),
+      render: (value, record) => {
+        return value ? (
+          <div>
+            {value}
+            {record.changeLowest10Realtime !== undefined &&
+              record.changeLowest10Realtime !== null && (
+                <>
+                  <br /> (
+                  {roundToDecimals(Math.abs(record.changeLowest10Realtime))}%)
+                </>
+              )}
+          </div>
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
+      title: t('highest10'),
+      dataIndex: 'highest10',
+      key: 'highest10',
+      width: 120,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highest10' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highest10')
+      }),
+      render: (value) => {
+        return value ? roundToDecimals(value) : '-';
+      }
+    },
+    {
+      title: t('10DayRange'),
+      dataIndex: '10DayRange',
+      key: '10DayRange',
+      width: 130,
+      align: 'center',
+      render: (_, record) =>
+        record.currentPriceWatchlist ? (
+          <PriceRangeSlider
+            lowest={record.lowest10}
+            highest={record.highest10}
+            current={record.currentPriceWatchlist}
+          />
+        ) : (
+          t('noData')
+        )
     },
     {
       title: t('period'),
@@ -385,6 +578,57 @@ export const WatchlistSwingTradeTable = () => {
         )
     },
     {
+      title: t('marketCap'),
+      dataIndex: 'marketCapWatchList',
+      key: 'marketCapWatchList',
+      width: 130,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'marketCapWatchList' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('marketCapWatchList')
+      }),
+      align: 'center',
+      render: (value) => (value ? formatMarketCap(value / 1000000) : '-')
+    },
+    {
+      title: t('dayChart'),
+      dataIndex: 'intradayStockChart',
+      key: 'intradayStockChart',
+      width: 140,
+      align: 'center',
+      render: (value, record) =>
+        value?.dayChart ? (
+          <Button
+            type='text'
+            css={dayChartBtnStyles}
+            onClick={() => handleChartButtonClick(record.symbol)}
+          >
+            <StockMiniChart width={100} data={value.dayChart as DataPoint[]} />
+          </Button>
+        ) : (
+          t('noData')
+        )
+    },
+    {
+      title: t('dayRange'),
+      dataIndex: 'intradayStockChart',
+      key: 'intradayStockChart',
+      width: 130,
+      align: 'center',
+      render: (value: IntradayStockChart, record) =>
+        value?.dayChart ? (
+          <PriceRangeSlider
+            lowest={value.dayLow}
+            highest={value.dayHigh}
+            current={record.currentPriceWatchlist}
+          />
+        ) : (
+          t('noData')
+        )
+    },
+    {
       title: t('previousClose'),
       dataIndex: 'previousClose',
       key: 'previousClose',
@@ -398,192 +642,6 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('previousClose')
       }),
       render: (value) => (value ? roundToDecimals(value) : '-')
-    },
-    {
-      title: t('currentPrice'),
-      dataIndex: 'currentPriceWatchlist',
-      key: 'currentPriceWatchlist',
-      width: 130,
-      align: 'center',
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'currentPriceWatchlist' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('currentPriceWatchlist')
-      }),
-      render: (value, record) => {
-        value
-          ? roundToDecimals(value)
-          : record.previousClose
-          ? roundToDecimals(record.previousClose)
-          : null;
-
-        return !!value ? (
-          <span
-            css={currentPriceStyles(
-              value <= record.lowest20,
-              value > record.lowest20 && record.changeLowest20Realtime <= 2
-            )}
-          >
-            {value} <br />
-            <PositiveNegativeText
-              isNegative={value < record.previousClose}
-              isPositive={value >= record.previousClose}
-            >
-              (<span>{value >= record.previousClose ? '+' : ''}</span>
-              {(
-                ((value - record.previousClose) / record.previousClose) *
-                100
-              ).toLocaleString()}
-              %)
-            </PositiveNegativeText>
-          </span>
-        ) : (
-          '-'
-        );
-      }
-    },
-    {
-      title: t('lowest50'),
-      dataIndex: 'lowest50',
-      key: 'lowest50',
-      width: 110,
-      align: 'center',
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'changeLowest50Realtime' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('changeLowest50Realtime')
-      }),
-      render: (value, record) => {
-        return value ? (
-          <div>
-            {value}
-            {record.changeLowest50Realtime !== undefined &&
-              record.changeLowest50Realtime !== null && (
-                <>
-                  <br /> (
-                  {roundToDecimals(Math.abs(record.changeLowest50Realtime))}%)
-                </>
-              )}
-          </div>
-        ) : (
-          '-'
-        );
-      }
-    },
-    {
-      title: t('highest50'),
-      dataIndex: 'highest50',
-      key: 'highest50',
-      width: 120,
-      align: 'center',
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'highest50' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('highest50')
-      }),
-      render: (value) => {
-        return value ? roundToDecimals(value) : '-';
-      }
-    },
-    {
-      title: t('lowest20'),
-      dataIndex: 'lowest20',
-      key: 'lowest20',
-      width: 110,
-      align: 'center',
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'changeLowest20Realtime' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('changeLowest20Realtime')
-      }),
-      render: (value, record) => {
-        return value ? (
-          <div>
-            {value}
-            {record.changeLowest20Realtime !== undefined &&
-              record.changeLowest20Realtime !== null && (
-                <>
-                  <br /> (
-                  {roundToDecimals(Math.abs(record.changeLowest20Realtime))}%)
-                </>
-              )}
-          </div>
-        ) : (
-          '-'
-        );
-      }
-    },
-    {
-      title: t('highest20'),
-      dataIndex: 'highest20',
-      key: 'highest20',
-      width: 120,
-      align: 'center',
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'highest20' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('highest20')
-      }),
-      render: (value) => {
-        return value ? roundToDecimals(value) : '-';
-      }
-    },
-    {
-      title: t('lowest10'),
-      dataIndex: 'lowest10',
-      key: 'lowest10',
-      width: 120,
-      align: 'center',
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'changeLowest10Realtime' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('changeLowest10Realtime')
-      }),
-      render: (value, record) => {
-        return value ? (
-          <div>
-            {value}
-            {record.changeLowest10Realtime !== undefined &&
-              record.changeLowest10Realtime !== null && (
-                <>
-                  <br /> (
-                  {roundToDecimals(Math.abs(record.changeLowest10Realtime))}%)
-                </>
-              )}
-          </div>
-        ) : (
-          '-'
-        );
-      }
-    },
-    {
-      title: t('highest10'),
-      dataIndex: 'highest10',
-      key: 'highest10',
-      width: 120,
-      align: 'center',
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'highest10' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('highest10')
-      }),
-      render: (value) => {
-        return value ? roundToDecimals(value) : '-';
-      }
     },
     {
       title: t('averagePrice'),

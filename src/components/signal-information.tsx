@@ -18,7 +18,7 @@ import {
 } from '@/constants/common.constant';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { PriceWithChange } from './price-with-change';
-import { ChartBackTest } from './charts/chart-backtest';
+import { ChartBackTest } from './charts/backtest.chart';
 
 type BacktestSpikeVolumeProps = {
   signal: Signal;

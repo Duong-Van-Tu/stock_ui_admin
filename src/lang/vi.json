@@ -477,5 +477,11 @@
   "afterHoursPrice": "Giá sau giờ",
   "chart": "Biểu đồ",
   "noData": "Không có dữ liệu",
-  "days": "Ngày"
+  "change": "Thay đổi",
+  "days": "Ngày",
+  "lastPrice": "Giá cuối cùng",
+  "dayRange": "Biên độ trong ngày",
+  "10DayRange": "Biên độ 10 ngày",
+  "20DayRange": "Biên độ 20 ngày",
+  "50DayRange": "Biên độ 50 ngày"
 }

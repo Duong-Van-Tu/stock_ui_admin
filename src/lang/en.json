@@ -477,5 +477,11 @@
   "afterHoursPrice": "After-Hours Price",
   "chart": "Chart",
   "noData": "No Data",
-  "days": "Days"
+  "change": "Change",
+  "days": "Days",
+  "lastPrice": "Last Price",
+  "dayRange": "Day Range",
+  "10DayRange": "10-Day Range",
+  "20DayRange": "20-Day Range",
+  "50DayRange": "50-Day Range"
 }
