@@ -8,6 +8,7 @@ import {
   calculatePercentage,
   cleanFalsyValues,
   formatMarketCap,
+  formatPercent,
   roundToDecimals
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -189,40 +190,6 @@ export const WatchlistSwingTradeTable = () => {
       )
     },
     {
-      title: t('lastPrice'),
-      dataIndex: 'currentPriceWatchlist',
-      key: 'currentPriceWatchlist',
-      width: 120,
-      align: 'center',
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'currentPriceWatchlist' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('currentPriceWatchlist')
-      }),
-      render: (value, record) => {
-        value
-          ? roundToDecimals(value)
-          : record.previousClose
-          ? roundToDecimals(record.previousClose)
-          : null;
-
-        return !!value ? (
-          <span
-            css={currentPriceStyles(
-              value <= record.lowest20,
-              value > record.lowest20 && record.changeLowest20Realtime <= 2
-            )}
-          >
-            {value}
-          </span>
-        ) : (
-          '-'
-        );
-      }
-    },
-    {
       title: t('closingTime'),
       dataIndex: 'timeAfter4pm',
       key: 'timeAfter4pm',
@@ -312,6 +279,51 @@ export const WatchlistSwingTradeTable = () => {
       }
     },
     {
+      title: t('currentPrice'),
+      dataIndex: 'currentPriceWatchlist',
+      key: 'currentPriceWatchlist',
+      width: 130,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'currentPriceWatchlist' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('currentPriceWatchlist')
+      }),
+      render: (value, record) => {
+        value
+          ? roundToDecimals(value)
+          : record.previousClose
+          ? roundToDecimals(record.previousClose)
+          : null;
+
+        return !!value ? (
+          <span
+            css={currentPriceStyles(
+              value <= record.lowest20,
+              value > record.lowest20 && record.changeLowest20Realtime <= 2
+            )}
+          >
+            {value} <br />
+            <PositiveNegativeText
+              isNegative={value < record.previousClose}
+              isPositive={value >= record.previousClose}
+            >
+              (<span>{value >= record.previousClose ? '+' : ''}</span>
+              {(
+                ((value - record.previousClose) / record.previousClose) *
+                100
+              ).toLocaleString()}
+              %)
+            </PositiveNegativeText>
+          </span>
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
       title: t('lowest50'),
       dataIndex: 'lowest50',
       key: 'lowest50',
@@ -325,17 +337,22 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('changeLowest50Realtime')
       }),
       render: (value, record) => {
+        const rawChange = Number(record.changeLowest50Realtime);
+        const hasChange = !isNaN(rawChange);
+
         return value ? (
-          <div>
-            {value}
-            {record.changeLowest50Realtime !== undefined &&
-              record.changeLowest50Realtime !== null && (
-                <>
-                  <br /> (
-                  {roundToDecimals(Math.abs(record.changeLowest50Realtime))}%)
-                </>
+          value >= record.currentPriceWatchlist ? (
+            roundToDecimals(record.currentPriceWatchlist)
+          ) : (
+            <>
+              <div>{value}</div>
+              {hasChange && (
+                <PositiveNegativeText isNegative={true} isPositive={false}>
+                  <span>({formatPercent(-Math.abs(rawChange))})</span>
+                </PositiveNegativeText>
               )}
-          </div>
+            </>
+          )
         ) : (
           '-'
         );
@@ -389,17 +406,22 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('changeLowest20Realtime')
       }),
       render: (value, record) => {
+        const rawChange = Number(record.changeLowest20Realtime);
+        const hasChange = !isNaN(rawChange);
+
         return value ? (
-          <div>
-            {value}
-            {record.changeLowest20Realtime !== undefined &&
-              record.changeLowest20Realtime !== null && (
-                <>
-                  <br /> (
-                  {roundToDecimals(Math.abs(record.changeLowest20Realtime))}%)
-                </>
+          value >= record.currentPriceWatchlist ? (
+            roundToDecimals(record.currentPriceWatchlist)
+          ) : (
+            <>
+              <div>{value}</div>
+              {hasChange && (
+                <PositiveNegativeText isNegative={true} isPositive={false}>
+                  <span>({formatPercent(-Math.abs(rawChange))})</span>
+                </PositiveNegativeText>
               )}
-          </div>
+            </>
+          )
         ) : (
           '-'
         );
@@ -453,17 +475,22 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('changeLowest10Realtime')
       }),
       render: (value, record) => {
+        const rawChange = Number(record.changeLowest20Realtime);
+        const hasChange = !isNaN(rawChange);
+
         return value ? (
-          <div>
-            {value}
-            {record.changeLowest10Realtime !== undefined &&
-              record.changeLowest10Realtime !== null && (
-                <>
-                  <br /> (
-                  {roundToDecimals(Math.abs(record.changeLowest10Realtime))}%)
-                </>
+          value >= record.currentPriceWatchlist ? (
+            roundToDecimals(record.currentPriceWatchlist)
+          ) : (
+            <>
+              <div>{value}</div>
+              {hasChange && (
+                <PositiveNegativeText isNegative={true} isPositive={false}>
+                  <span>({formatPercent(-Math.abs(rawChange))})</span>
+                </PositiveNegativeText>
               )}
-          </div>
+            </>
+          )
         ) : (
           '-'
         );
