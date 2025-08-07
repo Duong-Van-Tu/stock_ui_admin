@@ -978,7 +978,7 @@ export const WatchlistSwingTradeTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: watchlistSwingTrade.length > 0 ? height - 366 : undefined
+            y: watchlistSwingTrade.length > 0 ? height - 356 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
