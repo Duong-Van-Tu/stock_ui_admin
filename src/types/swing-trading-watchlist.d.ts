@@ -54,7 +54,15 @@ type WatchlistSwingTrade = {
   percentGap: number;
   gapType: string;
   intradayStockChart: IntradayStockChart;
+  gapUpDown: number;
+  closingPercent: number;
+  afterHourPercent: number;
+  earningDate: string;
+  isNews: boolean;
+  isNewsNegative: boolean;
   createdAt: string;
+  week52High: number;
+  week52Low: number;
 };
 
 type HistoryWatchlistSwingTrade = {

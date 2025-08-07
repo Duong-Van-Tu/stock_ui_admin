@@ -55,8 +55,16 @@ export const transformWatchlistSwingTrade = (
     priceBefore9am: item[fieldMapping.priceBefore9am],
     timeBefore9am: item[fieldMapping.timeBefore9am],
     percentGap: Number(item[fieldMapping.percentGap]),
+    closingPercent: Number(item[fieldMapping.closingPercent]),
+    afterHourPercent: Number(item[fieldMapping.afterHourPercent]),
     gapType: item[fieldMapping.gapType],
-    intradayStockChart: item.stockData
+    intradayStockChart: item.stockData,
+    gapUpDown: item[fieldMapping.gapUpDown],
+    isNewsNegative: item[fieldMapping.isNewsNegative],
+    earningDate: item[fieldMapping.earningDate],
+    isNews: item[fieldMapping.isNews],
+    week52High: item[fieldMapping.week52High],
+    week52Low: item[fieldMapping.week52Low]
   }));
 };
 

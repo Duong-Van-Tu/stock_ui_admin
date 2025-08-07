@@ -180,5 +180,8 @@ export const fieldMapping: Record<string, string> = {
   timeBefore9am: 'time_before_9am',
   percentGap: 'percent_gap',
   gapType: 'gap_type',
-  consoleObject: 'console_object'
+  consoleObject: 'console_object',
+  gapUpDown: 'gap_up_down',
+  closingPercent: 'closing_percent',
+  afterHourPercent: 'after_hour_percent'
 };

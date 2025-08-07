@@ -483,5 +483,9 @@
   "dayRange": "Day Range",
   "10DayRange": "10-Day Range",
   "20DayRange": "20-Day Range",
-  "50DayRange": "50-Day Range"
+  "50DayRange": "50-Day Range",
+  "open": "Open",
+  "marketDateTime": "Market Date Time",
+  "gapUpDown": "GAP UP/DOWN",
+  "52WeekRange": "52-Week Range"
 }

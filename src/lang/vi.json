@@ -483,5 +483,9 @@
   "dayRange": "Biên độ trong ngày",
   "10DayRange": "Biên độ 10 ngày",
   "20DayRange": "Biên độ 20 ngày",
-  "50DayRange": "Biên độ 50 ngày"
+  "50DayRange": "Biên độ 50 ngày",
+  "open": "Giá mở cửa",
+  "marketDateTime": "Thời gian thị trường",
+  "gapUpDown": "GAP Tăng/Giảm",
+  "52WeekRange": "Biên độ 52 tuần"
 }
