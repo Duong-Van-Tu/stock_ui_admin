@@ -1027,7 +1027,7 @@ const tableContainerStyles = css`
 
 const tableStyles = css`
   .ant-table-cell {
-    padding: 0.8rem 1rem !important;
+    padding: 0.4rem 0.6rem !important;
   }
 `;
 
