@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button, Segmented, Table, TableColumnsType } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
-  calculatePercentage,
   cleanFalsyValues,
   formatMarketCap,
   formatPercent,
@@ -213,21 +212,20 @@ export const WatchlistSwingTradeTable = () => {
     },
     {
       title: t('closingPrice'),
-      dataIndex: 'priceAfter4pm',
-      key: 'priceAfter4pm',
+      dataIndex: 'closingPercent',
+      key: 'closingPercent',
       width: 130,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'priceAfter4pm' ? sortType : null,
+      sortOrder: sortField === 'closingPercent' ? sortType : null,
       align: 'center',
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('priceAfter4pm')
+        onClick: () => handleSortOrder('closingPercent')
       }),
       render: (value, record) => {
-        const percentage = calculatePercentage(record.previousClose, value);
-        return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
+        return value && record.closingPercent ? (
+          <StockChangeCell value={record.priceAfter4pm} percentage={value} />
         ) : (
           '-'
         );
@@ -254,24 +252,20 @@ export const WatchlistSwingTradeTable = () => {
     },
     {
       title: t('afterHoursPrice'),
-      dataIndex: 'priceAfter8pm',
-      key: 'priceAfter8pm',
+      dataIndex: 'afterHourPercent',
+      key: 'afterHourPercent',
       width: 130,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'priceAfter8pm' ? sortType : null,
+      sortOrder: sortField === 'afterHourPercent' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('priceAfter8pm')
+        onClick: () => handleSortOrder('afterHourPercent')
       }),
       align: 'center',
       render: (value, record) => {
-        const percentage = calculatePercentage(
-          record.currentPriceWatchlist,
-          value
-        );
-        return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
+        return value && record.afterHourPercent ? (
+          <StockChangeCell value={record.priceAfter8pm} percentage={value} />
         ) : (
           '-'
         );
