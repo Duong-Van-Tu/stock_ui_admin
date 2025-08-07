@@ -63,6 +63,8 @@ type WatchlistSwingTrade = {
   createdAt: string;
   week52High: number;
   week52Low: number;
+  volumeAVG: number;
+  beta: number;
 };
 
 type HistoryWatchlistSwingTrade = {

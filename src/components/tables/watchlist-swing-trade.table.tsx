@@ -7,6 +7,7 @@ import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   cleanFalsyValues,
   formatMarketCap,
+  formatNumberShort,
   formatPercent,
   roundToDecimals
 } from '@/utils/common';
@@ -696,6 +697,34 @@ export const WatchlistSwingTradeTable = () => {
       }),
       align: 'center',
       render: (value) => (value ? formatMarketCap(value / 1000000) : '-')
+    },
+    {
+      title: t('volume'),
+      dataIndex: 'volumeAVG',
+      key: 'volumeAVG',
+      width: 100,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'volumeAVG' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('volumeAVG')
+      }),
+      align: 'center',
+      render: (value) => (value ? formatNumberShort(value) : '-')
+    },
+    {
+      title: t('beta'),
+      dataIndex: 'beta',
+      key: 'beta',
+      width: 70,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'beta' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('beta')
+      }),
+      align: 'center',
+      render: (value) => (value ? roundToDecimals(value, 2) : '-')
     },
     {
       title: t('dayChart'),
