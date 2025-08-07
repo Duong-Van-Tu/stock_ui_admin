@@ -125,7 +125,7 @@ export const EarningsTable = () => {
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: isMobile ? 100 : 200,
+      width: isMobile ? 100 : 160,
       fixed: 'left',
       render: (_, record) => (
         <SymbolCell
