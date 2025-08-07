@@ -662,6 +662,13 @@ export const WatchlistSwingTradeTable = () => {
       key: 'percentGap',
       width: 110,
       align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'percentGap' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('percentGap')
+      }),
       render: (value, record) =>
         value && record.percentGap ? (
           <>
