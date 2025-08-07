@@ -462,7 +462,7 @@ export const WatchlistSwingTradeTable = () => {
         const hasChange = !isNaN(rawChange);
 
         return value ? (
-          value >= record.currentPriceWatchlist ? (
+          value === record.currentPriceWatchlist ? (
             roundToDecimals(record.lowest20)
           ) : (
             <>
@@ -534,7 +534,7 @@ export const WatchlistSwingTradeTable = () => {
         const hasChange = !isNaN(rawChange);
 
         return value ? (
-          value >= record.currentPriceWatchlist ? (
+          value === record.currentPriceWatchlist ? (
             roundToDecimals(record.lowest10)
           ) : (
             <>
