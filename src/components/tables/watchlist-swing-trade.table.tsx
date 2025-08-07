@@ -390,14 +390,17 @@ export const WatchlistSwingTradeTable = () => {
         const hasChange = !isNaN(rawChange);
 
         return value ? (
-          value >= record.currentPriceWatchlist ? (
+          value === record.currentPriceWatchlist ? (
             roundToDecimals(record.lowest50)
           ) : (
             <>
               <div>{value}</div>
               {hasChange && (
-                <PositiveNegativeText isNegative={true} isPositive={false}>
-                  <span>({formatPercent(-Math.abs(rawChange))})</span>
+                <PositiveNegativeText
+                  isNegative={rawChange > 0}
+                  isPositive={rawChange < 0}
+                >
+                  <span>({formatPercent(-rawChange)})</span>
                 </PositiveNegativeText>
               )}
             </>
@@ -465,8 +468,11 @@ export const WatchlistSwingTradeTable = () => {
             <>
               <div>{value}</div>
               {hasChange && (
-                <PositiveNegativeText isNegative={true} isPositive={false}>
-                  <span>({formatPercent(-Math.abs(rawChange))})</span>
+                <PositiveNegativeText
+                  isNegative={rawChange > 0}
+                  isPositive={rawChange < 0}
+                >
+                  <span>({formatPercent(-rawChange)})</span>
                 </PositiveNegativeText>
               )}
             </>
@@ -524,7 +530,7 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('changeLowest10Realtime')
       }),
       render: (value, record) => {
-        const rawChange = Number(record.changeLowest20Realtime);
+        const rawChange = Number(record.changeLowest10Realtime);
         const hasChange = !isNaN(rawChange);
 
         return value ? (
@@ -534,8 +540,11 @@ export const WatchlistSwingTradeTable = () => {
             <>
               <div>{value}</div>
               {hasChange && (
-                <PositiveNegativeText isNegative={true} isPositive={false}>
-                  <span>({formatPercent(-Math.abs(rawChange))})</span>
+                <PositiveNegativeText
+                  isNegative={rawChange > 0}
+                  isPositive={rawChange < 0}
+                >
+                  <span>({formatPercent(-rawChange)})</span>
                 </PositiveNegativeText>
               )}
             </>
