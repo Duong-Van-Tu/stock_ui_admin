@@ -391,7 +391,7 @@ export const WatchlistSwingTradeTable = () => {
 
         return value ? (
           value >= record.currentPriceWatchlist ? (
-            roundToDecimals(record.currentPriceWatchlist)
+            roundToDecimals(record.lowest50)
           ) : (
             <>
               <div>{value}</div>
@@ -460,7 +460,7 @@ export const WatchlistSwingTradeTable = () => {
 
         return value ? (
           value >= record.currentPriceWatchlist ? (
-            roundToDecimals(record.currentPriceWatchlist)
+            roundToDecimals(record.lowest20)
           ) : (
             <>
               <div>{value}</div>
@@ -529,7 +529,7 @@ export const WatchlistSwingTradeTable = () => {
 
         return value ? (
           value >= record.currentPriceWatchlist ? (
-            roundToDecimals(record.currentPriceWatchlist)
+            roundToDecimals(record.lowest10)
           ) : (
             <>
               <div>{value}</div>
