@@ -16,7 +16,9 @@ type WatchlistSwingTrade = {
   AIExplain: string;
   previousClose: number;
   previousPrice: number;
-  currentPriceWatchlist: number;
+  lastPrice: number;
+  priceChange: number;
+  priceChangePercent: number;
   lowest50: number;
   changeLowest50Realtime: number;
   changeLowest50: number;

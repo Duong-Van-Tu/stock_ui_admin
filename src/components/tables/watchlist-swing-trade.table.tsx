@@ -9,6 +9,7 @@ import {
   formatMarketCap,
   formatNumberShort,
   formatPercent,
+  isNumeric,
   roundToDecimals
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -273,20 +274,79 @@ export const WatchlistSwingTradeTable = () => {
       }
     },
     {
-      title: t('marketDateTime'),
-      dataIndex: 'timeBefore9am',
-      key: 'timeBefore9am',
-      width: 110,
+      title: t('lastPrice'),
+      dataIndex: 'lastPrice',
+      key: 'lastPrice',
+      width: 100,
       align: 'center',
+      defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'timeBefore9am' ? sortType : null,
+      sortOrder: sortField === 'lastPrice' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('timeBefore9am')
+        onClick: () => handleSortOrder('lastPrice')
+      }),
+      render: (value, record) => {
+        value
+          ? roundToDecimals(value)
+          : record.previousClose
+          ? roundToDecimals(record.previousClose)
+          : null;
+
+        return !!value ? (
+          <span
+            css={currentPriceStyles(
+              value <= record.lowest20,
+              value > record.lowest20 && record.changeLowest20Realtime <= 2
+            )}
+          >
+            {value} <br />
+          </span>
+        ) : (
+          '-'
+        );
+      }
+    },
+    {
+      title: `${t('change')} ($)`,
+      dataIndex: 'priceChange',
+      key: 'priceChange',
+      width: 116,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'priceChange' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('priceChange')
       }),
       render: (value) =>
-        value ? (
-          <DateTimeCell convertTimeZone={false} useUTC value={value} />
+        isNumeric(value) ? (
+          <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+            <span>{`${value > 0 ? '+' : ''}${roundToDecimals(value)}`}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: `${t('change')} (%)`,
+      dataIndex: 'priceChangePercent',
+      key: 'priceChangePercent',
+      width: 116,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'priceChangePercent' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('priceChangePercent')
+      }),
+      render: (value) =>
+        isNumeric(value) ? (
+          <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+            <span>{formatPercent(value)}</span>
+          </PositiveNegativeText>
         ) : (
           '-'
         )
@@ -307,6 +367,25 @@ export const WatchlistSwingTradeTable = () => {
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
+      title: t('marketDateTime'),
+      dataIndex: 'timeBefore9am',
+      key: 'timeBefore9am',
+      width: 110,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'timeBefore9am' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('timeBefore9am')
+      }),
+      render: (value) =>
+        value ? (
+          <DateTimeCell convertTimeZone={false} useUTC value={value} />
+        ) : (
+          '-'
+        )
+    },
+    {
       title: t('previousClose'),
       dataIndex: 'previousClose',
       key: 'previousClose',
@@ -321,51 +400,6 @@ export const WatchlistSwingTradeTable = () => {
         onClick: () => handleSortOrder('previousClose')
       }),
       render: (value) => (value ? roundToDecimals(value) : '-')
-    },
-    {
-      title: t('currentPrice'),
-      dataIndex: 'currentPriceWatchlist',
-      key: 'currentPriceWatchlist',
-      width: 130,
-      align: 'center',
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'currentPriceWatchlist' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('currentPriceWatchlist')
-      }),
-      render: (value, record) => {
-        value
-          ? roundToDecimals(value)
-          : record.previousClose
-          ? roundToDecimals(record.previousClose)
-          : null;
-
-        return !!value ? (
-          <span
-            css={currentPriceStyles(
-              value <= record.lowest20,
-              value > record.lowest20 && record.changeLowest20Realtime <= 2
-            )}
-          >
-            {value} <br />
-            {/* <PositiveNegativeText
-              isNegative={value < record.previousClose}
-              isPositive={value >= record.previousClose}
-            >
-              (<span>{value >= record.previousClose ? '+' : ''}</span>
-              {(
-                ((value - record.previousClose) / record.previousClose) *
-                100
-              ).toLocaleString()}
-              %)
-            </PositiveNegativeText> */}
-          </span>
-        ) : (
-          '-'
-        );
-      }
     },
     {
       title: t('lowest50'),
@@ -385,7 +419,7 @@ export const WatchlistSwingTradeTable = () => {
         const hasChange = !isNaN(rawChange);
 
         return value ? (
-          value === record.currentPriceWatchlist ? (
+          value === record.lastPrice ? (
             roundToDecimals(record.lowest50)
           ) : (
             <>
@@ -429,11 +463,11 @@ export const WatchlistSwingTradeTable = () => {
       width: 130,
       align: 'center',
       render: (_, record) =>
-        record.currentPriceWatchlist && record.lowest50 && record.highest50 ? (
+        record.lastPrice && record.lowest50 && record.highest50 ? (
           <PriceRangeSlider
             lowest={record.lowest50}
             highest={record.highest50}
-            current={record.currentPriceWatchlist}
+            current={record.lastPrice}
           />
         ) : (
           t('noData')
@@ -457,7 +491,7 @@ export const WatchlistSwingTradeTable = () => {
         const hasChange = !isNaN(rawChange);
 
         return value ? (
-          value === record.currentPriceWatchlist ? (
+          value === record.lastPrice ? (
             roundToDecimals(record.lowest20)
           ) : (
             <>
@@ -501,11 +535,11 @@ export const WatchlistSwingTradeTable = () => {
       width: 130,
       align: 'center',
       render: (_, record) =>
-        record.currentPriceWatchlist && record.lowest20 && record.highest20 ? (
+        record.lastPrice && record.lowest20 && record.highest20 ? (
           <PriceRangeSlider
             lowest={record.lowest20}
             highest={record.highest20}
-            current={record.currentPriceWatchlist}
+            current={record.lastPrice}
           />
         ) : (
           t('noData')
@@ -529,7 +563,7 @@ export const WatchlistSwingTradeTable = () => {
         const hasChange = !isNaN(rawChange);
 
         return value ? (
-          value === record.currentPriceWatchlist ? (
+          value === record.lastPrice ? (
             roundToDecimals(record.lowest10)
           ) : (
             <>
@@ -573,11 +607,11 @@ export const WatchlistSwingTradeTable = () => {
       width: 130,
       align: 'center',
       render: (_, record) =>
-        record.currentPriceWatchlist && record.lowest10 && record.highest10 ? (
+        record.lastPrice && record.lowest10 && record.highest10 ? (
           <PriceRangeSlider
             lowest={record.lowest10}
             highest={record.highest10}
-            current={record.currentPriceWatchlist}
+            current={record.lastPrice}
           />
         ) : (
           t('noData')
@@ -756,7 +790,7 @@ export const WatchlistSwingTradeTable = () => {
           <PriceRangeSlider
             lowest={value.dayLow}
             highest={value.dayHigh}
-            current={record.currentPriceWatchlist}
+            current={record.lastPrice}
           />
         ) : (
           t('noData')
@@ -773,7 +807,7 @@ export const WatchlistSwingTradeTable = () => {
           <PriceRangeSlider
             lowest={record.week52Low}
             highest={record.week52High}
-            current={record.currentPriceWatchlist}
+            current={record.lastPrice}
           />
         ) : (
           t('noData')

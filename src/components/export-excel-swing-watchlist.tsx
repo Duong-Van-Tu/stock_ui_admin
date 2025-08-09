@@ -69,7 +69,7 @@ export const ExportExcelSwingWatchlist = () => {
             : '-',
           'AI Explanation': item.AIExplain || '-',
           'Previous Close': formatCurrency(item.previousClose),
-          'Current Price': formatCurrency(item.currentPriceWatchlist),
+          'Current Price': formatCurrency(item.lastPrice),
           'Lowest 50': formatCurrency(item.lowest50),
           'Change Lowest 50 (%)': formatPercent(item.changeLowest50Realtime),
           'Highest 50': formatCurrency(item.highest50),
