@@ -24,6 +24,24 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
     const chart = echarts.init(chartRef.current);
 
     chart.setOption({
+      tooltip: {
+        trigger: 'item',
+        formatter: (params: any) => {
+          if (params.seriesType === 'scatter') {
+            return `${roundToDecimals(params.value[0])}`;
+          }
+          return '';
+        },
+        backgroundColor: '#fff',
+        borderColor: '#ccc',
+        borderWidth: 1,
+        padding: [1, 4],
+        textStyle: {
+          color: '#000',
+          fontSize: 12
+        },
+        position: (point: number[]) => [point[0] + 10, point[1] - 10]
+      },
       xAxis: {
         type: 'value',
         min: effectiveLowest,
