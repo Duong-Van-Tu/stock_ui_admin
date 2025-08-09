@@ -6,10 +6,12 @@ export function toBoolean(input: any) {
   return !!input;
 }
 
-export function toNumber(input: any) {
-  const val = +input;
-  if (isNaN(val)) return null;
-  return val;
+export function toNumber(input: unknown): number | null {
+  if (input === null || input === undefined) return null;
+  if (typeof input === 'string' && input.trim() === '') return null;
+
+  const val = Number(input);
+  return isNaN(val) ? null : val;
 }
 
 export function concatClasses(
@@ -273,3 +275,7 @@ export const parseConsoleObject = (rawString: string) => {
 
   throw new Error('Invalid JSON structure');
 };
+
+export function isNumeric(value: unknown): boolean {
+  return !isNaN(Number(value)) && value !== null && value !== '';
+}

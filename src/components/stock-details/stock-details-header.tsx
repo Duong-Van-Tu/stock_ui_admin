@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { useAppSelector } from '@/redux/hooks';
 import { watchStockDetails } from '@/redux/slices/stock-details.slice';
 import { PositiveNegativeText } from '../positive-negative-text';
-import { roundToDecimals } from '@/utils/common';
+import { isNumeric, roundToDecimals } from '@/utils/common';
 
 const { Text } = Typography;
 
@@ -72,7 +72,7 @@ export const StockDetailHeader = () => {
 
 const ScoreItem = ({
   label,
-  value,
+  value = 0,
   size = '1.6rem'
 }: {
   label: string;
@@ -84,7 +84,7 @@ const ScoreItem = ({
       {label}
     </Text>
     <br />
-    {value ? (
+    {isNumeric(value) ? (
       <PositiveNegativeText
         isPositive={value > 7}
         isNegative={value < 4}

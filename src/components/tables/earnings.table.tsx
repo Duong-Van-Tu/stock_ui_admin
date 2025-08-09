@@ -21,6 +21,7 @@ import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   cleanFalsyValues,
   formatNumberShort,
+  isNumeric,
   roundToDecimals
 } from '@/utils/common';
 import { SymbolCell } from './columns/symbol-cell.column';
@@ -147,7 +148,7 @@ export const EarningsTable = () => {
       }),
       align: 'center',
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>

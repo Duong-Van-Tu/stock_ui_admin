@@ -14,7 +14,7 @@ import { useCallback, useEffect } from 'react';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { DateTimeCell } from '../tables/columns/date-time-cell.column';
 import { PositiveNegativeText } from '../positive-negative-text';
-import { roundToDecimals } from '@/utils/common';
+import { isNumeric, roundToDecimals } from '@/utils/common';
 import { useTranslations } from 'next-intl';
 import {
   getImpactColor,
@@ -71,7 +71,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       width: 150,
       align: 'center',
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
@@ -86,7 +86,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
       width: 140,
       align: 'center',
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>

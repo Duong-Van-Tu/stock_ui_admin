@@ -9,6 +9,7 @@ import {
   cleanFalsyValues,
   formatMarketCap,
   formatNumberShort,
+  isNumeric,
   roundToDecimals
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -693,7 +694,7 @@ export const SearchSignalTable = ({
       }),
       align: 'center',
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
@@ -714,7 +715,7 @@ export const SearchSignalTable = ({
         onClick: () => handleSortOrder('fundamentalScore')
       }),
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
@@ -735,7 +736,7 @@ export const SearchSignalTable = ({
       }),
       align: 'center',
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
@@ -756,7 +757,7 @@ export const SearchSignalTable = ({
       }),
       align: 'center',
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>

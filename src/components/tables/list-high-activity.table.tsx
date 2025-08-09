@@ -13,6 +13,7 @@ import {
   formatMarketCap,
   formatNumberShort,
   formatPercent,
+  isNumeric,
   roundToDecimals
 } from '@/utils/common';
 import { useWindowSize } from '@/hooks/window-size.hook';
@@ -466,7 +467,7 @@ export const ListHighActivity = () => {
       }),
       align: 'center',
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
@@ -487,7 +488,7 @@ export const ListHighActivity = () => {
       }),
       align: 'center',
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
@@ -508,7 +509,7 @@ export const ListHighActivity = () => {
         onClick: () => handleSortOrder('fundamentalScore')
       }),
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>

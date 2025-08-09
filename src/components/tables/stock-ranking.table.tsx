@@ -8,7 +8,8 @@ import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   cleanFalsyValues,
   roundToDecimals,
-  getRowClassName
+  getRowClassName,
+  isNumeric
   // formatPercent
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -179,7 +180,7 @@ export const StockRankingTable = () => {
       }),
       align: 'center',
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
@@ -200,7 +201,7 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('fundamentalScore')
       }),
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
@@ -221,7 +222,7 @@ export const StockRankingTable = () => {
       }),
       align: 'center',
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
@@ -242,7 +243,7 @@ export const StockRankingTable = () => {
       }),
       align: 'center',
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>
@@ -263,7 +264,7 @@ export const StockRankingTable = () => {
       }),
       align: 'center',
       render: (value) =>
-        value ? (
+        isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
             <span>{roundToDecimals(value, 2)}</span>
           </PositiveNegativeText>

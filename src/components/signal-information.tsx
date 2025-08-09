@@ -8,6 +8,7 @@ import {
   formatMarketCap,
   formatNumberShort,
   formatPercent,
+  isNumeric,
   roundToDecimals
 } from '@/utils/common';
 import { PositiveNegativeText } from './positive-negative-text';
@@ -366,7 +367,7 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
             },
             {
               label: t('totalScore'),
-              value: signal.totalScore ? (
+              value: isNumeric(signal.totalScore) ? (
                 <PositiveNegativeText
                   isPositive={signal.totalScore > 7}
                   isNegative={signal.totalScore < 4}
@@ -379,7 +380,7 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
             },
             {
               label: t('fundamentalScore'),
-              value: signal.fundamentalScore ? (
+              value: isNumeric(signal.fundamentalScore) ? (
                 <PositiveNegativeText
                   isPositive={signal.fundamentalScore > 7}
                   isNegative={signal.fundamentalScore < 4}
@@ -392,7 +393,7 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
             },
             {
               label: t('sentimentScore'),
-              value: signal.sentimentScore ? (
+              value: isNumeric(signal.sentimentScore) ? (
                 <PositiveNegativeText
                   isPositive={signal.sentimentScore > 7}
                   isNegative={signal.sentimentScore < 4}
@@ -405,7 +406,7 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
             },
             {
               label: t('earningsScore'),
-              value: signal.earningsScore ? (
+              value: isNumeric(signal.earningsScore) ? (
                 <PositiveNegativeText
                   isPositive={signal.earningsScore > 7}
                   isNegative={signal.earningsScore < 4}
