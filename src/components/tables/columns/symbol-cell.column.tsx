@@ -8,7 +8,7 @@ import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details';
 import ChartMiniTradingview from '@/components/charts/trading-view-mini.chart';
 import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
-import { isMobile } from 'react-device-detect';
+import { isDesktop, isMobile } from 'react-device-detect';
 import EllipsisText from '@/components/ellipsis-text';
 
 enum ContentType {
@@ -65,7 +65,7 @@ export const SymbolCell = ({
             <Link
               css={stockLinkStyles}
               href={PageURLs.ofStockDetail(symbol, signalId)}
-              target='_blank'
+              target={isDesktop ? '_blank' : undefined}
             >
               {symbol}
             </Link>
