@@ -70,7 +70,7 @@ export const WatchlistSwingTradeTable = () => {
 
   const { sortField, sortType, handleSortOrder } =
     useSortOrder<WatchlistSwingTradeFilter>({
-      defaultField: 'marketCapWatchList',
+      defaultField: 'changeLowest50Realtime',
       defaultOrder: 'descend',
       currentFilter: filter,
       onChange: (_field, _order, newFilter) => {
@@ -429,7 +429,7 @@ export const WatchlistSwingTradeTable = () => {
                   isNegative={rawChange < 0}
                   isPositive={rawChange > 0}
                 >
-                  <span>({formatPercent(rawChange)})</span>
+                  <span>{rawChange}%</span>
                 </PositiveNegativeText>
               )}
             </>
@@ -501,7 +501,7 @@ export const WatchlistSwingTradeTable = () => {
                   isNegative={rawChange < 0}
                   isPositive={rawChange > 0}
                 >
-                  <span>({formatPercent(rawChange)})</span>
+                  <span>{rawChange}%</span>
                 </PositiveNegativeText>
               )}
             </>
@@ -573,7 +573,7 @@ export const WatchlistSwingTradeTable = () => {
                   isNegative={rawChange < 0}
                   isPositive={rawChange > 0}
                 >
-                  <span>({formatPercent(rawChange)})</span>
+                  <span>{rawChange}%</span>
                 </PositiveNegativeText>
               )}
             </>
