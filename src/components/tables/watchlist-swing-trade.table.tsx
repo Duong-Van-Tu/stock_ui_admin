@@ -426,10 +426,10 @@ export const WatchlistSwingTradeTable = () => {
               <div>{value}</div>
               {hasChange && (
                 <PositiveNegativeText
-                  isNegative={rawChange > 0}
-                  isPositive={rawChange < 0}
+                  isNegative={rawChange < 0}
+                  isPositive={rawChange > 0}
                 >
-                  <span>({formatPercent(-rawChange)})</span>
+                  <span>({formatPercent(rawChange)})</span>
                 </PositiveNegativeText>
               )}
             </>
@@ -498,10 +498,10 @@ export const WatchlistSwingTradeTable = () => {
               <div>{value}</div>
               {hasChange && (
                 <PositiveNegativeText
-                  isNegative={rawChange > 0}
-                  isPositive={rawChange < 0}
+                  isNegative={rawChange < 0}
+                  isPositive={rawChange > 0}
                 >
-                  <span>({formatPercent(-rawChange)})</span>
+                  <span>({formatPercent(rawChange)})</span>
                 </PositiveNegativeText>
               )}
             </>
@@ -570,10 +570,10 @@ export const WatchlistSwingTradeTable = () => {
               <div>{value}</div>
               {hasChange && (
                 <PositiveNegativeText
-                  isNegative={rawChange > 0}
-                  isPositive={rawChange < 0}
+                  isNegative={rawChange < 0}
+                  isPositive={rawChange > 0}
                 >
-                  <span>({formatPercent(-rawChange)})</span>
+                  <span>({formatPercent(rawChange)})</span>
                 </PositiveNegativeText>
               )}
             </>
