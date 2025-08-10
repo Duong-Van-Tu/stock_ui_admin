@@ -71,7 +71,7 @@ export const WatchlistSwingTradeTable = () => {
   const { sortField, sortType, handleSortOrder } =
     useSortOrder<WatchlistSwingTradeFilter>({
       defaultField: 'changeLowest50Realtime',
-      defaultOrder: 'descend',
+      defaultOrder: 'ascend',
       currentFilter: filter,
       onChange: (_field, _order, newFilter) => {
         setFilter(newFilter);
