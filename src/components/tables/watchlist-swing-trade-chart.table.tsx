@@ -137,7 +137,7 @@ export const WatchlistSwingTradeChartTable = () => {
       title: t('previousClose'),
       dataIndex: 'previousClose',
       key: 'previousClose',
-      width: 140,
+      width: 120,
       align: 'center',
       defaultSortOrder: 'descend',
       sorter: true,
@@ -149,17 +149,17 @@ export const WatchlistSwingTradeChartTable = () => {
       render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
-      title: t('currentPrice'),
-      dataIndex: 'currentPriceWatchlist',
-      key: 'currentPriceWatchlist',
-      width: 130,
+      title: t('lastPrice'),
+      dataIndex: 'lastPrice',
+      key: 'lastPrice',
+      width: 90,
       align: 'center',
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'currentPriceWatchlist' ? sortType : null,
+      sortOrder: sortField === 'lastPrice' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('currentPriceWatchlist')
+        onClick: () => handleSortOrder('lastPrice')
       }),
       render: (value, record) => {
         value
@@ -197,7 +197,7 @@ export const WatchlistSwingTradeChartTable = () => {
       title: t('marketCap'),
       dataIndex: 'marketCapWatchList',
       key: 'marketCapWatchList',
-      width: 130,
+      width: 100,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
@@ -212,7 +212,7 @@ export const WatchlistSwingTradeChartTable = () => {
       title: t('aiRating'),
       dataIndex: 'AIRating',
       key: 'AIRating',
-      width: 100,
+      width: 90,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
@@ -287,7 +287,7 @@ export const WatchlistSwingTradeChartTable = () => {
             dataSource={watchlistSwingTrade}
             loading={loading}
             scroll={{
-              x: 800,
+              x: 700,
               y: watchlistSwingTrade.length > 0 ? height - 266 : undefined
             }}
             sortDirections={['descend', 'ascend']}
