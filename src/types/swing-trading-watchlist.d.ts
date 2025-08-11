@@ -67,6 +67,8 @@ type WatchlistSwingTrade = {
   week52Low: number;
   volumeAVG: number;
   beta: number;
+  YTDReturn: number;
+  oneYearnReturn: number;
 };
 
 type HistoryWatchlistSwingTrade = {

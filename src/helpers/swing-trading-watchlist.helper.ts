@@ -68,7 +68,9 @@ export const transformWatchlistSwingTrade = (
     week52High: item[fieldMapping.week52High],
     week52Low: item[fieldMapping.week52Low],
     volumeAVG: item[fieldMapping.volumeAVG],
-    beta: item.beta
+    beta: item.beta,
+    YTDReturn: item[fieldMapping.YTDReturn],
+    oneYearnReturn: item[fieldMapping.oneYearnReturn]
   }));
 };
 

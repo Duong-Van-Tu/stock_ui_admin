@@ -185,5 +185,7 @@ export const fieldMapping: Record<string, string> = {
   consoleObject: 'console_object',
   gapUpDown: 'gap_up_down',
   closingPercent: 'closing_percent',
-  afterHourPercent: 'after_hour_percent'
+  afterHourPercent: 'after_hour_percent',
+  YTDReturn: 'ytd_pct',
+  oneYearnReturn: 'one_y_pct'
 };

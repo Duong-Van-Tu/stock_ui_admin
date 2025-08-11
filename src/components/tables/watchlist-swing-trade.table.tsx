@@ -407,7 +407,7 @@ export const WatchlistSwingTradeTable = () => {
       key: 'lowest50',
       width: 110,
       align: 'center',
-      defaultSortOrder: 'descend',
+      defaultSortOrder: 'ascend',
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'changeLowest50Realtime' ? sortType : null,
@@ -429,7 +429,7 @@ export const WatchlistSwingTradeTable = () => {
                   isNegative={rawChange < 0}
                   isPositive={rawChange > 0}
                 >
-                  <span>{rawChange}%</span>
+                  <span>{formatPercent(rawChange)}</span>
                 </PositiveNegativeText>
               )}
             </>
@@ -501,7 +501,7 @@ export const WatchlistSwingTradeTable = () => {
                   isNegative={rawChange < 0}
                   isPositive={rawChange > 0}
                 >
-                  <span>{rawChange}%</span>
+                  <span>{formatPercent(rawChange)}</span>
                 </PositiveNegativeText>
               )}
             </>
@@ -573,7 +573,7 @@ export const WatchlistSwingTradeTable = () => {
                   isNegative={rawChange < 0}
                   isPositive={rawChange > 0}
                 >
-                  <span>{rawChange}%</span>
+                  <span>{formatPercent(rawChange)}</span>
                 </PositiveNegativeText>
               )}
             </>
@@ -811,6 +811,50 @@ export const WatchlistSwingTradeTable = () => {
           />
         ) : (
           t('noData')
+        )
+    },
+    {
+      title: t('YTDReturn'),
+      dataIndex: 'YTDReturn',
+      key: 'YTDReturn',
+      width: 120,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'YTDReturn' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('YTDReturn')
+      }),
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+            <span> {formatPercent(value)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: t('oneYearnReturn'),
+      dataIndex: 'oneYearnReturn',
+      key: 'oneYearnReturn',
+      width: 120,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'oneYearnReturn' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('oneYearnReturn')
+      }),
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+            <span> {formatPercent(value)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
         )
     },
     {
