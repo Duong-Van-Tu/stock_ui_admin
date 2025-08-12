@@ -207,6 +207,64 @@ export const ChartBackTest = ({
 
     candleSeries.setData(candlestickData);
 
+    const findSwingPoints = (
+      data: ExtendedCandlestickData[],
+      range: number = 1
+    ) => {
+      let lastSwingHigh: number | null = null;
+      let lastSwingLow: number | null = null;
+
+      for (let i = range; i < data.length - range; i++) {
+        const isSwingHigh = data
+          .slice(i - range, i + range + 1)
+          .every((candle, idx, _arr) => {
+            if (idx === range) return true;
+            return data[i].high > candle.high;
+          });
+
+        const isSwingLow = data
+          .slice(i - range, i + range + 1)
+          .every((candle, idx, _arr) => {
+            if (idx === range) return true;
+            return data[i].low < candle.low;
+          });
+
+        if (isSwingHigh) {
+          lastSwingHigh = data[i].high;
+        }
+
+        if (isSwingLow) {
+          lastSwingLow = data[i].low;
+        }
+      }
+
+      return { lastSwingHigh, lastSwingLow };
+    };
+
+    const { lastSwingHigh, lastSwingLow } = findSwingPoints(candlestickData, 4);
+
+    if (lastSwingHigh) {
+      candleSeries.createPriceLine({
+        price: lastSwingHigh,
+        color: '#ff4800',
+        lineWidth: 2,
+        lineStyle: 2,
+        axisLabelVisible: true,
+        title: 'Resistance'
+      });
+    }
+
+    if (lastSwingLow) {
+      candleSeries.createPriceLine({
+        price: lastSwingLow,
+        color: '#c200e4',
+        lineWidth: 2,
+        lineStyle: 2,
+        axisLabelVisible: true,
+        title: 'Support'
+      });
+    }
+
     const markers: SeriesMarker<any>[] = [];
     try {
       const hasExit = exitPrice !== undefined && exitDate;
