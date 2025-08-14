@@ -8,6 +8,7 @@ import { Button } from 'antd';
 import {
   capitalizeAllLetters,
   formatMarketCap,
+  formatNumberShort,
   roundToDecimals
 } from '@/utils/common';
 import { Icon } from './icons';
@@ -38,8 +39,8 @@ export const ExportExcelSwingWatchlist = () => {
         query: {
           page: 1,
           limit: PAGINATION_PARAMS.unLimit,
-          sortField: fieldMapping.marketCapWatchList,
-          sortType: 'desc'
+          sortField: fieldMapping.changeLowest50Realtime,
+          sortType: 'asc'
         }
       }
     );
@@ -53,45 +54,72 @@ export const ExportExcelSwingWatchlist = () => {
         return {
           'No.': watchlist.indexOf(item) + 1,
           Symbol: item.symbol || '-',
-          Period: item.period || '-',
           'Closing Time': item.timeAfter4pm
             ? dayjs(item.timeAfter4pm).utc().format('YYYY-MM-DD HH:mm')
             : '-',
-          'Closing Price': formatCurrency(item.priceAfter4pm),
+          'Closing($)': formatCurrency(item.priceAfter4pm),
+          'Closing(%)': item.closingPercent
+            ? formatPercent(item.closingPercent)
+            : '-',
           'After-Hours Time': item.timeAfter8pm
             ? dayjs(item.timeAfter8pm).utc().format('YYYY-MM-DD HH:mm')
             : '-',
-          'After-Hours Price': formatCurrency(item.priceAfter8pm),
-          'Gap percent': formatPercent(item.percentGap),
+          'After-Hours($)': formatCurrency(item.priceAfter8pm),
+          'After-Hours(%)': item.afterHourPercent
+            ? formatPercent(item.afterHourPercent)
+            : '-',
+          'Last Price': formatCurrency(item.lastPrice),
+          'Change($)': formatCurrency(item.priceChange),
+          'Change(%)': item.priceChangePercent
+            ? formatPercent(item.priceChangePercent)
+            : '-',
+          RSI: item.rsi ?? '-',
+          Open: item.priceBefore9am ?? '-',
+          'Market Date Time': item.timeBefore9am
+            ? dayjs(item.timeBefore9am).utc().format('YYYY-MM-DD HH:mm')
+            : '-',
+          'Lowest 50': formatCurrency(item.lowest50),
+          'Lowest 50(%)': item.changeLowest50Realtime
+            ? formatPercent(item.changeLowest50Realtime)
+            : '-',
+          'Highest 50': formatCurrency(item.highest50),
+          'Lowest 20': formatCurrency(item.lowest20),
+          'Lowest 20(%)': item.changeLowest20Realtime
+            ? formatPercent(item.changeLowest20Realtime)
+            : '-',
+          'Highest 20': formatCurrency(item.highest20),
+          'Lowest 10': formatCurrency(item.lowest10),
+          'Change Lowest 10 (%)': item.changeLowest10Realtime
+            ? formatPercent(item.changeLowest10Realtime)
+            : '-',
+          'Highest 10': formatCurrency(item.highest10),
+          Period: item.period ?? '-',
           'AI Rating': item.AIRating || '-',
           'AI Recommendation': item.AIRecommendation
             ? capitalizeAllLetters(item.AIRecommendation)
             : '-',
-          'AI Explanation': item.AIExplain || '-',
-          'Previous Close': formatCurrency(item.previousClose),
-          'Current Price': formatCurrency(item.lastPrice),
-          'Lowest 50': formatCurrency(item.lowest50),
-          'Change Lowest 50 (%)': formatPercent(item.changeLowest50Realtime),
-          'Highest 50': formatCurrency(item.highest50),
-          'Lowest 20': formatCurrency(item.lowest20),
-          'Change Lowest 20 (%)': formatPercent(item.changeLowest20Realtime),
-          'Highest 20': formatCurrency(item.highest20),
-          'Lowest 10': formatCurrency(item.lowest10),
-          'Change Lowest 10 (%)': formatPercent(item.changeLowest10Realtime),
-          'Highest 10': formatCurrency(item.highest10),
+          'AI Explain': item.AIExplain || '-',
+          'Gap($)': item.gapUpDown ?? '-',
+          'Gap(%)': item.percentGap ? formatPercent(item.percentGap) : '-',
+          'Market Cap': item.marketCapWatchList
+            ? formatMarketCap(item.marketCapWatchList)
+            : '-',
+          Volume: item.volumeAVG ? formatNumberShort(item.volumeAVG) : '-',
+          Beta: item.beta ? roundToDecimals(item.beta) : '-',
+          'YTD Return': item.YTDReturn ? formatPercent(item.YTDReturn) : '-',
+          '1-Year Return': item.oneYearnReturn
+            ? formatPercent(item.oneYearnReturn)
+            : '-',
           'Average Price': formatCurrency(item.average),
           'Median Price': formatCurrency(item.median),
           'SMA 50 Days': formatCurrency(item.sma50),
           'SMA 20 Days': formatCurrency(item.sma20),
-          'Yahoo Price Target Mean': formatCurrency(item.yahooPriceTargetMean),
-          'Yahoo Price Target High': formatCurrency(item.yahooPriceTargetHigh),
-          'Yahoo Price Target Low': formatCurrency(item.yahooPriceTargetLow),
-          'Market Cap': item.marketCapWatchList
-            ? formatMarketCap(item.marketCapWatchList)
-            : '-',
           Industry: item.industry || '-',
           Subindustry: item.subindustry || '-',
           Sector: item.sector || '-',
+          'Yahoo Price Target Mean': formatCurrency(item.yahooPriceTargetMean),
+          'Yahoo Price Target High': formatCurrency(item.yahooPriceTargetHigh),
+          'Yahoo Price Target Low': formatCurrency(item.yahooPriceTargetLow),
           Buy: item.buy || '-',
           'Strong Buy': item.strongBuy || '-',
           Sell: item.sell || '-',

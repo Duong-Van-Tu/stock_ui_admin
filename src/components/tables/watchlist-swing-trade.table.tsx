@@ -308,7 +308,7 @@ export const WatchlistSwingTradeTable = () => {
       }
     },
     {
-      title: `${t('change')} ($)`,
+      title: `${t('change')}($)`,
       dataIndex: 'priceChange',
       key: 'priceChange',
       width: 116,
@@ -330,7 +330,7 @@ export const WatchlistSwingTradeTable = () => {
         )
     },
     {
-      title: `${t('change')} (%)`,
+      title: `${t('change')}(%)`,
       dataIndex: 'priceChangePercent',
       key: 'priceChangePercent',
       width: 116,
