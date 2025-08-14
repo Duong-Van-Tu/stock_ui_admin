@@ -70,7 +70,8 @@ export const transformWatchlistSwingTrade = (
     volumeAVG: item[fieldMapping.volumeAVG],
     beta: item.beta,
     YTDReturn: item[fieldMapping.YTDReturn],
-    oneYearnReturn: item[fieldMapping.oneYearnReturn]
+    oneYearnReturn: item[fieldMapping.oneYearnReturn],
+    rsi: item.rsi
   }));
 };
 

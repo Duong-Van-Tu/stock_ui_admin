@@ -489,5 +489,6 @@
   "gapUpDown": "GAP UP/DOWN",
   "52WeekRange": "52-Week Range",
   "YTDReturn": "YTD Return",
-  "oneYearnReturn": "1-Year Return"
+  "oneYearnReturn": "1-Year Return",
+  "rsi": "RSI"
 }

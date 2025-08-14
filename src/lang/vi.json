@@ -489,5 +489,6 @@
   "gapUpDown": "GAP Tăng/Giảm",
   "52WeekRange": "Biên độ 52 tuần",
   "YTDReturn": "Lợi nhuận từ đầu năm",
-  "oneYearnReturn": "Lợi nhuận 1 năm"
+  "oneYearnReturn": "Lợi nhuận 1 năm",
+  "rsi": "RSI"
 }
