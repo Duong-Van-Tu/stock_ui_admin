@@ -8,6 +8,8 @@ import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
 import {
   capitalizeAllLetters,
+  formatMarketCap,
+  formatNumberShort,
   formatPercent,
   roundToDecimals
 } from '@/utils/common';
@@ -89,6 +91,11 @@ export const ExportExcelLog = () => {
         'Lowest price date 7 days',
         'Negative News price',
         'Earnings next 3 days',
+        'Market Cap',
+        'Volume',
+        'Beta',
+        'ATR',
+        'ATR (%)',
         'Total score',
         'Fundamental score',
         'Earnings score',
@@ -245,6 +252,11 @@ export const ExportExcelLog = () => {
             : '-',
           negativeNews,
           !!log.earningDate3days ? 'Yes' : 'No',
+          log.marketCap ? formatMarketCap(log.marketCap) : '-',
+          log.volumeAVG ? formatNumberShort(log.volumeAVG) : '-',
+          log.beta ? roundToDecimals(log.beta) : '-',
+          log.atr ? roundToDecimals(log.atr) : '-',
+          log.atrPercent ? formatPercent(log.atrPercent) : '-',
           log.totalScore ? roundToDecimals(log.totalScore, 2) : '-',
           log.fundamentalScore ? roundToDecimals(log.fundamentalScore, 2) : '-',
           log.earningsScore ? roundToDecimals(log.earningsScore, 2) : '-',
