@@ -124,20 +124,22 @@ const SingleTickerTradingview = ({
               <Typography.Text strong type='secondary'>
                 {t('beta')}:&nbsp;
               </Typography.Text>
-              <span>{roundToDecimals(signal.beta)}</span>
+              <span>
+                {isNumeric(signal.beta) ? roundToDecimals(signal.beta) : '--'}
+              </span>
             </Col>
             <Col css={columnStyles}>
               <Typography.Text strong type='secondary'>
                 {t('atr')}:&nbsp;
               </Typography.Text>
               <div>
-                {roundToDecimals(signal.atr)}{' '}
+                {isNumeric(signal.atr) ? roundToDecimals(signal.atr) : '--'}
                 {isNumeric(signal.atrPercent) && (
                   <PositiveNegativeText
                     isNegative={signal.atrPercent < 0}
                     isPositive={signal.atrPercent > 0}
                   >
-                    <span>({formatPercent(signal.atrPercent)})</span>
+                    <span> ({formatPercent(signal.atrPercent)})</span>
                   </PositiveNegativeText>
                 )}
               </div>
