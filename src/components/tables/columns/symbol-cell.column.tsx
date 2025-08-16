@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
 import { isDesktop, isMobile } from 'react-device-detect';
 import EllipsisText from '@/components/ellipsis-text';
+import SingleTickerChart from '@/components/charts/single-ticker.chart';
 
 enum ContentType {
   NEWS = 'news',
@@ -25,6 +26,7 @@ type SymbolCellProps = {
   isNewsNegative?: boolean;
   showRecentNewsEarnings?: boolean;
   signalId?: number;
+  signal?: Signal;
 };
 
 export const SymbolCell = ({
@@ -34,7 +36,8 @@ export const SymbolCell = ({
   earningDate,
   isNewsNegative,
   showRecentNewsEarnings,
-  signalId
+  signalId,
+  signal
 }: SymbolCellProps) => {
   const t = useTranslations();
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -54,7 +57,13 @@ export const SymbolCell = ({
     <>
       <div css={symbolStyles}>
         <Popover
-          content={<ChartMiniTradingview symbol={symbol} />}
+          content={
+            signal ? (
+              <SingleTickerChart signal={signal} symbol={symbol} />
+            ) : (
+              <ChartMiniTradingview symbol={symbol} />
+            )
+          }
           trigger='hover'
           placement='rightTop'
           overlayStyle={{ padding: 0 }}

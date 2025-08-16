@@ -21,9 +21,6 @@ import { useSearchParams } from 'next/navigation';
 
 const { Text } = Typography;
 
-// const renderDate = (value?: string) =>
-//   value ? dayjs(value).tz(TimeZone.NEW_YORK).format('MM/DD/YYYY HH:mm') : '--';
-
 const renderValue = (
   value?: number,
   {
@@ -139,32 +136,6 @@ export const StatisticCard = () => {
             </Col>
           </div>
         )}
-        {/* <StatRow label={t('entryDate')} value={renderDate(entryDate)} />
-        <StatRow
-          label={t('entryPrice')}
-          value={entryPrice ? `${roundToDecimals(entryPrice)}$` : '--'}
-        />
-        <StatRow label={t('exitDate')} value={renderDate(exitDate)} />
-        <StatRow
-          label={t('exitPrice')}
-          value={
-            exitPrice && entryPrice ? (
-              <PositiveNegativeText
-                isPositive={exitPrice >= entryPrice}
-                isNegative={exitPrice < entryPrice}
-              >
-                <span>
-                  {`${roundToDecimals(exitPrice)}$ `}(
-                  {formatPercent(((exitPrice - entryPrice) / entryPrice) * 100)}
-                  )
-                </span>
-              </PositiveNegativeText>
-            ) : (
-              '--'
-            )
-          }
-        />
-         */}
         <StatRow
           label={t('marketCapIntraday')}
           value={

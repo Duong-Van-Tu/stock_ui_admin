@@ -6,8 +6,7 @@ import { StarOutlined, StarFilled } from '@ant-design/icons';
 import { useTranslations } from 'next-intl';
 import { useAppSelector } from '@/redux/hooks';
 import { watchStockDetails } from '@/redux/slices/stock-details.slice';
-import { PositiveNegativeText } from '../positive-negative-text';
-import { isNumeric, roundToDecimals } from '@/utils/common';
+import { ScoreBlock } from '../score-block';
 
 const { Text } = Typography;
 
@@ -45,21 +44,21 @@ export const StockDetailHeader = () => {
 
         <Col flex={1}>
           <div css={scoreWrapperStyles}>
-            <ScoreItem
+            <ScoreBlock
               label={t('totalScore')}
               value={stockDetail?.totalScore}
               size='1.8rem'
             />
             <Divider type='vertical' css={dividerStyles} />
-            <ScoreItem
+            <ScoreBlock
               label={t('fundamentalScore')}
               value={stockDetail?.fundamentalScore}
             />
-            <ScoreItem
+            <ScoreBlock
               label={t('sentimentScore')}
               value={stockDetail?.sentimentScore}
             />
-            <ScoreItem
+            <ScoreBlock
               label={t('earningsScore')}
               value={stockDetail?.earningsScore}
             />
@@ -69,34 +68,6 @@ export const StockDetailHeader = () => {
     </div>
   );
 };
-
-const ScoreItem = ({
-  label,
-  value = 0,
-  size = '1.6rem'
-}: {
-  label: string;
-  value?: number;
-  size?: string;
-}) => (
-  <div css={scoreBlockStyles}>
-    <Text strong type='secondary'>
-      {label}
-    </Text>
-    <br />
-    {isNumeric(value) ? (
-      <PositiveNegativeText
-        isPositive={value > 7}
-        isNegative={value < 4}
-        size={size}
-      >
-        <span>{roundToDecimals(value, 2)}</span>
-      </PositiveNegativeText>
-    ) : (
-      '--'
-    )}
-  </div>
-);
 
 const rootStyles = css`
   padding-bottom: 0.8rem;
@@ -122,10 +93,6 @@ const scoreWrapperStyles = css`
   gap: 16px;
 `;
 
-const scoreBlockStyles = css`
-  text-align: center;
-`;
-
 const dividerStyles = css`
-  height: 40px;
+  height: 4rem;
 `;

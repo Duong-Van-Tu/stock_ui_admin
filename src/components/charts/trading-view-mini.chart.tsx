@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useEffect, useRef, memo } from 'react';
 
 type ChartMiniTradingviewProps = {
@@ -10,8 +12,8 @@ type ChartMiniTradingviewProps = {
 
 const ChartMiniTradingview = ({
   symbol,
-  width = '100%',
-  height = 200,
+  width = 320,
+  height = 180,
   colorTheme = 'light',
   locale = 'en'
 }: ChartMiniTradingviewProps) => {
@@ -47,6 +49,31 @@ const ChartMiniTradingview = ({
       className='tradingview-widget-container'
       ref={container}
       style={{ width, height }}
+      css={css`
+        position: relative;
+        overflow: hidden;
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0.5rem;
+          right: 0.5rem;
+          width: 40px;
+          height: 40px;
+          background: var(--white-color);
+          border-radius: 50%;
+        }
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: transparent;
+          z-index: 10;
+          pointer-events: all;
+        }
+      `}
     />
   );
 };

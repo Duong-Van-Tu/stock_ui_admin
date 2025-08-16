@@ -102,7 +102,7 @@ export const LedgerEntryTable = () => {
           limit: pageSize,
           symbol: symbol ? symbol : undefined,
           sortField: 'exit_date',
-          sortType: 'asc'
+          sortType: 'desc'
         })
       );
       dispatch(getUserBalance());

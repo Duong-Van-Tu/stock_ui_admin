@@ -227,6 +227,7 @@ export const AlertLogsTable = () => {
           earningDate={record.earningDate}
           isNewsNegative={record.isNewsNegative}
           signalId={record.id}
+          signal={record}
         />
       )
     },
