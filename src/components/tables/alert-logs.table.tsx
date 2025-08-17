@@ -526,6 +526,22 @@ export const AlertLogsTable = () => {
       }
     },
     {
+      title: t('rsi'),
+      dataIndex: 'rsi',
+      key: 'rsi',
+      width: 80,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'rsi' ? sortType : null,
+      hidden: true,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('rsi')
+      }),
+      render: (value) => value ?? '-'
+    },
+    {
       title: t('currentPrice'),
       dataIndex: 'currentPrice',
       key: 'currentPrice',

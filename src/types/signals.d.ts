@@ -55,6 +55,7 @@ type Signal = {
   lowestPricePercent: number;
   currentPricePercent: number;
   newStopLoss: number;
+  rsi: number;
 };
 
 type AlertLogsFilter = Filter & {

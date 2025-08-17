@@ -148,7 +148,7 @@ const SingleTickerTradingview = ({
               <Typography.Text strong type='secondary'>
                 {t('rsi')}:&nbsp;
               </Typography.Text>
-              <span>--</span>
+              <span>{signal.rsi ?? '--'}</span>
             </Col>
           </Row>
         </div>
