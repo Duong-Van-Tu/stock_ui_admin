@@ -241,7 +241,7 @@ export const ChartBackTest = ({
       return { lastSwingHigh, lastSwingLow };
     };
 
-    const { lastSwingHigh, lastSwingLow } = findSwingPoints(candlestickData, 4);
+    const { lastSwingHigh, lastSwingLow } = findSwingPoints(candlestickData, 8);
 
     if (lastSwingHigh) {
       candleSeries.createPriceLine({
