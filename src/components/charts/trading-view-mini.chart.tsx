@@ -12,7 +12,7 @@ type ChartMiniTradingviewProps = {
 
 const ChartMiniTradingview = ({
   symbol,
-  width = 320,
+  width = '100%',
   height = 180,
   colorTheme = 'light',
   locale = 'en'
@@ -52,15 +52,16 @@ const ChartMiniTradingview = ({
       css={css`
         position: relative;
         overflow: hidden;
+
         &::before {
           content: '';
           position: absolute;
-          top: 0.5rem;
-          right: 0.5rem;
-          width: 40px;
-          height: 40px;
+          top: 0.7rem;
+          right: 0.6rem;
+          width: 3.2rem;
+          height: 2.6rem;
           background: var(--white-color);
-          border-radius: 50%;
+          box-shadow: 0 2px 4px 0 var(--white-color);
         }
         &::after {
           content: '';
