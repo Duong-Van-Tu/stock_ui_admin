@@ -110,6 +110,12 @@ export const ExportExcelSwingWatchlist = () => {
           '1-Year Return': item.oneYearnReturn
             ? formatPercent(item.oneYearnReturn)
             : '-',
+          'Performance Month': item.performanceMonth
+            ? formatPercent(item.performanceMonth)
+            : '-',
+          'Performance Week': item.performanceWeek
+            ? formatPercent(item.performanceWeek)
+            : '-',
           'Average Price': formatCurrency(item.average),
           'Median Price': formatCurrency(item.median),
           'SMA 50 Days': formatCurrency(item.sma50),
