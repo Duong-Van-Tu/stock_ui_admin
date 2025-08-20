@@ -20,6 +20,7 @@ import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 
 import {
   cleanFalsyValues,
+  formatMarketCap,
   formatNumberShort,
   isNumeric,
   roundToDecimals
@@ -134,6 +135,20 @@ export const EarningsTable = () => {
           companyName={isMobile ? undefined : record.companyName}
         />
       )
+    },
+    {
+      title: t('marketCap'),
+      dataIndex: 'marketCap',
+      key: 'marketCap',
+      width: 120,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'marketCapWatchList' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('marketCapWatchList')
+      }),
+      align: 'center',
+      render: (value) => (value ? formatMarketCap(value) : '-')
     },
     {
       title: t('earningsScore'),
