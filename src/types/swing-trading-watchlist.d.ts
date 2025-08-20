@@ -70,6 +70,8 @@ type WatchlistSwingTrade = {
   YTDReturn: number;
   oneYearnReturn: number;
   rsi: number;
+  performanceWeek: number;
+  performanceMonth: number;
 };
 
 type HistoryWatchlistSwingTrade = {

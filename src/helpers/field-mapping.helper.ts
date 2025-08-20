@@ -187,5 +187,7 @@ export const fieldMapping: Record<string, string> = {
   closingPercent: 'closing_percent',
   afterHourPercent: 'after_hour_percent',
   YTDReturn: 'ytd_pct',
-  oneYearnReturn: 'one_y_pct'
+  oneYearnReturn: 'one_y_pct',
+  performanceWeek: 'perf_lm_value',
+  performanceMonth: 'perf_lw_value'
 };

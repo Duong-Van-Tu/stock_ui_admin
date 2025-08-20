@@ -873,6 +873,50 @@ export const WatchlistSwingTradeTable = () => {
         )
     },
     {
+      title: t('performanceWeek'),
+      dataIndex: 'performanceWeek',
+      key: 'performanceWeek',
+      width: 130,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'performanceWeek' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('performanceWeek')
+      }),
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+            <span> {formatPercent(value)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: t('performanceMonth'),
+      dataIndex: 'performanceMonth',
+      key: 'performanceMonth',
+      width: 130,
+      align: 'center',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'performanceMonth' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('performanceMonth')
+      }),
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+            <span> {formatPercent(value)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
+    },
+    {
       title: t('averagePrice'),
       dataIndex: 'average',
       key: 'average',

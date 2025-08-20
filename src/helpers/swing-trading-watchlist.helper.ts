@@ -71,7 +71,9 @@ export const transformWatchlistSwingTrade = (
     beta: item.beta,
     YTDReturn: item[fieldMapping.YTDReturn],
     oneYearnReturn: item[fieldMapping.oneYearnReturn],
-    rsi: item.rsi
+    rsi: item.rsi,
+    performanceWeek: item[fieldMapping.performanceWeek],
+    performanceMonth: item[fieldMapping.performanceMonth]
   }));
 };
 
