@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Icon } from '@/components/icons';
-import { Button, Popover, Tooltip } from 'antd';
+import { Button, Col, Divider, Popover, Row, Tooltip, Typography } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details';
@@ -10,7 +10,9 @@ import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
 import { isDesktop, isMobile } from 'react-device-detect';
 import EllipsisText from '@/components/ellipsis-text';
-import SingleTickerChart from '@/components/charts/single-ticker.chart';
+import { ScoreBlock } from '@/components/score-block';
+import { formatPercent, isNumeric, roundToDecimals } from '@/utils/common';
+import { PositiveNegativeText } from '@/components/positive-negative-text';
 
 enum ContentType {
   NEWS = 'news',
@@ -58,11 +60,79 @@ export const SymbolCell = ({
       <div css={symbolStyles}>
         <Popover
           content={
-            signal ? (
-              <SingleTickerChart signal={signal} symbol={symbol} />
-            ) : (
+            <>
               <ChartMiniTradingview symbol={symbol} />
-            )
+              {signal && (
+                <div css={stockInfoStyles}>
+                  <div css={scoreWrapperStyles}>
+                    <ScoreBlock
+                      label={t('totalScore')}
+                      value={signal?.totalScore}
+                      size='1.4rem'
+                    />
+                    <Divider type='vertical' css={dividerStyles} />
+                    <ScoreBlock
+                      label={t('fundamental')}
+                      value={signal?.fundamentalScore}
+                      size='1.4rem'
+                    />
+                    <ScoreBlock
+                      size='1.4rem'
+                      label={t('sentiment')}
+                      value={signal?.sentimentScore}
+                    />
+                    <ScoreBlock
+                      size='1.4rem'
+                      label={t('earnings')}
+                      value={signal?.earningsScore}
+                    />
+                  </div>
+                  <Row
+                    css={css`
+                      padding: 0 0.2rem;
+                    `}
+                    gutter={[10, 10]}
+                    justify='space-between'
+                    align='middle'
+                  >
+                    <Col css={columnStyles}>
+                      <Typography.Text strong type='secondary'>
+                        {t('beta')}:&nbsp;
+                      </Typography.Text>
+                      <span>
+                        {isNumeric(signal.beta)
+                          ? roundToDecimals(signal.beta)
+                          : '--'}
+                      </span>
+                    </Col>
+                    <Col css={columnStyles}>
+                      <Typography.Text strong type='secondary'>
+                        {t('atr')}:&nbsp;
+                      </Typography.Text>
+                      <div>
+                        {isNumeric(signal.atr)
+                          ? roundToDecimals(signal.atr)
+                          : '--'}
+                        {isNumeric(signal.atrPercent) && (
+                          <PositiveNegativeText
+                            isNegative={signal.atrPercent < 0}
+                            isPositive={signal.atrPercent > 0}
+                          >
+                            <span> ({formatPercent(signal.atrPercent)})</span>
+                          </PositiveNegativeText>
+                        )}
+                      </div>
+                    </Col>
+                    <Col css={columnStyles}>
+                      <Typography.Text strong type='secondary'>
+                        {t('rsi')}:&nbsp;
+                      </Typography.Text>
+                      <span>{signal.rsi ?? '--'}</span>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+            </>
           }
           trigger='hover'
           placement='rightTop'
@@ -169,4 +239,30 @@ const buttonStyles = css`
 const companyNameStyles = css`
   font-size: 1.4rem;
   line-height: 1.6rem;
+`;
+
+const scoreWrapperStyles = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+`;
+
+const dividerStyles = css`
+  margin: 0;
+  height: 4rem;
+`;
+
+const stockInfoStyles = css`
+  margin-top: 1rem;
+  bottom: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+`;
+
+const columnStyles = css`
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
 `;
