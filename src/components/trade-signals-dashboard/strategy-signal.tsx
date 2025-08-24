@@ -133,6 +133,7 @@ export const StrategySignal = ({
           isNewsNegative={record.isNewsNegative}
           symbol={value}
           signalId={record.id}
+          signal={record}
         />
       )
     },

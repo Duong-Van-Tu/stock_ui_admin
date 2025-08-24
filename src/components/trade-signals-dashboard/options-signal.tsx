@@ -102,6 +102,7 @@ export const OptionSignal = () => {
           isNewsNegative={record.isNewsNegative}
           symbol={value}
           signalId={record.id}
+          signal={record}
         />
       )
     },
