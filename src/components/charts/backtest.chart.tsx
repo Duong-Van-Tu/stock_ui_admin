@@ -8,17 +8,21 @@ import {
   type ChartOptions,
   type DeepPartial,
   type IChartApi,
-  type SeriesMarker
+  type SeriesMarker,
+  type UTCTimestamp,
+  type LineData,
+  type HistogramData
 } from 'lightweight-charts';
 import { TimeZone } from '@/constants/timezone.constant';
 import { defaultApiFetcher } from '@/utils/api-instances';
-import { formatNumberShort, formatPercent } from '@/utils/common';
 import { useNotification } from '@/hooks/notification.hook';
 import { Empty, Select, Spin } from 'antd';
+import { formatNumberShort, formatPercent } from '@/utils/common';
 
-const periodOptions = ['10M', '15M', '30M', '1H'];
+const periodOptions = ['15M', '1H'];
 
-type ExtendedCandlestickData = CandlestickData & {
+type ExtendedCandlestickData = Omit<CandlestickData, 'time'> & {
+  time: UTCTimestamp;
   volume?: number;
   sma_volume?: number;
   sma8_volume?: number;
@@ -57,13 +61,13 @@ export const ChartBackTest = ({
   const [loading, setLoading] = useState(true);
 
   const parseToUnixTime = useCallback(
-    (timestamp: string): number => {
+    (timestamp: string): UTCTimestamp => {
       const entry = dayjs(timestamp).tz(TimeZone.NEW_YORK);
       const periodMinutes = parseInt(selectedPeriod);
       const rounded = entry
         .minute(Math.floor(entry.minute() / periodMinutes) * periodMinutes)
         .second(0);
-      return Math.floor(rounded.valueOf() / 1000);
+      return Math.floor(rounded.valueOf() / 1000) as UTCTimestamp;
     },
     [selectedPeriod]
   );
@@ -84,6 +88,38 @@ export const ChartBackTest = ({
       }
     }
     return sma;
+  };
+
+  const getRollingHiLoSeries = (
+    data: ExtendedCandlestickData[],
+    windowSize: number = 50
+  ) => {
+    const hiSeries: LineData<UTCTimestamp>[] = [];
+    const loSeries: LineData<UTCTimestamp>[] = [];
+    if (!data.length || windowSize <= 1) return { hi: hiSeries, lo: loSeries };
+
+    const dqHi: number[] = [];
+    const dqLo: number[] = [];
+
+    for (let i = 0; i < data.length; i++) {
+      while (dqHi.length && data[dqHi[dqHi.length - 1]].high <= data[i].high)
+        dqHi.pop();
+      dqHi.push(i);
+      while (dqLo.length && data[dqLo[dqLo.length - 1]].low >= data[i].low)
+        dqLo.pop();
+      dqLo.push(i);
+
+      const leftBound = i - windowSize + 1;
+      while (dqHi.length && dqHi[0] < leftBound) dqHi.shift();
+      while (dqLo.length && dqLo[0] < leftBound) dqLo.shift();
+
+      if (i >= windowSize - 1) {
+        const t = data[i].time as UTCTimestamp;
+        hiSeries.push({ time: t, value: data[dqHi[0]].high });
+        loSeries.push({ time: t, value: data[dqLo[0]].low });
+      }
+    }
+    return { hi: hiSeries, lo: loSeries };
   };
 
   const fetchCandlestickChartData = useCallback(async () => {
@@ -114,7 +150,7 @@ export const ChartBackTest = ({
       const data = res.data || [];
 
       const transformed: ExtendedCandlestickData[] = data.map((item: any) => ({
-        time: Math.floor(item.timestamp / 1000),
+        time: Math.floor(item.timestamp / 1000) as UTCTimestamp,
         open: item.open,
         high: item.high,
         low: item.low,
@@ -204,62 +240,38 @@ export const ChartBackTest = ({
       wickUpColor: '#26a69a',
       wickDownColor: '#ef5350'
     });
-
     candleSeries.setData(candlestickData);
 
-    const findSwingPoints = (
-      data: ExtendedCandlestickData[],
-      range: number = 1
-    ) => {
-      let lastSwingHigh: number | null = null;
-      let lastSwingLow: number | null = null;
+    const { hi: hi50, lo: lo50 } = getRollingHiLoSeries(candlestickData, 50);
 
-      for (let i = range; i < data.length - range; i++) {
-        const isSwingHigh = data
-          .slice(i - range, i + range + 1)
-          .every((candle, idx, _arr) => {
-            if (idx === range) return true;
-            return data[i].high > candle.high;
-          });
+    const resistanceSeries = chart.addLineSeries({
+      color: '#ff4800',
+      lineWidth: 2
+    });
+    resistanceSeries.setData(hi50);
 
-        const isSwingLow = data
-          .slice(i - range, i + range + 1)
-          .every((candle, idx, _arr) => {
-            if (idx === range) return true;
-            return data[i].low < candle.low;
-          });
+    const supportSeries = chart.addLineSeries({
+      color: '#c200e4',
+      lineWidth: 2
+    });
+    supportSeries.setData(lo50);
 
-        if (isSwingHigh) {
-          lastSwingHigh = data[i].high;
-        }
-
-        if (isSwingLow) {
-          lastSwingLow = data[i].low;
-        }
-      }
-
-      return { lastSwingHigh, lastSwingLow };
-    };
-
-    const { lastSwingHigh, lastSwingLow } = findSwingPoints(candlestickData, 8);
-
-    if (lastSwingHigh) {
+    if (hi50.length) {
       candleSeries.createPriceLine({
-        price: lastSwingHigh,
+        price: hi50[hi50.length - 1].value as number,
         color: '#ff4800',
-        lineWidth: 2,
-        lineStyle: 2,
+        lineWidth: 1,
+        lineStyle: 1,
         axisLabelVisible: true,
         title: 'Resistance'
       });
     }
-
-    if (lastSwingLow) {
+    if (lo50.length) {
       candleSeries.createPriceLine({
-        price: lastSwingLow,
+        price: lo50[lo50.length - 1].value as number,
         color: '#c200e4',
-        lineWidth: 2,
-        lineStyle: 2,
+        lineWidth: 1,
+        lineStyle: 1,
         axisLabelVisible: true,
         title: 'Support'
       });
@@ -308,11 +320,13 @@ export const ChartBackTest = ({
       }
     });
 
-    const volumeData = candlestickData.map((data) => ({
-      time: data.time,
-      value: data.volume ?? 0,
-      color: data.close > data.open ? '#26a69a' : '#ef5350'
-    }));
+    const volumeData: HistogramData<UTCTimestamp>[] = candlestickData.map(
+      (data) => ({
+        time: data.time as UTCTimestamp,
+        value: data.volume ?? 0,
+        color: data.close > data.open ? '#26a69a' : '#ef5350'
+      })
+    );
     volumeSeries.setData(volumeData);
 
     const smaVolumeSeries = chart.addLineSeries({
@@ -321,20 +335,22 @@ export const ChartBackTest = ({
       priceScaleId: 'volume'
     });
 
-    const smaVolumeData = candlestickData
+    const smaVolumeData: LineData<UTCTimestamp>[] = candlestickData
       .filter((d) => typeof d.sma_volume === 'number')
       .map((d) => ({
-        time: d.time,
-        value: d.sma_volume!
+        time: d.time as UTCTimestamp,
+        value: d.sma_volume as number
       }));
     smaVolumeSeries.setData(smaVolumeData);
 
     const volumes = candlestickData.map((d) => d.volume ?? 0);
     const sma20Values = calculateSMA(volumes, 20);
-    const sma20VolumeData = candlestickData
-      .map((d, i) => ({ time: d.time, value: sma20Values[i] }))
-      .filter((d) => d.value !== null);
-
+    const sma20VolumeData: LineData<UTCTimestamp>[] = candlestickData
+      .map((d, i) => ({
+        time: d.time as UTCTimestamp,
+        value: sma20Values[i] as number
+      }))
+      .filter((d) => Number.isFinite(d.value));
     const sma20VolumeSeries = chart.addLineSeries({
       color: '#2196f3',
       lineWidth: 2,
