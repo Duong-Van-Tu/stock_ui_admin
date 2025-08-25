@@ -92,7 +92,7 @@ export const ChartBackTest = ({
 
   const getRollingHiLoSeries = (
     data: ExtendedCandlestickData[],
-    windowSize: number = 50
+    windowSize = 50
   ) => {
     const hiSeries: LineData<UTCTimestamp>[] = [];
     const loSeries: LineData<UTCTimestamp>[] = [];
@@ -109,9 +109,9 @@ export const ChartBackTest = ({
         dqLo.pop();
       dqLo.push(i);
 
-      const leftBound = i - windowSize + 1;
-      while (dqHi.length && dqHi[0] < leftBound) dqHi.shift();
-      while (dqLo.length && dqLo[0] < leftBound) dqLo.shift();
+      const left = i - windowSize + 1;
+      while (dqHi.length && dqHi[0] < left) dqHi.shift();
+      while (dqLo.length && dqLo[0] < left) dqLo.shift();
 
       if (i >= windowSize - 1) {
         const t = data[i].time as UTCTimestamp;
@@ -121,6 +121,12 @@ export const ChartBackTest = ({
     }
     return { hi: hiSeries, lo: loSeries };
   };
+
+  const scaleSeries = (series: LineData<UTCTimestamp>[], factor: number) =>
+    series.map(({ time, value }) => ({
+      time,
+      value: (value as number) * factor
+    }));
 
   const fetchCandlestickChartData = useCallback(async () => {
     if (!entryDate) return;
@@ -243,35 +249,57 @@ export const ChartBackTest = ({
     candleSeries.setData(candlestickData);
 
     const { hi: hi50, lo: lo50 } = getRollingHiLoSeries(candlestickData, 50);
+    const resUpper = hi50;
+    const resLower = scaleSeries(hi50, 0.9);
+    const supLower = lo50;
+    const supUpper = scaleSeries(lo50, 1.1);
 
-    const resistanceSeries = chart.addLineSeries({
+    const resistanceUpperSeries = chart.addLineSeries({
       color: '#ff4800',
-      lineWidth: 2
+      lineWidth: 2,
+      lastValueVisible: false,
+      priceLineVisible: false
     });
-    resistanceSeries.setData(hi50);
+    resistanceUpperSeries.setData(resUpper);
 
-    const supportSeries = chart.addLineSeries({
+    const resistanceLowerSeries = chart.addLineSeries({
+      color: '#ff9b66',
+      lineWidth: 1,
+      lastValueVisible: false,
+      priceLineVisible: false
+    });
+    resistanceLowerSeries.setData(resLower);
+
+    const supportLowerSeries = chart.addLineSeries({
       color: '#c200e4',
-      lineWidth: 2
+      lineWidth: 2,
+      lastValueVisible: false,
+      priceLineVisible: false
     });
-    supportSeries.setData(lo50);
+    supportLowerSeries.setData(supLower);
 
-    if (hi50.length) {
+    const supportUpperSeries = chart.addLineSeries({
+      color: '#e08df0',
+      lineWidth: 1,
+      lastValueVisible: false,
+      priceLineVisible: false
+    });
+    supportUpperSeries.setData(supUpper);
+
+    if (resUpper.length) {
       candleSeries.createPriceLine({
-        price: hi50[hi50.length - 1].value as number,
+        price: resUpper[resUpper.length - 1].value as number,
         color: '#ff4800',
         lineWidth: 1,
-        lineStyle: 1,
         axisLabelVisible: true,
         title: 'Resistance'
       });
     }
-    if (lo50.length) {
+    if (supLower.length) {
       candleSeries.createPriceLine({
-        price: lo50[lo50.length - 1].value as number,
+        price: supLower[supLower.length - 1].value as number,
         color: '#c200e4',
         lineWidth: 1,
-        lineStyle: 1,
         axisLabelVisible: true,
         title: 'Support'
       });
@@ -332,7 +360,9 @@ export const ChartBackTest = ({
     const smaVolumeSeries = chart.addLineSeries({
       color: '#fbc02d',
       lineWidth: 2,
-      priceScaleId: 'volume'
+      priceScaleId: 'volume',
+      lastValueVisible: false,
+      priceLineVisible: false
     });
 
     const smaVolumeData: LineData<UTCTimestamp>[] = candlestickData
@@ -354,7 +384,9 @@ export const ChartBackTest = ({
     const sma20VolumeSeries = chart.addLineSeries({
       color: '#2196f3',
       lineWidth: 2,
-      priceScaleId: 'volume'
+      priceScaleId: 'volume',
+      lastValueVisible: false,
+      priceLineVisible: false
     });
     sma20VolumeSeries.setData(sma20VolumeData);
 
