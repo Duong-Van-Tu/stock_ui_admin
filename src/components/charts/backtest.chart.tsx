@@ -286,6 +286,26 @@ export const ChartBackTest = ({
     });
     supportUpperSeries.setData(supUpper);
 
+    const resistanceZone = chart.addAreaSeries({
+      topColor: 'rgba(255,72,0,0.25)',
+      bottomColor: 'rgba(255,72,0,0)',
+      lineColor: 'rgba(0,0,0,0)',
+      lineWidth: 1,
+      lastValueVisible: false,
+      priceLineVisible: false
+    });
+    resistanceZone.setData(resUpper);
+
+    const supportZone = chart.addAreaSeries({
+      topColor: 'rgba(0,200,255,0.25)',
+      bottomColor: 'rgba(0,200,255,0)',
+      lineColor: 'rgba(0,0,0,0)',
+      lineWidth: 1,
+      lastValueVisible: false,
+      priceLineVisible: false
+    });
+    supportZone.setData(supUpper);
+
     if (resUpper.length) {
       candleSeries.createPriceLine({
         price: resUpper[resUpper.length - 1].value as number,
