@@ -78,6 +78,15 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
     newStopLoss: stock[fieldMapping.consoleObject]
       ? parseConsoleObject(stock[fieldMapping.consoleObject])?.newStopLoss
       : '',
-    rsi: stock.rsi
+    rsi: stock.rsi,
+    stockInfo: {
+      totalScore: stock[fieldMapping.totalScore],
+      fundamentalScore: stock[fieldMapping.fundamentalScore],
+      sentimentScore: stock[fieldMapping.sentimentScore],
+      earningsScore: stock[fieldMapping.earningsScore],
+      beta: stock.beta,
+      rsi: stock.rsi,
+      atr: stock.atr
+    }
   }));
 };

@@ -59,6 +59,7 @@ type ListWatcher = {
   dateTime: number;
   earningDate: string | null;
   totalScore: number;
+  stockInfo: StockInfo;
 };
 
 type NewsLatest = {

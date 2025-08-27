@@ -140,7 +140,9 @@ export const ListWatcherTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('symbol')
       }),
-      render: (_, record) => <SymbolCell symbol={record.symbol} />
+      render: (_, record) => (
+        <SymbolCell symbol={record.symbol} stockInfo={record.stockInfo} />
+      )
     },
     {
       title: t('group'),

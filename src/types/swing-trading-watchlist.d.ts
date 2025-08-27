@@ -72,6 +72,7 @@ type WatchlistSwingTrade = {
   rsi: number;
   performanceWeek: number;
   performanceMonth: number;
+  stockInfo: StockInfo;
 };
 
 type HistoryWatchlistSwingTrade = {

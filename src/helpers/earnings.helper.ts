@@ -34,6 +34,15 @@ export const transformEarnings = (earnings: any[]): Earning[] => {
     revenueActual: earning.revenueActual,
     revenueEstimate: earning.revenueEstimate,
     revenueSurprise: earning[fieldMapping.revenueSurprise],
-    revenueSurprisePercent: earning[fieldMapping.revenueSurprisePercent]
+    revenueSurprisePercent: earning[fieldMapping.revenueSurprisePercent],
+    stockInfo: {
+      totalScore: earning[fieldMapping.totalScore],
+      fundamentalScore: earning[fieldMapping.fundamentalScore],
+      sentimentScore: earning[fieldMapping.sentimentScore],
+      earningsScore: earning[fieldMapping.earningsScore],
+      beta: earning.beta,
+      rsi: earning.rsi,
+      atr: earning.atr
+    }
   }));
 };

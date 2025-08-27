@@ -19,3 +19,14 @@ type IntradayStockChart = {
   dayHigh: number;
   dayChart: DayChartPoint[];
 };
+
+type StockInfo = {
+  totalScore?: number;
+  fundamentalScore?: number;
+  sentimentScore?: number;
+  earningsScore?: number;
+  beta?: number;
+  atr?: number;
+  atrPercent?: number;
+  rsi?: number;
+};

@@ -190,6 +190,7 @@ export const WatchlistSwingTradeTable = () => {
               ? startCase(record.companyName.toLowerCase())
               : undefined
           }
+          stockInfo={record.stockInfo}
         />
       )
     },

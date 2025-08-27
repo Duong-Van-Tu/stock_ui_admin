@@ -73,7 +73,16 @@ export const transformWatchlistSwingTrade = (
     oneYearnReturn: item[fieldMapping.oneYearnReturn],
     rsi: item.rsi,
     performanceWeek: item[fieldMapping.performanceWeek],
-    performanceMonth: item[fieldMapping.performanceMonth]
+    performanceMonth: item[fieldMapping.performanceMonth],
+    stockInfo: {
+      totalScore: item[fieldMapping.totalScore],
+      fundamentalScore: item[fieldMapping.fundamentalScore],
+      sentimentScore: item[fieldMapping.sentimentScore],
+      earningsScore: item[fieldMapping.earningsScore],
+      beta: item.beta,
+      rsi: item.rsi,
+      atr: item.atr
+    }
   }));
 };
 

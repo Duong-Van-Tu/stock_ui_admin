@@ -130,13 +130,13 @@ export const ChartBackTest = ({
 
   const fetchCandlestickChartData = useCallback(async () => {
     if (!entryDate) return;
-    if (dayjs(entryDate).isBefore(dayjs().subtract(19, 'day'))) {
+    if (dayjs(entryDate).isBefore(dayjs().subtract(49, 'day'))) {
       setLoading(false);
       return;
     }
 
     const fromDate = dayjs()
-      .subtract(19, 'day')
+      .subtract(49, 'day')
       .tz(TimeZone.NEW_YORK)
       .format('YYYY-MM-DD');
 
@@ -263,7 +263,7 @@ export const ChartBackTest = ({
     resistanceUpperSeries.setData(resUpper);
 
     const resistanceLowerSeries = chart.addLineSeries({
-      color: '#ff9b66',
+      color: '#ff4800',
       lineWidth: 1,
       lastValueVisible: false,
       priceLineVisible: false
@@ -279,32 +279,58 @@ export const ChartBackTest = ({
     supportLowerSeries.setData(supLower);
 
     const supportUpperSeries = chart.addLineSeries({
-      color: '#e08df0',
+      color: '#c200e4',
       lineWidth: 1,
       lastValueVisible: false,
       priceLineVisible: false
     });
     supportUpperSeries.setData(supUpper);
 
-    const resistanceZone = chart.addAreaSeries({
-      topColor: 'rgba(255,72,0,0.25)',
-      bottomColor: 'rgba(255,72,0,0)',
-      lineColor: 'rgba(0,0,0,0)',
-      lineWidth: 1,
-      lastValueVisible: false,
-      priceLineVisible: false
-    });
-    resistanceZone.setData(resUpper);
+    const supLowerMap = new Map(
+      supLower.map((d) => [d.time, d.value as number])
+    );
+    const resUpperZone = resUpper.filter((d) => {
+      const s = supLowerMap.get(d.time);
+      return (
+        typeof s === 'number' && s > 0 && ((d.value as number) - s) / s > 0.1
+      );
+    }) as LineData<UTCTimestamp>[];
+    const showZones = resUpperZone.length > 0;
 
-    const supportZone = chart.addAreaSeries({
-      topColor: 'rgba(0,200,255,0.25)',
-      bottomColor: 'rgba(0,200,255,0)',
-      lineColor: 'rgba(0,0,0,0)',
-      lineWidth: 1,
-      lastValueVisible: false,
-      priceLineVisible: false
-    });
-    supportZone.setData(supUpper);
+    if (showZones) {
+      const resistanceZone = chart.addLineSeries({
+        color: '#ff4800',
+        lineWidth: 1,
+        lastValueVisible: false,
+        priceLineVisible: false
+      });
+      resistanceZone.setData(resUpperZone);
+
+      const supUpperMap = new Map(
+        supUpper.map((d) => [d.time, d.value as number])
+      );
+      const supportZoneData = supUpper.filter((d) => {
+        const s = supLowerMap.get(d.time);
+        const r = resUpper.find((x) => x.time === d.time)?.value as
+          | number
+          | undefined;
+        return (
+          typeof s === 'number' &&
+          typeof r === 'number' &&
+          s > 0 &&
+          (r - s) / s > 0.1 &&
+          supUpperMap.has(d.time)
+        );
+      }) as LineData<UTCTimestamp>[];
+
+      const supportZone = chart.addLineSeries({
+        color: '#c200e4',
+        lineWidth: 1,
+        lastValueVisible: false,
+        priceLineVisible: false
+      });
+      supportZone.setData(supportZoneData);
+    }
 
     if (resUpper.length) {
       candleSeries.createPriceLine({

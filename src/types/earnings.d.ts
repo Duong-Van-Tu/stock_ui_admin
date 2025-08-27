@@ -24,4 +24,5 @@ type Earning = {
   revenueEstimate: number;
   revenueSurprise: number;
   revenueSurprisePercent: number;
+  stockInfo: StockInfo;
 };

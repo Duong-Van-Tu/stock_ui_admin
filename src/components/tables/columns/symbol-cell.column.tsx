@@ -28,7 +28,7 @@ type SymbolCellProps = {
   isNewsNegative?: boolean;
   showRecentNewsEarnings?: boolean;
   signalId?: number;
-  signal?: Signal;
+  stockInfo?: StockInfo;
 };
 
 export const SymbolCell = ({
@@ -39,7 +39,7 @@ export const SymbolCell = ({
   isNewsNegative,
   showRecentNewsEarnings,
   signalId,
-  signal
+  stockInfo
 }: SymbolCellProps) => {
   const t = useTranslations();
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -62,29 +62,29 @@ export const SymbolCell = ({
           content={
             <>
               <ChartMiniTradingview symbol={symbol} />
-              {signal && (
+              {stockInfo && (
                 <div css={stockInfoStyles}>
                   <div css={scoreWrapperStyles}>
                     <ScoreBlock
                       label={t('totalScore')}
-                      value={signal?.totalScore}
+                      value={stockInfo?.totalScore}
                       size='1.4rem'
                     />
                     <Divider type='vertical' css={dividerStyles} />
                     <ScoreBlock
                       label={t('fundamental')}
-                      value={signal?.fundamentalScore}
+                      value={stockInfo?.fundamentalScore}
                       size='1.4rem'
                     />
                     <ScoreBlock
                       size='1.4rem'
                       label={t('sentiment')}
-                      value={signal?.sentimentScore}
+                      value={stockInfo?.sentimentScore}
                     />
                     <ScoreBlock
                       size='1.4rem'
                       label={t('earnings')}
-                      value={signal?.earningsScore}
+                      value={stockInfo?.earningsScore}
                     />
                   </div>
                   <Row
@@ -100,8 +100,8 @@ export const SymbolCell = ({
                         {t('beta')}:&nbsp;
                       </Typography.Text>
                       <span>
-                        {isNumeric(signal.beta)
-                          ? roundToDecimals(signal.beta)
+                        {isNumeric(stockInfo.beta)
+                          ? roundToDecimals(stockInfo.beta)
                           : '--'}
                       </span>
                     </Col>
@@ -110,15 +110,18 @@ export const SymbolCell = ({
                         {t('atr')}:&nbsp;
                       </Typography.Text>
                       <div>
-                        {isNumeric(signal.atr)
-                          ? roundToDecimals(signal.atr)
+                        {isNumeric(stockInfo.atr)
+                          ? roundToDecimals(stockInfo.atr)
                           : '--'}
-                        {isNumeric(signal.atrPercent) && (
+                        {isNumeric(stockInfo.atrPercent) && (
                           <PositiveNegativeText
-                            isNegative={signal.atrPercent < 0}
-                            isPositive={signal.atrPercent > 0}
+                            isNegative={stockInfo.atrPercent! < 0}
+                            isPositive={stockInfo.atrPercent! > 0}
                           >
-                            <span> ({formatPercent(signal.atrPercent)})</span>
+                            <span>
+                              {' '}
+                              ({formatPercent(stockInfo.atrPercent)})
+                            </span>
                           </PositiveNegativeText>
                         )}
                       </div>
@@ -127,7 +130,7 @@ export const SymbolCell = ({
                       <Typography.Text strong type='secondary'>
                         {t('rsi')}:&nbsp;
                       </Typography.Text>
-                      <span>{signal.rsi ?? '--'}</span>
+                      <span>{stockInfo.rsi ?? '--'}</span>
                     </Col>
                   </Row>
                 </div>

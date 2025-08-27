@@ -63,7 +63,16 @@ export const transformListWatcher = (listWatcher: any[]): ListWatcher[] => {
     subIndustry: item.subindustry,
     dateTime: item.datetime,
     earningDate: item[fieldMapping.earningDate],
-    totalScore: item[fieldMapping.totalScore]
+    totalScore: item[fieldMapping.totalScore],
+    stockInfo: {
+      totalScore: item[fieldMapping.totalScore],
+      fundamentalScore: item[fieldMapping.fundamentalScore],
+      sentimentScore: item[fieldMapping.sentimentScore],
+      earningsScore: item[fieldMapping.earningsScore],
+      beta: item.beta,
+      rsi: item.rsi,
+      atr: item.atr
+    }
   }));
 };
 

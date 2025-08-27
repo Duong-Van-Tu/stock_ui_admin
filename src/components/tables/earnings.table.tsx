@@ -133,6 +133,7 @@ export const EarningsTable = () => {
         <SymbolCell
           symbol={record.symbol}
           companyName={isMobile ? undefined : record.companyName}
+          stockInfo={record.stockInfo}
         />
       )
     },
