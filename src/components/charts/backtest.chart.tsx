@@ -122,11 +122,11 @@ export const ChartBackTest = ({
     return { hi: hiSeries, lo: loSeries };
   };
 
-  const scaleSeries = (series: LineData<UTCTimestamp>[], factor: number) =>
-    series.map(({ time, value }) => ({
-      time,
-      value: (value as number) * factor
-    }));
+  // const scaleSeries = (series: LineData<UTCTimestamp>[], factor: number) =>
+  //   series.map(({ time, value }) => ({
+  //     time,
+  //     value: (value as number) * factor
+  //   }));
 
   const fetchCandlestickChartData = useCallback(async () => {
     if (!entryDate) return;
@@ -250,9 +250,16 @@ export const ChartBackTest = ({
 
     const { hi: hi50, lo: lo50 } = getRollingHiLoSeries(candlestickData, 50);
     const resUpper = hi50;
-    const resLower = scaleSeries(hi50, 0.9);
+    const resLower = hi50.map(({ time, value }) => ({
+      time,
+      value: (value as number) - 1
+    }));
+
     const supLower = lo50;
-    const supUpper = scaleSeries(lo50, 1.1);
+    const supUpper = lo50.map(({ time, value }) => ({
+      time,
+      value: (value as number) + 1
+    }));
 
     const resistanceUpperSeries = chart.addLineSeries({
       color: '#ff4800',
