@@ -50,8 +50,9 @@ export const ChartBackTest = ({
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
+  const overlayCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const animRef = useRef<number | null>(null);
 
-  let animationFrameId: number | null = null;
   const [selectedPeriod, setSelectedPeriod] = useState(
     periodOptions.includes(period) ? period : '1H'
   );
@@ -121,12 +122,6 @@ export const ChartBackTest = ({
     }
     return { hi: hiSeries, lo: loSeries };
   };
-
-  // const scaleSeries = (series: LineData<UTCTimestamp>[], factor: number) =>
-  //   series.map(({ time, value }) => ({
-  //     time,
-  //     value: (value as number) * factor
-  //   }));
 
   const fetchCandlestickChartData = useCallback(async () => {
     if (!entryDate) return;
@@ -261,83 +256,109 @@ export const ChartBackTest = ({
       value: (value as number) + 1
     }));
 
-    const resistanceUpperSeries = chart.addLineSeries({
-      color: '#ff4800',
-      lineWidth: 2,
-      lastValueVisible: false,
-      priceLineVisible: false
-    });
-    resistanceUpperSeries.setData(resUpper);
-
-    const resistanceLowerSeries = chart.addLineSeries({
-      color: '#ff4800',
-      lineWidth: 1,
-      lastValueVisible: false,
-      priceLineVisible: false
-    });
-    resistanceLowerSeries.setData(resLower);
-
-    const supportLowerSeries = chart.addLineSeries({
-      color: '#c200e4',
-      lineWidth: 2,
-      lastValueVisible: false,
-      priceLineVisible: false
-    });
-    supportLowerSeries.setData(supLower);
-
-    const supportUpperSeries = chart.addLineSeries({
-      color: '#c200e4',
-      lineWidth: 1,
-      lastValueVisible: false,
-      priceLineVisible: false
-    });
-    supportUpperSeries.setData(supUpper);
-
     const supLowerMap = new Map(
       supLower.map((d) => [d.time, d.value as number])
     );
-    const resUpperZone = resUpper.filter((d) => {
-      const s = supLowerMap.get(d.time);
-      return (
-        typeof s === 'number' && s > 0 && ((d.value as number) - s) / s > 0.1
-      );
-    }) as LineData<UTCTimestamp>[];
-    const showZones = resUpperZone.length > 0;
+    const supUpperMap = new Map(
+      supUpper.map((d) => [d.time, d.value as number])
+    );
+    const resUpperMap = new Map(
+      resUpper.map((d) => [d.time, d.value as number])
+    );
+    const resLowerMap = new Map(
+      resLower.map((d) => [d.time, d.value as number])
+    );
 
-    if (showZones) {
-      const resistanceZone = chart.addLineSeries({
-        color: '#ff4800',
-        lineWidth: 1,
-        lastValueVisible: false,
-        priceLineVisible: false
+    const ensureOverlayCanvas = () => {
+      const container = chartContainerRef.current!;
+      if (!overlayCanvasRef.current) {
+        const c = document.createElement('canvas');
+        c.dataset.zone = '1';
+        c.style.position = 'absolute';
+        c.style.pointerEvents = 'none';
+        c.style.zIndex = '1';
+        container.appendChild(c);
+        overlayCanvasRef.current = c;
+      }
+      const paneCanvas = Array.from(container.querySelectorAll('canvas')).find(
+        (el) => !(el as HTMLCanvasElement).dataset.zone
+      ) as HTMLCanvasElement | undefined;
+      if (!paneCanvas) return;
+      const paneRect = paneCanvas.getBoundingClientRect();
+      const contRect = container.getBoundingClientRect();
+      const left = paneRect.left - contRect.left;
+      const top = paneRect.top - contRect.top;
+      const w = Math.round(paneRect.width);
+      const h = Math.round(paneRect.height);
+      const canvas = overlayCanvasRef.current!;
+      if (canvas.width !== w) canvas.width = w;
+      if (canvas.height !== h) canvas.height = h;
+      canvas.style.left = `${left}px`;
+      canvas.style.top = `${top}px`;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+    };
+
+    const drawZonesOnCanvas = () => {
+      ensureOverlayCanvas();
+      const canvas = overlayCanvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const ts = chart.timeScale();
+      for (let i = 0; i < candlestickData.length - 1; i++) {
+        const t1 = candlestickData[i].time as UTCTimestamp;
+        const t2 = candlestickData[i + 1].time as UTCTimestamp;
+        const x1 = ts.timeToCoordinate(t1 as any);
+        const x2 = ts.timeToCoordinate(t2 as any);
+        if (x1 == null || x2 == null) continue;
+
+        const su = supUpperMap.get(t1);
+        const sl = supLowerMap.get(t1);
+        if (su != null && sl != null) {
+          const yU = candleSeries.priceToCoordinate(su);
+          const yL = candleSeries.priceToCoordinate(sl);
+          if (yU != null && yL != null) {
+            const left = Math.min(x1, x2);
+            const width = Math.abs(x2 - x1);
+            const top = Math.min(yU, yL);
+            const height = Math.abs(yL - yU);
+            if (width > 0 && height > 0) {
+              ctx.fillStyle = 'rgba(46,125,50,0.22)';
+              ctx.fillRect(left, top, width, height);
+            }
+          }
+        }
+
+        const ru = resUpperMap.get(t1);
+        const rl = resLowerMap.get(t1);
+        if (ru != null && rl != null) {
+          const yU = candleSeries.priceToCoordinate(ru);
+          const yL = candleSeries.priceToCoordinate(rl);
+          if (yU != null && yL != null) {
+            const left = Math.min(x1, x2);
+            const width = Math.abs(x2 - x1);
+            const top = Math.min(yU, yL);
+            const height = Math.abs(yL - yU);
+            if (width > 0 && height > 0) {
+              ctx.fillStyle = 'rgba(244,67,54,0.22)';
+              ctx.fillRect(left, top, width, height);
+            }
+          }
+        }
+      }
+    };
+
+    const scheduleDraw = () => {
+      if (animRef.current) cancelAnimationFrame(animRef.current);
+      animRef.current = requestAnimationFrame(() => {
+        drawZonesOnCanvas();
       });
-      resistanceZone.setData(resUpperZone);
+    };
 
-      const supUpperMap = new Map(
-        supUpper.map((d) => [d.time, d.value as number])
-      );
-      const supportZoneData = supUpper.filter((d) => {
-        const s = supLowerMap.get(d.time);
-        const r = resUpper.find((x) => x.time === d.time)?.value as
-          | number
-          | undefined;
-        return (
-          typeof s === 'number' &&
-          typeof r === 'number' &&
-          s > 0 &&
-          (r - s) / s > 0.1 &&
-          supUpperMap.has(d.time)
-        );
-      }) as LineData<UTCTimestamp>[];
-
-      const supportZone = chart.addLineSeries({
-        color: '#c200e4',
-        lineWidth: 1,
-        lastValueVisible: false,
-        priceLineVisible: false
-      });
-      supportZone.setData(supportZoneData);
-    }
+    scheduleDraw();
+    requestAnimationFrame(scheduleDraw);
 
     if (resUpper.length) {
       candleSeries.createPriceLine({
@@ -351,7 +372,7 @@ export const ChartBackTest = ({
     if (supLower.length) {
       candleSeries.createPriceLine({
         price: supLower[supLower.length - 1].value as number,
-        color: '#c200e4',
+        color: '#2e7d32',
         lineWidth: 1,
         axisLabelVisible: true,
         title: 'Support'
@@ -384,9 +405,7 @@ export const ChartBackTest = ({
       }
 
       candleSeries.setMarkers(markers);
-    } catch (error) {
-      console.error('Error setting markers:', error);
-    }
+    } catch {}
 
     const volumeSeries = chart.addHistogramSeries({
       color: '#8884d8',
@@ -511,18 +530,25 @@ export const ChartBackTest = ({
       `;
     });
 
-    const resizeObserver = new ResizeObserver(() => {
+    const ro = new ResizeObserver(() => {
       chart.applyOptions({
         width: chartContainerRef.current!.clientWidth
       });
+      scheduleDraw();
+      requestAnimationFrame(scheduleDraw);
     });
 
-    resizeObserver.observe(chartContainerRef.current);
+    ro.observe(chartContainerRef.current);
+    chart.timeScale().subscribeVisibleTimeRangeChange(scheduleDraw);
 
     return () => {
+      ro.disconnect();
       chart.remove();
-      resizeObserver.disconnect();
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      if (animRef.current) cancelAnimationFrame(animRef.current);
+      if (overlayCanvasRef.current) {
+        overlayCanvasRef.current.remove();
+        overlayCanvasRef.current = null;
+      }
     };
   }, [
     candlestickData,
@@ -530,7 +556,6 @@ export const ChartBackTest = ({
     entryDate,
     exitPrice,
     exitDate,
-    animationFrameId,
     parseToUnixTime
   ]);
 
@@ -582,7 +607,7 @@ const styles = {
     pointer-events: none;
     display: none;
     white-space: nowrap;
-    z-index: 10;
+    z-index: 2;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     font-size: 1.4rem;
   `,
