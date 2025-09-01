@@ -55,7 +55,6 @@ type Signal = {
   lowestPricePercent: number;
   currentPricePercent: number;
   newStopLoss: number;
-  newStopLoss: number;
   rsi: number;
   stockInfo: StockInfo;
 };
