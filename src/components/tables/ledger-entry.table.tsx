@@ -247,7 +247,10 @@ export const LedgerEntryTable = () => {
       key: 'holdingTime',
       width: 60,
       align: 'center',
-      render: (_, record) => calculateDIM(record.entryDate, record.exitDate)
+      render: (_, record) => {
+        const dim = calculateDIM(record.entryDate, record.exitDate);
+        return dim === null ? '-' : dim;
+      }
     },
     {
       title: t('period'),

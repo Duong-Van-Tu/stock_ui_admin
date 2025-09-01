@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { fieldMapping } from './field-mapping.helper';
 
 export const transformLedgerEntry = (entries: any[]): LedgerEntry[] => {
@@ -66,11 +67,16 @@ export const computeLedgerBalances = (
   };
 };
 
-export const calculateDIM = (entryDate: string, exitDate: string) => {
-  if (!entryDate || !exitDate) return '-';
+export const calculateDIM = (
+  entryDate?: string | null,
+  exitDate?: string | null
+): number | null => {
+  if (!entryDate || !exitDate) return null;
 
-  const start = new Date(entryDate).setHours(0, 0, 0, 0);
-  const end = new Date(exitDate).setHours(0, 0, 0, 0);
+  const start = dayjs(entryDate).startOf('day');
+  const end = dayjs(exitDate).startOf('day');
 
-  return Math.floor((end - start) / (1000 * 60 * 60 * 24));
+  if (!start.isValid() || !end.isValid()) return null;
+
+  return end.diff(start, 'day') + 1;
 };
