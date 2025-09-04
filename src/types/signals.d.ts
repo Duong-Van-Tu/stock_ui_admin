@@ -1,3 +1,18 @@
+type SpikeVolumeM15Info = {
+  smaVol: number;
+  strikeVol: number;
+  strikeTime: string;
+  confirmVol: number;
+  confirmPrice: number;
+  confirmTime: string;
+};
+
+type SpikeVolumeH1Info = {
+  smaVol: number;
+  strikeVol: number;
+  strikeTime: string;
+};
+
 type Signal = {
   id: number;
   hashAlertLogId: string;
@@ -57,6 +72,8 @@ type Signal = {
   newStopLoss: number;
   rsi: number;
   stockInfo: StockInfo;
+  spikeVolumeM15Info?: SpikeVolumeM15Info;
+  spikeVolumeH1Info?: SpikeVolumeH1Info;
 };
 
 type AlertLogsFilter = Filter & {

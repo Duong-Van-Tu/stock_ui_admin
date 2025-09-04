@@ -279,3 +279,9 @@ export const parseConsoleObject = (rawString: string) => {
 export function isNumeric(value: unknown): boolean {
   return !isNaN(Number(value)) && value !== null && value !== '';
 }
+
+export const tidyTime = (t?: string): string =>
+  (t || '')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/:00(?=\s*[ap]m)$/i, '');

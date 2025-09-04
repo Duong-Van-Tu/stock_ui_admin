@@ -154,6 +154,54 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
                   '--'
                 )
             },
+
+            ...(signal.timeFrame === '15M'
+              ? [
+                  {
+                    label: 'M15 - SMA Vol',
+                    value: signal.spikeVolumeM15Info
+                      ? roundToDecimals(signal.spikeVolumeM15Info.smaVol, 2)
+                      : '--'
+                  },
+                  {
+                    label: 'M15 - Strike Vol',
+                    value: signal.spikeVolumeM15Info
+                      ? `${signal.spikeVolumeM15Info.strikeVol} | ${
+                          signal.spikeVolumeM15Info.strikeTime || '--'
+                        }`
+                      : '--'
+                  },
+                  {
+                    label: 'M15 - Confirm Vol',
+                    value: signal.spikeVolumeM15Info
+                      ? `${
+                          signal.spikeVolumeM15Info.confirmVol
+                        } | P: ${roundToDecimals(
+                          signal.spikeVolumeM15Info.confirmPrice,
+                          2
+                        )} | ${signal.spikeVolumeM15Info.confirmTime || '--'}`
+                      : '--'
+                  }
+                ]
+              : []),
+            ...(signal.timeFrame === '1H'
+              ? [
+                  {
+                    label: 'H1 - SMA Vol',
+                    value: signal.spikeVolumeH1Info
+                      ? roundToDecimals(signal.spikeVolumeH1Info.smaVol, 2)
+                      : '--'
+                  },
+                  {
+                    label: 'H1 - Strike Vol',
+                    value: signal.spikeVolumeH1Info
+                      ? `${signal.spikeVolumeH1Info.strikeVol} | ${
+                          signal.spikeVolumeH1Info.strikeTime || '--'
+                        }`
+                      : '--'
+                  }
+                ]
+              : []),
             {
               label: t('aiRecommendation'),
               value: signal.AIRecommendationSignal ? (
