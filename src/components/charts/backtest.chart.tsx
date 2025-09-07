@@ -455,14 +455,16 @@ export const ChartBackTest = ({
     };
   }, [scheduleDraw]);
 
-  // Cập nhật dữ liệu & vẽ lại vùng / lines
   useEffect(() => {
     dataRef.current = candlestickData;
     if (!chartRef.current || !candleSeriesRef.current) return;
 
     candleSeriesRef.current.setData(candlestickData);
 
-    const { hi: hi50, lo: lo50 } = getRollingHiLoSeries(candlestickData, 50);
+    const { hi: hi50, lo: lo50 } = getRollingHiLoSeries(
+      candlestickData,
+      selectedPeriod === '15M' ? 200 : 50
+    );
     const resUpper = hi50;
     const resLower = hi50.map(({ time, value }) => ({
       time,
