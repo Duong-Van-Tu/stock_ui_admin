@@ -9,7 +9,8 @@ import {
   cleanFalsyValues,
   roundToDecimals,
   getRowClassName,
-  isNumeric
+  isNumeric,
+  formatNumberShort
   // formatPercent
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -304,7 +305,8 @@ export const StockRankingTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('price')
       }),
-      align: 'center'
+      align: 'center',
+      render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
       // render: (value, record) => {
       //   const currPrice = getCurrentPrice(resFromWS, record.symbol);
       //   const price = currPrice ?? value;
@@ -328,7 +330,7 @@ export const StockRankingTable = () => {
         onClick: () => handleSortOrder('volume')
       }),
       align: 'center',
-      render: (value) => (value ? roundToDecimals(value, 2) : '-')
+      render: (value) => (isNumeric(value) ? formatNumberShort(value) : '-')
     },
     {
       title: t('beta'),
