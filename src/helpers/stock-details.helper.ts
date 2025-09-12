@@ -1,4 +1,6 @@
+import dayjs from 'dayjs';
 import { fieldMapping } from './field-mapping.helper';
+import { TimeZone } from '@/constants/timezone.constant';
 
 export const initFundamentalScore = {
   ebitScore: 0,
@@ -113,7 +115,9 @@ export const transformMovingSentimentScore = (
   if (scores.length <= 0) return [];
 
   return scores.map((score) => ({
-    timestamp: score.timestamp,
+    timestamp: dayjs(score.timestamp)
+      .tz(TimeZone.NEW_YORK)
+      .format('MM-DD-YYYY hh:mm'),
     score1w: score[fieldMapping.score1w],
     score1m: score[fieldMapping.score1m],
     score3m: score[fieldMapping.score3m]
@@ -138,7 +142,7 @@ export const transformEarningsDetailScore = (
   if (scoreDetails.length <= 0) return [];
 
   return scoreDetails.map((detail) => ({
-    date: detail.date,
+    date: dayjs(detail.date).tz(TimeZone.NEW_YORK).format('MM-DD-YYYY'),
     epsActualMomentumScore: detail[fieldMapping.epsActualMomentumScore],
     epsActualRecentScore: detail[fieldMapping.epsActualRecentScore],
     epsEstimateMomentumScore: detail[fieldMapping.epsEstimateMomentumScore],
@@ -151,7 +155,7 @@ export const transformEarningsDetails = (details: any[]): EarningsDetails[] => {
   if (details.length <= 0) return [];
 
   return details.map((detail) => ({
-    date: detail.date,
+    date: dayjs(detail.date).tz(TimeZone.NEW_YORK).format('MM-DD-YYYY'),
     epsActual: detail.epsActual ?? 0,
     epsEstimate: detail.epsEstimate ?? 0,
     surprise: detail.surprise ?? 0
