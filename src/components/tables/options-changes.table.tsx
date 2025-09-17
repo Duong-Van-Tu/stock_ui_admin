@@ -227,6 +227,18 @@ export const OptionChangesTable = () => {
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     },
     {
+      title: t('bidAsk'),
+      dataIndex: 'bidAsk',
+      key: 'bidAsk',
+      width: 110,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'bidAsk' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('bidAsk') }),
+      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+    },
+    {
       title: t('change'),
       dataIndex: 'change',
       key: 'change',
@@ -403,18 +415,6 @@ export const OptionChangesTable = () => {
       render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
     },
     {
-      title: t('profitNoTheta'),
-      dataIndex: 'profitNoTheta',
-      key: 'profitNoTheta',
-      width: 146,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'profitNoTheta' ? sortType : null,
-      onHeaderCell: () => ({ onClick: () => handleSortOrder('profitNoTheta') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
-    },
-    {
       title: t('newOptionPremiumTheta'),
       dataIndex: 'newOptionPremiumTheta',
       key: 'newOptionPremiumTheta',
@@ -426,6 +426,18 @@ export const OptionChangesTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('newOptionPremiumTheta')
       }),
+      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+    },
+    {
+      title: t('profitNoTheta'),
+      dataIndex: 'profitNoTheta',
+      key: 'profitNoTheta',
+      width: 146,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'profitNoTheta' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('profitNoTheta') }),
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     },
     {
@@ -450,18 +462,6 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'mfpAsk' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('mfpAsk') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
-    },
-    {
-      title: t('bidAsk'),
-      dataIndex: 'bidAsk',
-      key: 'bidAsk',
-      width: 110,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'bidAsk' ? sortType : null,
-      onHeaderCell: () => ({ onClick: () => handleSortOrder('bidAsk') }),
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     }
   ];
