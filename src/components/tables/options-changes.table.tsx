@@ -41,6 +41,7 @@ export const OptionChangesTable = () => {
   const loading = useAppSelector(watchOptionChangesLoading);
 
   const [filter, setFilter] = useState<Record<string, any>>({});
+  const [suppressLoading, setSuppressLoading] = useState(false);
 
   const { sortField, sortType, handleSortOrder } = useSortOrder<
     Record<string, any>
@@ -62,9 +63,11 @@ export const OptionChangesTable = () => {
     ({
       page = PAGINATION_PARAMS.offset,
       pageSize = PAGINATION_PARAMS.limit,
-      filter
-    }: PageChangeParams = {}) => {
+      filter,
+      silent = false
+    }: PageChangeParams & { silent?: boolean } = {}) => {
       const filtered = cleanFalsyValues(filter);
+      if (silent) setSuppressLoading(true);
       dispatch(
         getOptionChanges({
           page,
@@ -87,6 +90,22 @@ export const OptionChangesTable = () => {
     };
   }, [fetchData, dispatch]);
 
+  useEffect(() => {
+    const id = setInterval(() => {
+      fetchData({
+        page: pagination.currentPage,
+        pageSize: pagination.pageSize,
+        filter,
+        silent: true
+      });
+    }, 60000);
+    return () => clearInterval(id);
+  }, [fetchData, pagination.currentPage, pagination.pageSize, filter]);
+
+  useEffect(() => {
+    if (!loading) setSuppressLoading(false);
+  }, [loading]);
+
   const baseColumns: TableColumnsType<OptionChange> = [
     {
       title: t('stt'),
@@ -95,10 +114,6 @@ export const OptionChangesTable = () => {
       width: 64,
       align: 'center',
       fixed: 'left',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'index' ? sortType : null,
-      onHeaderCell: () => ({ onClick: () => handleSortOrder('index') }),
       render: (_, __, index) =>
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
     },
@@ -472,7 +487,14 @@ export const OptionChangesTable = () => {
           <span>{t('optionChangesTitle')}</span>
           <Tooltip title={!isMobile && t('refresh')}>
             <Button
-              onClick={() => {}}
+              onClick={() =>
+                fetchData({
+                  page: pagination.currentPage,
+                  pageSize: pagination.pageSize,
+                  filter,
+                  silent: true
+                })
+              }
               type='text'
               icon={
                 <Icon
@@ -492,7 +514,7 @@ export const OptionChangesTable = () => {
           rowKey={(record) => record.key}
           columns={columns}
           dataSource={data}
-          loading={loading}
+          loading={loading && !suppressLoading}
           showHeader
           scroll={{
             x: isMobile ? 600 : 1400,
