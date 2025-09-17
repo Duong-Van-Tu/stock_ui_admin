@@ -492,7 +492,7 @@ export const OptionChangesTable = () => {
                   page: pagination.currentPage,
                   pageSize: pagination.pageSize,
                   filter,
-                  silent: true
+                  silent: false
                 })
               }
               type='text'
