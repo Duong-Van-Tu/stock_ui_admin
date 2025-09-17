@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, useEffect, useState } from 'react';
-import { Table, TableColumnsType } from 'antd';
+import { Button, Table, TableColumnsType, Tooltip } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   cleanFalsyValues,
@@ -27,6 +27,7 @@ import {
   watchOptionChangesLoading,
   watchOptionChangesPagination
 } from '@/redux/slices/options-changes.slice';
+import { Icon } from '../icons';
 
 export const OptionChangesTable = () => {
   const t = useTranslations();
@@ -467,8 +468,23 @@ export const OptionChangesTable = () => {
   return (
     <div css={rootStyles}>
       <div css={tableWrapperStyles}>
-        <TableTitle customStyles={titleStyles(data.length === 0)}>
-          {t('optionChangesTitle')}
+        <TableTitle customStyles={titleStyles}>
+          <span>{t('optionChangesTitle')}</span>
+          <Tooltip title={!isMobile && t('refresh')}>
+            <Button
+              onClick={() => {}}
+              type='text'
+              icon={
+                <Icon
+                  customStyles={refreshIconStyles}
+                  icon='refresh'
+                  width={22}
+                  height={22}
+                />
+              }
+              shape='circle'
+            />
+          </Tooltip>
         </TableTitle>
         <Table<OptionChange>
           size={isMobile ? 'small' : 'middle'}
@@ -530,11 +546,14 @@ const tableStyles = css`
   }
 `;
 
-const titleStyles = (isBorderBottom: boolean) => css`
+const titleStyles = css`
   padding: 1.2rem 1.6rem;
-  border-bottom: ${isBorderBottom
-    ? '1px solid var(--border-table-color)'
-    : 'unset'};
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  span {
+    line-height: 2rem;
+  }
 `;
 
 const emptyStyles = (h: number) => css`
@@ -542,4 +561,8 @@ const emptyStyles = (h: number) => css`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const refreshIconStyles = css`
+  margin-top: 0.2rem;
 `;
