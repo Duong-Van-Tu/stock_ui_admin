@@ -15,9 +15,8 @@ type OptionChange = {
   delta: number;
   theta: number;
   vega: number;
-  rho: number;
-  timProb: number;
-  othProb: number;
+  itmProb: number;
+  otmProb: number;
   volume: number;
   openInt: number;
   costPerContract: number;
@@ -28,9 +27,6 @@ type OptionChange = {
   profitNoTheta: number;
   newOptionPremiumTheta: number;
   profitTheta: number;
-  mfgAsk: number;
-  mfgBid: number;
-  createdAt: string;
-  updatedAt: string;
-  importedFrom: string;
+  mfpAsk: number;
+  bidAsk: number;
 };

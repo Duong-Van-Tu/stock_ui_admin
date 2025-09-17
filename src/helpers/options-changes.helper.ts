@@ -21,9 +21,8 @@ export const transformOptionChangesData = (rows: any[]): OptionChange[] => {
     delta: item[fieldMapping.delta],
     theta: item[fieldMapping.theta],
     vega: item[fieldMapping.vega],
-    rho: item[fieldMapping.rho],
-    timProb: item[fieldMapping.timProb],
-    othProb: item[fieldMapping.othProb],
+    itmProb: item[fieldMapping.itmProb],
+    otmProb: item[fieldMapping.otmProb],
     volume: item[fieldMapping.volume],
     openInt: item[fieldMapping.openInt],
     costPerContract: item[fieldMapping.costPerContract],
@@ -34,10 +33,7 @@ export const transformOptionChangesData = (rows: any[]): OptionChange[] => {
     profitNoTheta: item[fieldMapping.profitNoTheta],
     newOptionPremiumTheta: item[fieldMapping.newOptionPremiumTheta],
     profitTheta: item[fieldMapping.profitTheta],
-    mfgAsk: item[fieldMapping.mfgAsk],
-    mfgBid: item[fieldMapping.mfgBid],
-    createdAt: item[fieldMapping.createdAt] ?? '',
-    updatedAt: item[fieldMapping.updatedAt] ?? '',
-    importedFrom: item[fieldMapping.importedFrom] ?? ''
+    mfpAsk: item[fieldMapping.mfpAsk],
+    bidAsk: item[fieldMapping.bidAsk]
   }));
 };
