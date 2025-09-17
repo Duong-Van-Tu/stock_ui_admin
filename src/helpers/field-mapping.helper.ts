@@ -215,5 +215,8 @@ export const fieldMapping: Record<string, string> = {
   mfpAsk: 'mfp_ask',
   bidAsk: 'bid_ask',
   updatedAt: 'updated_at',
-  importedFrom: 'imported_from'
+  importedFrom: 'imported_from',
+  nttAsk: 'ntt_ask',
+  bfAsk: 'bf_ask',
+  ivRank: 'iv_rank'
 };

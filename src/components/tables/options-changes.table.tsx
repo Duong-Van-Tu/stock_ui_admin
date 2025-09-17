@@ -28,6 +28,7 @@ import {
   watchOptionChangesPagination
 } from '@/redux/slices/options-changes.slice';
 import { Icon } from '../icons';
+import { PositiveNegativeText } from '../positive-negative-text';
 
 export const OptionChangesTable = () => {
   const t = useTranslations();
@@ -130,27 +131,30 @@ export const OptionChangesTable = () => {
       render: (_, record) => <SymbolCell symbol={record.symbol} />
     },
     {
-      title: t('optionType'),
-      dataIndex: 'optionType',
-      key: 'optionType',
-      width: 90,
+      title: t('price'),
+      dataIndex: 'price',
+      key: 'price',
+      width: 110,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'optionType' ? sortType : null,
-      onHeaderCell: () => ({ onClick: () => handleSortOrder('optionType') })
+      sortOrder: sortField === 'price' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('price') }),
+      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     },
     {
-      title: t('messageType'),
-      dataIndex: 'messageType',
-      key: 'messageType',
-      width: 136,
+      title: t('lastOptionPrice'),
+      dataIndex: 'lastOptionPrice',
+      key: 'lastOptionPrice',
+      width: 120,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'messageType' ? sortType : null,
-      onHeaderCell: () => ({ onClick: () => handleSortOrder('messageType') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
+      sortOrder: sortField === 'lastOptionPrice' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('lastOptionPrice')
+      }),
+      render: (v) => (isNumeric(v) ? roundToDecimals(Number(v), 2) : v ?? '-')
     },
     {
       title: t('expDate'),
@@ -189,42 +193,51 @@ export const OptionChangesTable = () => {
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     },
     {
-      title: t('price'),
-      dataIndex: 'price',
-      key: 'price',
-      width: 110,
+      title: t('optionType'),
+      dataIndex: 'optionType',
+      key: 'optionType',
+      width: 90,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'price' ? sortType : null,
-      onHeaderCell: () => ({ onClick: () => handleSortOrder('price') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      sortOrder: sortField === 'optionType' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('optionType') })
     },
     {
-      title: t('lastOptionPrice'),
-      dataIndex: 'lastOptionPrice',
-      key: 'lastOptionPrice',
-      width: 120,
+      title: t('messageType'),
+      dataIndex: 'messageType',
+      key: 'messageType',
+      width: 136,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'lastOptionPrice' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('lastOptionPrice')
-      }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(Number(v), 2) : v ?? '-')
+      sortOrder: sortField === 'messageType' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('messageType') }),
+      render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
     },
     {
       title: t('ask'),
       dataIndex: 'ask',
       key: 'ask',
-      width: 80,
+      width: 90,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'ask' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('ask') }),
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+    },
+    {
+      title: t('changePercent'),
+      dataIndex: 'changePercent',
+      key: 'changePercent',
+      width: 110,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'changePercent' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('changePercent') }),
+      render: (v) => (isNumeric(v) ? formatPercent(v) : '-')
     },
     {
       title: t('bidAsk'),
@@ -237,30 +250,6 @@ export const OptionChangesTable = () => {
       sortOrder: sortField === 'bidAsk' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('bidAsk') }),
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
-    },
-    {
-      title: t('change'),
-      dataIndex: 'change',
-      key: 'change',
-      width: 90,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'change' ? sortType : null,
-      onHeaderCell: () => ({ onClick: () => handleSortOrder('change') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
-    },
-    {
-      title: t('changePercent'),
-      dataIndex: 'changePercent',
-      key: 'changePercent',
-      width: 104,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'changePercent' ? sortType : null,
-      onHeaderCell: () => ({ onClick: () => handleSortOrder('changePercent') }),
-      render: (v) => (isNumeric(v) ? formatPercent(v) : '-')
     },
     {
       title: t('volume'),
@@ -278,7 +267,7 @@ export const OptionChangesTable = () => {
       title: t('openInt'),
       dataIndex: 'openInt',
       key: 'openInt',
-      width: 100,
+      width: 110,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -361,18 +350,6 @@ export const OptionChangesTable = () => {
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     },
     {
-      title: t('newStockPrice'),
-      dataIndex: 'newStockPrice',
-      key: 'newStockPrice',
-      width: 120,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'newStockPrice' ? sortType : null,
-      onHeaderCell: () => ({ onClick: () => handleSortOrder('newStockPrice') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
-    },
-    {
       title: t('optionPriceChange'),
       dataIndex: 'optionPriceChange',
       key: 'optionPriceChange',
@@ -387,6 +364,33 @@ export const OptionChangesTable = () => {
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     },
     {
+      title: t('newStockPrice'),
+      dataIndex: 'newStockPrice',
+      key: 'newStockPrice',
+      width: 120,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'newStockPrice' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('newStockPrice') }),
+      render: (v, record) => (
+        <PositiveNegativeText
+          isPositive={
+            isNumeric(v) && isNumeric(record.price)
+              ? Number(v) > Number(record.price)
+              : false
+          }
+          isNegative={
+            isNumeric(v) && isNumeric(record.price)
+              ? Number(v) < Number(record.price)
+              : false
+          }
+        >
+          <span>{isNumeric(v) ? roundToDecimals(v, 2) : '-'}</span>
+        </PositiveNegativeText>
+      )
+    },
+    {
       title: t('newOptionPremium'),
       dataIndex: 'newOptionPremium',
       key: 'newOptionPremium',
@@ -398,7 +402,22 @@ export const OptionChangesTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('newOptionPremium')
       }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      render: (v, record) => (
+        <PositiveNegativeText
+          isPositive={
+            isNumeric(v) && isNumeric(record.lastOptionPrice)
+              ? Number(v) > Number(record.lastOptionPrice)
+              : false
+          }
+          isNegative={
+            isNumeric(v) && isNumeric(record.lastOptionPrice)
+              ? Number(v) < Number(record.lastOptionPrice)
+              : false
+          }
+        >
+          <span>{isNumeric(v) ? roundToDecimals(v, 2) : '-'}</span>
+        </PositiveNegativeText>
+      )
     },
     {
       title: t('newOptionContract'),
@@ -426,7 +445,22 @@ export const OptionChangesTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('newOptionPremiumTheta')
       }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      render: (v, record) => (
+        <PositiveNegativeText
+          isPositive={
+            isNumeric(v) && isNumeric(record.newOptionPremium)
+              ? Number(v) > Number(record.newOptionPremium)
+              : false
+          }
+          isNegative={
+            isNumeric(v) && isNumeric(record.newOptionPremium)
+              ? Number(v) < Number(record.newOptionPremium)
+              : false
+          }
+        >
+          <span>{isNumeric(v) ? roundToDecimals(v, 2) : '-'}</span>
+        </PositiveNegativeText>
+      )
     },
     {
       title: t('profitNoTheta'),
@@ -468,10 +502,12 @@ export const OptionChangesTable = () => {
 
   const mobileKeys = [
     'symbol',
-    'optionType',
-    'expDate',
-    'strike',
     'price',
+    'lastOptionPrice',
+    'expDate',
+    'dte',
+    'strike',
+    'optionType',
     'changePercent',
     'volume'
   ];
@@ -517,7 +553,7 @@ export const OptionChangesTable = () => {
           loading={loading && !suppressLoading}
           showHeader
           scroll={{
-            x: isMobile ? 600 : 1400,
+            x: isMobile ? 600 : 1600,
             y: height - 238
           }}
           sortDirections={['descend', 'ascend']}
