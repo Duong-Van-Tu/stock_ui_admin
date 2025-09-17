@@ -490,5 +490,6 @@
   "52WeekRange": "52-Week Range",
   "YTDReturn": "YTD Return",
   "oneYearnReturn": "1-Year Return",
-  "rsi": "RSI"
+  "rsi": "RSI",
+  "optionChanges": "Option Changes"
 }

@@ -48,6 +48,7 @@ import Sell from '@/assets/svg/sell.svg';
 import Hold from '@/assets/svg/hold.svg';
 import New from '@/assets/svg/new.svg';
 import DotsVertical from '@/assets/svg/dots-vertical.svg';
+import OptionsChanges from '@/assets/svg/options-changes.svg';
 
 type IconProps = {
   width?: number | string;
@@ -104,7 +105,8 @@ const svgList = {
   Sell,
   Hold,
   New,
-  DotsVertical
+  DotsVertical,
+  OptionsChanges
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = Object.entries(

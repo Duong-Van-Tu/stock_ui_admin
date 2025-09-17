@@ -74,4 +74,8 @@ export namespace PageURLs {
   export function ofSendAlertLedgerEntry(id: number) {
     return withPrefix(`/ledger-entry/${id}/send-alert`);
   }
+
+  export function ofOptionChanges() {
+    return withPrefix('/options-changes');
+  }
 }
