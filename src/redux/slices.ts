@@ -5,6 +5,7 @@ import { highActivitySlice } from './slices/high-activity.slice';
 import { ledgerEntrySlice } from './slices/ledger-entry.slice';
 import { membersSlice } from './slices/members.slice';
 import { notesSlice } from './slices/notes.slice';
+import { optionChangesSlice } from './slices/options-changes.slice';
 import { searchSlice } from './slices/search';
 import { SentimentSlice } from './slices/sentiment.slice';
 import { signalSlice } from './slices/signals.slice';
@@ -25,5 +26,6 @@ export const slices = [
   notesSlice,
   swingTradingWatchlistSlice,
   ledgerEntrySlice,
-  membersSlice
+  membersSlice,
+  optionChangesSlice
 ];
