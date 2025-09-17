@@ -94,6 +94,12 @@ export const getMenuStructure = (
       iconType: 'ledgerEntry',
       link: PageURLs.ofLedgerEntry()
     }
+    // {
+    //   label: t('optionChanges'),
+    //   key: 'options-changes',
+    //   iconType: 'optionsChanges',
+    //   link: PageURLs.ofOptionChanges()
+    // }
   ];
 
   return menu.filter(Boolean);
