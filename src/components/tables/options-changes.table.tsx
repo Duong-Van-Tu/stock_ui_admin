@@ -48,7 +48,7 @@ export const OptionChangesTable = () => {
   const { sortField, sortType, handleSortOrder } = useSortOrder<
     Record<string, any>
   >({
-    defaultField: 'strike',
+    defaultField: 'symbol',
     defaultOrder: 'descend',
     currentFilter: filter,
     onChange: (_field, _order, newFilter) => {
