@@ -666,7 +666,7 @@ export const OptionChangesTable = () => {
           }}
           pagination={{
             position: ['bottomCenter'],
-            pageSizeOptions: ['10', '20', '50', '100'],
+            pageSizeOptions: ['100', '200', '500'],
             showSizeChanger: true,
             showQuickJumper: true,
             current: pagination.currentPage,
