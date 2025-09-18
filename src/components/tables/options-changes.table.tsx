@@ -643,9 +643,7 @@ export const OptionChangesTable = () => {
         </div>
         <Table<OptionChange>
           rowClassName={(r) =>
-            bestMap.get(r.symbol) === r.score || r.score >= 70
-              ? 'hl-add-symbol'
-              : ''
+            bestMap.get(r.symbol) === r.score ? 'hl-add-symbol' : ''
           }
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
