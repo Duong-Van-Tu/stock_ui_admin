@@ -33,4 +33,5 @@ type OptionChange = {
   profitTheta: number;
   mfpAsk: number;
   bidAsk: number;
+  score: number;
 };
