@@ -297,7 +297,7 @@ export const OptionChangesTable = () => {
       title: t('volume'),
       dataIndex: 'volume',
       key: 'volume',
-      width: 120,
+      width: 100,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
