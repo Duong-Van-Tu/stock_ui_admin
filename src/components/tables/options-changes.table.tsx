@@ -165,7 +165,6 @@ export const OptionChangesTable = () => {
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'expDate' ? sortType : null,
-      hidden: true,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('expDate') })
     },
     {
@@ -228,16 +227,40 @@ export const OptionChangesTable = () => {
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     },
     {
-      title: t('changePercent'),
-      dataIndex: 'changePercent',
-      key: 'changePercent',
+      title: t('nttAsk'),
+      dataIndex: 'nttAsk',
+      key: 'nttAsk',
+      width: 100,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'nttAsk' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('nttAsk') }),
+      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+    },
+    {
+      title: t('bfAsk'),
+      dataIndex: 'bfAsk',
+      key: 'bfAsk',
       width: 110,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'changePercent' ? sortType : null,
-      onHeaderCell: () => ({ onClick: () => handleSortOrder('changePercent') }),
-      render: (v) => (isNumeric(v) ? formatPercent(v) : '-')
+      sortOrder: sortField === 'bfAsk' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('bfAsk') }),
+      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+    },
+    {
+      title: t('mfpAsk'),
+      dataIndex: 'mfpAsk',
+      key: 'mfpAsk',
+      width: 110,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'mfpAsk' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('mfpAsk') }),
+      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     },
     {
       title: t('bidAsk'),
@@ -250,6 +273,18 @@ export const OptionChangesTable = () => {
       sortOrder: sortField === 'bidAsk' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('bidAsk') }),
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+    },
+    {
+      title: t('changePercent'),
+      dataIndex: 'changePercent',
+      key: 'changePercent',
+      width: 110,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'changePercent' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('changePercent') }),
+      render: (v) => (isNumeric(v) ? formatPercent(v) : '-')
     },
     {
       title: t('volume'),
@@ -310,6 +345,18 @@ export const OptionChangesTable = () => {
       sortOrder: sortField === 'vega' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('vega') }),
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+    },
+    {
+      title: t('ivRank'),
+      dataIndex: 'ivRank',
+      key: 'ivRank',
+      width: 110,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'ivRank' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('ivRank') }),
+      render: (v) => (isNumeric(v) ? formatPercent(v) : '-')
     },
     {
       title: t('itmProb'),
@@ -386,7 +433,7 @@ export const OptionChangesTable = () => {
               : false
           }
         >
-          <span>{isNumeric(v) ? roundToDecimals(v, 2) : '-'}</span>
+          {isNumeric(v) ? roundToDecimals(v, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -415,7 +462,7 @@ export const OptionChangesTable = () => {
               : false
           }
         >
-          <span>{isNumeric(v) ? roundToDecimals(v, 2) : '-'}</span>
+          {isNumeric(v) ? roundToDecimals(v, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -458,7 +505,7 @@ export const OptionChangesTable = () => {
               : false
           }
         >
-          <span>{isNumeric(v) ? roundToDecimals(v, 2) : '-'}</span>
+          {isNumeric(v) ? roundToDecimals(v, 2) : '-'}
         </PositiveNegativeText>
       )
     },
@@ -485,18 +532,6 @@ export const OptionChangesTable = () => {
       sortOrder: sortField === 'profitTheta' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('profitTheta') }),
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
-    },
-    {
-      title: t('mfpAsk'),
-      dataIndex: 'mfpAsk',
-      key: 'mfpAsk',
-      width: 110,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'mfpAsk' ? sortType : null,
-      onHeaderCell: () => ({ onClick: () => handleSortOrder('mfpAsk') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     }
   ];
 
@@ -508,7 +543,11 @@ export const OptionChangesTable = () => {
     'dte',
     'strike',
     'optionType',
+    'ask',
+    'nttAsk',
+    'bfAsk',
     'changePercent',
+    'changeValue',
     'volume'
   ];
 
@@ -528,7 +567,7 @@ export const OptionChangesTable = () => {
                   page: pagination.currentPage,
                   pageSize: pagination.pageSize,
                   filter,
-                  silent: false
+                  silent: true
                 })
               }
               type='text'
@@ -553,7 +592,7 @@ export const OptionChangesTable = () => {
           loading={loading && !suppressLoading}
           showHeader
           scroll={{
-            x: isMobile ? 600 : 1600,
+            x: isMobile ? 700 : 1700,
             y: height - 238
           }}
           sortDirections={['descend', 'ascend']}

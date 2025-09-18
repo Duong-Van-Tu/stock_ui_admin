@@ -10,11 +10,15 @@ type OptionChange = {
   optionType: string;
   messageType: string;
   ask: number;
+  nttAsk: number;
+  bfAsk: number;
   change: number;
+  changeValue: number;
   changePercent: number;
   delta: number;
   theta: number;
   vega: number;
+  ivRank: number;
   itmProb: number;
   otmProb: number;
   volume: number;

@@ -517,5 +517,8 @@
   "profitNoTheta": "Lợi Nhuận (No Theta)",
   "newOptionPremiumTheta": "Premium Theta",
   "profitTheta": "Lợi Nhuận Theta",
-  "mfpAsk": "MFP Ask"
+  "mfpAsk": "MFP Ask",
+  "ivRank": "IV Rank",
+  "nttAsk": "NTT Ask",
+  "bfAsk": "BF Ask"
 }

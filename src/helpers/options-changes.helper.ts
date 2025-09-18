@@ -1,5 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { fieldMapping } from './field-mapping.helper';
+import dayjs from 'dayjs';
 
 export const transformOptionChangesData = (rows: any[]): OptionChange[] => {
   if (!rows) return [];
@@ -12,15 +13,21 @@ export const transformOptionChangesData = (rows: any[]): OptionChange[] => {
     strike: item.strike,
     dte: item.dte,
     lastOptionPrice: item[fieldMapping.lastOptionPrice] ?? '',
-    expDate: item[fieldMapping.expDate] ?? '',
+    expDate: item[fieldMapping.expDate]
+      ? dayjs(item[fieldMapping.expDate]).format('MM-DD-YYYY')
+      : '',
     optionType: item[fieldMapping.optionType] ?? '',
     messageType: item[fieldMapping.messageType] ?? '',
     ask: item[fieldMapping.ask],
+    nttAsk: item[fieldMapping.nttAsk],
+    bfAsk: item[fieldMapping.bfAsk],
     change: item[fieldMapping.change],
+    changeValue: item[fieldMapping.changeValue],
     changePercent: item[fieldMapping.changePercent],
     delta: item[fieldMapping.delta],
     theta: item[fieldMapping.theta],
     vega: item[fieldMapping.vega],
+    ivRank: item[fieldMapping.ivRank],
     itmProb: item[fieldMapping.itmProb],
     otmProb: item[fieldMapping.otmProb],
     volume: item[fieldMapping.volume],

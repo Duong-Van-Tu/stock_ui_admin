@@ -579,6 +579,7 @@ export const ChartBackTest = ({
       candleSeriesRef.current.setMarkers(markers);
     } catch {}
   }, [
+    selectedPeriod,
     candlestickData,
     entryPrice,
     entryDate,
