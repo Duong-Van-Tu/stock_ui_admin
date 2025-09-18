@@ -29,6 +29,7 @@ import {
 } from '@/redux/slices/options-changes.slice';
 import { Icon } from '../icons';
 import { PositiveNegativeText } from '../positive-negative-text';
+import { ImportSymbolButton } from '../import-symbol-template';
 
 export const OptionChangesTable = () => {
   const t = useTranslations();
@@ -112,7 +113,7 @@ export const OptionChangesTable = () => {
         filter,
         silent: true
       });
-    }, 60000);
+    }, 5000);
     return () => clearInterval(id);
   }, [fetchData, pagination.currentPage, pagination.pageSize, filter]);
 
@@ -612,34 +613,39 @@ export const OptionChangesTable = () => {
   return (
     <div css={rootStyles}>
       <div css={tableWrapperStyles}>
-        <TableTitle customStyles={titleStyles}>
-          <span>{t('optionChangesTitle')}</span>
-          <Tooltip title={!isMobile && t('refresh')}>
-            <Button
-              onClick={() =>
-                fetchData({
-                  page: pagination.currentPage,
-                  pageSize: pagination.pageSize,
-                  filter,
-                  silent: false
-                })
-              }
-              type='text'
-              icon={
-                <Icon
-                  customStyles={refreshIconStyles}
-                  icon='refresh'
-                  width={22}
-                  height={22}
-                />
-              }
-              shape='circle'
-            />
-          </Tooltip>
-        </TableTitle>
+        <div css={tableTopStyles}>
+          <TableTitle customStyles={titleStyles}>
+            <span>{t('optionChangesTitle')}</span>
+            <Tooltip title={!isMobile && t('refresh')}>
+              <Button
+                onClick={() =>
+                  fetchData({
+                    page: pagination.currentPage,
+                    pageSize: pagination.pageSize,
+                    filter,
+                    silent: false
+                  })
+                }
+                type='text'
+                icon={
+                  <Icon
+                    customStyles={refreshIconStyles}
+                    icon='refresh'
+                    width={22}
+                    height={22}
+                  />
+                }
+                shape='circle'
+              />
+            </Tooltip>
+          </TableTitle>
+          <ImportSymbolButton url='option-changes/import' />
+        </div>
         <Table<OptionChange>
           rowClassName={(r) =>
-            bestMap.get(r.symbol) === r.score ? 'hl-add-symbol' : ''
+            bestMap.get(r.symbol) === r.score || r.score >= 70
+              ? 'hl-add-symbol'
+              : ''
           }
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
@@ -650,7 +656,7 @@ export const OptionChangesTable = () => {
           showHeader
           scroll={{
             x: isMobile ? 700 : 1700,
-            y: height - 238
+            y: height - 242
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -689,6 +695,13 @@ const tableWrapperStyles = css`
   flex-direction: column;
 `;
 
+const tableTopStyles = css`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.6rem;
+`;
+
 const tableStyles = css`
   .ant-table-thead > tr > th {
     white-space: nowrap;
@@ -701,7 +714,6 @@ const tableStyles = css`
 `;
 
 const titleStyles = css`
-  padding: 1.2rem 1.6rem;
   display: flex;
   align-items: center;
   gap: 0.4rem;

@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-
 import { ChangeEvent, useRef, useState } from 'react';
 import { Button } from 'antd';
 import { defaultApiFetcher } from '@/utils/api-instances';
@@ -8,7 +7,11 @@ import { useNotification } from '@/hooks/notification.hook';
 import { useTranslations } from 'next-intl';
 import { Icon } from './icons';
 
-export const ImportSymbolButton = () => {
+type ImportSymbolButtonProps = {
+  url: string;
+};
+
+export const ImportSymbolButton = ({ url }: ImportSymbolButtonProps) => {
   const t = useTranslations();
   const { notifySuccess, notifyError } = useNotification();
   const inputImportRef = useRef<HTMLInputElement>(null);
@@ -21,23 +24,20 @@ export const ImportSymbolButton = () => {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await defaultApiFetcher.post(
-      'tickers-profile/import',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+    try {
+      const response = await defaultApiFetcher.post(url, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (response) {
+        notifySuccess(t('importSuccess'));
+      } else {
+        notifyError(t('importError'));
       }
-    );
-    if (response) {
-      notifySuccess(t('importSuccess'));
-    } else {
+    } catch {
       notifyError(t('importError'));
-    }
-    setImporting(false);
-    if (inputImportRef.current) {
-      inputImportRef.current.value = '';
+    } finally {
+      setImporting(false);
+      if (inputImportRef.current) inputImportRef.current.value = '';
     }
   };
 

@@ -1155,7 +1155,7 @@ export const AlertLogsTable = () => {
               {isDesktop && (
                 <Space>
                   <ExportExcelLog />
-                  <ImportSymbolButton />
+                  <ImportSymbolButton url='tickers-profile/import' />
                   <DownloadSymbolTemplateButton />
                 </Space>
               )}
