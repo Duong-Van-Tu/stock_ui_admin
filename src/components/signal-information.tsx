@@ -20,6 +20,7 @@ import {
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { PriceWithChange } from './price-with-change';
 import { ChartBackTest } from './charts/backtest.chart';
+import EllipsisText from './ellipsis-text';
 
 type BacktestSpikeVolumeProps = {
   signal: Signal;
@@ -49,7 +50,11 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
               label: t('companyName'),
               value: signal.companyName?.trim() ? signal.companyName : '--'
             },
-            { label: t('strategy'), value: signal.strategyName || '--' },
+            {
+              label: t('strategy'),
+              value:
+                <EllipsisText text={signal.strategyName} maxLines={1} /> || '--'
+            },
             { label: t('period'), value: signal.timeFrame },
             {
               label: t('realCandleEntry'),

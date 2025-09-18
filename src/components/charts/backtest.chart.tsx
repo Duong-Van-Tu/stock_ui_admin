@@ -287,7 +287,6 @@ export const ChartBackTest = ({
     animRef.current = requestAnimationFrame(drawZonesOnCanvas);
   }, [drawZonesOnCanvas]);
 
-  // Khởi tạo chart đúng 1 lần (container luôn render sẵn)
   useEffect(() => {
     if (!chartContainerRef.current || chartRef.current) return;
 
@@ -601,10 +600,8 @@ export const ChartBackTest = ({
         />
       </div>
 
-      {/* Luôn render chart container */}
       <div ref={chartContainerRef} css={styles.chartContainer}>
         <div ref={tooltipRef} css={styles.tooltip} />
-        {/* Overlay Empty khi chưa có dữ liệu */}
         {!loading && candlestickData.length === 0 && (
           <div css={styles.emptyOverlay}>
             <Empty />
