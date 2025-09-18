@@ -498,7 +498,7 @@
   "expDate": "Exp Date",
   "dte": "DTE",
   "price": "Price",
-  "lastOptionPrice": "Last Price",
+  "lastOptionPrice": "Last",
   "ask": "Ask",
   "bidAsk": "Bid/Ask",
   "changePercent": "Change %",

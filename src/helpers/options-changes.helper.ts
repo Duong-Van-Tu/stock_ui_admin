@@ -12,12 +12,12 @@ export const transformOptionChangesData = (rows: any[]): OptionChange[] => {
     price: item.price,
     strike: item.strike,
     dte: item.dte,
-    lastOptionPrice: item[fieldMapping.lastOptionPrice] ?? '',
+    lastOptionPrice: Number(item[fieldMapping.lastOptionPrice]),
     expDate: item[fieldMapping.expDate]
       ? dayjs(item[fieldMapping.expDate]).format('MM-DD-YYYY')
       : '',
-    optionType: item[fieldMapping.optionType] ?? '',
-    messageType: item[fieldMapping.messageType] ?? '',
+    optionType: item[fieldMapping.optionType],
+    messageType: item[fieldMapping.messageType],
     ask: item[fieldMapping.ask],
     nttAsk: item[fieldMapping.nttAsk],
     bfAsk: item[fieldMapping.bfAsk],

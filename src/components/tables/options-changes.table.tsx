@@ -134,7 +134,7 @@ export const OptionChangesTable = () => {
       title: t('price'),
       dataIndex: 'price',
       key: 'price',
-      width: 110,
+      width: 100,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -146,7 +146,7 @@ export const OptionChangesTable = () => {
       title: t('lastOptionPrice'),
       dataIndex: 'lastOptionPrice',
       key: 'lastOptionPrice',
-      width: 120,
+      width: 90,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -183,7 +183,7 @@ export const OptionChangesTable = () => {
       title: t('strike'),
       dataIndex: 'strike',
       key: 'strike',
-      width: 110,
+      width: 90,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -195,7 +195,7 @@ export const OptionChangesTable = () => {
       title: t('optionType'),
       dataIndex: 'optionType',
       key: 'optionType',
-      width: 90,
+      width: 80,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -242,7 +242,7 @@ export const OptionChangesTable = () => {
       title: t('bfAsk'),
       dataIndex: 'bfAsk',
       key: 'bfAsk',
-      width: 110,
+      width: 100,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -284,7 +284,14 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'changePercent' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('changePercent') }),
-      render: (v) => (isNumeric(v) ? formatPercent(v) : '-')
+      render: (v) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+            <span>{formatPercent(v)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('volume'),
@@ -320,7 +327,14 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'delta' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('delta') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      render: (v) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+            <span>{roundToDecimals(v)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('theta'),
@@ -332,7 +346,14 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'theta' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('theta') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      render: (v) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+            <span>{roundToDecimals(v)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('vega'),
@@ -344,7 +365,14 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'vega' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('vega') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      render: (v) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+            <span>{roundToDecimals(v)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('ivRank'),
@@ -408,7 +436,14 @@ export const OptionChangesTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('optionPriceChange')
       }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      render: (v) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+            <span> {roundToDecimals(v)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('newStockPrice'),
@@ -420,22 +455,17 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'newStockPrice' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('newStockPrice') }),
-      render: (v, record) => (
-        <PositiveNegativeText
-          isPositive={
-            isNumeric(v) && isNumeric(record.price)
-              ? Number(v) > Number(record.price)
-              : false
-          }
-          isNegative={
-            isNumeric(v) && isNumeric(record.price)
-              ? Number(v) < Number(record.price)
-              : false
-          }
-        >
-          {isNumeric(v) ? roundToDecimals(v, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (v, record) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText
+            isPositive={v > record.price}
+            isNegative={v < record.price}
+          >
+            <span>{roundToDecimals(v)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('newOptionPremium'),
@@ -449,22 +479,17 @@ export const OptionChangesTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('newOptionPremium')
       }),
-      render: (v, record) => (
-        <PositiveNegativeText
-          isPositive={
-            isNumeric(v) && isNumeric(record.lastOptionPrice)
-              ? Number(v) > Number(record.lastOptionPrice)
-              : false
-          }
-          isNegative={
-            isNumeric(v) && isNumeric(record.lastOptionPrice)
-              ? Number(v) < Number(record.lastOptionPrice)
-              : false
-          }
-        >
-          {isNumeric(v) ? roundToDecimals(v, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (v, record) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText
+            isPositive={v > record.lastOptionPrice}
+            isNegative={v < record.lastOptionPrice}
+          >
+            {roundToDecimals(v, 2)}
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('newOptionContract'),
@@ -478,7 +503,14 @@ export const OptionChangesTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('newOptionContract')
       }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
+      render: (v) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+            <span>{roundToDecimals(v)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('newOptionPremiumTheta'),
@@ -492,22 +524,17 @@ export const OptionChangesTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('newOptionPremiumTheta')
       }),
-      render: (v, record) => (
-        <PositiveNegativeText
-          isPositive={
-            isNumeric(v) && isNumeric(record.newOptionPremium)
-              ? Number(v) > Number(record.newOptionPremium)
-              : false
-          }
-          isNegative={
-            isNumeric(v) && isNumeric(record.newOptionPremium)
-              ? Number(v) < Number(record.newOptionPremium)
-              : false
-          }
-        >
-          {isNumeric(v) ? roundToDecimals(v, 2) : '-'}
-        </PositiveNegativeText>
-      )
+      render: (v, record) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText
+            isPositive={v > record.newOptionPremium}
+            isNegative={v < record.newOptionPremium}
+          >
+            {roundToDecimals(v, 2)}
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('profitNoTheta'),
@@ -519,7 +546,14 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'profitNoTheta' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('profitNoTheta') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      render: (v) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+            <span>{roundToDecimals(v, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: t('profitTheta'),
@@ -531,7 +565,14 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'profitTheta' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('profitTheta') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      render: (v) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+            <span>{roundToDecimals(v, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     }
   ];
 

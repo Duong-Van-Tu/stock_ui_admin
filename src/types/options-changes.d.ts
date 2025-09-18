@@ -3,7 +3,7 @@ type OptionChange = {
   key: string;
   symbol: string;
   price: number;
-  lastOptionPrice: string;
+  lastOptionPrice: number;
   expDate: string;
   dte: number;
   strike: number;
