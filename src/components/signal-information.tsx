@@ -52,8 +52,11 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
             },
             {
               label: t('strategy'),
-              value:
-                <EllipsisText text={signal.strategyName} maxLines={1} /> || '--'
+              value: signal.strategyName ? (
+                <EllipsisText text={signal.strategyName} maxLines={1} />
+              ) : (
+                '--'
+              )
             },
             { label: t('period'), value: signal.timeFrame },
             {
