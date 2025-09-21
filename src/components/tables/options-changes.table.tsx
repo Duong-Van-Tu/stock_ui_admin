@@ -379,7 +379,7 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'ivRank' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('ivRank') }),
-      render: (v) => (isNumeric(v) ? formatPercent(v) : '-')
+      render: (v) => (isNumeric(v) ? `${roundToDecimals(v, 2)}%` : '-')
     },
     {
       title: t('itmProb'),
@@ -391,7 +391,7 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'itmProb' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('itmProb') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      render: (v) => (isNumeric(v) ? `${roundToDecimals(v, 2)}%` : '-')
     },
     {
       title: t('otmProb'),
@@ -403,7 +403,7 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'otmProb' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('otmProb') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      render: (v) => (isNumeric(v) ? `${roundToDecimals(v, 2)}%` : '-')
     },
     {
       title: t('costPerContract'),
@@ -563,7 +563,7 @@ export const OptionChangesTable = () => {
       render: (v) =>
         isNumeric(v) ? (
           <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
-            <span>{roundToDecimals(v, 2)}</span>
+            <span>{formatPercent(v)}</span>
           </PositiveNegativeText>
         ) : (
           '-'
@@ -582,7 +582,7 @@ export const OptionChangesTable = () => {
       render: (v) =>
         isNumeric(v) ? (
           <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
-            <span>{roundToDecimals(v, 2)}</span>
+            <span>{formatPercent(v)}</span>
           </PositiveNegativeText>
         ) : (
           '-'
