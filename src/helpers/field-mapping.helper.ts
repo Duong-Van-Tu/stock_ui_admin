@@ -218,5 +218,6 @@ export const fieldMapping: Record<string, string> = {
   importedFrom: 'imported_from',
   nttAsk: 'ntt_ask',
   bfAsk: 'bf_ask',
-  ivRank: 'iv_rank'
+  ivRank: 'iv_rank',
+  performanceScore: 'perf_score'
 };

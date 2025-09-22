@@ -9,6 +9,7 @@ type StockScore = {
   isNews: boolean;
   totalScore: number;
   fundamentalScore: number;
+  performanceScore: number;
   sentimentScore: number;
   earningsScore: number;
   ytd: number;

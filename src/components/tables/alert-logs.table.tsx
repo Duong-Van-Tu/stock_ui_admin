@@ -878,7 +878,7 @@ export const AlertLogsTable = () => {
       title: t('fundamentalScore'),
       dataIndex: 'fundamentalScore',
       key: 'fundamentalScore',
-      width: 170,
+      width: 130,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -899,7 +899,7 @@ export const AlertLogsTable = () => {
       title: t('sentimentScore'),
       dataIndex: 'sentimentScore',
       key: 'sentimentScore',
-      width: 160,
+      width: 120,
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'sentimentScore' ? sortType : null,
@@ -920,12 +920,33 @@ export const AlertLogsTable = () => {
       title: t('earningsScore'),
       dataIndex: 'earningsScore',
       key: 'earningsScore',
-      width: 140,
+      width: 110,
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'earningsScore' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('earningsScore')
+      }),
+      align: 'center',
+      render: (value) =>
+        isNumeric(value) ? (
+          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: t('performanceScore'),
+      dataIndex: 'performanceScore',
+      key: 'performanceScore',
+      width: 130,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'performanceScore' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('performanceScore')
       }),
       align: 'center',
       render: (value) =>

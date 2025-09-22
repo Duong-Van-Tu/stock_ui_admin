@@ -520,5 +520,7 @@
   "mfpAsk": "MFP Ask",
   "ivRank": "IV Rank",
   "nttAsk": "NTT Ask",
-  "bfAsk": "BF Ask"
+  "bfAsk": "BF Ask",
+  "performanceScore": "Performance score",
+  "performance": "Performance"
 }

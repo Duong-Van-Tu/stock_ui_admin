@@ -62,6 +62,10 @@ export const StockDetailHeader = () => {
               label={t('earningsScore')}
               value={stockDetail?.earningsScore}
             />
+            <ScoreBlock
+              label={t('performance')}
+              value={stockDetail?.performanceScore}
+            />
           </div>
         </Col>
       </Row>

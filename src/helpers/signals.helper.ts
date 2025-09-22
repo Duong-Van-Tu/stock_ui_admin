@@ -114,7 +114,8 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
         beta: stock.beta,
         rsi: stock.rsi,
         atr: stock.atr
-      }
+      },
+      performanceScore: stock[fieldMapping.performanceScore]
     } as Signal;
   });
 };

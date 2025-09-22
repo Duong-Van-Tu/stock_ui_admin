@@ -474,6 +474,19 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
               )
             },
             {
+              label: t('performanceScore'),
+              value: isNumeric(signal.performanceScore) ? (
+                <PositiveNegativeText
+                  isPositive={signal.performanceScore > 7}
+                  isNegative={signal.performanceScore < 4}
+                >
+                  <span>{roundToDecimals(signal.performanceScore, 2)}</span>
+                </PositiveNegativeText>
+              ) : (
+                '--'
+              )
+            },
+            {
               label: t('marketCap'),
               value: signal.marketCap ? formatMarketCap(signal.marketCap) : '--'
             },

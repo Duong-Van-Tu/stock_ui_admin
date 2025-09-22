@@ -41,6 +41,7 @@ export const transformStockDetails = (stock: any): StockDetails | null => {
       ? Number(stock[fieldMapping.exitPrice])
       : undefined,
     fundamentalScore: stock[fieldMapping.fundamentalScore],
+    performanceScore: stock[fieldMapping.performanceScore],
     industry: stock.industry,
     isAddWatchList: stock[fieldMapping.isAddWatchList],
     last2Days: stock[fieldMapping.last2Days],

@@ -253,6 +253,27 @@ export const StockRankingTable = () => {
         )
     },
     {
+      title: t('performanceScore'),
+      dataIndex: 'performanceScore',
+      key: 'performanceScore',
+      width: 170,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'performanceScore' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('performanceScore')
+      }),
+      align: 'center',
+      render: (value) =>
+        isNumeric(value) ? (
+          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
+            <span>{roundToDecimals(value, 2)}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
       title: t('ytd'),
       dataIndex: 'ytd',
       key: 'ytd',

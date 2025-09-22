@@ -111,6 +111,11 @@ const SingleTickerTradingview = ({
               label={t('earnings')}
               value={signal?.earningsScore}
             />
+            <ScoreBlock
+              size='1.4rem'
+              label={t('performance')}
+              value={signal?.performanceScore}
+            />
           </div>
           <Row
             css={css`

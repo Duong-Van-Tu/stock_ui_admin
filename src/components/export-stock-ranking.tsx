@@ -54,6 +54,7 @@ export const ExportExcelStockRanking = () => {
           'Fundamental Score': formatNumber(item.fundamentalScore),
           'Sentiment Score': formatNumber(item.sentimentScore),
           'Earnings Score': formatNumber(item.earningsScore),
+          'Performance Score': formatNumber(item.performanceScore),
           'YTD (%)': formatNumber(item.ytd),
           'Day Change (%)': formatNumber(item.dayChangePercent),
           'Current Price': formatPrice(item.price),

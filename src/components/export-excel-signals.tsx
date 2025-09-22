@@ -261,6 +261,7 @@ export const ExportExcelLog = () => {
           log.fundamentalScore ? roundToDecimals(log.fundamentalScore, 2) : '-',
           log.earningsScore ? roundToDecimals(log.earningsScore, 2) : '-',
           log.sentimentScore ? roundToDecimals(log.sentimentScore, 2) : '-',
+          log.performanceScore ? roundToDecimals(log.performanceScore, 2) : '-',
           log.ytd ? roundToDecimals(log.ytd, 2) : '-'
         ]);
       });

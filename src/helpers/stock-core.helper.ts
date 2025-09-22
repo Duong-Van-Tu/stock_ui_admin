@@ -15,6 +15,7 @@ export const transformStockScoreData = (stocksScore: any[]): StockScore[] => {
     isNews: stock[fieldMapping.isNews],
     totalScore: stock[fieldMapping.totalScore],
     fundamentalScore: stock[fieldMapping.fundamentalScore],
+    performanceScore: stock[fieldMapping.performanceScore],
     sentimentScore: stock[fieldMapping.sentimentScore],
     earningsScore: stock[fieldMapping.earningsScore],
     ytd: stock[fieldMapping.ytd],

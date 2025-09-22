@@ -29,4 +29,5 @@ type StockInfo = {
   atr?: number;
   atrPercent?: number;
   rsi?: number;
+  performanceScore?: number;
 };

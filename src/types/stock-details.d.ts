@@ -31,6 +31,7 @@ type StockDetails = {
   aiRating: number;
   aiRecommendationSignal: string;
   aiExplain: string;
+  performanceScore: number;
 };
 
 type FundamentalDetails = {
