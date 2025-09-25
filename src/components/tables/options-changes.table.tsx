@@ -113,7 +113,7 @@ export const OptionChangesTable = () => {
         filter,
         silent: true
       });
-    }, 6000);
+    }, 60000);
     return () => clearInterval(id);
   }, [fetchData, pagination.currentPage, pagination.pageSize, filter]);
 
