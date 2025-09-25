@@ -334,10 +334,29 @@ export const OptionChangesTable = () => {
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     },
     {
-      title: 'Stock Change',
+      title: 'Change($)',
+      dataIndex: 'change',
+      key: 'change',
+      width: 110,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'change' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('change') }),
+      render: (v) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+            <span>{roundToDecimals(v)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: 'Change(%)',
       dataIndex: 'changePercent',
-      key: 'stock_change',
-      width: 128,
+      key: 'changePercent',
+      width: 110,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
