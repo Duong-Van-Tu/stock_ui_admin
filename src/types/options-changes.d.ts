@@ -8,10 +8,8 @@ type OptionChange = {
   dte: number;
   strike: number;
   optionType: string;
-  messageType: string;
   ask: number;
   nttAsk: number;
-  bfAsk: number;
   change: number;
   changeValue: number;
   changePercent: number;
@@ -33,5 +31,8 @@ type OptionChange = {
   profitTheta: number;
   mfpAsk: number;
   bidAsk: number;
+  beAsk: number;
   score: number;
+  moneyness: number;
+  beAskPercent: number;
 };

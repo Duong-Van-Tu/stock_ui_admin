@@ -112,10 +112,8 @@ export const transformOptionChangesData = (rows: any[]): OptionChange[] => {
         ? dayjs(item[fieldMapping.expDate]).format('MM-DD-YYYY')
         : '',
       optionType: item[fieldMapping.optionType],
-      messageType: item[fieldMapping.messageType],
       ask: item[fieldMapping.ask],
       nttAsk: item[fieldMapping.nttAsk],
-      bfAsk: item[fieldMapping.bfAsk],
       change: item[fieldMapping.change],
       changeValue: item[fieldMapping.changeValue],
       changePercent: item[fieldMapping.changePercent],
@@ -136,8 +134,12 @@ export const transformOptionChangesData = (rows: any[]): OptionChange[] => {
       newOptionPremiumTheta: item[fieldMapping.newOptionPremiumTheta],
       profitTheta: item[fieldMapping.profitTheta],
       mfpAsk: item[fieldMapping.mfpAsk],
-      bidAsk: item[fieldMapping.bidAsk]
+      beAsk: Number(item[fieldMapping.beAsk]),
+      beAskPercent: Number(item[fieldMapping.beAskPercent]),
+      bidAsk: item[fieldMapping.bidAsk],
+      moneyness: item[fieldMapping.moneyness]
     };
+
     const score = computeScore({
       delta: rec.delta,
       volume: rec.volume,

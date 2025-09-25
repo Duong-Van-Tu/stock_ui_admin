@@ -219,5 +219,7 @@ export const fieldMapping: Record<string, string> = {
   nttAsk: 'ntt_ask',
   bfAsk: 'bf_ask',
   ivRank: 'iv_rank',
-  performanceScore: 'perf_score'
+  performanceScore: 'perf_score',
+  beAsk: 'be_ask',
+  moneyness: 'money_ness'
 };
