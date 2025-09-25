@@ -83,6 +83,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       highestPricePercent: stock[fieldMapping.highestPricePercent],
       lowestPricePercent: stock[fieldMapping.lowestPricePercent],
       currentPricePercent: stock[fieldMapping.currentPricePercent],
+      isOptions: !!stock[fieldMapping.isOptions],
 
       newStopLoss: co?.newStopLoss ?? '',
 
@@ -111,6 +112,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
         fundamentalScore: stock[fieldMapping.fundamentalScore],
         sentimentScore: stock[fieldMapping.sentimentScore],
         earningsScore: stock[fieldMapping.earningsScore],
+        performanceScore: stock[fieldMapping.performanceScore],
         beta: stock.beta,
         rsi: stock.rsi,
         atr: stock.atr

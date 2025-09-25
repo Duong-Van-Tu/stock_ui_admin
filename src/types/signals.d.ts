@@ -75,6 +75,7 @@ type Signal = {
   spikeVolumeM15Info?: SpikeVolumeM15Info;
   spikeVolumeH1Info?: SpikeVolumeH1Info;
   performanceScore: number;
+  isOptions: boolean;
 };
 
 type AlertLogsFilter = Filter & {

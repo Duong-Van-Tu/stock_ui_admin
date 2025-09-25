@@ -89,7 +89,7 @@ export const SymbolCell = ({
                     <ScoreBlock
                       size='1.4rem'
                       label={t('performance')}
-                      value={stockInfo?.earningsScore}
+                      value={stockInfo?.performanceScore}
                     />
                   </div>
                   <Row
