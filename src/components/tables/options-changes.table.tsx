@@ -224,17 +224,9 @@ export const OptionChangesTable = () => {
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
-      hidden: true,
       sortOrder: sortField === 'beAsk' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('beAsk') }),
-      render: (v) =>
-        isNumeric(v) ? (
-          <PositiveNegativeText isNegative={v < 0} isPositive={v > 0}>
-            {roundToDecimals(v, 2)}
-          </PositiveNegativeText>
-        ) : (
-          '-'
-        )
+      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     },
     {
       title: '%BE(Ask)',
@@ -245,9 +237,15 @@ export const OptionChangesTable = () => {
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'beAskPercent' ? sortType : null,
-      hidden: true,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('beAskPercent') }),
-      render: (v) => (isNumeric(v) ? `${roundToDecimals(v, 2)}%` : '-')
+      render: (v) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText isNegative={v < 0} isPositive={v > 0}>
+            {formatPercent(v, 2)}
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: 'Bid-Ask%',
