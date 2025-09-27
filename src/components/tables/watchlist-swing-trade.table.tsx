@@ -802,7 +802,7 @@ export const WatchlistSwingTradeTable = () => {
       width: 130,
       align: 'center',
       render: (value: IntradayStockChart, record) =>
-        value?.dayChart ? (
+        value?.dayLow && value?.dayHigh ? (
           <PriceRangeSlider
             lowest={value.dayLow}
             highest={value.dayHigh}
