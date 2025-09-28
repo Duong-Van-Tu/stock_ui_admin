@@ -515,7 +515,7 @@ export const OptionChangesTable = () => {
           loading={loading && !suppressLoading}
           showHeader
           scroll={{
-            x: isMobile ? 700 : 1700,
+            x: isMobile ? 700 : 1200,
             y: height - 242
           }}
           sortDirections={['descend', 'ascend']}

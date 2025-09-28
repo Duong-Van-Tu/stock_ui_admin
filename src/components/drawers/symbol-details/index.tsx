@@ -5,11 +5,12 @@ import { Drawer } from 'antd';
 import { useTranslations } from 'next-intl';
 import { NewDetails } from '../../news-details';
 import { EarningsDetails } from './earnings-details';
+import OptionChangesDrawer from './option-changes.drawer';
 
-enum ContentType {
+export enum ContentType {
   NEWS = 'news',
   EARNINGS = 'earnings',
-  RECENT = 'recent'
+  OPTIONS = 'options'
 }
 
 type SymbolDetailsDrawerProps = {
@@ -33,6 +34,8 @@ export const SymbolDetailsDrawer = ({
         return `${t('newsDetail')} (${symbol})`;
       case ContentType.EARNINGS:
         return `${t('earningsDetail')} (${symbol})`;
+      case ContentType.OPTIONS:
+        return `${t('options')} (${symbol})`;
       default:
         return '';
     }
@@ -44,6 +47,8 @@ export const SymbolDetailsDrawer = ({
         return <NewDetails symbol={symbol} />;
       case ContentType.EARNINGS:
         return <EarningsDetails symbol={symbol} />;
+      case ContentType.OPTIONS:
+        return <OptionChangesDrawer symbol={symbol} />;
       default:
         return null;
     }

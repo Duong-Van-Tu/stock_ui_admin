@@ -3,8 +3,10 @@ import { fieldMapping } from './field-mapping.helper';
 import dayjs from 'dayjs';
 
 type MN = number | null | undefined;
+
 const clamp01 = (x: MN) =>
   Number.isFinite(x as number) ? Math.max(0, Math.min(1, x as number)) : 0;
+
 const num = (x: any, d = 0) => (Number.isFinite(Number(x)) ? Number(x) : d);
 
 function bePctCalc({
@@ -25,6 +27,25 @@ function bePctCalc({
   const isCall = (optionType || '').toUpperCase().startsWith('C');
   const be = isCall ? k + prem : k - prem;
   return Math.abs((isCall ? be - p : p - be) / p);
+}
+
+function resolveBePct(row: {
+  beAskPercent?: MN;
+  price?: MN;
+  strike?: MN;
+  lastOptionPrice?: MN;
+  optionType?: string;
+}) {
+  const raw = row.beAskPercent;
+  let bePct = Number.isFinite(Number(raw)) ? Number(raw) : NaN;
+  if (Number.isFinite(bePct)) bePct = bePct > 1 ? bePct / 100 : bePct;
+  if (Number.isFinite(bePct) && bePct >= 0) return bePct as number;
+  return bePctCalc({
+    price: row.price,
+    strike: row.strike,
+    premium: row.lastOptionPrice,
+    optionType: row.optionType
+  });
 }
 
 function spreadPctCalc({ bid, ask, bidAsk }: { bid: MN; ask: MN; bidAsk: MN }) {
@@ -52,6 +73,7 @@ function computeScore(row: {
   strike?: MN;
   lastOptionPrice?: MN;
   optionType?: string;
+  beAskPercent?: MN;
 }) {
   const delta = num(row.delta, NaN);
   const deltaScore = Number.isFinite(delta)
@@ -63,21 +85,21 @@ function computeScore(row: {
   const spreadScore = clamp01(
     1 -
       clamp01(
-        spreadPctCalc({ bid: row['bid'], ask: row.ask, bidAsk: row.bidAsk }) /
-          0.08
-      )
-  );
-  const beScore = clamp01(
-    1 -
-      clamp01(
-        bePctCalc({
-          price: row.price,
-          strike: row.strike,
-          premium: row.lastOptionPrice,
-          optionType: row.optionType
+        spreadPctCalc({
+          bid: (row as any)['bid'],
+          ask: row.ask,
+          bidAsk: row.bidAsk
         }) / 0.08
       )
   );
+  const bePct = resolveBePct({
+    beAskPercent: row.beAskPercent,
+    price: row.price,
+    strike: row.strike,
+    lastOptionPrice: row.lastOptionPrice,
+    optionType: row.optionType
+  });
+  const beScore = clamp01(1 - clamp01(bePct / 0.08));
   const theta = num(row.theta, NaN);
   const thetaScore = Number.isFinite(theta)
     ? clamp01(1 - clamp01(Math.abs(theta) / 0.5))
@@ -139,7 +161,6 @@ export const transformOptionChangesData = (rows: any[]): OptionChange[] => {
       bidAsk: item[fieldMapping.bidAsk],
       moneyness: item[fieldMapping.moneyness]
     };
-
     const score = computeScore({
       delta: rec.delta,
       volume: rec.volume,
@@ -151,7 +172,8 @@ export const transformOptionChangesData = (rows: any[]): OptionChange[] => {
       price: rec.price,
       strike: rec.strike,
       lastOptionPrice: rec.lastOptionPrice,
-      optionType: rec.optionType
+      optionType: rec.optionType,
+      beAskPercent: rec.beAskPercent
     });
     return { ...rec, score };
   });

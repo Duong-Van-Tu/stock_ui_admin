@@ -222,5 +222,6 @@ export const fieldMapping: Record<string, string> = {
   performanceScore: 'perf_score',
   beAsk: 'be_ask',
   moneyness: 'money_ness',
-  beAskPercent: 'bep_ask'
+  beAskPercent: 'bep_ask',
+  isOptions: 'is_options'
 };

@@ -4,21 +4,23 @@ import { Icon } from '@/components/icons';
 import { Button, Col, Divider, Popover, Row, Tooltip, Typography } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { SymbolDetailsDrawer } from '@/components/drawers/symbol-details';
+import {
+  ContentType,
+  SymbolDetailsDrawer
+} from '@/components/drawers/symbol-details';
 import ChartMiniTradingview from '@/components/charts/trading-view-mini.chart';
 import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
 import { isDesktop, isMobile } from 'react-device-detect';
 import EllipsisText from '@/components/ellipsis-text';
 import { ScoreBlock } from '@/components/score-block';
-import { formatPercent, isNumeric, roundToDecimals } from '@/utils/common';
+import {
+  capitalizeFirstLetter,
+  formatPercent,
+  isNumeric,
+  roundToDecimals
+} from '@/utils/common';
 import { PositiveNegativeText } from '@/components/positive-negative-text';
-
-enum ContentType {
-  NEWS = 'news',
-  EARNINGS = 'earnings',
-  RECENT = 'recent'
-}
 
 type SymbolCellProps = {
   symbol: string;
@@ -29,6 +31,7 @@ type SymbolCellProps = {
   showRecentNewsEarnings?: boolean;
   signalId?: number;
   stockInfo?: StockInfo;
+  isOptions?: boolean;
 };
 
 export const SymbolCell = ({
@@ -37,9 +40,9 @@ export const SymbolCell = ({
   isNews,
   earningDate,
   isNewsNegative,
-  showRecentNewsEarnings,
   signalId,
-  stockInfo
+  stockInfo,
+  isOptions = false
 }: SymbolCellProps) => {
   const t = useTranslations();
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -158,6 +161,7 @@ export const SymbolCell = ({
             </Link>
           )}
         </Popover>
+
         {isNews && (
           <Tooltip title={isMobile ? null : t('news')}>
             <Button
@@ -178,6 +182,7 @@ export const SymbolCell = ({
             </Button>
           </Tooltip>
         )}
+
         {earningDate && (
           <Tooltip title={isMobile ? null : t('earnings')}>
             <Button
@@ -194,18 +199,26 @@ export const SymbolCell = ({
             </Button>
           </Tooltip>
         )}
-        {showRecentNewsEarnings && (
-          <Tooltip title={isMobile ? null : t('recentNewsAndEarnings')}>
+
+        {isOptions && (
+          <Tooltip
+            title={
+              isMobile
+                ? null
+                : capitalizeFirstLetter(t('options').toLowerCase())
+            }
+          >
             <Button
               css={buttonStyles}
               type='text'
-              onClick={() => handleIconClick(ContentType.RECENT)}
+              onClick={() => handleIconClick(ContentType.OPTIONS)}
             >
-              <Icon icon='recent' width={18} height={18} />
+              <Icon icon='optionsChanges' width={18} height={18} />
             </Button>
           </Tooltip>
         )}
       </div>
+
       {companyName && (
         <div css={companyNameStyles}>
           <EllipsisText text={companyName} maxLines={1} />
