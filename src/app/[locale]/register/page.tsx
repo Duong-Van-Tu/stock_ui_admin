@@ -169,7 +169,9 @@ export default function Register() {
       </Form>
 
       <Text>
-        <Link href={PageURLs.ofLogin()}>{t('backToLogin')}</Link>
+        <Link css={backToLoginLinkStyles} href={PageURLs.ofLogin()}>
+          {t('backToLogin')}
+        </Link>
       </Text>
     </AuthLayout>
   );
@@ -184,4 +186,10 @@ const formStyles = css`
   .ant-form-item {
     margin-bottom: 1.4rem;
   }
+`;
+
+const backToLoginLinkStyles = css`
+  display: block;
+  width: 100%;
+  text-align: center;
 `;

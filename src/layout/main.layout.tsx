@@ -87,7 +87,10 @@ export default function MainLayout({ children }: MainLayoutProps) {
           />
         </div>
         <div css={menuContainerStyle}>
-          <Menu collapsed={collapsed} />
+          <Menu
+            handleChangeSidebarCollapsed={handleChangeSidebarCollapsed}
+            collapsed={collapsed}
+          />
         </div>
       </Sider>
       <Layout css={layoutStyles}>

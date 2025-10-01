@@ -15,11 +15,16 @@ import { Icon } from './icons';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { isMobile } from 'react-device-detect';
 
 type MenuProps = {
   collapsed: boolean;
+  handleChangeSidebarCollapsed?: () => void;
 };
-export const Menu = ({ collapsed }: MenuProps) => {
+export const Menu = ({
+  collapsed,
+  handleChangeSidebarCollapsed
+}: MenuProps) => {
   const t = useTranslations();
   const pathname = usePathname();
   const [selectedKey, setSelectedKey] = useState<string>(
@@ -90,6 +95,9 @@ export const Menu = ({ collapsed }: MenuProps) => {
 
   const handleMenuItemClick = (path: string) => {
     setSelectedKey(path);
+    if (isMobile) {
+      handleChangeSidebarCollapsed?.();
+    }
   };
 
   useEffect(() => {
