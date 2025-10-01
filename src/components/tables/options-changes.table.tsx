@@ -30,6 +30,8 @@ import {
 import { Icon } from '../icons';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { ImportSymbolButton } from '../import-symbol-template';
+import { TimeZone } from '@/constants/timezone.constant';
+import dayjs from 'dayjs';
 
 export const OptionChangesTable = () => {
   const t = useTranslations();
@@ -476,33 +478,48 @@ export const OptionChangesTable = () => {
     <div css={rootStyles}>
       <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
-          <TableTitle customStyles={titleStyles}>
-            <span>{t('optionChangesTitle')}</span>
-            <Tooltip title={!isMobile && t('refresh')}>
-              <Button
-                onClick={() =>
-                  fetchData({
-                    page: pagination.currentPage,
-                    pageSize: pagination.pageSize,
-                    filter,
-                    silent: false
-                  })
-                }
-                type='text'
-                icon={
-                  <Icon
-                    customStyles={refreshIconStyles}
-                    icon='refresh'
-                    width={22}
-                    height={22}
-                  />
-                }
-                shape='circle'
-              />
-            </Tooltip>
-          </TableTitle>
+          <div css={tableTopRightStyles}>
+            <TableTitle customStyles={titleStyles}>
+              <span>{t('optionChangesTitle')}</span>
+              <Tooltip title={!isMobile && t('refresh')}>
+                <Button
+                  onClick={() =>
+                    fetchData({
+                      page: pagination.currentPage,
+                      pageSize: pagination.pageSize,
+                      filter,
+                      silent: false
+                    })
+                  }
+                  type='text'
+                  icon={
+                    <Icon
+                      customStyles={refreshIconStyles}
+                      icon='refresh'
+                      width={22}
+                      height={22}
+                    />
+                  }
+                  shape='circle'
+                />
+              </Tooltip>
+            </TableTitle>
+            <div css={updatedAtStyles}>
+              {data.length > 0 && (
+                <>
+                  <strong>{t('updatedAt')}:</strong>&nbsp;
+                  <span css={dateTextStyles}>
+                    {dayjs(data[0].updatedAt)
+                      .tz(TimeZone.NEW_YORK)
+                      .format('MMM D, YYYY h:mm A')}
+                  </span>
+                </>
+              )}
+            </div>
+          </div>
           <ImportSymbolButton url='option-changes/import' />
         </div>
+
         <Table<OptionChange>
           rowClassName={(r) =>
             bestMap.get(r.symbol) === r.score ? 'hl-add-symbol' : ''
@@ -516,7 +533,7 @@ export const OptionChangesTable = () => {
           showHeader
           scroll={{
             x: isMobile ? 700 : 1200,
-            y: height - 242
+            y: height - 262
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -591,4 +608,18 @@ const emptyStyles = (h: number) => css`
 
 const refreshIconStyles = css`
   margin-top: 0.2rem;
+`;
+
+const dateTextStyles = css`
+  margin-right: 0.6rem;
+`;
+
+const updatedAtStyles = css`
+  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
+`;
+
+const tableTopRightStyles = css`
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 `;

@@ -159,7 +159,8 @@ export const transformOptionChangesData = (rows: any[]): OptionChange[] => {
       beAsk: Number(item[fieldMapping.beAsk]),
       beAskPercent: Number(item[fieldMapping.beAskPercent]),
       bidAsk: item[fieldMapping.bidAsk],
-      moneyness: item[fieldMapping.moneyness]
+      moneyness: item[fieldMapping.moneyness],
+      updatedAt: item[fieldMapping.updatedAt]
     };
     const score = computeScore({
       delta: rec.delta,

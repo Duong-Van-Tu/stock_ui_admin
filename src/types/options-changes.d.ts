@@ -35,4 +35,5 @@ type OptionChange = {
   score: number;
   moneyness: number;
   beAskPercent: number;
+  updatedAt: string;
 };

@@ -12,7 +12,7 @@ export type OptionChangesState = {
 const initialState: OptionChangesState = {
   loading: false,
   data: [],
-  pagination: PAGINATION
+  pagination: { ...PAGINATION, pageSize: 100 }
 };
 
 export const optionChangesSlice = createAppSlice({
@@ -44,7 +44,7 @@ export const optionChangesSlice = createAppSlice({
         rejected: (state) => {
           state.loading = false;
           state.data = [];
-          state.pagination = PAGINATION;
+          state.pagination = { ...PAGINATION, pageSize: 100 };
         }
       }
     ),
