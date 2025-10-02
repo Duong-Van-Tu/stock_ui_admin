@@ -240,14 +240,7 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'beAskPercent' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('beAskPercent') }),
-      render: (v) =>
-        isNumeric(v) ? (
-          <PositiveNegativeText isNegative={v < 0} isPositive={v > 0}>
-            {formatPercent(v, 2)}
-          </PositiveNegativeText>
-        ) : (
-          '-'
-        )
+      render: (v) => (isNumeric(v) ? formatPercent(v * 100, 4) : '-')
     },
     {
       title: 'Bid-Ask%',
@@ -259,7 +252,7 @@ export const OptionChangesTable = () => {
       showSorterTooltip: false,
       sortOrder: sortField === 'bidAsk' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('bidAsk') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      render: (v) => (isNumeric(v) ? formatPercent(v * 100, 4) : '-')
     },
     {
       title: 'Volume',
@@ -289,7 +282,7 @@ export const OptionChangesTable = () => {
       title: 'Theta',
       dataIndex: 'theta',
       key: 'theta',
-      width: 90,
+      width: 110,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -298,7 +291,7 @@ export const OptionChangesTable = () => {
       render: (v) =>
         isNumeric(v) ? (
           <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
-            <span>{roundToDecimals(v)}</span>
+            <span>{roundToDecimals(v, 6)}</span>
           </PositiveNegativeText>
         ) : (
           '-'
@@ -308,7 +301,7 @@ export const OptionChangesTable = () => {
       title: 'Delta',
       dataIndex: 'delta',
       key: 'delta',
-      width: 90,
+      width: 110,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -317,7 +310,7 @@ export const OptionChangesTable = () => {
       render: (v) =>
         isNumeric(v) ? (
           <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
-            <span>{roundToDecimals(v)}</span>
+            <span>{roundToDecimals(v, 6)}</span>
           </PositiveNegativeText>
         ) : (
           '-'
