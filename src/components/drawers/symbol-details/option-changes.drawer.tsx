@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 
 import { Table, TableColumnsType } from 'antd';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { formatPercent, isNumeric, roundToDecimals } from '@/utils/common';
 import {
@@ -15,28 +15,17 @@ import { PositiveNegativeText } from '@/components/positive-negative-text';
 import { isMobile } from 'react-device-detect';
 import { DateTimeCell } from '@/components/tables/columns/date-time-cell.column';
 import { EmptyDataTable } from '@/components/tables/empty.table';
+import { useTranslations } from 'next-intl';
 
 type OptionChangesDrawerProps = { symbol: string };
 
 export default function OptionChangesDrawer({
   symbol
 }: OptionChangesDrawerProps) {
+  const t = useTranslations();
   const dispatch = useAppDispatch();
   const data = useAppSelector(watchOptionChangesData);
   const loading = useAppSelector(watchOptionChangesLoading);
-
-  const bestScoreBySymbol = (rows: { symbol: string; score?: number }[]) => {
-    const m = new Map<string, number>();
-    for (const r of rows) {
-      if (!r?.symbol) continue;
-      const s = Number.isFinite(Number(r.score)) ? Number(r.score) : -Infinity;
-      const p = m.get(r.symbol);
-      if (p === undefined || s > p) m.set(r.symbol, s);
-    }
-    return m;
-  };
-
-  const bestMap = useMemo(() => bestScoreBySymbol(data), [data]);
 
   const fetchData = useCallback(() => {
     dispatch(getOptionChanges({ symbol }));
@@ -175,15 +164,23 @@ export default function OptionChangesDrawer({
         )
     },
     {
-      title: 'Current price',
+      title: t('lastPrice'),
       dataIndex: 'price',
-      key: 'price_current',
+      key: 'price',
+      width: 110,
+      align: 'center',
+      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+    },
+    {
+      title: t('currentPrice'),
+      dataIndex: 'newStockPrice',
+      key: 'newStockPrice',
       width: 120,
       align: 'center',
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     },
     {
-      title: 'Change($)',
+      title: `${t('change')}$`,
       dataIndex: 'change',
       key: 'change',
       width: 110,
@@ -198,7 +195,7 @@ export default function OptionChangesDrawer({
         )
     },
     {
-      title: 'Change(%)',
+      title: `${t('change')}%`,
       dataIndex: 'changePercent',
       key: 'changePercent',
       width: 110,
@@ -280,9 +277,7 @@ export default function OptionChangesDrawer({
   return (
     <Table<OptionChange>
       css={tableStyles}
-      rowClassName={(r) =>
-        bestMap.get(r.symbol) === r.score ? 'hl-add-symbol' : ''
-      }
+      rowClassName={(r) => (r.suggested ? 'hl-add-symbol' : '')}
       size='small'
       rowKey={(record) => record.key}
       columns={columns}

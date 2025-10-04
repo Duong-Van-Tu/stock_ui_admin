@@ -32,8 +32,8 @@ type OptionChange = {
   mfpAsk: number;
   bidAsk: number;
   beAsk: number;
-  score: number;
   moneyness: number;
   beAskPercent: number;
+  suggested: boolean;
   updatedAt: string;
 };

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, Table, TableColumnsType, Tooltip } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
@@ -62,19 +62,6 @@ export const OptionChangesTable = () => {
       });
     }
   });
-
-  const bestScoreBySymbol = (rows: { symbol: string; score?: number }[]) => {
-    const m = new Map<string, number>();
-    for (const r of rows) {
-      if (!r?.symbol) continue;
-      const s = Number.isFinite(Number(r.score)) ? Number(r.score) : -Infinity;
-      const p = m.get(r.symbol);
-      if (p === undefined || s > p) m.set(r.symbol, s);
-    }
-    return m;
-  };
-
-  const bestMap = useMemo(() => bestScoreBySymbol(data), [data]);
 
   const fetchData = useCallback(
     ({
@@ -317,9 +304,21 @@ export const OptionChangesTable = () => {
         )
     },
     {
-      title: 'Current price',
+      title: t('lastPrice'),
       dataIndex: 'price',
-      key: 'price_current',
+      key: 'price',
+      width: 110,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'price' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('price') }),
+      render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+    },
+    {
+      title: t('currentPrice'),
+      dataIndex: 'newStockPrice',
+      key: 'newStockPrice',
       width: 120,
       align: 'center',
       sorter: true,
@@ -329,10 +328,10 @@ export const OptionChangesTable = () => {
       render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
     },
     {
-      title: 'Change($)',
+      title: `${t('change')}$`,
       dataIndex: 'change',
       key: 'change',
-      width: 110,
+      width: 100,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -348,7 +347,7 @@ export const OptionChangesTable = () => {
         )
     },
     {
-      title: 'Change(%)',
+      title: `${t('change')}%`,
       dataIndex: 'changePercent',
       key: 'changePercent',
       width: 110,
@@ -514,9 +513,7 @@ export const OptionChangesTable = () => {
         </div>
 
         <Table<OptionChange>
-          rowClassName={(r) =>
-            bestMap.get(r.symbol) === r.score ? 'hl-add-symbol' : ''
-          }
+          rowClassName={(r) => (r.suggested ? 'hl-add-symbol' : '')}
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey={(record) => record.key}

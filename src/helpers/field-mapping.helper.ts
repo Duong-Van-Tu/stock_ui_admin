@@ -223,5 +223,6 @@ export const fieldMapping: Record<string, string> = {
   beAsk: 'be_ask',
   moneyness: 'money_ness',
   beAskPercent: 'bep_ask',
-  isOptions: 'is_options'
+  isOptions: 'is_options',
+  isTop: 'is_top'
 };
