@@ -13,7 +13,6 @@ import {
 } from '@/redux/slices/options-changes.slice';
 import { PositiveNegativeText } from '@/components/positive-negative-text';
 import { isMobile } from 'react-device-detect';
-import { DateTimeCell } from '@/components/tables/columns/date-time-cell.column';
 import { EmptyDataTable } from '@/components/tables/empty.table';
 import { useTranslations } from 'next-intl';
 
@@ -60,7 +59,15 @@ export default function OptionChangesDrawer({
       key: 'expDate',
       width: 132,
       align: 'center',
-      render: (v) => <DateTimeCell showTime={false} value={v} />
+      render: (v) => (
+        <div
+          css={css`
+            min-width: 8rem;
+          `}
+        >
+          {v}
+        </div>
+      )
     },
     {
       title: 'DTE',
