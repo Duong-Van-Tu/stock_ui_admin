@@ -1079,6 +1079,7 @@ export const AlertLogsTable = () => {
     'timeFrame',
     'AIRecommendationSignal',
     'manualRecommendation',
+    'AIRating',
     'entryDate',
     'entryPrice',
     'stopLoss',
