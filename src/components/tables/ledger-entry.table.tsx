@@ -324,6 +324,7 @@ export const LedgerEntryTable = () => {
             convertTimeZone={false}
             showTime={false}
             value={value}
+            useUTC
           />
         ) : (
           '-'
