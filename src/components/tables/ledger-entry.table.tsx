@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import {
   Button,
   Dropdown,
@@ -73,6 +73,9 @@ export const LedgerEntryTable = () => {
   const cumulativeMap = useAppSelector(watchCumulativeMap);
   const balanceMap = useAppSelector(watchBalanceMap);
   const initialBalance = useAppSelector(watchInitialBalance);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
 
   const handleDelete = async (id: number) => {
     const res = await dispatch(deleteLedgerEntry(id));
@@ -623,7 +626,7 @@ export const LedgerEntryTable = () => {
           </Space>
         </div>
         <Table<LedgerEntry>
-          size={isMobile ? 'small' : 'middle'}
+          size='small'
           css={tableStyles}
           rowKey='id'
           columns={columns}
@@ -631,7 +634,7 @@ export const LedgerEntryTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: ledgerEntry.length > 0 ? height - 232 : undefined
+            y: ledgerEntry.length > 0 ? height - 280 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -641,7 +644,21 @@ export const LedgerEntryTable = () => {
               </div>
             )
           }}
-          pagination={false}
+          pagination={{
+            position: ['bottomCenter'] as const,
+            current: currentPage,
+            pageSize,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            onChange: (page, size) => {
+              setCurrentPage(page);
+              setPageSize(size ?? pageSize);
+            },
+            onShowSizeChange: (_cur, size) => {
+              setPageSize(size);
+              setCurrentPage(1);
+            }
+          }}
         />
       </div>
     </>
@@ -655,12 +672,18 @@ const rootStyles = css`
 
 const tableStyles = css`
   .ant-table-cell {
-    padding: 0.8rem 1rem !important;
+    padding: 0.6rem 0.8rem !important;
+  }
+  .ant-table-expanded-row-fixed {
+    padding: 0.4rem 0;
+  }
+  .ant-pagination {
+    margin: 1.4rem !important;
   }
 `;
 
 const titleStyles = css`
-  min-width: 30%;
+  min-width: 12.4rem;
   width: ${isMobile && '100%'};
 `;
 
