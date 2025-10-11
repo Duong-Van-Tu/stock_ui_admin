@@ -216,7 +216,7 @@ export const LedgerEntryTable = () => {
       width: 60,
       align: 'center',
       fixed: !isMobile && 'left',
-      render: (_, __, index) => index + 1
+      render: (_, __, index) => (currentPage - 1) * pageSize + index + 1
     },
     {
       title: t('strategy'),
