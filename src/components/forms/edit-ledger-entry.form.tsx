@@ -36,6 +36,7 @@ import { PageURLs } from '@/utils/navigate';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { isMobile } from 'react-device-detect';
 import MemberListDrawer from '../drawers/member-list.drawer';
+import { TimeZone } from '@/constants/timezone.constant';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -94,9 +95,15 @@ export default function EditLedgerEntry() {
         id,
         data: {
           ...values,
-          entryDate: values.entryDate?.toISOString(),
-          exitDate: values.exitDate?.toISOString(),
-          expiration: values.expiration?.toISOString()
+          entryDate: values.entryDate
+            ? dayjs(values.entryDate).format('YYYY-MM-DD HH:mm:ss')
+            : null,
+          exitDate: values.entryDate
+            ? dayjs(values.exitDate).format('YYYY-MM-DD HH:mm:ss')
+            : null,
+          expiration: values.expiration
+            ? dayjs(values.expiration).format('YYYY-MM-DD')
+            : null
         }
       })
     );
@@ -130,7 +137,7 @@ export default function EditLedgerEntry() {
         symbol: selectedEntry.symbol,
         period: selectedEntry.period,
         entryDate: selectedEntry.entryDate
-          ? dayjs(selectedEntry.entryDate)
+          ? dayjs(selectedEntry.entryDate).utc()
           : null,
         entryPrice: selectedEntry.entryPrice,
         stockPL: selectedEntry.stockPL,
@@ -140,10 +147,12 @@ export default function EditLedgerEntry() {
         commission: selectedEntry.commission,
         strategy: selectedEntry.strategy,
         strike: selectedEntry.strike,
-        exitDate: selectedEntry.exitDate ? dayjs(selectedEntry.exitDate) : null,
+        exitDate: selectedEntry.exitDate
+          ? dayjs(selectedEntry.exitDate).utc()
+          : null,
         exitPrice: selectedEntry.exitPrice,
         expiration: selectedEntry.expiration
-          ? dayjs(selectedEntry.expiration)
+          ? dayjs(selectedEntry.expiration).utc()
           : null,
         action: selectedEntry.action,
         premiumReceive: selectedEntry.premiumReceive,
@@ -192,7 +201,12 @@ export default function EditLedgerEntry() {
                     <Input.Group compact>
                       <Button
                         icon={<Icon icon='realtime' width={20} height={20} />}
-                        onClick={() => form.setFieldValue('entryDate', dayjs())}
+                        onClick={() =>
+                          form.setFieldValue(
+                            'entryDate',
+                            dayjs().tz(TimeZone.NEW_YORK)
+                          )
+                        }
                         size={isMobile ? 'middle' : 'large'}
                       />
                       <Form.Item name='entryDate' noStyle>
@@ -307,7 +321,12 @@ export default function EditLedgerEntry() {
                     <Input.Group compact>
                       <Button
                         icon={<Icon icon='realtime' width={20} height={20} />}
-                        onClick={() => form.setFieldValue('exitDate', dayjs())}
+                        onClick={() =>
+                          form.setFieldValue(
+                            'exitDate',
+                            dayjs().tz(TimeZone.NEW_YORK)
+                          )
+                        }
                         size={isMobile ? 'middle' : 'large'}
                       />
                       <Form.Item name='exitDate' noStyle>

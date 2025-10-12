@@ -50,17 +50,13 @@ export default function AddLedgerEntry() {
       createLedgerEntry({
         ...values,
         entryDate: values.entryDate
-          ? dayjs(values.entryDate)
-              .tz(TimeZone.NEW_YORK)
-              .format('YYYY-MM-DD HH:mm:ss')
+          ? dayjs(values.entryDate).format('YYYY-MM-DD HH:mm:ss')
           : null,
         exitDate: values.entryDate
-          ? dayjs(values.exitDate)
-              .tz(TimeZone.NEW_YORK)
-              .format('YYYY-MM-DD HH:mm:ss')
+          ? dayjs(values.exitDate).format('YYYY-MM-DD HH:mm:ss')
           : null,
         expiration: values.expiration
-          ? dayjs(values.expiration).tz(TimeZone.NEW_YORK).format('YYYY-MM-DD')
+          ? dayjs(values.expiration).format('YYYY-MM-DD')
           : null
       })
     );
@@ -343,13 +339,6 @@ export default function AddLedgerEntry() {
                     <DatePicker
                       placeholder={isMobile ? '' : t('selectExpirationDate')}
                       size={isMobile ? 'middle' : 'large'}
-                      onChange={(val) =>
-                        val &&
-                        form.setFieldValue(
-                          'expiration',
-                          dayjs(val).tz(TimeZone.NEW_YORK, true).startOf('day')
-                        )
-                      }
                       css={fullWidthStyles}
                     />
                   </Form.Item>
