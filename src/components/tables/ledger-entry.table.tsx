@@ -233,7 +233,11 @@ export const LedgerEntryTable = () => {
       align: 'center',
       width: 130,
       render: (value) =>
-        value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
+        value ? (
+          <DateTimeCell useUTC convertTimeZone={false} value={value} />
+        ) : (
+          '-'
+        )
     },
     {
       title: t('exitDate'),
@@ -242,7 +246,11 @@ export const LedgerEntryTable = () => {
       width: 130,
       align: 'center',
       render: (value) =>
-        value ? <DateTimeCell convertTimeZone={false} value={value} /> : '-'
+        value ? (
+          <DateTimeCell useUTC convertTimeZone={false} value={value} />
+        ) : (
+          '-'
+        )
     },
     {
       title: t('holdingTime'),

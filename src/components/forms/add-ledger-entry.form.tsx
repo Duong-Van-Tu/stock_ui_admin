@@ -29,6 +29,7 @@ import { getSectors, watchSectors } from '@/redux/slices/stock-score.slice';
 import { isDesktop, isMobile } from 'react-device-detect';
 import dayjs from 'dayjs';
 import MemberListDrawer from '../drawers/member-list.drawer';
+import { TimeZone } from '@/constants/timezone.constant';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -48,9 +49,19 @@ export default function AddLedgerEntry() {
     const res = await dispatch(
       createLedgerEntry({
         ...values,
-        entryDate: values.entryDate?.toISOString(),
-        exitDate: values.exitDate?.toISOString(),
-        expiration: values.expiration?.toISOString()
+        entryDate: values.entryDate
+          ? dayjs(values.entryDate)
+              .tz(TimeZone.NEW_YORK)
+              .format('YYYY-MM-DD HH:mm:ss')
+          : null,
+        exitDate: values.entryDate
+          ? dayjs(values.exitDate)
+              .tz(TimeZone.NEW_YORK)
+              .format('YYYY-MM-DD HH:mm:ss')
+          : null,
+        expiration: values.expiration
+          ? dayjs(values.expiration).tz(TimeZone.NEW_YORK).format('YYYY-MM-DD')
+          : null
       })
     );
 
@@ -120,7 +131,12 @@ export default function AddLedgerEntry() {
                     <Input.Group compact>
                       <Button
                         icon={<Icon icon='realtime' width={20} height={20} />}
-                        onClick={() => form.setFieldValue('entryDate', dayjs())}
+                        onClick={() =>
+                          form.setFieldValue(
+                            'entryDate',
+                            dayjs().tz(TimeZone.NEW_YORK)
+                          )
+                        }
                         size={isMobile ? 'middle' : 'large'}
                       />
                       <Form.Item
@@ -132,6 +148,13 @@ export default function AddLedgerEntry() {
                           placeholder={isMobile ? '' : t('selectEntryDate')}
                           size={isMobile ? 'middle' : 'large'}
                           showTime
+                          onChange={(val) =>
+                            val &&
+                            form.setFieldValue(
+                              'entryDate',
+                              dayjs(val).tz(TimeZone.NEW_YORK, true)
+                            )
+                          }
                           css={css`
                             width: ${isMobile
                               ? 'calc(100% - 3.2rem)'
@@ -141,12 +164,14 @@ export default function AddLedgerEntry() {
                       </Form.Item>
                     </Input.Group>
                   </Form.Item>
+
                   <Form.Item name='strategy' label={t('strategy')}>
                     <Input
                       placeholder={isMobile ? '' : t('enterStrategy')}
                       size={isMobile ? 'middle' : 'large'}
                     />
                   </Form.Item>
+
                   <Form.Item
                     name='symbol'
                     label={t('symbol')}
@@ -163,6 +188,7 @@ export default function AddLedgerEntry() {
                       }
                     />
                   </Form.Item>
+
                   <Form.Item name='strike' label={t('strike')}>
                     <InputNumber
                       type='number'
@@ -173,6 +199,7 @@ export default function AddLedgerEntry() {
                       css={fullWidthStyles}
                     />
                   </Form.Item>
+
                   <Form.Item name='premiumPaid' label={t('premiumPaid')}>
                     <InputNumber
                       type='number'
@@ -183,6 +210,7 @@ export default function AddLedgerEntry() {
                       css={fullWidthStyles}
                     />
                   </Form.Item>
+
                   <Form.Item
                     name='investmentCashOut'
                     label={t('investmentCashOut')}
@@ -196,6 +224,7 @@ export default function AddLedgerEntry() {
                       css={fullWidthStyles}
                     />
                   </Form.Item>
+
                   <Form.Item name='contracts' label={t('contracts')}>
                     <InputNumber
                       type='number'
@@ -205,6 +234,7 @@ export default function AddLedgerEntry() {
                       css={fullWidthStyles}
                     />
                   </Form.Item>
+
                   <Form.Item name='entryPrice' label={t('entryPrice')}>
                     <InputNumber
                       type='number'
@@ -215,6 +245,7 @@ export default function AddLedgerEntry() {
                       css={fullWidthStyles}
                     />
                   </Form.Item>
+
                   <Form.Item name='stockPL' label={t('stockPL')}>
                     <InputNumber
                       type='number'
@@ -225,12 +256,18 @@ export default function AddLedgerEntry() {
                     />
                   </Form.Item>
                 </div>
+
                 <div css={formColumnStyles}>
                   <Form.Item label={t('exitDate')}>
                     <Input.Group compact>
                       <Button
                         icon={<Icon icon='realtime' width={20} height={20} />}
-                        onClick={() => form.setFieldValue('exitDate', dayjs())}
+                        onClick={() =>
+                          form.setFieldValue(
+                            'exitDate',
+                            dayjs().tz(TimeZone.NEW_YORK)
+                          )
+                        }
                         size={isMobile ? 'middle' : 'large'}
                       />
                       <Form.Item
@@ -242,6 +279,13 @@ export default function AddLedgerEntry() {
                           placeholder={isMobile ? '' : t('selectExitDate')}
                           size={isMobile ? 'middle' : 'large'}
                           showTime
+                          onChange={(val) =>
+                            val &&
+                            form.setFieldValue(
+                              'exitDate',
+                              dayjs(val).tz(TimeZone.NEW_YORK, true)
+                            )
+                          }
                           css={css`
                             width: ${isMobile
                               ? 'calc(100% - 3.2rem)'
@@ -251,6 +295,7 @@ export default function AddLedgerEntry() {
                       </Form.Item>
                     </Input.Group>
                   </Form.Item>
+
                   <Form.Item name='period' label={t('period')}>
                     <Input
                       placeholder={isMobile ? '' : t('enterPeriod')}
@@ -258,6 +303,7 @@ export default function AddLedgerEntry() {
                       css={fullWidthStyles}
                     />
                   </Form.Item>
+
                   <Form.Item name='action' label={t('action')}>
                     <Select
                       size={isMobile ? 'middle' : 'large'}
@@ -292,13 +338,22 @@ export default function AddLedgerEntry() {
                       </Option>
                     </Select>
                   </Form.Item>
+
                   <Form.Item name='expiration' label={t('expiration')}>
                     <DatePicker
                       placeholder={isMobile ? '' : t('selectExpirationDate')}
                       size={isMobile ? 'middle' : 'large'}
+                      onChange={(val) =>
+                        val &&
+                        form.setFieldValue(
+                          'expiration',
+                          dayjs(val).tz(TimeZone.NEW_YORK, true).startOf('day')
+                        )
+                      }
                       css={fullWidthStyles}
                     />
                   </Form.Item>
+
                   <Form.Item name='premiumReceive' label={t('premiumReceive')}>
                     <InputNumber
                       placeholder={isMobile ? '' : t('enterPremiumReceive')}
@@ -309,6 +364,7 @@ export default function AddLedgerEntry() {
                       css={fullWidthStyles}
                     />
                   </Form.Item>
+
                   <Form.Item
                     name='investmentCashIn'
                     label={t('investmentCashIn')}
@@ -322,6 +378,7 @@ export default function AddLedgerEntry() {
                       css={fullWidthStyles}
                     />
                   </Form.Item>
+
                   <Form.Item name='commission' label={t('commission')}>
                     <InputNumber
                       placeholder={isMobile ? '' : t('enterCommission')}
@@ -332,6 +389,7 @@ export default function AddLedgerEntry() {
                       css={fullWidthStyles}
                     />
                   </Form.Item>
+
                   <Form.Item name='exitPrice' label={t('exitPrice')}>
                     <InputNumber
                       placeholder={isMobile ? '' : t('enterExitPrice')}
@@ -352,6 +410,7 @@ export default function AddLedgerEntry() {
                   </Form.Item>
                 </div>
               </div>
+
               <Form.Item name='notes' label={t('notes')}>
                 <ReactQuillEditor
                   value=''
@@ -362,6 +421,7 @@ export default function AddLedgerEntry() {
                 />
               </Form.Item>
             </div>
+
             <Form.Item css={formActionsStyles}>
               <Space>
                 <Button
