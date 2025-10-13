@@ -52,7 +52,7 @@ export default function AddLedgerEntry() {
         entryDate: values.entryDate
           ? dayjs(values.entryDate).format('YYYY-MM-DD HH:mm:ss')
           : null,
-        exitDate: values.entryDate
+        exitDate: values.exitDate
           ? dayjs(values.exitDate).format('YYYY-MM-DD HH:mm:ss')
           : null,
         expiration: values.expiration
