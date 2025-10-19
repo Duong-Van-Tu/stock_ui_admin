@@ -142,8 +142,12 @@ export const AlertLogsTable = ({
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           symbol: symbol ?? undefined,
-          fromEntryDate: dayjs().tz(TimeZone.NEW_YORK).format('YYYY-MM-DD'),
-          toEntryDate: dayjs().tz(TimeZone.NEW_YORK).format('YYYY-MM-DD'),
+          fromEntryDate: !isMobile
+            ? dayjs().tz(TimeZone.NEW_YORK).format('YYYY-MM-DD')
+            : undefined,
+          toEntryDate: !isMobile
+            ? dayjs().tz(TimeZone.NEW_YORK).format('YYYY-MM-DD')
+            : undefined,
           ...filter
         })
       );

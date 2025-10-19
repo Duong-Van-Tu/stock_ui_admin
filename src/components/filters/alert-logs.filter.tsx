@@ -149,8 +149,10 @@ export const AlertLogsFilter = ({
   }, [form, defaultStrategyId]);
 
   useEffect(() => {
-    const current = form.getFieldValue('quickRange') ?? 'today';
-    handleQuickRangeChange(current);
+    if (!isMobile) {
+      const current = form.getFieldValue('quickRange') ?? 'today';
+      handleQuickRangeChange(current);
+    }
   }, [isOption, handleQuickRangeChange, form]);
 
   return (
