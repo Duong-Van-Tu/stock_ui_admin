@@ -1110,7 +1110,9 @@ export const AlertLogsTable = ({
         <div css={tableTopStyles}>
           <div css={titleContainerStyles}>
             <TableTitle customStyles={titleStyles}>
-              <span>{t('alertLogs')}</span>
+              <span>
+                {isFilterPage ? t('alertLogsFilter') : t('alertLogs')}
+              </span>
               <Tooltip title={!isMobile && t('refresh')}>
                 <Button
                   onClick={handleRefresh}
