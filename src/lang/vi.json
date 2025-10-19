@@ -522,5 +522,14 @@
   "nttAsk": "NTT Ask",
   "bfAsk": "BF Ask",
   "performanceScore": "Điểm Hiệu Suất",
-  "performance": "Hiệu Suất"
+  "performance": "Hiệu Suất",
+  "today": "Hôm nay",
+  "yesterday": "Hôm qua",
+  "all": "Tất cả",
+  "lastDay": "Hôm qua",
+  "lastWeek": "Tuần trước",
+  "lastMonth": "Tháng trước",
+  "currentWeek": "Tuần này",
+  "currentMonth": "Tháng này",
+  "alertLogsFilter": "Bộ lọc nhật ký tín hiệu"
 }

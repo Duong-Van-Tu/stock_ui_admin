@@ -79,10 +79,10 @@ type Signal = {
 };
 
 type AlertLogsFilter = Filter & {
-  fromEntryDate?: Date;
-  toEntryDate?: Date;
-  fromExitDate?: Date;
-  toExitDate?: Date;
+  fromEntryDate?: Date | string;
+  toEntryDate?: Date | string;
+  fromExitDate?: Date | string;
+  toExitDate?: Date | string;
   isImport?: 0 | 1;
   strategyId?: number;
 };

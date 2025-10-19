@@ -64,14 +64,18 @@ export const signalSlice = createAppSlice({
       async ({
         isOptions,
         isSymbolSpecific,
+        isFilterPage,
         ...query
-      }: { isOptions?: boolean; isSymbolSpecific?: boolean } & Record<
-        string,
-        any
-      >) => {
+      }: {
+        isOptions?: boolean;
+        isSymbolSpecific?: boolean;
+        isFilterPage?: boolean;
+      } & Record<string, any>) => {
         const response = await defaultApiFetcher.get(
           isSymbolSpecific
             ? 'tickers/get-stock-alert-log-fix'
+            : isFilterPage
+            ? 'tickers/get-stock-alert-log-filter'
             : 'tickers/get-stock-alert-log',
           {
             query: {

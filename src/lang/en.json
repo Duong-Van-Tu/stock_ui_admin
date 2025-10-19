@@ -522,5 +522,14 @@
   "nttAsk": "NTT Ask",
   "bfAsk": "BF Ask",
   "performanceScore": "Performance score",
-  "performance": "Performance"
+  "performance": "Performance",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "lastWeek": "Last week",
+  "all": "All",
+  "lastDay": "Last day",
+  "lastMonth": "Last month",
+  "currentWeek": "Current week",
+  "currentMonth": "Current month",
+  "alertLogsFilter": "Alert Logs Filter"
 }

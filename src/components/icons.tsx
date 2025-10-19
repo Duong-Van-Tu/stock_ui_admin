@@ -49,6 +49,7 @@ import Hold from '@/assets/svg/hold.svg';
 import New from '@/assets/svg/new.svg';
 import DotsVertical from '@/assets/svg/dots-vertical.svg';
 import OptionsChanges from '@/assets/svg/options-changes.svg';
+import AlertLogsFilter from '@/assets/svg/alert-Logs-filter.svg';
 
 type IconProps = {
   width?: number | string;
@@ -106,7 +107,8 @@ const svgList = {
   Hold,
   New,
   DotsVertical,
-  OptionsChanges
+  OptionsChanges,
+  AlertLogsFilter
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = Object.entries(

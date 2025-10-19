@@ -23,6 +23,10 @@ export namespace PageURLs {
     return withPrefix('/alert-logs');
   }
 
+  export function ofAlertLogsFilter() {
+    return withPrefix('/alert-filter');
+  }
+
   export function ofEarings() {
     return withPrefix('/earnings');
   }

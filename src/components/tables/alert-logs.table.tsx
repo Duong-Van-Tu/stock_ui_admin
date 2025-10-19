@@ -13,7 +13,6 @@ import {
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   calculatePercentage,
-  cleanFalsyValues,
   formatMarketCap,
   formatNumberShort,
   formatPercent,
@@ -62,8 +61,15 @@ import { watchSideBarCollapsed } from '@/redux/slices/app.slice';
 import EllipsisText from '../ellipsis-text';
 import { DownloadSymbolTemplateButton } from '../download-symbol-template';
 import { ImportSymbolButton } from '../import-symbol-template';
+import dayjs from 'dayjs';
+import { TimeZone } from '@/constants/timezone.constant';
 
-export const AlertLogsTable = () => {
+type AlertLogsTableProps = {
+  isFilterPage?: boolean;
+};
+export const AlertLogsTable = ({
+  isFilterPage = false
+}: AlertLogsTableProps) => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const { setWatchList, resFromWS } = useContext(SocketContext);
@@ -128,15 +134,17 @@ export const AlertLogsTable = () => {
       pageSize = PAGINATION_PARAMS.limit,
       filter
     }: PageChangeParams = {}) => {
-      const filteredFilter = cleanFalsyValues(filter);
       dispatch(
         getAlertLogs({
+          isFilterPage,
           page,
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           symbol: symbol ?? undefined,
-          ...filteredFilter
+          fromEntryDate: dayjs().tz(TimeZone.NEW_YORK).format('YYYY-MM-DD'),
+          toEntryDate: dayjs().tz(TimeZone.NEW_YORK).format('YYYY-MM-DD'),
+          ...filter
         })
       );
     },
@@ -1186,7 +1194,7 @@ export const AlertLogsTable = () => {
           )}
         </div>
         <Table<Signal>
-          size={isMobile ? 'small' : 'middle'}
+          size='small'
           css={tableStyles}
           rowKey={(record) => record.key}
           rowSelection={isMobile ? undefined : rowSelection}
@@ -1198,10 +1206,10 @@ export const AlertLogsTable = () => {
             y:
               alertLogsData.length > 0
                 ? width >= 1624
-                  ? height - 340
+                  ? height - 360
                   : sideBarCollapsed
-                  ? height - 340
-                  : height - 380
+                  ? height - 360
+                  : height - 400
                 : undefined
           }}
           sortDirections={['descend', 'ascend']}
@@ -1242,7 +1250,7 @@ export const AlertLogsTable = () => {
 const rootStyles = css`
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
+  gap: 1.2rem;
 `;
 
 const titleStyles = css`
@@ -1262,7 +1270,13 @@ const tableWrapperStyles = css`
 
 const tableStyles = css`
   .ant-table-cell {
-    padding: 0.8rem 1rem !important;
+    padding: ${isMobile
+      ? '0.6rem 0.8rem !important'
+      : '0.8rem 1rem !important'};
+  }
+  .ant-pagination {
+    margin: 1.2rem 0 !important;
+    gap: 0.4rem;
   }
 `;
 
