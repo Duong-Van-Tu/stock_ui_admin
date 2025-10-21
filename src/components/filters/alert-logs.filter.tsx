@@ -3,7 +3,7 @@ import { css, SerializedStyles } from '@emotion/react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Button, Col, DatePicker, Form, Row, Select, Space, Radio } from 'antd';
+import { Button, Col, DatePicker, Form, Row, Select, Space } from 'antd';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -149,10 +149,8 @@ export const AlertLogsFilter = ({
   }, [form, defaultStrategyId]);
 
   useEffect(() => {
-    if (!isMobile) {
-      const current = form.getFieldValue('quickRange') ?? 'today';
-      handleQuickRangeChange(current);
-    }
+    const current = form.getFieldValue('quickRange') ?? 'today';
+    handleQuickRangeChange(current);
   }, [isOption, handleQuickRangeChange, form]);
 
   return (
@@ -167,7 +165,7 @@ export const AlertLogsFilter = ({
         initialValues={{ quickRange: 'today' }}
       >
         <Row gutter={[16, 12]} align='bottom' justify='end'>
-          <Col css={strategyColumnStyles}>
+          <Col css={fullWidthStyles}>
             <Form.Item
               css={formItemStyles}
               name='strategyId'
@@ -188,7 +186,25 @@ export const AlertLogsFilter = ({
               />
             </Form.Item>
           </Col>
-
+          <Col css={fullWidthStyles}>
+            <Form.Item name='quickRange' css={formItemStyles}>
+              <Select
+                css={selectQuickRangeStyles}
+                options={[
+                  { value: 'all', label: t('all') },
+                  { value: 'today', label: t('today') },
+                  { value: 'lastDay', label: t('lastDay') },
+                  { value: 'currentWeek', label: t('currentWeek') },
+                  { value: 'lastWeek', label: t('lastWeek') },
+                  { value: 'currentMonth', label: t('currentMonth') },
+                  { value: 'lastMonth', label: t('lastMonth') }
+                ]}
+                onChange={(value) =>
+                  handleQuickRangeChange(value as QuickRange)
+                }
+              />
+            </Form.Item>
+          </Col>
           <Col
             css={css`
               width: ${isMobile ? '100%' : 'unset'};
@@ -240,22 +256,6 @@ export const AlertLogsFilter = ({
             </Space>
           </Col>
         </Row>
-        {!isMobile && (
-          <Form.Item name='quickRange' css={quickRangeStyles}>
-            <Radio.Group
-              css={radioInlineStyles}
-              onChange={(e) => handleQuickRangeChange(e.target.value)}
-            >
-              <Radio value='all'>{t('all')}</Radio>
-              <Radio value='today'>{t('today')}</Radio>
-              <Radio value='lastDay'>{t('lastDay')}</Radio>
-              <Radio value='currentWeek'>{t('currentWeek')}</Radio>
-              <Radio value='lastWeek'>{t('lastWeek')}</Radio>
-              <Radio value='currentMonth'>{t('currentMonth')}</Radio>
-              <Radio value='lastMonth'>{t('lastMonth')}</Radio>
-            </Radio.Group>
-          </Form.Item>
-        )}
       </Form>
     </div>
   );
@@ -264,7 +264,7 @@ export const AlertLogsFilter = ({
 const rootStyles = css`
   border: 1px solid var(--border-table-color);
   border-radius: 0.6rem;
-  padding: ${!isMobile ? '1.4rem 1.6rem 0.4rem' : '1.4rem'};
+  padding: 1.4rem;
 `;
 
 const formStyles = css`
@@ -281,13 +281,6 @@ const formItemStyles = css`
   margin-bottom: 0;
 `;
 
-const radioInlineStyles = css`
-  font-weight: 500;
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-`;
-
 const labelStyles = css`
   font-size: 1.4rem;
   font-weight: 500;
@@ -295,14 +288,17 @@ const labelStyles = css`
 `;
 
 const selectStrategyStyles = css`
-  width: ${isMobile ? '100%' : '27rem !important'};
+  width: ${isMobile ? '100%' : '28rem !important'};
+`;
+const selectQuickRangeStyles = css`
+  width: ${isMobile ? '100%' : '13.8rem !important'};
 `;
 
 const rangePickerStyles = css`
   width: ${isMobile ? '100%' : 'unset'};
 `;
 
-const strategyColumnStyles = css`
+const fullWidthStyles = css`
   width: ${isMobile ? '100%' : 'unset'};
 `;
 
@@ -311,11 +307,4 @@ const actionStyles = css`
   display: ${isMobile ? 'flex' : 'block'};
   justify-content: ${isMobile ? 'right' : 'unset'};
   margin-top: ${isMobile ? '0.8rem' : 'unset'};
-`;
-
-const quickRangeStyles = css`
-  margin-bottom: 0;
-  .ant-form-item-control-input-content {
-    text-align: end;
-  }
 `;

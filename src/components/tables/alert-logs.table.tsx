@@ -1211,11 +1211,11 @@ export const AlertLogsTable = ({
             x: 1200,
             y:
               alertLogsData.length > 0
-                ? width >= 1624
-                  ? height - 360
+                ? width >= 1757
+                  ? height - 372
                   : sideBarCollapsed
-                  ? height - 360
-                  : height - 400
+                  ? height - 330
+                  : height - 372
                 : undefined
           }}
           sortDirections={['descend', 'ascend']}
