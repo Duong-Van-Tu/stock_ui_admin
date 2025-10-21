@@ -1212,7 +1212,7 @@ export const AlertLogsTable = ({
             y:
               alertLogsData.length > 0
                 ? width >= 1757
-                  ? height - 372
+                  ? height - 330
                   : sideBarCollapsed
                   ? height - 330
                   : height - 372

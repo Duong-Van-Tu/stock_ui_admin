@@ -66,6 +66,10 @@ export const ChartBackTest = ({
     NonNullable<typeof candleSeriesRef.current>['createPriceLine']
   > | null>(null);
 
+  const rsi3SeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
+  const rsi5SeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
+  const tenkan135SeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
+
   const [selectedPeriod, setSelectedPeriod] = useState(
     periodOptions.includes(period) ? period : '1H'
   );
@@ -112,6 +116,53 @@ export const ChartBackTest = ({
         );
     }
     return sma;
+  };
+
+  const calculateRSI = (
+    closes: number[],
+    period: number
+  ): (number | undefined)[] => {
+    const out: (number | undefined)[] = new Array(closes.length).fill(
+      undefined
+    );
+    if (closes.length < period + 1) return out;
+    let gain = 0;
+    let loss = 0;
+    for (let i = 1; i <= period; i++) {
+      const change = closes[i] - closes[i - 1];
+      if (change >= 0) gain += change;
+      else loss -= change;
+    }
+    let avgGain = gain / period;
+    let avgLoss = loss / period;
+    out[period] = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
+    for (let i = period + 1; i < closes.length; i++) {
+      const change = closes[i] - closes[i - 1];
+      const g = Math.max(change, 0);
+      const l = Math.max(-change, 0);
+      avgGain = (avgGain * (period - 1) + g) / period;
+      avgLoss = (avgLoss * (period - 1) + l) / period;
+      out[i] = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
+    }
+    return out;
+  };
+
+  const calculateTenkan = (
+    data: ExtendedCandlestickData[],
+    period: number
+  ): (number | undefined)[] => {
+    const out: (number | undefined)[] = new Array(data.length).fill(undefined);
+    if (period <= 1) return data.map((d) => (d.high + d.low) / 2);
+    for (let i = period - 1; i < data.length; i++) {
+      let hi = -Infinity,
+        lo = Infinity;
+      for (let j = i - period + 1; j <= i; j++) {
+        hi = Math.max(hi, data[j].high);
+        lo = Math.min(lo, data[j].low);
+      }
+      out[i] = (hi + lo) / 2;
+    }
+    return out;
   };
 
   const getRollingHiLoSeries = (
@@ -360,8 +411,43 @@ export const ChartBackTest = ({
       priceLineVisible: false
     });
 
+    chart.applyOptions({
+      rightPriceScale: {
+        borderColor: '#ccc',
+        scaleMargins: { top: 0.05, bottom: 0.45 }
+      }
+    });
+
+    tenkan135SeriesRef.current = chart.addLineSeries({
+      color: '#ff9800',
+      lineWidth: 2,
+      lineStyle: LineStyle.Solid,
+      priceScaleId: 'right',
+      lastValueVisible: false,
+      priceLineVisible: false
+    });
+
+    rsi3SeriesRef.current = chart.addLineSeries({
+      color: '#9c27b0',
+      lineWidth: 1,
+      priceScaleId: 'rsi',
+      lastValueVisible: false,
+      priceLineVisible: false
+    });
+
+    rsi5SeriesRef.current = chart.addLineSeries({
+      color: '#3f51b5',
+      lineWidth: 1,
+      priceScaleId: 'rsi',
+      lastValueVisible: false,
+      priceLineVisible: false
+    });
+
+    chart.priceScale('rsi').applyOptions({
+      scaleMargins: { top: 0.6, bottom: 0.2 }
+    });
+
     chart.subscribeClick((param) => {
-      // Toggle toàn cục: nếu đang mở -> click đâu cũng đóng
       if (tooltipVisibleRef.current) {
         if (tooltipRef.current) tooltipRef.current.style.display = 'none';
         tooltipVisibleRef.current = false;
@@ -389,6 +475,29 @@ export const ChartBackTest = ({
         prev && prev.close
           ? ((candle.close - prev.close) / prev.close) * 100
           : null;
+
+      const rsi3Point =
+        rsi3SeriesRef.current &&
+        (param.seriesData.get(rsi3SeriesRef.current) as
+          | LineData<UTCTimestamp>
+          | undefined);
+      const rsi5Point =
+        rsi5SeriesRef.current &&
+        (param.seriesData.get(rsi5SeriesRef.current) as
+          | LineData<UTCTimestamp>
+          | undefined);
+
+      const rsi3Val =
+        rsi3Point && typeof rsi3Point.value === 'number'
+          ? rsi3Point.value
+          : undefined;
+      const rsi5Val =
+        rsi5Point && typeof rsi5Point.value === 'number'
+          ? rsi5Point.value
+          : undefined;
+
+      const fmt = (v?: number) =>
+        typeof v === 'number' && isFinite(v) ? v.toFixed(2) : 'N/A';
 
       const formattedPercent = formatPercent(percentChange);
       const closeChangeColor =
@@ -427,7 +536,9 @@ export const ChartBackTest = ({
         formattedPercent
           ? `<span style="color:${closeChangeColor}">(${formattedPercent})</span>`
           : ''
-      }
+      }<br/>
+        <strong>RSI(3): </strong>${fmt(rsi3Val)}<br/>
+        <strong>RSI(5): </strong>${fmt(rsi5Val)}
       `;
 
       tooltipVisibleRef.current = true;
@@ -544,6 +655,38 @@ export const ChartBackTest = ({
       }))
       .filter((d) => Number.isFinite(d.value));
     sma20VolumeSeriesRef.current?.setData(sma20VolumeData);
+
+    const closes = candlestickData.map((d) => d.close);
+    const rsi3 = calculateRSI(closes, 3);
+    const rsi5 = calculateRSI(closes, 5);
+
+    const rsi3Data: LineData<UTCTimestamp>[] = candlestickData
+      .map((d, i) =>
+        rsi3[i] !== undefined
+          ? { time: d.time as UTCTimestamp, value: rsi3[i]! }
+          : null
+      )
+      .filter((x): x is LineData<UTCTimestamp> => !!x);
+    const rsi5Data: LineData<UTCTimestamp>[] = candlestickData
+      .map((d, i) =>
+        rsi5[i] !== undefined
+          ? { time: d.time as UTCTimestamp, value: rsi5[i]! }
+          : null
+      )
+      .filter((x): x is LineData<UTCTimestamp> => !!x);
+
+    rsi3SeriesRef.current?.setData(rsi3Data);
+    rsi5SeriesRef.current?.setData(rsi5Data);
+
+    const tenkan = calculateTenkan(candlestickData, 135);
+    const tenkanData: LineData<UTCTimestamp>[] = candlestickData
+      .map((d, i) =>
+        Number.isFinite(tenkan[i])
+          ? { time: d.time as UTCTimestamp, value: tenkan[i]! }
+          : null
+      )
+      .filter((x): x is LineData<UTCTimestamp> => !!x);
+    tenkan135SeriesRef.current?.setData(tenkanData);
 
     scheduleDraw();
     requestAnimationFrame(scheduleDraw);
