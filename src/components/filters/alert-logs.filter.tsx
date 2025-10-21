@@ -17,7 +17,6 @@ import { TimeZone } from '@/constants/timezone.constant';
 
 type AlertLogsFilterProps = {
   customStyles?: SerializedStyles;
-  defaultStrategyId?: number;
   onFilter: (values: AlertLogsFilter) => void;
 };
 
@@ -75,7 +74,6 @@ function getEntryRangeByOption(
 
 export const AlertLogsFilter = ({
   customStyles,
-  defaultStrategyId,
   onFilter
 }: AlertLogsFilterProps) => {
   const t = useTranslations();
@@ -86,6 +84,10 @@ export const AlertLogsFilter = ({
   const isOption = searchParams.get('isOption')
     ? Number(searchParams.get('isOption'))
     : 0;
+
+  const strategyId = searchParams.get('strategyId')
+    ? Number(searchParams.get('strategyId'))
+    : undefined;
 
   const strategies = useAppSelector(watchStrategies);
   const strategyLoading = useAppSelector(watchStrategyLoading);
@@ -143,10 +145,10 @@ export const AlertLogsFilter = ({
   }, [dispatch]);
 
   useEffect(() => {
-    if (defaultStrategyId) {
-      form.setFieldValue('strategyId', defaultStrategyId);
+    if (strategyId) {
+      form.setFieldValue('strategyId', strategyId);
     }
-  }, [form, defaultStrategyId]);
+  }, [form, strategyId]);
 
   useEffect(() => {
     const current = form.getFieldValue('quickRange') ?? 'today';
@@ -179,9 +181,10 @@ export const AlertLogsFilter = ({
                 placeholder={t('searchSelectStrategy')}
                 optionFilterProp='label'
                 options={strategyOptions}
-                onSelect={(value) =>
-                  updateSearchParams('strategyId', value.toString())
-                }
+                onSelect={(value) => {
+                  updateSearchParams('strategyId', value.toString());
+                  form.submit();
+                }}
                 onClear={() => updateSearchParams('strategyId')}
               />
             </Form.Item>

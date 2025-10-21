@@ -84,10 +84,6 @@ export const AlertLogsTable = ({
     ? Number(searchParams.get('isOption'))
     : 0;
 
-  const strategyId = searchParams.get('strategyId')
-    ? Number(searchParams.get('strategyId'))
-    : undefined;
-
   const symbol = searchParams.get('symbol');
   const alertLogsData = useAppSelector(watchAlertLogsData);
   const pagination = useAppSelector(watchAlertLogsPagination);
@@ -188,18 +184,18 @@ export const AlertLogsTable = ({
     });
   }, [fetchDataAlertLogs, pagination.currentPage, pagination.pageSize, filter]);
 
-  useEffect(() => {
-    setFilter((prev) => ({
-      ...prev,
-      isImport: isOption as AlertLogsView,
-      strategyId
-    }));
-    fetchDataAlertLogs({ filter: { isImport: isOption, strategyId } });
+  // useEffect(() => {
+  //   setFilter((prev) => ({
+  //     ...prev,
+  //     isImport: isOption as AlertLogsView,
+  //     strategyId
+  //   }));
+  //   fetchDataAlertLogs({ filter: { isImport: isOption, strategyId } });
 
-    if (isOption === AlertLogsView.OPTIONS) {
-      handleChangeView(AlertLogsView.OPTIONS);
-    }
-  }, [isOption, strategyId, fetchDataAlertLogs, handleChangeView, dispatch]);
+  //   if (isOption === AlertLogsView.OPTIONS) {
+  //     handleChangeView(AlertLogsView.OPTIONS);
+  //   }
+  // }, [isOption, strategyId, fetchDataAlertLogs, handleChangeView, dispatch]);
 
   useEffect(() => {
     alertLogsData.forEach((row) => {
@@ -1109,7 +1105,7 @@ export const AlertLogsTable = ({
 
   return (
     <div css={rootStyles}>
-      <AlertLogsFilter defaultStrategyId={strategyId} onFilter={handleFilter} />
+      <AlertLogsFilter onFilter={handleFilter} />
       <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
           <div css={titleContainerStyles}>
