@@ -181,11 +181,10 @@ export const AlertLogsFilter = ({
                 placeholder={t('searchSelectStrategy')}
                 optionFilterProp='label'
                 options={strategyOptions}
-                onSelect={(value) => {
-                  updateSearchParams('strategyId', value.toString());
+                onChange={(value) => {
+                  updateSearchParams('strategyId', value?.toString());
                   form.submit();
                 }}
-                onClear={() => updateSearchParams('strategyId')}
               />
             </Form.Item>
           </Col>
