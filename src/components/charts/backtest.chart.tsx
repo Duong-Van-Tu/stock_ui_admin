@@ -436,7 +436,7 @@ export const ChartBackTest = ({
     });
 
     rsi5SeriesRef.current = chart.addLineSeries({
-      color: '#3f51b5',
+      color: '#00bcd4',
       lineWidth: 1,
       priceScaleId: 'rsi',
       lastValueVisible: false,
