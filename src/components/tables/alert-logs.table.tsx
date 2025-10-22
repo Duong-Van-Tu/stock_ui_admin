@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { Key, useCallback, useContext, useEffect, useState } from 'react';
+import { Key, useCallback, useEffect, useState } from 'react';
 import {
   Button,
   Segmented,
@@ -27,8 +27,6 @@ import { useTranslations } from 'next-intl';
 import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { TableTitle } from './title.table';
-import { SocketContext } from '@/providers/socket.provider';
-import { getCurrentPrice } from '@/helpers/socket.helper';
 import {
   getAlertLogs,
   resetState,
@@ -72,7 +70,6 @@ export const AlertLogsTable = ({
 }: AlertLogsTableProps) => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const { setWatchList, resFromWS } = useContext(SocketContext);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -183,26 +180,6 @@ export const AlertLogsTable = ({
       filter
     });
   }, [fetchDataAlertLogs, pagination.currentPage, pagination.pageSize, filter]);
-
-  // useEffect(() => {
-  //   setFilter((prev) => ({
-  //     ...prev,
-  //     isImport: isOption as AlertLogsView,
-  //     strategyId
-  //   }));
-  //   fetchDataAlertLogs({ filter: { isImport: isOption, strategyId } });
-
-  //   if (isOption === AlertLogsView.OPTIONS) {
-  //     handleChangeView(AlertLogsView.OPTIONS);
-  //   }
-  // }, [isOption, strategyId, fetchDataAlertLogs, handleChangeView, dispatch]);
-
-  useEffect(() => {
-    alertLogsData.forEach((row) => {
-      setWatchList(row.symbol);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alertLogsData]);
 
   useEffect(() => {
     return () => {
@@ -563,11 +540,9 @@ export const AlertLogsTable = ({
       }),
       align: 'center',
       render: (value, record) => {
-        const currPrice = getCurrentPrice(resFromWS, record.symbol);
-        const price = currPrice ?? value;
         return (
           <StockChangeCell
-            value={price}
+            value={value}
             percentage={record.currentPricePercent}
           />
         );

@@ -89,6 +89,8 @@ export const AlertLogsFilter = ({
     ? Number(searchParams.get('strategyId'))
     : undefined;
 
+  const symbol = searchParams.get('symbol');
+
   const strategies = useAppSelector(watchStrategies);
   const strategyLoading = useAppSelector(watchStrategyLoading);
 
@@ -103,7 +105,7 @@ export const AlertLogsFilter = ({
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     const values = form.getFieldsValue();
     onFilter({
       isImport: isOption ? 1 : 0,
@@ -111,9 +113,10 @@ export const AlertLogsFilter = ({
       toEntryDate: values.entryDate?.[1]?.tz(TimeZone.NEW_YORK).format(fmt),
       fromExitDate: values.exitDate?.[0]?.tz(TimeZone.NEW_YORK).format(fmt),
       toExitDate: values.exitDate?.[1]?.tz(TimeZone.NEW_YORK).format(fmt),
-      strategyId: values.strategyId
+      strategyId: values.strategyId,
+      symbol: symbol || undefined
     });
-  };
+  }, [form, onFilter, isOption, symbol]);
 
   const handleClearFilters = () => {
     form.resetFields();
@@ -149,6 +152,10 @@ export const AlertLogsFilter = ({
       form.setFieldValue('strategyId', strategyId);
     }
   }, [form, strategyId]);
+
+  useEffect(() => {
+    form.submit();
+  }, [symbol, form]);
 
   useEffect(() => {
     const current = form.getFieldValue('quickRange') ?? 'today';
