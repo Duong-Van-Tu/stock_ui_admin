@@ -224,5 +224,8 @@ export const fieldMapping: Record<string, string> = {
   moneyness: 'money_ness',
   beAskPercent: 'bep_ask',
   isOptions: 'is_options',
-  isTop: 'is_top'
+  isTop: 'is_top',
+  avgSentiment: 'avg_sentiment',
+  verifyNews: 'verify_news',
+  versionCreated: 'version_created'
 };

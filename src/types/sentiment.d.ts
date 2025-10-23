@@ -76,3 +76,11 @@ type NewsLatest = {
   sentimentScore3m: number;
   url: string;
 };
+
+type NewsSentiment = {
+  key: string;
+  symbol: string;
+  title: string;
+  sentiment: number;
+  versionCreated: string;
+};

@@ -101,7 +101,6 @@ export const authSlice = createAppSlice({
       }
     ),
     logoutUser: create.reducer((state) => {
-      console.log('logged out');
       Cookies.remove('access_token');
       state.isAuthenticated = false;
       state.user = undefined;

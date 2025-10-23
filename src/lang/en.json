@@ -531,5 +531,7 @@
   "lastMonth": "Last month",
   "currentWeek": "Current week",
   "currentMonth": "Current month",
-  "alertLogsFilter": "Alert Logs Filter"
+  "alertLogsFilter": "Alert Logs Filter",
+  "avgSentiment": "Average Sentiment",
+  "verifyNews": "Verify News"
 }

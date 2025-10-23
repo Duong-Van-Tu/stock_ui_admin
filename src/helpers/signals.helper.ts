@@ -84,9 +84,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       lowestPricePercent: stock[fieldMapping.lowestPricePercent],
       currentPricePercent: stock[fieldMapping.currentPricePercent],
       isOptions: !!stock[fieldMapping.isOptions],
-
       newStopLoss: co?.newStopLoss ?? '',
-
       spikeVolumeM15Info:
         spikeBar || confirmBar
           ? {
@@ -117,7 +115,9 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
         rsi: stock.rsi,
         atr: stock.atr
       },
-      performanceScore: stock[fieldMapping.performanceScore]
+      performanceScore: stock[fieldMapping.performanceScore],
+      avgSentiment: stock[fieldMapping.avgSentiment],
+      verifyNews: stock[fieldMapping.verifyNews]
     } as Signal;
   });
 };

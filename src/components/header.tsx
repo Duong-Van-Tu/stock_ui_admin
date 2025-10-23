@@ -124,7 +124,6 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
       regex.stockDetailPath.test(pathname) ||
       regex.watchlistSwingTradeHistoryPath.test(pathname)
     ) {
-      console.log('search path');
       dispatch(searchSymbol(upperCaseValue));
     }
   };

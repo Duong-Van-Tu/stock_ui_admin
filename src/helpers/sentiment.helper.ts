@@ -132,3 +132,17 @@ export const transformListNewsLatest = (listNews: any[]): NewsLatest[] => {
     url: item.url
   }));
 };
+
+export const transformLisNewsSentiment = (listNews: any[]): NewsSentiment[] => {
+  if (listNews.length === 0) {
+    return [];
+  }
+
+  return listNews.map((item) => ({
+    key: uuid(),
+    symbol: item.symbol,
+    title: item.title,
+    sentiment: item.sentiment,
+    versionCreated: item[fieldMapping.versionCreated]
+  }));
+};

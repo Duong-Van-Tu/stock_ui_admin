@@ -1,6 +1,7 @@
 import {
   transformCompanyNews,
   transformCountSentiment,
+  transformLisNewsSentiment,
   transformListNewsLatest,
   transformListWatcher
 } from '@/helpers/sentiment.helper';
@@ -13,10 +14,12 @@ export type SentimentState = {
   loadingCountSentiment: boolean;
   loadingListWatcher: boolean;
   loadingNewsLatest: boolean;
+  loadingNewsSentiment: boolean;
   countSentiment: CountSentiment;
   companyNews: CompanyNews[];
   listWatcher: ListWatcher[];
   newLatest: NewsLatest[];
+  newsSentiment: NewsSentiment[];
   pagination: Pagination;
   listWatcherPagination: Pagination;
   newsLatestPagination: Pagination;
@@ -27,6 +30,7 @@ const initialState: SentimentState = {
   loadingCountSentiment: false,
   loadingListWatcher: false,
   loadingNewsLatest: false,
+  loadingNewsSentiment: false,
   countSentiment: {
     countPositive: 0,
     countVeryPositive: 0,
@@ -36,6 +40,7 @@ const initialState: SentimentState = {
   companyNews: [],
   listWatcher: [],
   newLatest: [],
+  newsSentiment: [],
   pagination: PAGINATION,
   listWatcherPagination: PAGINATION,
   newsLatestPagination: PAGINATION
@@ -157,6 +162,30 @@ export const SentimentSlice = createAppSlice({
         }
       }
     ),
+    getTickerNewsSentiment: create.asyncThunk(
+      async ({ symbol, query }: SentimentParams) => {
+        const response = await defaultApiFetcher.get(
+          'tickers/get-news-sentiment',
+          {
+            query: { ...(query || {}), symbol }
+          }
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loadingNewsSentiment = true;
+        },
+        fulfilled: (state, action) => {
+          state.loadingNewsSentiment = false;
+          state.newsSentiment = transformLisNewsSentiment(action.payload) || [];
+        },
+        rejected: (state) => {
+          state.loadingNewsSentiment = false;
+          state.newsSentiment = [];
+        }
+      }
+    ),
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -172,7 +201,9 @@ export const SentimentSlice = createAppSlice({
     watchListWatcher: (state) => state.listWatcher,
     watchListWatcherPagination: (state) => state.listWatcherPagination,
     watchListNewsLatest: (state) => state.newLatest,
-    watchListNewsLatestPagination: (state) => state.newsLatestPagination
+    watchListNewsLatestPagination: (state) => state.newsLatestPagination,
+    watchTickerNewsSentimentLoading: (state) => state.loadingNewsSentiment,
+    watchTickerNewsSentiment: (state) => state.newsSentiment
   }
 });
 
@@ -186,7 +217,9 @@ export const {
   watchListWatcherPagination,
   watchListWatcherLoading,
   watchListNewsLatest,
-  watchListNewsLatestPagination
+  watchListNewsLatestPagination,
+  watchTickerNewsSentimentLoading,
+  watchTickerNewsSentiment
 } = SentimentSlice.selectors;
 
 export const {
@@ -194,5 +227,6 @@ export const {
   getCompanyNews,
   getListWatcher,
   getNewsLatest,
+  getTickerNewsSentiment,
   resetState
 } = SentimentSlice.actions;

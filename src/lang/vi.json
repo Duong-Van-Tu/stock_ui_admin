@@ -531,5 +531,7 @@
   "lastMonth": "Tháng trước",
   "currentWeek": "Tuần này",
   "currentMonth": "Tháng này",
-  "alertLogsFilter": "Bộ lọc nhật ký tín hiệu"
+  "alertLogsFilter": "Bộ lọc nhật ký tín hiệu",
+  "avgSentiment": "Trung bình Sentiment",
+  "verifyNews": "Xác minh tin tức"
 }

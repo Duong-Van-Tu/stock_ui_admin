@@ -61,6 +61,7 @@ import { DownloadSymbolTemplateButton } from '../download-symbol-template';
 import { ImportSymbolButton } from '../import-symbol-template';
 import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
+import NewsDrawer from '../drawers/news.drawer';
 
 type AlertLogsTableProps = {
   isFilterPage?: boolean;
@@ -218,6 +219,22 @@ export const AlertLogsTable = ({
       )
     },
     {
+      title: t('avgSentiment'),
+      dataIndex: 'avgSentiment',
+      key: 'avgSentiment',
+      width: 120,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'avgSentiment' ? sortType : null,
+      hidden: !isFilterPage,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('avgSentiment')
+      }),
+      render: (value, record) =>
+        value ? <NewsDrawer symbol={record.symbol} avgSentiment={value} /> : '-'
+    },
+    {
       title: t('strategy'),
       dataIndex: 'strategyName',
       key: 'strategyName',
@@ -254,6 +271,7 @@ export const AlertLogsTable = ({
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'realCandleEntry' ? sortType : null,
+      hidden: isFilterPage,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('realCandleEntry')
       }),
@@ -268,6 +286,7 @@ export const AlertLogsTable = ({
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'expectCandleEntry' ? sortType : null,
+      hidden: isFilterPage,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('expectCandleEntry')
       }),
@@ -848,6 +867,7 @@ export const AlertLogsTable = ({
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('totalScore')
       }),
+      hidden: isFilterPage,
       align: 'center',
       render: (value) =>
         isNumeric(value) ? (
@@ -867,6 +887,7 @@ export const AlertLogsTable = ({
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'fundamentalScore' ? sortType : null,
+      hidden: isFilterPage,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('fundamentalScore')
       }),
@@ -891,6 +912,7 @@ export const AlertLogsTable = ({
         onClick: () => handleSortOrder('sentimentScore')
       }),
       align: 'center',
+      hidden: isFilterPage,
       render: (value) =>
         isNumeric(value) ? (
           <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
@@ -908,6 +930,7 @@ export const AlertLogsTable = ({
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'earningsScore' ? sortType : null,
+      hidden: isFilterPage,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('earningsScore')
       }),
@@ -929,6 +952,7 @@ export const AlertLogsTable = ({
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'performanceScore' ? sortType : null,
+      hidden: isFilterPage,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('performanceScore')
       }),
