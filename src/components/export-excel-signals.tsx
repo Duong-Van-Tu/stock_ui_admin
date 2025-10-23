@@ -22,20 +22,35 @@ import { transformSignalsData } from '@/helpers/signals.helper';
 import { useTranslations } from 'next-intl';
 import { RecommendationText } from '@/constants/common.constant';
 
-export const ExportExcelLog = () => {
+type ExportExcelLogProps = {
+  filter: AlertLogsFilter;
+  isFilterPage?: boolean;
+};
+export const ExportExcelLog = ({
+  filter,
+  isFilterPage
+}: ExportExcelLogProps) => {
   const t = useTranslations();
   const { setWatchList, resFromWS } = useContext(SocketContext);
   const [loading, setLoading] = useState(false);
 
+  const { fromEntryDate, toEntryDate, fromExitDate, toExitDate } = filter;
+
   const handleExportExcelSignal = async () => {
     setLoading(true);
     const response = await defaultApiFetcher.get(
-      'tickers/get-stock-alert-log',
+      isFilterPage
+        ? 'tickers/get-stock-alert-log'
+        : 'tickers/get-stock-alert-log-filter',
       {
         query: {
           page: 1,
           limit: PAGINATION_PARAMS.unLimit,
           sortField: fieldMapping.entryDate,
+          fromEntryDate,
+          toEntryDate,
+          fromExitDate,
+          toExitDate,
           sortType: 'desc'
         }
       }
@@ -272,7 +287,10 @@ export const ExportExcelLog = () => {
       });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      const fileName = `Stock_History_Logs_${dayjs()
+      const prefix = isFilterPage
+        ? 'Stock_History_Filter_Logs'
+        : 'Stock_History_Logs';
+      const fileName = `${prefix}_${dayjs()
         .tz(TimeZone.NEW_YORK)
         .format('MM-DD-YYYY_HH-mm')}.xlsx`;
       link.download = fileName;
