@@ -9,7 +9,9 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   getStrategies,
   watchStrategies,
-  watchStrategyLoading
+  watchStrategyLoading,
+  getLatestEntryDate,
+  watchLatestEntryDate
 } from '@/redux/slices/signals.slice';
 import { isMobile } from 'react-device-detect';
 import dayjs from 'dayjs';
@@ -93,6 +95,14 @@ export const AlertLogsFilter = ({
 
   const strategies = useAppSelector(watchStrategies);
   const strategyLoading = useAppSelector(watchStrategyLoading);
+  const latestEntryDate = useAppSelector(watchLatestEntryDate);
+
+  const defaultQuickRange: QuickRange = useMemo(() => {
+    if (!latestEntryDate) return 'today';
+    const latestNY = dayjs(latestEntryDate).tz(NY_TZ);
+    const todayNY = ny();
+    return latestNY.isSame(todayNY, 'day') ? 'today' : 'lastDay';
+  }, [latestEntryDate]);
 
   const strategyOptions = useMemo(
     () => strategies?.map(({ id, name }) => ({ value: id, label: name })),
@@ -145,6 +155,7 @@ export const AlertLogsFilter = ({
 
   useEffect(() => {
     dispatch(getStrategies());
+    dispatch(getLatestEntryDate());
   }, [dispatch]);
 
   useEffect(() => {
@@ -158,9 +169,12 @@ export const AlertLogsFilter = ({
   }, [symbol, form]);
 
   useEffect(() => {
-    const current = form.getFieldValue('quickRange') ?? 'today';
-    handleQuickRangeChange(current);
-  }, [isOption, handleQuickRangeChange, form]);
+    handleQuickRangeChange(defaultQuickRange);
+  }, [defaultQuickRange, handleQuickRangeChange]);
+
+  useEffect(() => {
+    handleQuickRangeChange(form.getFieldValue('quickRange'));
+  }, [isOption, form, handleQuickRangeChange]);
 
   return (
     <div css={[rootStyles, customStyles]}>

@@ -21,6 +21,8 @@ export type SignalsState = {
   signalOptions: Signal[];
   signalByStrategyId: Record<string, Signal[]>;
   strategies: Strategies;
+  latestEntryDate: string | null;
+  latestEntryDateLoading: boolean;
 };
 
 const initialState: SignalsState = {
@@ -34,7 +36,9 @@ const initialState: SignalsState = {
   signalByStrategyId: {},
   pagination: PAGINATION,
   paginationByStrategyId: {},
-  signal: null
+  signal: null,
+  latestEntryDate: null,
+  latestEntryDateLoading: false
 };
 
 export const signalSlice = createAppSlice({
@@ -189,6 +193,27 @@ export const signalSlice = createAppSlice({
         }
       }
     ),
+    getLatestEntryDate: create.asyncThunk(
+      async () => {
+        const response = await defaultApiFetcher.get(
+          'tickers/latest-entry-date'
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.latestEntryDateLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.latestEntryDateLoading = false;
+          state.latestEntryDate = action.payload?.latest_entry_date ?? null;
+        },
+        rejected: (state) => {
+          state.latestEntryDateLoading = false;
+          state.latestEntryDate = null;
+        }
+      }
+    ),
     updateAlertLogsData: create.reducer(
       (
         state,
@@ -257,7 +282,9 @@ export const signalSlice = createAppSlice({
     watchSignalPaginationByStrategyId: (state) => (strategyId: number) =>
       state.paginationByStrategyId[strategyId] || PAGINATION,
     watchExitLoading: (state) => state.exitLoading,
-    watchSignal: (state) => state.signal
+    watchSignal: (state) => state.signal,
+    watchLatestEntryDate: (state) => state.latestEntryDate,
+    watchLatestEntryDateLoading: (state) => state.latestEntryDateLoading
   }
 });
 
@@ -272,7 +299,9 @@ export const {
   watchSignalPaginationByStrategyId,
   watchSignalOptions,
   watchExitLoading,
-  watchSignal
+  watchSignal,
+  watchLatestEntryDate,
+  watchLatestEntryDateLoading
 } = signalSlice.selectors;
 
 export const {
@@ -283,7 +312,8 @@ export const {
   exitNow,
   updateSignalsData,
   resetState,
-  getSignalById
+  getSignalById,
+  getLatestEntryDate
 } = signalSlice.actions;
 
 export const autoUpdateSignalData =

@@ -59,8 +59,6 @@ import { watchSideBarCollapsed } from '@/redux/slices/app.slice';
 import EllipsisText from '../ellipsis-text';
 import { DownloadSymbolTemplateButton } from '../download-symbol-template';
 import { ImportSymbolButton } from '../import-symbol-template';
-import dayjs from 'dayjs';
-import { TimeZone } from '@/constants/timezone.constant';
 import NewsDrawer from '../drawers/news.drawer';
 
 type AlertLogsTableProps = {
@@ -136,12 +134,6 @@ export const AlertLogsTable = ({
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           symbol: symbol ?? undefined,
-          fromEntryDate: !isMobile
-            ? dayjs().tz(TimeZone.NEW_YORK).format('YYYY-MM-DD')
-            : undefined,
-          toEntryDate: !isMobile
-            ? dayjs().tz(TimeZone.NEW_YORK).format('YYYY-MM-DD')
-            : undefined,
           ...filter
         })
       );
