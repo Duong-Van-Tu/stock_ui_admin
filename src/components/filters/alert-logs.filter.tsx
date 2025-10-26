@@ -38,7 +38,8 @@ type QuickRange =
   | 'lastMonth';
 
 function getEntryRangeByOption(
-  value: QuickRange
+  value: QuickRange,
+  latestEntryDate?: string | null
 ): [dayjs.Dayjs | null, dayjs.Dayjs | null] {
   switch (value) {
     case 'today': {
@@ -46,6 +47,10 @@ function getEntryRangeByOption(
       return [d.startOf('day'), d.endOf('day')];
     }
     case 'lastDay': {
+      if (latestEntryDate) {
+        const d = dayjs(latestEntryDate).tz(NY_TZ);
+        return [d.startOf('day'), d.endOf('day')];
+      }
       const d = ny().subtract(1, 'day');
       return [d.startOf('day'), d.endOf('day')];
     }
@@ -142,15 +147,14 @@ export const AlertLogsFilter = ({
 
   const handleQuickRangeChange = useCallback(
     (value: QuickRange) => {
-      const [start, end] = getEntryRangeByOption(value);
+      const [start, end] = getEntryRangeByOption(value, latestEntryDate);
       form.setFieldsValue({
         quickRange: value,
         entryDate: start && end ? [start, end] : undefined
       });
-
       form.submit();
     },
-    [form]
+    [form, latestEntryDate]
   );
 
   useEffect(() => {
