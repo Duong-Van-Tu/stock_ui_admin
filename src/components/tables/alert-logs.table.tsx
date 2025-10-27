@@ -1158,7 +1158,7 @@ export const AlertLogsTable = ({
           </div>
 
           <Segmented
-            css={segmentedStyles}
+            css={segmentedStyles(sideBarCollapsed)}
             options={[
               {
                 label: <div css={segmentedLabelStyles}>{t('stocks')}</div>,
@@ -1290,16 +1290,21 @@ const actionStyles = css`
   width: ${isMobile ? '100%' : 'unset'};
 `;
 
-const segmentedStyles = css`
+const segmentedStyles = (sideBarCollapsed: boolean) => css`
   padding: 0;
   .ant-segmented-item-selected {
     background: var(--primary-color);
     color: var(--white-color);
   }
-  position: ${!isMobile && 'absolute'};
-  top: 50%;
-  left: 50%;
-  transform: ${!isMobile && 'translate(-50%, -50%)'};
+  ${sideBarCollapsed &&
+  `
+    @media (min-width: 1510px) {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  `}
 `;
 
 const segmentedLabelStyles = css`
