@@ -102,12 +102,12 @@ export const AlertLogsFilter = ({
   const strategyLoading = useAppSelector(watchStrategyLoading);
   const latestEntryDate = useAppSelector(watchLatestEntryDate);
 
-  // const defaultQuickRange: QuickRange = useMemo(() => {
-  //   if (!latestEntryDate) return 'today';
-  //   const latestNY = dayjs(latestEntryDate).tz(NY_TZ);
-  //   const todayNY = ny();
-  //   return latestNY.isSame(todayNY, 'day') ? 'today' : 'lastDay';
-  // }, [latestEntryDate]);
+  const defaultQuickRange: QuickRange = useMemo(() => {
+    if (!latestEntryDate) return 'today';
+    const latestNY = dayjs(latestEntryDate).tz(NY_TZ);
+    const todayNY = ny();
+    return latestNY.isSame(todayNY, 'day') ? 'today' : 'lastDay';
+  }, [latestEntryDate]);
 
   const strategyOptions = useMemo(
     () => strategies?.map(({ id, name }) => ({ value: id, label: name })),
@@ -173,10 +173,8 @@ export const AlertLogsFilter = ({
   }, [symbol, form]);
 
   useEffect(() => {
-    handleQuickRangeChange('today');
-    // handleQuickRangeChange(defaultQuickRange);
-    // }, [defaultQuickRange, handleQuickRangeChange]);
-  }, [handleQuickRangeChange]);
+    handleQuickRangeChange(defaultQuickRange);
+  }, [defaultQuickRange, handleQuickRangeChange]);
 
   useEffect(() => {
     handleQuickRangeChange(form.getFieldValue('quickRange'));
