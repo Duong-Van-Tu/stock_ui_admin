@@ -145,7 +145,7 @@ export const EarningsTable = () => {
       title: t('avgSentiment'),
       dataIndex: 'avgSentiment',
       key: 'avgSentiment',
-      width: 120,
+      width: 166,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -361,7 +361,7 @@ export const EarningsTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: earnings.length > 0 ? height - 348 : undefined
+            y: earnings.length > 0 ? height - 326 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
