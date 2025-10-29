@@ -799,7 +799,7 @@ export const AlertLogsTable = ({
         onClick: () => handleSortOrder('marketCap')
       }),
       align: 'center',
-      render: (value) => (value ? formatMarketCap(value) : '-')
+      render: (value) => (value ? formatMarketCap(value / 1000000) : '-')
     },
     {
       title: t('volume'),
