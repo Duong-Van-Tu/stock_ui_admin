@@ -31,4 +31,5 @@ type Earning = {
   currentPrice: number;
   lowestPrice: number;
   highestPrice: number;
+  intradayStockChart: IntradayStockChart;
 };

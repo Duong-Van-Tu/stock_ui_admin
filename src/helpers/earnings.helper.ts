@@ -41,6 +41,7 @@ export const transformEarnings = (earnings: any[]): Earning[] => {
     currentPrice: earning[fieldMapping.currentPrice],
     highestPrice: earning[fieldMapping.highestPrice],
     lowestPrice: earning[fieldMapping.lowestPrice],
+    intradayStockChart: earning.stockData,
     stockInfo: {
       totalScore: earning[fieldMapping.totalScore],
       fundamentalScore: earning[fieldMapping.fundamentalScore],

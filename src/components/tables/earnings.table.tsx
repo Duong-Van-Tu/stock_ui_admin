@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Table, TableColumnsType } from 'antd';
+import { Button, Table, TableColumnsType } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
 import { EarningFilter } from '../filters/earnings.filter';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -35,6 +35,7 @@ import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
 import NewsDrawer from '../drawers/news.drawer';
 import PriceRangeSlider from '../charts/price-range.chart';
+import StockMiniChart, { DataPoint } from '../charts/stock-mini.chart';
 
 export const EarningsTable = () => {
   const t = useTranslations();
@@ -157,16 +158,31 @@ export const EarningsTable = () => {
         value ? <NewsDrawer symbol={record.symbol} avgSentiment={value} /> : '-'
     },
     {
-      title: t('dayRange'),
-      dataIndex: 'dayRange',
-      key: 'dayRange',
-      width: 130,
+      title: t('dayChart'),
+      dataIndex: 'intradayStockChart',
+      key: 'intradayStockChart',
+      width: 140,
       align: 'center',
-      render: (_, record) =>
-        record.currentPrice && record.lowestPrice && record.highestPrice ? (
+      render: (value) =>
+        value?.dayChart ? (
+          <Button type='text' css={dayChartBtnStyles}>
+            <StockMiniChart width={100} data={value.dayChart as DataPoint[]} />
+          </Button>
+        ) : (
+          t('noData')
+        )
+    },
+    {
+      title: t('dayRange'),
+      dataIndex: 'intradayStockChart',
+      key: 'intradayStockChart',
+      width: 140,
+      align: 'center',
+      render: (value: IntradayStockChart, record) =>
+        value?.dayLow && value?.dayHigh && record.currentPrice ? (
           <PriceRangeSlider
-            lowest={record.lowestPrice}
-            highest={record.highestPrice}
+            lowest={value.dayLow}
+            highest={value.dayHigh}
             current={record.currentPrice}
           />
         ) : (
@@ -435,4 +451,13 @@ const emptyStyles = (height: number) => css`
   display: flex;
   flex-direction: column;
   justify-content: center;
+`;
+
+const dayChartBtnStyles = css`
+  width: 140px;
+  height: 40px;
+  padding: 0;
+  &:hover {
+    background: unset !important;
+  }
 `;
