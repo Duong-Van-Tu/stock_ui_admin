@@ -33,6 +33,8 @@ import { useSearchParams } from 'next/navigation';
 import { isMobile } from 'react-device-detect';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
+import NewsDrawer from '../drawers/news.drawer';
+import PriceRangeSlider from '../charts/price-range.chart';
 
 export const EarningsTable = () => {
   const t = useTranslations();
@@ -134,8 +136,42 @@ export const EarningsTable = () => {
           symbol={record.symbol}
           companyName={isMobile ? undefined : record.companyName}
           stockInfo={record.stockInfo}
+          isNews={record.isNews}
+          isNewsNegative={record.isNewsNegative}
         />
       )
+    },
+    {
+      title: t('avgSentiment'),
+      dataIndex: 'avgSentiment',
+      key: 'avgSentiment',
+      width: 120,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'avgSentiment' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('avgSentiment')
+      }),
+      render: (value, record) =>
+        value ? <NewsDrawer symbol={record.symbol} avgSentiment={value} /> : '-'
+    },
+    {
+      title: t('dayRange'),
+      dataIndex: 'dayRange',
+      key: 'dayRange',
+      width: 130,
+      align: 'center',
+      render: (_, record) =>
+        record.currentPrice && record.lowestPrice && record.highestPrice ? (
+          <PriceRangeSlider
+            lowest={record.lowestPrice}
+            highest={record.highestPrice}
+            current={record.currentPrice}
+          />
+        ) : (
+          t('noData')
+        )
     },
     {
       title: t('marketCap'),
@@ -317,7 +353,7 @@ export const EarningsTable = () => {
           </TableTitle>
         </div>
         <Table<Earning>
-          size={isMobile ? 'small' : 'middle'}
+          size='small'
           css={tableStyles}
           rowKey={(record) => record.key}
           columns={columns}
@@ -325,7 +361,7 @@ export const EarningsTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: earnings.length > 0 ? height - 344 : undefined
+            y: earnings.length > 0 ? height - 348 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -379,7 +415,11 @@ const tableWrapperStyles = css`
 
 const tableStyles = css`
   .ant-table-cell {
-    padding: 0.8rem 1rem !important;
+    padding: 0.4rem 0.8rem !important;
+  }
+  .ant-pagination {
+    margin: 1.2rem 0 !important;
+    gap: 0.4rem;
   }
 `;
 

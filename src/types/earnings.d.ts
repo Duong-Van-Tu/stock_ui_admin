@@ -25,4 +25,10 @@ type Earning = {
   revenueSurprise: number;
   revenueSurprisePercent: number;
   stockInfo: StockInfo;
+  avgSentiment: number;
+  isNews: boolean;
+  isNewsNegative: boolean;
+  currentPrice: number;
+  lowestPrice: number;
+  highestPrice: number;
 };

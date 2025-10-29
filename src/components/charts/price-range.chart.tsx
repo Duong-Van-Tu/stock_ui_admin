@@ -28,7 +28,16 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
         trigger: 'item',
         formatter: (params: any) => {
           if (params.seriesType === 'scatter') {
-            return `${roundToDecimals(params.value[0])}`;
+            const price = params.value[0] as number;
+            const delta = price - effectiveLowest;
+            const pct =
+              effectiveLowest === 0 ? 0 : (delta / effectiveLowest) * 100;
+            if (delta <= 0) {
+              return `${roundToDecimals(price)}`;
+            }
+            return `${roundToDecimals(price)} (+$${roundToDecimals(
+              delta
+            )}, +${roundToDecimals(pct)}%)`;
           }
           return '';
         },

@@ -35,11 +35,18 @@ export const transformEarnings = (earnings: any[]): Earning[] => {
     revenueEstimate: earning.revenueEstimate,
     revenueSurprise: earning[fieldMapping.revenueSurprise],
     revenueSurprisePercent: earning[fieldMapping.revenueSurprisePercent],
+    isNews: earning[fieldMapping.isNews],
+    isNewsNegative: earning[fieldMapping.isNewsNegative],
+    avgSentiment: earning[fieldMapping.avgSentiment],
+    currentPrice: earning[fieldMapping.currentPrice],
+    highestPrice: earning[fieldMapping.highestPrice],
+    lowestPrice: earning[fieldMapping.lowestPrice],
     stockInfo: {
       totalScore: earning[fieldMapping.totalScore],
       fundamentalScore: earning[fieldMapping.fundamentalScore],
       sentimentScore: earning[fieldMapping.sentimentScore],
       earningsScore: earning[fieldMapping.earningsScore],
+      performanceScore: earning[fieldMapping.performanceScore],
       beta: earning.beta,
       rsi: earning.rsi,
       atr: earning.atr
