@@ -533,5 +533,6 @@
   "currentMonth": "Tháng này",
   "alertLogsFilter": "Bộ lọc nhật ký tín hiệu",
   "avgSentiment": "Trung bình Sentiment",
-  "verifyNews": "Xác minh tin tức"
+  "verifyNews": "Xác minh tin tức",
+  "priceRange": "Khoảng giá"
 }

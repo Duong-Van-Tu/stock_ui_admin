@@ -533,5 +533,6 @@
   "currentMonth": "Current month",
   "alertLogsFilter": "Alert Logs Filter",
   "avgSentiment": "Average Sentiment",
-  "verifyNews": "Verify News"
+  "verifyNews": "Verify News",
+  "priceRange": "Price range"
 }

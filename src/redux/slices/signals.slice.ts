@@ -2,6 +2,7 @@ import { PAGINATION } from '@/constants/pagination.constant';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import {
+  transformLatestHitOnePercentData,
   transformSignalsData,
   transformStrategyData
 } from '@/helpers/signals.helper';
@@ -23,6 +24,8 @@ export type SignalsState = {
   strategies: Strategies;
   latestEntryDate: string | null;
   latestEntryDateLoading: boolean;
+  latestHitOnePercent: LatestHitOnePercents;
+  latestHitOnePercentLoading: boolean;
 };
 
 const initialState: SignalsState = {
@@ -38,7 +41,9 @@ const initialState: SignalsState = {
   paginationByStrategyId: {},
   signal: null,
   latestEntryDate: null,
-  latestEntryDateLoading: false
+  latestEntryDateLoading: false,
+  latestHitOnePercent: [],
+  latestHitOnePercentLoading: false
 };
 
 export const signalSlice = createAppSlice({
@@ -264,6 +269,30 @@ export const signalSlice = createAppSlice({
         };
       }
     ),
+    getLatestHitOnePercent: create.asyncThunk(
+      async () => {
+        const response = await defaultApiFetcher.get(
+          'tickers/latest-hit-one-percent'
+        );
+        return response.data ?? [];
+      },
+      {
+        pending: (state) => {
+          state.latestHitOnePercentLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.latestHitOnePercentLoading = false;
+          state.latestHitOnePercent = transformLatestHitOnePercentData(
+            action.payload
+          );
+        },
+        rejected: (state) => {
+          state.latestHitOnePercentLoading = false;
+          state.latestHitOnePercent = [];
+        }
+      }
+    ),
+
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -284,7 +313,10 @@ export const signalSlice = createAppSlice({
     watchExitLoading: (state) => state.exitLoading,
     watchSignal: (state) => state.signal,
     watchLatestEntryDate: (state) => state.latestEntryDate,
-    watchLatestEntryDateLoading: (state) => state.latestEntryDateLoading
+    watchLatestEntryDateLoading: (state) => state.latestEntryDateLoading,
+    watchLatestHitOnePercentLoading: (state) =>
+      state.latestHitOnePercentLoading,
+    watchLatestHitOnePercent: (state) => state.latestHitOnePercent
   }
 });
 
@@ -301,7 +333,9 @@ export const {
   watchExitLoading,
   watchSignal,
   watchLatestEntryDate,
-  watchLatestEntryDateLoading
+  watchLatestEntryDateLoading,
+  watchLatestHitOnePercentLoading,
+  watchLatestHitOnePercent
 } = signalSlice.selectors;
 
 export const {
@@ -313,7 +347,8 @@ export const {
   updateSignalsData,
   resetState,
   getSignalById,
-  getLatestEntryDate
+  getLatestEntryDate,
+  getLatestHitOnePercent
 } = signalSlice.actions;
 
 export const autoUpdateSignalData =

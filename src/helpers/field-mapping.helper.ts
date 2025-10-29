@@ -227,5 +227,6 @@ export const fieldMapping: Record<string, string> = {
   isTop: 'is_top',
   avgSentiment: 'avg_sentiment',
   verifyNews: 'verify_news',
-  versionCreated: 'version_created'
+  versionCreated: 'version_created',
+  hitPercent: 'hit_percent'
 };

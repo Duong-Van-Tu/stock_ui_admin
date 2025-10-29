@@ -60,6 +60,8 @@ import EllipsisText from '../ellipsis-text';
 import { DownloadSymbolTemplateButton } from '../download-symbol-template';
 import { ImportSymbolButton } from '../import-symbol-template';
 import NewsDrawer from '../drawers/news.drawer';
+import PriceRangeSlider from '../charts/price-range.chart';
+import LatestHitOnePercentTickerTape from '@/components/hit-one-percent';
 
 type AlertLogsTableProps = {
   isFilterPage?: boolean;
@@ -558,6 +560,31 @@ export const AlertLogsTable = ({
           />
         );
       }
+    },
+    {
+      title: t('priceRange'),
+      dataIndex: 'priceRange',
+      key: 'priceRange',
+      width: 130,
+      align: 'center',
+      render: (_, record) =>
+        record.entryPrice && record.currentPrice && record.highestPrice ? (
+          <PriceRangeSlider
+            lowest={Math.min(
+              record.entryPrice,
+              record.currentPrice,
+              record.highestPrice
+            )}
+            highest={Math.max(
+              record.entryPrice,
+              record.currentPrice,
+              record.highestPrice
+            )}
+            current={record.currentPrice}
+          />
+        ) : (
+          t('noData')
+        )
     },
     {
       title: t('highestPrice'),
@@ -1199,20 +1226,21 @@ export const AlertLogsTable = ({
             y:
               alertLogsData.length > 0
                 ? width >= 1757
-                  ? height - 330
+                  ? height - 360
                   : sideBarCollapsed
-                  ? height - 330
-                  : height - 372
+                  ? height - 360
+                  : height - 412
                 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
             emptyText: (
-              <div css={emptyStyles(height - 400)}>
+              <div css={emptyStyles(height - 420)}>
                 <EmptyDataTable />
               </div>
             )
           }}
+          footer={() => <LatestHitOnePercentTickerTape />}
           pagination={{
             position: ['bottomCenter'],
             pageSizeOptions: [
@@ -1268,8 +1296,11 @@ const tableStyles = css`
       : '0.8rem 1rem !important'};
   }
   .ant-pagination {
-    margin: 1.2rem 0 !important;
+    margin: 0.8rem 0 !important;
     gap: 0.4rem;
+  }
+  .ant-table-footer {
+    padding: 0 !important;
   }
 `;
 

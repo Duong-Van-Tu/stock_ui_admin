@@ -97,3 +97,16 @@ type Strategy = {
 };
 
 type Strategies = Strategy[];
+
+type LatestHitOnePercent = {
+  id: string;
+  tickerName: string;
+  currentPrice: number;
+  entryDate: string;
+  entryPrice: number;
+  highestUpdateAt: string;
+  highestPrice: number;
+  hitPercent: string;
+};
+
+type LatestHitOnePercents = LatestHitOnePercent[];
