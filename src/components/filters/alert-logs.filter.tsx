@@ -47,7 +47,11 @@ function getEntryRangeByOption(
       return [d.startOf('day'), d.endOf('day')];
     }
     case 'lastDay': {
-      if (latestEntryDate) {
+      const today = ny().startOf('day');
+      if (
+        latestEntryDate &&
+        !dayjs(latestEntryDate).tz(NY_TZ).isSame(today, 'day')
+      ) {
         const d = dayjs(latestEntryDate).tz(NY_TZ);
         return [d.startOf('day'), d.endOf('day')];
       }
