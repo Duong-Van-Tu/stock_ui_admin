@@ -45,7 +45,7 @@ function LatestHitOnePercentTickerTape({
         toEntryDate: to
       })
     );
-  }, [dispatch, fromKey, toKey]);
+  }, [dispatch, fromKey, toKey, from, to]);
 
   useEffect(() => {
     const el = container.current;
