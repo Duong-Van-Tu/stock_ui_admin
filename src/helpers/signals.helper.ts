@@ -16,21 +16,20 @@ export const transformStrategyData = (strategies: any[]): Strategies => {
     }));
 };
 
-export const transformLatestHitOnePercentData = (
-  data: any[]
-): LatestHitOnePercents => {
+export const transformLatestHitOnePercentData = (data: any[]): string[] => {
   if (!Array.isArray(data)) return [];
 
-  return data.map((item) => ({
-    id: item.id,
-    tickerName: item[fieldMapping.tickerName],
-    currentPrice: item[fieldMapping.currentPrice],
-    entryDate: item[fieldMapping.entryDate],
-    entryPrice: item[fieldMapping.entryPrice],
-    highestUpdateAt: item[fieldMapping.highestUpdateAt],
-    highestPrice: item[fieldMapping.highestPrice],
-    hitPercent: item[fieldMapping.hitPercent]
-  }));
+  return data.map((item) => item[fieldMapping.tickerName]);
+  // return data.map((item) => ({
+  //   id: item.id,
+  //   tickerName: item[fieldMapping.tickerName],
+  //   currentPrice: item[fieldMapping.currentPrice],
+  //   entryDate: item[fieldMapping.entryDate],
+  //   entryPrice: item[fieldMapping.entryPrice],
+  //   highestUpdateAt: item[fieldMapping.highestUpdateAt],
+  //   highestPrice: item[fieldMapping.highestPrice],
+  //   hitPercent: item[fieldMapping.hitPercent]
+  // }));
 };
 
 export const transformSignalsData = (signals: any[]): Signal[] => {

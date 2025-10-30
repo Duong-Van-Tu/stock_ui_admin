@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Button, Col, DatePicker, Form, Row, Select, Space } from 'antd';
@@ -79,6 +79,19 @@ function getEntryRangeByOption(
   }
 }
 
+function useDebounced(fn: (...args: any[]) => void, delay: number) {
+  const tRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fnRef = useRef(fn);
+  fnRef.current = fn;
+  return useCallback(
+    (...args: any[]) => {
+      if (tRef.current) clearTimeout(tRef.current);
+      tRef.current = setTimeout(() => fnRef.current(...args), delay);
+    },
+    [delay]
+  );
+}
+
 export const AlertLogsFilter = ({
   customStyles,
   onFilter
@@ -120,9 +133,18 @@ export const AlertLogsFilter = ({
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
+  const prevKeyRef = useRef<string | null>(null);
+  const debouncedEmit = useDebounced((payload: AlertLogsFilter) => {
+    const key = JSON.stringify(payload);
+    if (prevKeyRef.current !== key) {
+      prevKeyRef.current = key;
+      onFilter(payload);
+    }
+  }, 300);
+
   const handleSearch = useCallback(() => {
     const values = form.getFieldsValue();
-    onFilter({
+    debouncedEmit({
       isImport: isOption ? 1 : 0,
       fromEntryDate: values.entryDate?.[0]?.tz(TimeZone.NEW_YORK).format(fmt),
       toEntryDate: values.entryDate?.[1]?.tz(TimeZone.NEW_YORK).format(fmt),
@@ -131,18 +153,18 @@ export const AlertLogsFilter = ({
       strategyId: values.strategyId,
       symbol: symbol || undefined
     });
-  }, [form, onFilter, isOption, symbol]);
+  }, [form, debouncedEmit, isOption, symbol]);
 
   const handleClearFilters = () => {
     form.resetFields();
     updateSearchParams('strategyId');
-    onFilter({
+    debouncedEmit({
       fromEntryDate: undefined,
       toEntryDate: undefined,
       fromExitDate: undefined,
       toExitDate: undefined,
       strategyId: undefined
-    });
+    } as AlertLogsFilter);
   };
 
   const handleQuickRangeChange = useCallback(

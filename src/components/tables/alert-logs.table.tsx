@@ -32,7 +32,8 @@ import {
   resetState,
   watchAlertLogsData,
   watchAlertLogsLoading,
-  watchAlertLogsPagination
+  watchAlertLogsPagination,
+  watchLatestHitOnePercent
 } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
@@ -86,6 +87,7 @@ export const AlertLogsTable = ({
   const alertLogsData = useAppSelector(watchAlertLogsData);
   const pagination = useAppSelector(watchAlertLogsPagination);
   const loading = useAppSelector(watchAlertLogsLoading);
+  const latestHitOnePercent = useAppSelector(watchLatestHitOnePercent);
 
   const [filter, setFilter] = useState<AlertLogsFilter>({});
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -209,6 +211,7 @@ export const AlertLogsTable = ({
           signalId={record.id}
           stockInfo={record.stockInfo}
           isOptions={!!record.isOptions}
+          isSellSignal={latestHitOnePercent.includes(record.symbol)}
         />
       )
     },
@@ -1240,7 +1243,9 @@ export const AlertLogsTable = ({
               </div>
             )
           }}
-          footer={() => <LatestHitOnePercentTickerTape />}
+          footer={() => (
+            <LatestHitOnePercentTickerTape alertLogsFilter={filter} />
+          )}
           pagination={{
             position: ['bottomCenter'],
             pageSizeOptions: [
@@ -1301,6 +1306,9 @@ const tableStyles = css`
   }
   .ant-table-footer {
     padding: 0 !important;
+    overflow: hidden;
+    max-height: 4.6rem;
+    height: 100%;
   }
 `;
 

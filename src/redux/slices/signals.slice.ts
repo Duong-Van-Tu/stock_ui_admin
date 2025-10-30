@@ -24,7 +24,7 @@ export type SignalsState = {
   strategies: Strategies;
   latestEntryDate: string | null;
   latestEntryDateLoading: boolean;
-  latestHitOnePercent: LatestHitOnePercents;
+  latestHitOnePercent: string[];
   latestHitOnePercentLoading: boolean;
 };
 
@@ -270,9 +270,10 @@ export const signalSlice = createAppSlice({
       }
     ),
     getLatestHitOnePercent: create.asyncThunk(
-      async () => {
+      async (query?: Record<string, any>) => {
         const response = await defaultApiFetcher.get(
-          'tickers/latest-hit-one-percent'
+          'tickers/latest-hit-one-percent',
+          { query }
         );
         return response.data ?? [];
       },

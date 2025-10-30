@@ -534,5 +534,6 @@
   "alertLogsFilter": "Alert Logs Filter",
   "avgSentiment": "Average Sentiment",
   "verifyNews": "Verify News",
-  "priceRange": "Price range"
+  "priceRange": "Price range",
+  "hitOnePercent": "Hit 1%"
 }

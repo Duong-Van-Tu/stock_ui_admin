@@ -534,5 +534,6 @@
   "alertLogsFilter": "Bộ lọc nhật ký tín hiệu",
   "avgSentiment": "Trung bình Sentiment",
   "verifyNews": "Xác minh tin tức",
-  "priceRange": "Khoảng giá"
+  "priceRange": "Khoảng giá",
+  "hitOnePercent": "Đạt 1%"
 }

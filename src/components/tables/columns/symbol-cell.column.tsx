@@ -32,6 +32,7 @@ type SymbolCellProps = {
   signalId?: number;
   stockInfo?: StockInfo;
   isOptions?: boolean;
+  isSellSignal?: boolean;
 };
 
 export const SymbolCell = ({
@@ -42,7 +43,8 @@ export const SymbolCell = ({
   isNewsNegative,
   signalId,
   stockInfo,
-  isOptions = false
+  isOptions = false,
+  isSellSignal = false
 }: SymbolCellProps) => {
   const t = useTranslations();
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -217,6 +219,16 @@ export const SymbolCell = ({
             </Button>
           </Tooltip>
         )}
+        {isSellSignal && (
+          <Tooltip title={isMobile ? null : t('hitOnePercent')}>
+            <Button
+              css={sellIconStyles}
+              shape='circle'
+              type='text'
+              icon={<Icon icon='sell' width={16} height={16} />}
+            />
+          </Tooltip>
+        )}
       </div>
 
       {companyName && (
@@ -286,4 +298,10 @@ const columnStyles = css`
   display: flex;
   justify-content: space-between;
   gap: 0.4rem;
+`;
+
+const sellIconStyles = css`
+  position: absolute;
+  left: -1.7rem;
+  top: 0.2rem;
 `;
