@@ -8,7 +8,7 @@ export default function AlertLogs() {
   const t = useTranslations();
 
   useEffect(() => {
-    document.title = t('alertLogs');
+    document.title = t('alertLogsFilter');
   }, [t]);
 
   return <AlertLogsTable isFilterPage={true} />;

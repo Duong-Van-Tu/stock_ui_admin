@@ -535,5 +535,5 @@
   "avgSentiment": "Trung bình Sentiment",
   "verifyNews": "Xác minh tin tức",
   "priceRange": "Khoảng giá",
-  "hitOnePercent": "Đạt 1%"
+  "hitOnePercent": "Cao nhất ≥ 1% so với entry"
 }

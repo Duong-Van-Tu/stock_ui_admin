@@ -13,6 +13,12 @@ import {
   getLatestEntryDate,
   watchLatestEntryDate
 } from '@/redux/slices/signals.slice';
+import {
+  getIndustriesV2,
+  getSectorsV2,
+  watchIndustries,
+  watchSectors
+} from '@/redux/slices/stock-score.slice';
 import { isMobile } from 'react-device-detect';
 import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
@@ -119,6 +125,9 @@ export const AlertLogsFilter = ({
   const strategyLoading = useAppSelector(watchStrategyLoading);
   const latestEntryDate = useAppSelector(watchLatestEntryDate);
 
+  const industries = useAppSelector(watchIndustries);
+  const sectors = useAppSelector(watchSectors);
+
   const defaultQuickRange: QuickRange = useMemo(() => {
     if (!latestEntryDate) return 'today';
     const latestNY = dayjs(latestEntryDate).tz(NY_TZ);
@@ -129,6 +138,28 @@ export const AlertLogsFilter = ({
   const strategyOptions = useMemo(
     () => strategies?.map(({ id, name }) => ({ value: id, label: name })),
     [strategies]
+  );
+
+  const sectorOptions = useMemo(
+    () => [
+      { value: '', label: t('allSector') },
+      ...(sectors?.map((item) => ({
+        value: item.sector,
+        label: item.sector
+      })) ?? [])
+    ],
+    [t, sectors]
+  );
+
+  const industryOptions = useMemo(
+    () => [
+      { value: '', label: t('searchSelectIndustry') },
+      ...(industries?.map((item) => ({
+        value: item.industry,
+        label: item.industry
+      })) ?? [])
+    ],
+    [industries, t]
   );
 
   const updateSearchParams = (key: string, value?: string) => {
@@ -155,7 +186,13 @@ export const AlertLogsFilter = ({
       fromExitDate: values.exitDate?.[0]?.tz(TimeZone.NEW_YORK).format(fmt),
       toExitDate: values.exitDate?.[1]?.tz(TimeZone.NEW_YORK).format(fmt),
       strategyId: values.strategyId,
-      symbol: symbol || undefined
+      symbol: symbol || undefined,
+      sector: values.sector || '',
+      industry: values.industry
+        ? values.industry.includes(' & ')
+          ? values.industry.replace(/ & /g, ' @ ')
+          : values.industry
+        : ''
     });
   }, [form, debouncedEmit, isOption, symbol]);
 
@@ -167,8 +204,11 @@ export const AlertLogsFilter = ({
       toEntryDate: undefined,
       fromExitDate: undefined,
       toExitDate: undefined,
-      strategyId: undefined
-    } as AlertLogsFilter);
+      strategyId: undefined,
+      sector: undefined,
+      industry: undefined
+    });
+    form.submit();
   };
 
   const handleQuickRangeChange = useCallback(
@@ -186,6 +226,7 @@ export const AlertLogsFilter = ({
   useEffect(() => {
     dispatch(getStrategies());
     dispatch(getLatestEntryDate());
+    dispatch(getSectorsV2());
   }, [dispatch]);
 
   useEffect(() => {
@@ -252,12 +293,11 @@ export const AlertLogsFilter = ({
                   { value: 'currentMonth', label: t('currentMonth') },
                   { value: 'lastMonth', label: t('lastMonth') }
                 ]}
-                onChange={(value) =>
-                  handleQuickRangeChange(value as QuickRange)
-                }
+                onChange={(value) => handleQuickRangeChange(value)}
               />
             </Form.Item>
           </Col>
+
           <Col
             css={css`
               width: ${isMobile ? '100%' : 'unset'};
@@ -290,6 +330,49 @@ export const AlertLogsFilter = ({
                 css={rangePickerStyles}
                 format='MM-DD-YYYY'
                 allowClear
+              />
+            </Form.Item>
+          </Col>
+
+          <Col css={fullWidthStyles}>
+            <Form.Item
+              css={formItemStyles}
+              name='sector'
+              label={<span css={labelStyles}>{t('sector')}</span>}
+            >
+              <Select
+                css={selectSectorStyles}
+                allowClear
+                showSearch
+                placeholder={t('allSector')}
+                optionFilterProp='label'
+                options={sectorOptions}
+                onChange={(value) => {
+                  form.setFieldValue('industry', '');
+                  if (value) dispatch(getIndustriesV2(value as string));
+                  form.submit();
+                }}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col css={fullWidthStyles}>
+            <Form.Item
+              css={formItemStyles}
+              name='industry'
+              label={<span css={labelStyles}>{t('industry')}</span>}
+            >
+              <Select
+                css={selectIndustryStyles}
+                allowClear
+                showSearch
+                placeholder={t('searchSelectIndustry')}
+                optionFilterProp='label'
+                options={industryOptions}
+                disabled={!form.getFieldValue('sector')}
+                onChange={() => {
+                  form.submit();
+                }}
               />
             </Form.Item>
           </Col>
@@ -343,6 +426,15 @@ const labelStyles = css`
 const selectStrategyStyles = css`
   width: ${isMobile ? '100%' : '28rem !important'};
 `;
+
+const selectSectorStyles = css`
+  width: ${isMobile ? '100%' : '20rem !important'};
+`;
+
+const selectIndustryStyles = css`
+  width: ${isMobile ? '100%' : '20rem !important'};
+`;
+
 const selectQuickRangeStyles = css`
   width: ${isMobile ? '100%' : '13.8rem !important'};
 `;

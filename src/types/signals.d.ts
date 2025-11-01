@@ -87,6 +87,8 @@ type AlertLogsFilter = Filter & {
   toExitDate?: Date | string;
   isImport?: 0 | 1;
   strategyId?: number;
+  sector?: string;
+  industry?: string;
 };
 
 type Strategy = {
