@@ -278,6 +278,10 @@ const storyStyles = css`
     text-align: center;
   }
   h3 {
-    margin-bottom: 0.6rem;
+    font-size: 2rem;
+    margin-bottom: 0.2rem;
+  }
+  p {
+    margin-bottom: 0;
   }
 `;
