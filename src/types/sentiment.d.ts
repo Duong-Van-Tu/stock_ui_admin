@@ -83,4 +83,5 @@ type NewsSentiment = {
   title: string;
   sentiment: number;
   versionCreated: string;
+  story?: string;
 };

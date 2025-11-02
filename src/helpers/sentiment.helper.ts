@@ -143,6 +143,7 @@ export const transformLisNewsSentiment = (listNews: any[]): NewsSentiment[] => {
     symbol: item.symbol,
     title: item.title,
     sentiment: item.sentiment,
-    versionCreated: item[fieldMapping.versionCreated]
+    versionCreated: item[fieldMapping.versionCreated],
+    story: item[fieldMapping.storyText]
   }));
 };

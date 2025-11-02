@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
-import { Drawer, Tag, Spin, List, Typography, Space, Avatar } from 'antd';
+import { Drawer, Spin, List, Typography } from 'antd';
 import dayjs from 'dayjs';
-import { Icon } from '../icons';
 import { useTranslations } from 'next-intl';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -12,11 +11,9 @@ import {
   watchTickerNewsSentimentLoading
 } from '@/redux/slices/sentiment.slice';
 import { EmptyDataTable } from '../tables/empty.table';
-import { PositiveNegativeText } from '../positive-negative-text';
 import { TimeZone } from '@/constants/timezone.constant';
-import { isNumeric, roundToDecimals } from '@/utils/common';
-import Link from 'next/link';
-import { PageURLs } from '@/utils/navigate';
+import { roundToDecimals } from '@/utils/common';
+import { SentimentSCore } from '../charts/sentiment-score.chart';
 
 const { Text } = Typography;
 
@@ -38,13 +35,9 @@ const NewsDrawer = ({ symbol, avgSentiment }: NewsDrawerProps) => {
 
   return (
     <>
-      <Tag
-        onClick={() => setOpen(true)}
-        css={avgSentimentStyles}
-        color={avgSentiment > 0 ? 'success' : 'error'}
-      >
-        {roundToDecimals(avgSentiment, 4)}
-      </Tag>
+      <div onClick={() => setOpen(true)} css={avgSentimentStyles}>
+        <SentimentSCore score={roundToDecimals(avgSentiment, 2)!} />
+      </div>
 
       <Drawer
         css={drawerStyles}
@@ -70,48 +63,19 @@ const NewsDrawer = ({ symbol, avgSentiment }: NewsDrawerProps) => {
               const created = dayjs(item.versionCreated)
                 .tz(TimeZone.NEW_YORK)
                 .format('YYYY-MM-DD HH:mm');
-              const isPos = isNumeric(item.sentiment)
-                ? item.sentiment > 0
-                : false;
-              const isNeg = isNumeric(item.sentiment)
-                ? item.sentiment < 0
-                : false;
 
               return (
                 <List.Item key={(item.key ?? idx) as React.Key}>
                   <List.Item.Meta
                     avatar={
-                      <Avatar
-                        css={css`
-                          background: none;
-                        `}
-                        icon={<Icon icon='news' width={30} height={30} />}
-                      />
+                      <div css={sentimentSCoreStyles}>
+                        <SentimentSCore score={item.sentiment} />
+                      </div>
                     }
                     title={<Text strong>{item.title}</Text>}
                     description={
                       <div css={metaDesc}>
-                        <Space size={8} wrap>
-                          <PositiveNegativeText
-                            isPositive={isPos}
-                            isNegative={isNeg}
-                          >
-                            <Tag
-                              color={item.sentiment > 0 ? 'success' : 'error'}
-                            >
-                              {isNumeric(item.sentiment)
-                                ? `${t('sentiment')}: ${roundToDecimals(
-                                    item.sentiment
-                                  )}`
-                                : item.sentiment}
-                            </Tag>
-                          </PositiveNegativeText>
-                          <Link href={PageURLs.ofStockDetail(symbol)}>
-                            <Tag css={pillTicker}>{item.symbol}</Tag>
-                          </Link>
-
-                          <Text type='secondary'>{created}</Text>
-                        </Space>
+                        <Text type='secondary'>{created}</Text>
                       </div>
                     }
                   />
@@ -133,6 +97,10 @@ const listStyles = css`
     flex-direction: column;
     padding: 0 0.8rem;
   }
+
+  .ant-list-item-meta-avatar {
+    margin-right: 1rem !important;
+  }
 `;
 
 const loadingWrap = css`
@@ -142,24 +110,7 @@ const loadingWrap = css`
 `;
 
 const metaDesc = css`
-  display: flex;
-  align-items: center;
-  .ant-space {
-    width: 100%;
-    .ant-space-item:last-child {
-      flex: 1;
-      text-align: right;
-    }
-  }
-`;
-
-const pillTicker = css`
-  border-radius: 10px;
-  padding: 0 6px;
-  border: 1px solid var(--brand-blue-color);
-  background: var(--blue-100);
-  color: var(--symbol-color);
-  font-weight: 600;
+  text-align: right;
 `;
 
 const emptyStyles = css`
@@ -176,9 +127,10 @@ const drawerStyles = css`
 `;
 
 const avgSentimentStyles = css`
-  cursor: pointer;
-  min-width: 6rem;
-  text-align: center;
-  font-weight: 600;
-  font-size: 1.4rem;
+  height: 4.6rem;
+`;
+
+const sentimentSCoreStyles = css`
+  height: 4.6rem;
+  width: 4.6rem;
 `;

@@ -15,6 +15,8 @@ export type SentimentState = {
   loadingListWatcher: boolean;
   loadingNewsLatest: boolean;
   loadingNewsSentiment: boolean;
+  loadingListNews: boolean;
+  listNews: NewsSentiment[];
   countSentiment: CountSentiment;
   companyNews: CompanyNews[];
   listWatcher: ListWatcher[];
@@ -23,6 +25,7 @@ export type SentimentState = {
   pagination: Pagination;
   listWatcherPagination: Pagination;
   newsLatestPagination: Pagination;
+  listNewsPagination: Pagination;
 };
 
 const initialState: SentimentState = {
@@ -31,6 +34,8 @@ const initialState: SentimentState = {
   loadingListWatcher: false,
   loadingNewsLatest: false,
   loadingNewsSentiment: false,
+  loadingListNews: false,
+  listNews: [],
   countSentiment: {
     countPositive: 0,
     countVeryPositive: 0,
@@ -43,7 +48,8 @@ const initialState: SentimentState = {
   newsSentiment: [],
   pagination: PAGINATION,
   listWatcherPagination: PAGINATION,
-  newsLatestPagination: PAGINATION
+  newsLatestPagination: PAGINATION,
+  listNewsPagination: PAGINATION
 };
 
 export const SentimentSlice = createAppSlice({
@@ -186,6 +192,37 @@ export const SentimentSlice = createAppSlice({
         }
       }
     ),
+    getListNews: create.asyncThunk(
+      async (query?: Record<string, any>) => {
+        const response = await defaultApiFetcher.get(
+          'tickers/get-news-sentiment-details',
+          {
+            query
+          }
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loadingListNews = true;
+        },
+        fulfilled: (state, action) => {
+          state.loadingListNews = false;
+          state.listNews =
+            transformLisNewsSentiment(action.payload.result) || [];
+          state.listNewsPagination = {
+            currentPage: action.payload.offset,
+            pageSize: Number(action.payload.limit),
+            total: action.payload.total
+          };
+        },
+        rejected: (state) => {
+          state.loadingListNews = false;
+          state.listNews = [];
+          state.listNewsPagination = PAGINATION;
+        }
+      }
+    ),
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -203,7 +240,10 @@ export const SentimentSlice = createAppSlice({
     watchListNewsLatest: (state) => state.newLatest,
     watchListNewsLatestPagination: (state) => state.newsLatestPagination,
     watchTickerNewsSentimentLoading: (state) => state.loadingNewsSentiment,
-    watchTickerNewsSentiment: (state) => state.newsSentiment
+    watchTickerNewsSentiment: (state) => state.newsSentiment,
+    watchListNewsLoading: (state) => state.loadingListNews,
+    watchListNews: (state) => state.listNews,
+    watchListNewsPagination: (state) => state.listNewsPagination
   }
 });
 
@@ -219,7 +259,10 @@ export const {
   watchListNewsLatest,
   watchListNewsLatestPagination,
   watchTickerNewsSentimentLoading,
-  watchTickerNewsSentiment
+  watchTickerNewsSentiment,
+  watchListNewsLoading,
+  watchListNews,
+  watchListNewsPagination
 } = SentimentSlice.selectors;
 
 export const {
@@ -228,5 +271,6 @@ export const {
   getListWatcher,
   getNewsLatest,
   getTickerNewsSentiment,
+  getListNews,
   resetState
 } = SentimentSlice.actions;

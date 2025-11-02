@@ -1,7 +1,7 @@
 'use client';
 
-import { ListWatcherTable } from '@/components/tables/list-watcher.table';
+import { ListNewsTable } from '@/components/tables/list-news.table';
 
 export default function News() {
-  return <ListWatcherTable />;
+  return <ListNewsTable />;
 }
