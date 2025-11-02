@@ -1,12 +1,3 @@
-type NewsSentiment = {
-  key: string;
-  symbol: string;
-  title: string;
-  sentiment: number;
-  versionCreated: string;
-  story?: string;
-};
-
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
@@ -18,7 +9,7 @@ import {
   watchListNewsPagination,
   getListNews
 } from '@/redux/slices/sentiment.slice';
-import { Table, TableColumnsType } from 'antd';
+import { Button, Table, TableColumnsType } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
@@ -35,6 +26,7 @@ import { useSearchParams } from 'next/navigation';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { isMobile } from 'react-device-detect';
 import { SentimentSCore } from '../charts/sentiment-score.chart';
+import { useModal } from '@/hooks/modal.hook';
 
 export const ListNewsTable = () => {
   const t = useTranslations();
@@ -42,6 +34,7 @@ export const ListNewsTable = () => {
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
   const { height } = useWindowSize();
+  const modal = useModal();
   const loading = useAppSelector(watchListNewsLoading);
   const listNews = useAppSelector(watchListNews);
   const pagination = useAppSelector(watchListNewsPagination);
@@ -50,7 +43,7 @@ export const ListNewsTable = () => {
 
   const { sortField, sortType, handleSortOrder } = useSortOrder<Filter>({
     defaultField: 'symbol',
-    defaultOrder: 'descend',
+    defaultOrder: 'ascend',
     currentFilter: filter,
     onChange: (_field, _order, newFilter) => {
       setFilter(newFilter);
@@ -79,9 +72,6 @@ export const ListNewsTable = () => {
           ...filteredFilter
         })
       );
-      return () => {
-        dispatch(resetState());
-      };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [symbol]
@@ -89,6 +79,9 @@ export const ListNewsTable = () => {
 
   useEffect(() => {
     fetchListNews({});
+    return () => {
+      dispatch(resetState());
+    };
   }, [fetchListNews]);
 
   const columns: TableColumnsType<NewsSentiment> = [
@@ -140,20 +133,6 @@ export const ListNewsTable = () => {
         )
     },
     {
-      title: t('headline'),
-      dataIndex: 'title',
-      key: 'title',
-      width: 300,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'title' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('title')
-      }),
-      render: (value) => <EllipsisText text={value} maxLines={2} />
-    },
-    {
       title: t('publishingTime'),
       dataIndex: 'versionCreated',
       key: 'versionCreated',
@@ -169,11 +148,45 @@ export const ListNewsTable = () => {
       render: (value) => <DateTimeCell value={value} />
     },
     {
-      title: 'Story',
+      title: t('headline'),
+      dataIndex: 'title',
+      key: 'title',
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'title' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('title')
+      }),
+      render: (value) => <EllipsisText text={value} maxLines={2} />
+    },
+    {
+      title: t('story'),
       dataIndex: 'story',
       key: 'story',
-      width: 400,
-      render: (value) => <EllipsisText text={value || '-'} maxLines={2} />
+      width: 120,
+      align: 'center',
+      render: (value, record) =>
+        value ? (
+          <Button
+            onClick={() =>
+              modal.openModal(
+                <div css={storyStyles}>
+                  <h2>{`${t('newsStory')} (${record.symbol})`}</h2>
+                  <h3>{record.title}</h3>
+                  <p dangerouslySetInnerHTML={{ __html: value }} />
+                </div>,
+                { width: 1000 }
+              )
+            }
+            type='link'
+            block
+          >
+            {t('newsStory')}
+          </Button>
+        ) : (
+          '-'
+        )
     }
   ];
 
@@ -258,4 +271,13 @@ const titleStyles = css`
 const sentimentScoreStyles = css`
   height: 4.6rem;
   text-align: center;
+`;
+
+const storyStyles = css`
+  h2 {
+    text-align: center;
+  }
+  h3 {
+    margin-bottom: 0.6rem;
+  }
 `;

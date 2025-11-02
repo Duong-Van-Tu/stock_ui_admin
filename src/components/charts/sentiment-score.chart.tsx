@@ -48,7 +48,7 @@ export const SentimentSCore = ({ score }: SentimentSCoreProps) => {
           formatter: () => displayValue,
           color:
             clamped === 0
-              ? '#fee08b'
+              ? '#ffcf4d'
               : clamped > 0 && clamped <= 1
               ? '#91cf60'
               : clamped > 1 && clamped <= 2
