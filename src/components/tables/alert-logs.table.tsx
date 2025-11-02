@@ -62,7 +62,6 @@ import { DownloadSymbolTemplateButton } from '../download-symbol-template';
 import { ImportSymbolButton } from '../import-symbol-template';
 import NewsDrawer from '../drawers/news.drawer';
 import PriceRangeSlider from '../charts/price-range.chart';
-import LatestHitOnePercentTickerTape from '@/components/hit-one-percent';
 
 type AlertLogsTableProps = {
   isFilterPage?: boolean;
@@ -75,7 +74,7 @@ export const AlertLogsTable = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { height, width } = useWindowSize();
+  const { height } = useWindowSize();
   const modal = useModal();
   const sideBarCollapsed = useAppSelector(watchSideBarCollapsed);
 

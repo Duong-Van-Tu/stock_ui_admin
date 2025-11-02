@@ -82,7 +82,7 @@ export const ListNewsTable = () => {
     return () => {
       dispatch(resetState());
     };
-  }, [fetchListNews]);
+  }, [fetchListNews, dispatch]);
 
   const columns: TableColumnsType<NewsSentiment> = [
     {
