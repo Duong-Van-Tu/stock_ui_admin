@@ -279,7 +279,8 @@ const storyStyles = css`
   }
   h3 {
     font-size: 2rem;
-    margin-bottom: 0.2rem;
+    line-height: 2.4rem;
+    margin-bottom: 0.4rem;
   }
   p {
     margin-bottom: 0;
