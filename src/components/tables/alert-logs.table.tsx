@@ -199,7 +199,7 @@ export const AlertLogsTable = ({
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: isMobile ? 100 : 160,
+      width: isMobile ? 110 : 160,
       fixed: 'left',
       render: (_, record) => (
         <SymbolCell
@@ -416,6 +416,7 @@ export const AlertLogsTable = ({
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'takeProfit' ? sortType : null,
+      hidden: isFilterPage,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('takeProfit')
       }),
@@ -447,6 +448,7 @@ export const AlertLogsTable = ({
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'stopLoss' ? sortType : null,
+      hidden: isFilterPage,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('stopLoss')
       }),
@@ -474,6 +476,7 @@ export const AlertLogsTable = ({
       key: 'newStopLoss',
       width: 124,
       align: 'center',
+      hidden: isFilterPage,
       render: (value, record) => {
         const percentage = calculatePercentage(record.entryPrice, value);
         return value ? (
@@ -1104,11 +1107,13 @@ export const AlertLogsTable = ({
 
   const mobileColumnKeys = [
     'symbol',
+    'avgSentiment',
     'strategyName',
     'timeFrame',
     'AIRecommendationSignal',
     'manualRecommendation',
     'AIRating',
+    'AIExplain',
     'entryDate',
     'entryPrice',
     'stopLoss',
@@ -1228,7 +1233,9 @@ export const AlertLogsTable = ({
             x: 1200,
             y:
               alertLogsData.length > 0
-                ? width >= 1757
+                ? isMobile
+                  ? height - 220
+                  : width >= 1757
                   ? height - 360
                   : sideBarCollapsed
                   ? height - 360
@@ -1243,9 +1250,9 @@ export const AlertLogsTable = ({
               </div>
             )
           }}
-          footer={() => (
-            <LatestHitOnePercentTickerTape alertLogsFilter={filter} />
-          )}
+          // footer={() => (
+          //   <LatestHitOnePercentTickerTape alertLogsFilter={filter} />
+          // )}
           pagination={{
             position: ['bottomCenter'],
             pageSizeOptions: [
