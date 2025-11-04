@@ -228,7 +228,15 @@ export const AlertLogsTable = ({
         onClick: () => handleSortOrder('avgSentiment')
       }),
       render: (value, record) =>
-        value ? <NewsDrawer symbol={record.symbol} avgSentiment={value} /> : '-'
+        value ? (
+          <NewsDrawer
+            entryDate={record.entryDate}
+            symbol={record.symbol}
+            avgSentiment={value}
+          />
+        ) : (
+          '-'
+        )
     },
     {
       title: t('strategy'),

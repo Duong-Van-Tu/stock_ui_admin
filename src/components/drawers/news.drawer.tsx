@@ -20,9 +20,10 @@ const { Text } = Typography;
 type NewsDrawerProps = {
   symbol: string;
   avgSentiment: number;
+  entryDate?: string;
 };
 
-const NewsDrawer = ({ symbol, avgSentiment }: NewsDrawerProps) => {
+const NewsDrawer = ({ symbol, avgSentiment, entryDate }: NewsDrawerProps) => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const newsList = useAppSelector(watchTickerNewsSentiment);
@@ -30,8 +31,9 @@ const NewsDrawer = ({ symbol, avgSentiment }: NewsDrawerProps) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (open) dispatch(getTickerNewsSentiment({ symbol }));
-  }, [open, dispatch, symbol]);
+    if (open)
+      dispatch(getTickerNewsSentiment({ symbol, query: { entryDate } }));
+  }, [open, dispatch, symbol, entryDate]);
 
   return (
     <>

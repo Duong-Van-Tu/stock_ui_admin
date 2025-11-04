@@ -3,6 +3,7 @@ type SentimentFilter = Filter & {
   group?: string;
   sentiment?: string;
   impact?: string;
+  entryDate?: string;
   fromDate?: string;
   toDate?: string;
 };

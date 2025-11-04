@@ -8,6 +8,7 @@ import {
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { PAGINATION } from '@/constants/pagination.constant';
+import { convertParamsByMapping } from '@/utils/common';
 
 export type SentimentState = {
   loading: boolean;
@@ -173,7 +174,7 @@ export const SentimentSlice = createAppSlice({
         const response = await defaultApiFetcher.get(
           'tickers/get-news-sentiment',
           {
-            query: { ...(query || {}), symbol }
+            query: { ...(convertParamsByMapping(query!) || {}), symbol }
           }
         );
         return response.data;
