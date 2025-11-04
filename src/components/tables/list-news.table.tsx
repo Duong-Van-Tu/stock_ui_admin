@@ -9,13 +9,13 @@ import {
   watchListNewsPagination,
   getListNews
 } from '@/redux/slices/sentiment.slice';
-import { Button, Table, TableColumnsType } from 'antd';
+import { Button, Table, TableColumnsType, Tooltip } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
-import { cleanFalsyValues, isNumeric } from '@/utils/common';
+import { cleanFalsyValues, getTextColor, isNumeric } from '@/utils/common';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { SymbolCell } from './columns/symbol-cell.column';
@@ -27,6 +27,7 @@ import { useSortOrder } from '@/hooks/sort-order.hook';
 import { isMobile } from 'react-device-detect';
 import { SentimentSCore } from '../charts/sentiment-score.chart';
 import { useModal } from '@/hooks/modal.hook';
+import { Icon } from '../icons';
 
 export const ListNewsTable = () => {
   const t = useTranslations();
@@ -42,8 +43,8 @@ export const ListNewsTable = () => {
   const [filter, setFilter] = useState<Filter>({});
 
   const { sortField, sortType, handleSortOrder } = useSortOrder<Filter>({
-    defaultField: 'symbol',
-    defaultOrder: 'ascend',
+    defaultField: 'versionCreated',
+    defaultOrder: 'descend',
     currentFilter: filter,
     onChange: (_field, _order, newFilter) => {
       setFilter(newFilter);
@@ -89,54 +90,31 @@ export const ListNewsTable = () => {
       title: t('stt'),
       dataIndex: 'index',
       key: 'index',
-      width: 60,
+      width: 64,
       align: 'center',
       fixed: !isMobile && 'left',
       render: (_, __, index) =>
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
     },
     {
-      title: t('symbol'),
-      dataIndex: 'symbol',
-      key: 'symbol',
+      title: t('source'),
+      dataIndex: 'source',
+      key: 'source',
       width: 100,
-      fixed: 'left',
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'symbol' ? sortType : null,
+      sortOrder: sortField === 'source' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('symbol')
+        onClick: () => handleSortOrder('source')
       }),
-      render: (_, record) => <SymbolCell symbol={record.symbol} />
-    },
-    {
-      title: t('sentiment'),
-      dataIndex: 'sentiment',
-      key: 'sentiment',
-      width: 130,
-      defaultSortOrder: 'descend',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'sentiment' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('sentiment')
-      }),
-      align: 'center',
-      render: (value) =>
-        isNumeric(value) ? (
-          <div css={sentimentScoreStyles}>
-            <SentimentSCore score={value} />
-          </div>
-        ) : (
-          '-'
-        )
+      align: 'center'
     },
     {
       title: t('publishingTime'),
       dataIndex: 'versionCreated',
       key: 'versionCreated',
-      width: 180,
+      width: 160,
       defaultSortOrder: 'descend',
       sorter: true,
       showSorterTooltip: false,
@@ -146,6 +124,37 @@ export const ListNewsTable = () => {
       }),
       align: 'center',
       render: (value) => <DateTimeCell value={value} />
+    },
+    {
+      title: t('symbol'),
+      dataIndex: 'symbols',
+      key: 'symbols',
+      width: 110,
+      render: (value, record) => (
+        <div css={symbolColumnStyles}>
+          {(record.urgency === 1 || record.urgency === 2) && (
+            <Tooltip
+              css={breakingNewsStyles}
+              title={isMobile ? null : t('breakingNews')}
+            >
+              <Button
+                type='text'
+                icon={<Icon icon='fire' width={18} height={18} />}
+                shape='circle'
+              />
+            </Tooltip>
+          )}
+          <div css={listSymbolStyles}>
+            {value.map((symbol: string) => (
+              <SymbolCell
+                key={symbol}
+                symbolColor={getTextColor(record.sentiment)}
+                symbol={symbol}
+              />
+            ))}
+          </div>
+        </div>
+      )
     },
     {
       title: t('headline'),
@@ -184,6 +193,28 @@ export const ListNewsTable = () => {
           >
             {t('newsStory')}
           </Button>
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: t('sentiment'),
+      dataIndex: 'sentiment',
+      key: 'sentiment',
+      width: 130,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'sentiment' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('sentiment')
+      }),
+      align: 'center',
+      render: (value) =>
+        isNumeric(value) ? (
+          <div css={sentimentScoreStyles}>
+            <SentimentSCore score={value} />
+          </div>
         ) : (
           '-'
         )
@@ -285,4 +316,24 @@ const storyStyles = css`
   p {
     margin-bottom: 0;
   }
+`;
+
+const symbolColumnStyles = css`
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+`;
+
+const listSymbolStyles = css`
+  display: flex;
+  flex-direction: column;
+  max-height: 10.4rem;
+  overflow-y: auto;
+`;
+
+const breakingNewsStyles = css`
+  position: absolute;
+  right: 1.4rem;
+  top: -1rem;
 `;

@@ -33,6 +33,7 @@ type SymbolCellProps = {
   stockInfo?: StockInfo;
   isOptions?: boolean;
   isSellSignal?: boolean;
+  symbolColor?: string;
 };
 
 export const SymbolCell = ({
@@ -44,7 +45,8 @@ export const SymbolCell = ({
   signalId,
   stockInfo,
   isOptions = false,
-  isSellSignal = false
+  isSellSignal = false,
+  symbolColor
 }: SymbolCellProps) => {
   const t = useTranslations();
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -155,7 +157,10 @@ export const SymbolCell = ({
             <span css={stockLinkStyles}>{symbol}</span>
           ) : (
             <Link
-              css={stockLinkStyles}
+              css={[
+                stockLinkStyles,
+                symbolColor && symbolColorStyles(symbolColor)
+              ]}
               href={PageURLs.ofStockDetail(symbol, signalId)}
               target={isDesktop ? '_blank' : undefined}
             >
@@ -304,4 +309,12 @@ const sellIconStyles = css`
   position: absolute;
   left: -1.7rem;
   top: 0.2rem;
+`;
+
+const symbolColorStyles = (color: string) => css`
+  color: ${color};
+  &:hover {
+    color: ${color};
+    opacity: 0.9;
+  }
 `;

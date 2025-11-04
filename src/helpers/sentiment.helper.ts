@@ -141,9 +141,12 @@ export const transformLisNewsSentiment = (listNews: any[]): NewsSentiment[] => {
   return listNews.map((item) => ({
     key: uuid(),
     symbol: item.symbol,
+    symbols: item.symbol.split(',').map((sym: string) => sym.trim()),
     title: item.title,
     sentiment: item.sentiment,
+    urgency: item.urgency,
     versionCreated: item[fieldMapping.versionCreated],
-    story: item[fieldMapping.storyText]
+    story: item[fieldMapping.storyText],
+    source: item[fieldMapping.source]
   }));
 };

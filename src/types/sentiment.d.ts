@@ -81,8 +81,11 @@ type NewsLatest = {
 type NewsSentiment = {
   key: string;
   symbol: string;
+  symbols: string[];
   title: string;
   sentiment: number;
   versionCreated: string;
   story?: string;
+  source: string;
+  urgency: number;
 };

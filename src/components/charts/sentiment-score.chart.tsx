@@ -3,6 +3,7 @@ import React from 'react';
 import { css } from '@emotion/react';
 import ReactECharts from 'echarts-for-react';
 import type { EChartsOption } from 'echarts';
+import { getTextColor } from '@/utils/common';
 
 type SentimentSCoreProps = {
   score: number;
@@ -46,16 +47,7 @@ export const SentimentSCore = ({ score }: SentimentSCoreProps) => {
         detail: {
           show: true,
           formatter: () => displayValue,
-          color:
-            clamped === 0
-              ? '#ffcf4d'
-              : clamped > 0 && clamped <= 1
-              ? '#91cf60'
-              : clamped > 1 && clamped <= 2
-              ? '#1a9850'
-              : clamped < 0 && clamped >= -1
-              ? '#fc8d59'
-              : '#d73027',
+          color: getTextColor(clamped),
           fontSize: 13,
           offsetCenter: [0, 0]
         },

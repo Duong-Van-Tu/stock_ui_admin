@@ -285,3 +285,11 @@ export const tidyTime = (t?: string): string =>
     .trim()
     .replace(/\s+/g, ' ')
     .replace(/:00(?=\s*[ap]m)$/i, '');
+
+export const getTextColor = (clamped: number) => {
+  if (clamped === 0) return '#ffcf4d';
+  if (clamped > 0 && clamped <= 1) return '#91cf60';
+  if (clamped > 1 && clamped <= 2) return '#1a9850';
+  if (clamped < 0 && clamped >= -1) return '#fc8d59';
+  return '#d73027';
+};

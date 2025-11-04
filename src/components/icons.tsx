@@ -50,6 +50,7 @@ import New from '@/assets/svg/new.svg';
 import DotsVertical from '@/assets/svg/dots-vertical.svg';
 import OptionsChanges from '@/assets/svg/options-changes.svg';
 import AlertFilter from '@/assets/svg/alert-filter.svg';
+import Fire from '@/assets/svg/fire.svg';
 
 type IconProps = {
   width?: number | string;
@@ -108,7 +109,8 @@ const svgList = {
   New,
   DotsVertical,
   OptionsChanges,
-  AlertFilter
+  AlertFilter,
+  Fire
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = Object.entries(
