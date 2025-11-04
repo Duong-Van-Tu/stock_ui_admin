@@ -148,7 +148,11 @@ export const ListNewsTable = () => {
             {value.map((symbol: string) => (
               <SymbolCell
                 key={symbol}
-                symbolColor={getTextColor(record.sentiment)}
+                symbolColor={
+                  isNumeric(record.sentiment)
+                    ? getTextColor(record.sentiment)
+                    : undefined
+                }
                 symbol={symbol}
               />
             ))}
