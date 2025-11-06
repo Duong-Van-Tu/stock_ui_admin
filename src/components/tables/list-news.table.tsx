@@ -15,7 +15,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
-import { cleanFalsyValues, getTextColor, isNumeric } from '@/utils/common';
+import {
+  cleanFalsyValues,
+  getTextColorSymbol,
+  isNumeric
+} from '@/utils/common';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { SymbolCell } from './columns/symbol-cell.column';
@@ -155,7 +159,7 @@ export const ListNewsTable = () => {
                 key={symbol}
                 symbolColor={
                   isNumeric(record.sentiment)
-                    ? getTextColor(record.sentiment)
+                    ? getTextColorSymbol(record.sentiment)
                     : undefined
                 }
                 symbol={symbol}

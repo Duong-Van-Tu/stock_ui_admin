@@ -293,3 +293,9 @@ export const getTextColor = (clamped: number) => {
   if (clamped < 0 && clamped >= -1) return '#fc8d59';
   return '#d73027';
 };
+
+export const getTextColorSymbol = (value: number): string => {
+  if (value > 0) return '#1a9850';
+  if (value < 0) return '#d73027';
+  return '#ffcf4d';
+};
