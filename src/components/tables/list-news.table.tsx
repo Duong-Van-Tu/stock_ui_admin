@@ -28,6 +28,7 @@ import { isMobile } from 'react-device-detect';
 import { SentimentSCore } from '../charts/sentiment-score.chart';
 import { useModal } from '@/hooks/modal.hook';
 import { Icon } from '../icons';
+import { ListNewsFilter } from '../filters/list-news.filter';
 
 export const ListNewsTable = () => {
   const t = useTranslations();
@@ -40,21 +41,22 @@ export const ListNewsTable = () => {
   const listNews = useAppSelector(watchListNews);
   const pagination = useAppSelector(watchListNewsPagination);
 
-  const [filter, setFilter] = useState<Filter>({});
+  const [filter, setFilter] = useState<SentimentFilter>({});
 
-  const { sortField, sortType, handleSortOrder } = useSortOrder<Filter>({
-    defaultField: 'versionCreated',
-    defaultOrder: 'descend',
-    currentFilter: filter,
-    onChange: (_field, _order, newFilter) => {
-      setFilter(newFilter);
-      fetchListNews({
-        page: PAGINATION.currentPage,
-        pageSize: pagination.pageSize,
-        filter: newFilter
-      });
-    }
-  });
+  const { sortField, sortType, handleSortOrder } =
+    useSortOrder<SentimentFilter>({
+      defaultField: 'versionCreated',
+      defaultOrder: 'descend',
+      currentFilter: filter,
+      onChange: (_field, _order, newFilter) => {
+        setFilter(newFilter);
+        fetchListNews({
+          page: PAGINATION.currentPage,
+          pageSize: pagination.pageSize,
+          filter: newFilter
+        });
+      }
+    });
 
   const fetchListNews = useCallback(
     ({
@@ -84,6 +86,21 @@ export const ListNewsTable = () => {
       dispatch(resetState());
     };
   }, [fetchListNews, dispatch]);
+
+  const handleFilter = (values: {
+    fromDate?: string;
+    toDate?: string;
+    urgency?: number[];
+  }) => {
+    const next = { ...filter, ...values };
+    setFilter(next);
+    console.log('next filter', next);
+    fetchListNews({
+      page: PAGINATION.currentPage,
+      pageSize: pagination.pageSize,
+      filter: next
+    });
+  };
 
   const columns: TableColumnsType<NewsSentiment> = [
     {
@@ -132,18 +149,6 @@ export const ListNewsTable = () => {
       width: 110,
       render: (value, record) => (
         <div css={symbolColumnStyles}>
-          {(record.urgency === 1 || record.urgency === 2) && (
-            <Tooltip
-              css={breakingNewsStyles}
-              title={isMobile ? null : t('breakingNews')}
-            >
-              <Button
-                type='text'
-                icon={<Icon icon='fire' width={18} height={18} />}
-                shape='circle'
-              />
-            </Tooltip>
-          )}
           <div css={listSymbolStyles}>
             {value.map((symbol: string) => (
               <SymbolCell
@@ -171,7 +176,23 @@ export const ListNewsTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('title')
       }),
-      render: (value) => <EllipsisText text={value} maxLines={2} />
+      render: (value, record) => (
+        <div css={titleCellStyles}>
+          {(record.urgency === 1 || record.urgency === 2) && (
+            <Tooltip
+              css={fireIconStyles}
+              title={isMobile ? null : t('breakingNews')}
+            >
+              <Button
+                type='text'
+                icon={<Icon icon='fire' width={18} height={18} />}
+                shape='circle'
+              />
+            </Tooltip>
+          )}
+          <EllipsisText text={value} maxLines={2} />
+        </div>
+      )
     },
     {
       title: t('story'),
@@ -214,6 +235,7 @@ export const ListNewsTable = () => {
         onClick: () => handleSortOrder('sentiment')
       }),
       align: 'center',
+      hidden: true,
       render: (value) =>
         isNumeric(value) ? (
           <div css={sentimentScoreStyles}>
@@ -227,6 +249,9 @@ export const ListNewsTable = () => {
 
   return (
     <div css={rootStyles}>
+      <div css={filterBarStyles}>
+        <ListNewsFilter onFilter={handleFilter} />
+      </div>
       <div css={tableWrapperStyles}>
         <TableTitle customStyles={titleStyles}>{t('news')}</TableTitle>
         <Table<NewsSentiment>
@@ -238,7 +263,7 @@ export const ListNewsTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: listNews.length > 0 ? height - 238 : undefined
+            y: listNews.length > 0 ? height - 314 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -279,6 +304,12 @@ const rootStyles = css`
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
+`;
+
+const filterBarStyles = css`
+  border: 1px solid var(--border-table-color);
+  border-radius: 0.6rem;
+  padding: 1.6rem 1.4rem 1.2rem;
 `;
 
 const tableStyles = css`
@@ -336,8 +367,13 @@ const listSymbolStyles = css`
   overflow-y: auto;
 `;
 
-const breakingNewsStyles = css`
+const titleCellStyles = css`
+  position: relative;
+  padding-left: 1rem;
+`;
+
+const fireIconStyles = css`
   position: absolute;
-  right: 1.4rem;
-  top: -1rem;
+  left: -1.8rem;
+  top: -1.4rem;
 `;

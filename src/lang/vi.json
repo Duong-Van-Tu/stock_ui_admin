@@ -538,5 +538,8 @@
   "hitOnePercent": "Cao nhất ≥ 1% so với entry",
   "newsStory": "Bản tin thời sự",
   "story": "Bản tin",
-  "breakingNews": "Tin nóng hổi"
+  "breakingNews": "Tin nóng hổi",
+  "fromDate": "Từ ngày",
+  "toDate": "Đến ngày",
+  "urgency": "Mức độ"
 }

@@ -6,6 +6,9 @@ type SentimentFilter = Filter & {
   entryDate?: string;
   fromDate?: string;
   toDate?: string;
+  urgency?: number[];
+  sector?: string;
+  industry?: string;
 };
 
 type CountSentiment = {

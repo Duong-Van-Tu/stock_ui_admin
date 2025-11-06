@@ -538,5 +538,8 @@
   "hitOnePercent": "Highest ≥ 1% from entry",
   "newsStory": "News Story",
   "story": "Story",
-  "breakingNews": "Breaking news"
+  "breakingNews": "Breaking news",
+  "fromDate": "From Date",
+  "toDate": "To Date",
+  "urgency": "Urgency"
 }
