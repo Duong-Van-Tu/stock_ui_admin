@@ -34,6 +34,23 @@ import { TimeZone } from '@/constants/timezone.constant';
 const { Title } = Typography;
 const { Option } = Select;
 
+function NoStepInputNumber(props: React.ComponentProps<typeof InputNumber>) {
+  return (
+    <InputNumber
+      controls={false}
+      keyboard={false}
+      onKeyDownCapture={(e) => {
+        const keysToBlock = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown'];
+        if (keysToBlock.includes(e.key)) e.preventDefault();
+      }}
+      onWheel={(e) => {
+        (e.target as HTMLElement).blur();
+      }}
+      {...props}
+    />
+  );
+}
+
 export default function AddLedgerEntry() {
   const t = useTranslations();
   const router = useRouter();
@@ -135,11 +152,7 @@ export default function AddLedgerEntry() {
                         }
                         size={isMobile ? 'middle' : 'large'}
                       />
-                      <Form.Item
-                        name='entryDate'
-                        noStyle
-                        rules={[{ required: false }]}
-                      >
+                      <Form.Item name='entryDate' noStyle>
                         <DatePicker
                           placeholder={isMobile ? '' : t('selectEntryDate')}
                           size={isMobile ? 'middle' : 'large'}
@@ -168,11 +181,7 @@ export default function AddLedgerEntry() {
                     />
                   </Form.Item>
 
-                  <Form.Item
-                    name='symbol'
-                    label={t('symbol')}
-                    rules={[{ required: true, message: '' }]}
-                  >
+                  <Form.Item name='symbol' label={t('symbol')}>
                     <Input
                       size={isMobile ? 'middle' : 'large'}
                       placeholder={isMobile ? '' : t('enterSymbol')}
@@ -186,8 +195,7 @@ export default function AddLedgerEntry() {
                   </Form.Item>
 
                   <Form.Item name='strike' label={t('strike')}>
-                    <InputNumber
-                      type='number'
+                    <NoStepInputNumber
                       size={isMobile ? 'middle' : 'large'}
                       placeholder={isMobile ? '' : t('enterStrikePrice')}
                       min={0}
@@ -197,8 +205,7 @@ export default function AddLedgerEntry() {
                   </Form.Item>
 
                   <Form.Item name='premiumPaid' label={t('premiumPaid')}>
-                    <InputNumber
-                      type='number'
+                    <NoStepInputNumber
                       size={isMobile ? 'middle' : 'large'}
                       min={0}
                       prefix='$'
@@ -211,9 +218,8 @@ export default function AddLedgerEntry() {
                     name='investmentCashOut'
                     label={t('investmentCashOut')}
                   >
-                    <InputNumber
+                    <NoStepInputNumber
                       placeholder={isMobile ? '' : t('enterInvestmentCashOut')}
-                      type='number'
                       size={isMobile ? 'middle' : 'large'}
                       min={0}
                       prefix='$'
@@ -222,8 +228,7 @@ export default function AddLedgerEntry() {
                   </Form.Item>
 
                   <Form.Item name='contracts' label={t('contracts')}>
-                    <InputNumber
-                      type='number'
+                    <NoStepInputNumber
                       size={isMobile ? 'middle' : 'large'}
                       placeholder={isMobile ? '' : t('enterNumberOfContracts')}
                       min={0}
@@ -232,8 +237,7 @@ export default function AddLedgerEntry() {
                   </Form.Item>
 
                   <Form.Item name='entryPrice' label={t('entryPrice')}>
-                    <InputNumber
-                      type='number'
+                    <NoStepInputNumber
                       placeholder={isMobile ? '' : t('enterEntryPrice')}
                       size={isMobile ? 'middle' : 'large'}
                       min={0}
@@ -243,8 +247,7 @@ export default function AddLedgerEntry() {
                   </Form.Item>
 
                   <Form.Item name='stockPL' label={t('stockPL')}>
-                    <InputNumber
-                      type='number'
+                    <NoStepInputNumber
                       placeholder={isMobile ? '' : t('enterStockPL')}
                       size={isMobile ? 'middle' : 'large'}
                       prefix='$'
@@ -266,11 +269,7 @@ export default function AddLedgerEntry() {
                         }
                         size={isMobile ? 'middle' : 'large'}
                       />
-                      <Form.Item
-                        name='exitDate'
-                        noStyle
-                        rules={[{ required: false }]}
-                      >
+                      <Form.Item name='exitDate' noStyle>
                         <DatePicker
                           placeholder={isMobile ? '' : t('selectExitDate')}
                           size={isMobile ? 'middle' : 'large'}
@@ -344,9 +343,8 @@ export default function AddLedgerEntry() {
                   </Form.Item>
 
                   <Form.Item name='premiumReceive' label={t('premiumReceive')}>
-                    <InputNumber
+                    <NoStepInputNumber
                       placeholder={isMobile ? '' : t('enterPremiumReceive')}
-                      type='number'
                       size={isMobile ? 'middle' : 'large'}
                       min={0}
                       prefix='$'
@@ -358,9 +356,8 @@ export default function AddLedgerEntry() {
                     name='investmentCashIn'
                     label={t('investmentCashIn')}
                   >
-                    <InputNumber
+                    <NoStepInputNumber
                       placeholder={isMobile ? '' : t('enterInvestmentCashIn')}
-                      type='number'
                       size={isMobile ? 'middle' : 'large'}
                       min={0}
                       prefix='$'
@@ -369,9 +366,8 @@ export default function AddLedgerEntry() {
                   </Form.Item>
 
                   <Form.Item name='commission' label={t('commission')}>
-                    <InputNumber
+                    <NoStepInputNumber
                       placeholder={isMobile ? '' : t('enterCommission')}
-                      type='number'
                       size={isMobile ? 'middle' : 'large'}
                       min={0}
                       prefix='$'
@@ -380,9 +376,8 @@ export default function AddLedgerEntry() {
                   </Form.Item>
 
                   <Form.Item name='exitPrice' label={t('exitPrice')}>
-                    <InputNumber
-                      placeholder={isMobile ? '' : t('enterExitPrice')}
-                      type='number'
+                    <NoStepInputNumber
+                      placeholder={t('enterExitPrice')}
                       size={isMobile ? 'middle' : 'large'}
                       min={0}
                       prefix='$'
