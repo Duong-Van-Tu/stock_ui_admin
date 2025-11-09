@@ -299,3 +299,36 @@ export const getTextColorSymbol = (value: number): string => {
   if (value < 0) return '#d73027';
   return '#ffcf4d';
 };
+
+export const calculateRSI = (
+  closes: number[],
+  period: number
+): (number | undefined)[] => {
+  const out: (number | undefined)[] = new Array(closes.length).fill(undefined);
+  if (closes.length < period + 1 || period <= 0) return out;
+
+  let gain = 0;
+  let loss = 0;
+
+  for (let i = 1; i <= period; i++) {
+    const change = closes[i] - closes[i - 1];
+    if (change >= 0) gain += change;
+    else loss -= change;
+  }
+
+  let avgGain = gain / period;
+  let avgLoss = loss / period;
+
+  out[period] = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
+
+  for (let i = period + 1; i < closes.length; i++) {
+    const change = closes[i] - closes[i - 1];
+    const g = Math.max(change, 0);
+    const l = Math.max(-change, 0);
+    avgGain = (avgGain * (period - 1) + g) / period;
+    avgLoss = (avgLoss * (period - 1) + l) / period;
+    out[i] = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
+  }
+
+  return out;
+};
