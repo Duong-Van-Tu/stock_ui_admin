@@ -541,5 +541,7 @@
   "breakingNews": "Breaking news",
   "fromDate": "From Date",
   "toDate": "To Date",
-  "urgency": "Urgency"
+  "urgency": "Urgency",
+  "optionChainCall": "Option Chain CALL",
+  "optionChainPut": "Option Chain PUT"
 }

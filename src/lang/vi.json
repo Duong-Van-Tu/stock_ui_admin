@@ -541,5 +541,7 @@
   "breakingNews": "Tin nóng hổi",
   "fromDate": "Từ ngày",
   "toDate": "Đến ngày",
-  "urgency": "Mức độ"
+  "urgency": "Mức độ",
+  "OptionChainCall": "Bảng quyền chọn mua",
+  "OptionChainPut": "Bảng quyền chọn bán"
 }

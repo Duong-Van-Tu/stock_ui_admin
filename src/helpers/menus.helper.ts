@@ -107,10 +107,16 @@ export const getMenuStructure = (
       link: PageURLs.ofLedgerEntry()
     },
     {
-      label: t('optionsChanges'),
-      key: 'options-changes',
-      iconType: 'optionsChanges',
-      link: PageURLs.ofOptionChanges()
+      label: t('optionChainCall'),
+      key: 'option-chain-call',
+      iconType: 'optionChainCall',
+      link: PageURLs.ofOptionChainCall()
+    },
+    {
+      label: t('optionChainPut'),
+      key: 'option-chain-put',
+      iconType: 'optionChainPut',
+      link: PageURLs.ofOptionChainPut()
     }
   ];
 

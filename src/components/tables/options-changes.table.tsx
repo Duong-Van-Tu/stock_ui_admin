@@ -33,7 +33,11 @@ import { ImportSymbolButton } from '../import-symbol-template';
 import { TimeZone } from '@/constants/timezone.constant';
 import dayjs from 'dayjs';
 
-export const OptionChangesTable = () => {
+type OptionChangesTableProps = {
+  optionType: 'Call' | 'Put';
+};
+
+export const OptionChangesTable = ({ optionType }: OptionChangesTableProps) => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const { height } = useWindowSize();
@@ -79,6 +83,7 @@ export const OptionChangesTable = () => {
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           symbol: symbol ?? undefined,
+          [fieldMapping['optionType']]: optionType,
           ...filtered
         })
       );
@@ -138,11 +143,7 @@ export const OptionChangesTable = () => {
       dataIndex: 'optionType',
       key: 'optionType',
       width: 80,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'optionType' ? sortType : null,
-      onHeaderCell: () => ({ onClick: () => handleSortOrder('optionType') })
+      align: 'center'
     },
     {
       title: 'Strike',
@@ -472,7 +473,11 @@ export const OptionChangesTable = () => {
         <div css={tableTopStyles}>
           <div css={tableTopRightStyles}>
             <TableTitle customStyles={titleStyles}>
-              <span>{t('optionChangesTitle')}</span>
+              <span>
+                {optionType === 'Call'
+                  ? t('optionChainCall')
+                  : t('optionChainPut')}{' '}
+              </span>
               <Tooltip title={!isMobile && t('refresh')}>
                 <Button
                   onClick={() =>
@@ -523,7 +528,7 @@ export const OptionChangesTable = () => {
           showHeader
           scroll={{
             x: isMobile ? 700 : 1200,
-            y: height - 262
+            y: height - 268
           }}
           sortDirections={['descend', 'ascend']}
           locale={{

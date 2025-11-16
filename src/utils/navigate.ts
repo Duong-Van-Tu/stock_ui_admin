@@ -79,7 +79,10 @@ export namespace PageURLs {
     return withPrefix(`/ledger-entry/${id}/send-alert`);
   }
 
-  export function ofOptionChanges() {
-    return withPrefix('/options-changes');
+  export function ofOptionChainCall() {
+    return withPrefix('/option-chain-call');
+  }
+  export function ofOptionChainPut() {
+    return withPrefix('/option-chain-put');
   }
 }

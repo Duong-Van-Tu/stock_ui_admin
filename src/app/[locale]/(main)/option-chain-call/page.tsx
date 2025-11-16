@@ -8,8 +8,8 @@ export default function OptionsChanges() {
   const t = useTranslations();
 
   useEffect(() => {
-    document.title = t('optionsChanges');
+    document.title = t('optionChainCall');
   }, [t]);
 
-  return <OptionChangesTable />;
+  return <OptionChangesTable optionType='Call' />;
 }
