@@ -211,7 +211,6 @@ export const AlertLogsTable = ({
           stockInfo={record.stockInfo}
           isOptions={!!record.isOptions}
           isSellSignal={latestHitOnePercent.includes(record.symbol)}
-          period={record.timeFrame}
         />
       )
     },

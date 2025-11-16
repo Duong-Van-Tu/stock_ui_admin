@@ -3,8 +3,7 @@ import { css } from '@emotion/react';
 import { Icon } from '@/components/icons';
 import { Button, Col, Divider, Popover, Row, Tooltip, Typography } from 'antd';
 import { useTranslations } from 'next-intl';
-import { useCallback, useState } from 'react';
-import dayjs from 'dayjs';
+import { useState } from 'react';
 import {
   ContentType,
   SymbolDetailsDrawer
@@ -16,15 +15,12 @@ import { isDesktop, isMobile } from 'react-device-detect';
 import EllipsisText from '@/components/ellipsis-text';
 import { ScoreBlock } from '@/components/score-block';
 import {
-  calculateRSI,
   capitalizeFirstLetter,
   formatPercent,
   isNumeric,
   roundToDecimals
 } from '@/utils/common';
 import { PositiveNegativeText } from '@/components/positive-negative-text';
-import { defaultApiFetcher } from '@/utils/api-instances';
-import { TimeZone } from '@/constants/timezone.constant';
 
 type SymbolCellProps = {
   symbol: string;
@@ -38,7 +34,6 @@ type SymbolCellProps = {
   isOptions?: boolean;
   isSellSignal?: boolean;
   symbolColor?: string;
-  period?: string;
 };
 
 export const SymbolCell = ({
@@ -51,13 +46,11 @@ export const SymbolCell = ({
   stockInfo,
   isOptions = false,
   isSellSignal = false,
-  symbolColor,
-  period
+  symbolColor
 }: SymbolCellProps) => {
   const t = useTranslations();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerContent, setDrawerContent] = useState<ContentType | null>(null);
-  const [rsiValue, setRsiValue] = useState<number>();
 
   const handleIconClick = (contentType: ContentType) => {
     setDrawerContent(contentType);
@@ -68,30 +61,6 @@ export const SymbolCell = ({
     setDrawerVisible(false);
     setDrawerContent(null);
   };
-
-  const fetchRSIOnOpen = useCallback(async () => {
-    if (!period) return;
-
-    const fromDate = dayjs()
-      .subtract(49, 'day')
-      .tz(TimeZone.NEW_YORK)
-      .format('YYYY-MM-DD');
-    const toDate = dayjs().tz(TimeZone.NEW_YORK).format('YYYY-MM-DD');
-    const res = await defaultApiFetcher.get('stock-worker/get-stock-chart', {
-      query: {
-        stockName: symbol,
-        period: period,
-        smaPeriodLength: 8,
-        fromDate,
-        toDate
-      }
-    });
-    const data = (res?.data ?? []) as Array<{ close: number }>;
-    const closes = data.map((d) => d.close).filter((n) => Number.isFinite(n));
-    const rsiArr = calculateRSI(closes, 14);
-    const last = roundToDecimals(rsiArr[rsiArr.length - 1]);
-    setRsiValue(last || undefined);
-  }, [symbol, period]);
 
   return (
     <>
@@ -173,7 +142,9 @@ export const SymbolCell = ({
                       <Typography.Text strong type='secondary'>
                         {t('rsi')}:&nbsp;
                       </Typography.Text>
-                      <span>{stockInfo.rsi || rsiValue || '--'}</span>
+                      <span>
+                        {stockInfo.rsi ? roundToDecimals(stockInfo.rsi) : '--'}
+                      </span>
                     </Col>
                   </Row>
                 </div>
@@ -183,9 +154,6 @@ export const SymbolCell = ({
           trigger='hover'
           placement='rightTop'
           overlayStyle={{ padding: 0 }}
-          onOpenChange={(open) => {
-            if (open) fetchRSIOnOpen();
-          }}
         >
           {isMobile ? (
             <span css={stockLinkStyles}>{symbol}</span>
