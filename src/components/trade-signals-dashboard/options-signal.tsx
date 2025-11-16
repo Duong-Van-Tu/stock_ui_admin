@@ -103,6 +103,7 @@ export const OptionSignal = () => {
           symbol={value}
           signalId={record.id}
           stockInfo={record.stockInfo}
+          period={record.timeFrame}
         />
       )
     },
