@@ -224,7 +224,6 @@ export const AlertLogsTable = ({
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'avgSentiment' ? sortType : null,
-      hidden: !isFilterPage,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('avgSentiment')
       }),
