@@ -34,6 +34,7 @@ type SymbolCellProps = {
   isOptions?: boolean;
   isSellSignal?: boolean;
   symbolColor?: string;
+  isPutOptions?: boolean;
 };
 
 export const SymbolCell = ({
@@ -45,6 +46,7 @@ export const SymbolCell = ({
   signalId,
   stockInfo,
   isOptions = false,
+  isPutOptions = false,
   isSellSignal = false,
   symbolColor
 }: SymbolCellProps) => {
@@ -212,9 +214,7 @@ export const SymbolCell = ({
         {isOptions && (
           <Tooltip
             title={
-              isMobile
-                ? null
-                : capitalizeFirstLetter(t('options').toLowerCase())
+              isMobile ? null : capitalizeFirstLetter(t('optionChainCall'))
             }
           >
             <Button
@@ -226,13 +226,31 @@ export const SymbolCell = ({
             </Button>
           </Tooltip>
         )}
+        {isPutOptions && (
+          <Tooltip
+            title={isMobile ? null : capitalizeFirstLetter(t('optionChainPut'))}
+          >
+            <Button
+              css={buttonStyles}
+              type='text'
+              onClick={() => handleIconClick(ContentType.OPTIONS)}
+            >
+              <Icon
+                fill='var(--negative-color)'
+                icon='optionsChanges'
+                width={18}
+                height={18}
+              />
+            </Button>
+          </Tooltip>
+        )}
         {isSellSignal && (
           <Tooltip title={isMobile ? null : t('hitOnePercent')}>
             <Button
               css={sellIconStyles}
               shape='circle'
               type='text'
-              icon={<Icon icon='sell' width={16} height={16} />}
+              icon={<Icon fill='red' icon='sell' width={16} height={16} />}
             />
           </Tooltip>
         )}
@@ -249,6 +267,7 @@ export const SymbolCell = ({
         visible={drawerVisible}
         contentType={drawerContent}
         onClose={handleDrawerClose}
+        option={isPutOptions ? 'Put' : 'Call'}
       />
     </>
   );

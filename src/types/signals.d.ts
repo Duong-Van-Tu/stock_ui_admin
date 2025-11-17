@@ -78,6 +78,7 @@ type Signal = {
   isOptions: boolean;
   avgSentiment: number;
   verifyNews: boolean;
+  isPutOptions: boolean;
 };
 
 type AlertLogsFilter = Filter & {

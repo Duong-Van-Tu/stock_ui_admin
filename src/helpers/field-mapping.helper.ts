@@ -230,5 +230,6 @@ export const fieldMapping: Record<string, string> = {
   versionCreated: 'version_created',
   hitPercent: 'hit_percent',
   storyText: 'story_text',
-  source: 'info_source'
+  source: 'info_source',
+  isPutOptions: 'is_put_options'
 };

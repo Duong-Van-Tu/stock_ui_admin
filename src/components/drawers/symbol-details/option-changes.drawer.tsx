@@ -15,11 +15,13 @@ import { PositiveNegativeText } from '@/components/positive-negative-text';
 import { isMobile } from 'react-device-detect';
 import { EmptyDataTable } from '@/components/tables/empty.table';
 import { useTranslations } from 'next-intl';
+import { fieldMapping } from '@/helpers/field-mapping.helper';
 
-type OptionChangesDrawerProps = { symbol: string };
+type OptionChangesDrawerProps = { symbol: string; option: string };
 
 export default function OptionChangesDrawer({
-  symbol
+  symbol,
+  option
 }: OptionChangesDrawerProps) {
   const t = useTranslations();
   const dispatch = useAppDispatch();
@@ -27,8 +29,10 @@ export default function OptionChangesDrawer({
   const loading = useAppSelector(watchOptionChangesLoading);
 
   const fetchData = useCallback(() => {
-    dispatch(getOptionChanges({ symbol }));
-  }, [dispatch, symbol]);
+    dispatch(
+      getOptionChanges({ symbol, [fieldMapping['optionType']]: option })
+    );
+  }, [dispatch, symbol, option]);
 
   useEffect(() => {
     fetchData();

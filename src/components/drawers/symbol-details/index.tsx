@@ -15,6 +15,7 @@ export enum ContentType {
 
 type SymbolDetailsDrawerProps = {
   symbol: string;
+  option: string;
   visible: boolean;
   contentType: ContentType | null;
   onClose: () => void;
@@ -24,6 +25,7 @@ export const SymbolDetailsDrawer = ({
   symbol,
   visible,
   contentType,
+  option,
   onClose
 }: SymbolDetailsDrawerProps) => {
   const t = useTranslations();
@@ -48,7 +50,7 @@ export const SymbolDetailsDrawer = ({
       case ContentType.EARNINGS:
         return <EarningsDetails symbol={symbol} />;
       case ContentType.OPTIONS:
-        return <OptionChangesDrawer symbol={symbol} />;
+        return <OptionChangesDrawer symbol={symbol} option={option} />;
       default:
         return null;
     }

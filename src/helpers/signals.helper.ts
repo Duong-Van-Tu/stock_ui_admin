@@ -20,7 +20,6 @@ export const transformLatestHitOnePercentData = (data: any[]): string[] => {
   if (!Array.isArray(data)) return [];
 
   return data.map((item) => item[fieldMapping.tickerName]);
-  // return data.map((item) => ({
   //   id: item.id,
   //   tickerName: item[fieldMapping.tickerName],
   //   currentPrice: item[fieldMapping.currentPrice],
@@ -133,7 +132,8 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       },
       performanceScore: stock[fieldMapping.performanceScore],
       avgSentiment: stock[fieldMapping.avgSentiment],
-      verifyNews: stock[fieldMapping.verifyNews]
+      verifyNews: stock[fieldMapping.verifyNews],
+      isPutOptions: stock[fieldMapping.isPutOptions]
     } as Signal;
   });
 };
