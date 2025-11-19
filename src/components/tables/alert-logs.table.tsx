@@ -1291,7 +1291,7 @@ export const AlertLogsTable = ({
           expandable={{
             expandIcon: ({ expanded, onExpand, record }) =>
               expanded ? (
-                <Badge count={record.countSignal}>
+                <Badge count={record.countSignal} color='#faad14'>
                   <Button
                     style={{
                       width: '28px',
@@ -1302,7 +1302,7 @@ export const AlertLogsTable = ({
                   />
                 </Badge>
               ) : record.countSignal > 1 ? (
-                <Badge count={record.countSignal}>
+                <Badge count={record.countSignal} color='#faad14'>
                   <Button
                     style={{ width: '28px', height: '28px' }}
                     onClick={(e) => onExpand(record, e)}
