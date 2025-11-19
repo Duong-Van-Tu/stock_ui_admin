@@ -53,6 +53,9 @@ import AlertFilter from '@/assets/svg/alert-filter.svg';
 import Fire from '@/assets/svg/fire.svg';
 import OptionChainCall from '@/assets/svg/option-chain-call.svg';
 import OptionChainPut from '@/assets/svg/option-chain-put.svg';
+import Right from '@/assets/svg/right.svg';
+import Left from '@/assets/svg/left.svg';
+import ArrowDown from '@/assets/svg/arrow-down.svg';
 
 type IconProps = {
   width?: number | string;
@@ -114,7 +117,10 @@ const svgList = {
   AlertFilter,
   Fire,
   OptionChainCall,
-  OptionChainPut
+  OptionChainPut,
+  Right,
+  Left,
+  ArrowDown
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = Object.entries(

@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 
 import { Key, useCallback, useEffect, useState } from 'react';
 import {
+  Badge,
   Button,
   Segmented,
   Space,
@@ -62,6 +63,12 @@ import { DownloadSymbolTemplateButton } from '../download-symbol-template';
 import { ImportSymbolButton } from '../import-symbol-template';
 import NewsDrawer from '../drawers/news.drawer';
 import PriceRangeSlider from '../charts/price-range.chart';
+import { defaultApiFetcher } from '@/utils/api-instances';
+import {
+  detailColumnKeys,
+  mobileColumnKeys,
+  transformSignalsData
+} from '@/helpers/signals.helper';
 
 type AlertLogsTableProps = {
   isFilterPage?: boolean;
@@ -90,6 +97,43 @@ export const AlertLogsTable = ({
 
   const [filter, setFilter] = useState<AlertLogsFilter>({});
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  const [expandedSymbols, setExpandedSymbols] = useState<
+    Record<string, Signal[]>
+  >({});
+  const [expandedLoading, setExpandedLoading] = useState<string[]>([]);
+
+  const handleExpandRow = async (expanded: boolean, record: Signal) => {
+    if (expanded) {
+      setExpandedLoading((prev) => [...prev, record.symbol]);
+      const toEntryDate = new Date();
+      const fromEntryDate = new Date();
+      fromEntryDate.setDate(toEntryDate.getDate() - 3);
+
+      function formatDate(d: Date) {
+        return d.toISOString().slice(0, 10);
+      }
+      const detail = await defaultApiFetcher.get(
+        'tickers/get-stock-alert-log',
+        {
+          query: {
+            isImport: 0,
+            page: 1,
+            limit: 9999,
+            symbol: record.symbol,
+            fromEntryDate: formatDate(fromEntryDate),
+            toEntryDate: formatDate(toEntryDate)
+          }
+        }
+      );
+
+      setExpandedSymbols((prev) => ({
+        ...prev,
+        [record.symbol]: transformSignalsData(detail.data.result)
+      }));
+      setExpandedLoading((prev) => prev.filter((sym) => sym !== record.symbol));
+    }
+  };
 
   const { sortField, sortType, handleSortOrder } =
     useSortOrder<AlertLogsFilter>({
@@ -1112,29 +1156,18 @@ export const AlertLogsTable = ({
     }
   ];
 
-  const mobileColumnKeys = [
-    'symbol',
-    'avgSentiment',
-    'strategyName',
-    'timeFrame',
-    'AIRecommendationSignal',
-    'manualRecommendation',
-    'AIRating',
-    'AIExplain',
-    'entryDate',
-    'entryPrice',
-    'stopLoss',
-    'newStopLoss',
-    'takeProfit',
-    'exitDate',
-    'exitPrice',
-    'currentPrice',
-    'action'
-  ];
-
   const columns: TableColumnsType<Signal> = isMobile
     ? baseColumns.filter((col) => mobileColumnKeys.includes(col.key as string))
     : baseColumns;
+
+  const detailColumns: TableColumnsType<Signal> = baseColumns
+    .filter((col) => detailColumnKeys.includes(col.key as string))
+    .map((col, index) => ({
+      ...col,
+      sorter: undefined,
+      onHeaderCell: undefined,
+      fixed: index === 0 ? undefined : col.fixed
+    }));
 
   return (
     <div css={rootStyles}>
@@ -1253,9 +1286,45 @@ export const AlertLogsTable = ({
               </div>
             )
           }}
-          // footer={() => (
-          //   <LatestHitOnePercentTickerTape alertLogsFilter={filter} />
-          // )}
+          expandable={{
+            expandIcon: ({ expanded, onExpand, record }) =>
+              expanded ? (
+                <Badge count={record.countSignal}>
+                  <Button
+                    style={{
+                      width: '28px',
+                      height: '28px'
+                    }}
+                    onClick={(e) => onExpand(record, e)}
+                    icon={<Icon icon='arrowDown' width={16} height={16} />}
+                  />
+                </Badge>
+              ) : (
+                <Badge count={record.countSignal}>
+                  <Button
+                    style={{ width: '28px', height: '28px' }}
+                    onClick={(e) => onExpand(record, e)}
+                    icon={<Icon icon='right' width={18} height={18} />}
+                  />
+                </Badge>
+              ),
+            expandedRowRender: (row) => (
+              <Table
+                css={detailTableStyles}
+                dataSource={expandedSymbols[row.symbol] || []}
+                columns={detailColumns}
+                rowKey={(record) => record.key}
+                size='small'
+                pagination={false}
+                loading={expandedLoading.includes(row.symbol)}
+                scroll={{
+                  x: 1200
+                }}
+              />
+            ),
+            rowExpandable: (record) => record.countSignal > 1,
+            onExpand: handleExpandRow
+          }}
           pagination={{
             position: ['bottomCenter'],
             pageSizeOptions: [
@@ -1319,6 +1388,10 @@ const tableStyles = css`
     overflow: hidden;
     max-height: 4.6rem;
     height: 100%;
+  }
+
+  .ant-table-expanded-row-fixed {
+    padding: 0;
   }
 `;
 
@@ -1400,4 +1473,23 @@ const exitBtnContainerStyles = css`
 
 const refreshIconStyles = css`
   margin-top: 0.2rem;
+`;
+
+const detailTableStyles = css`
+  padding: 1.6rem 1rem;
+  .ant-table {
+    margin-inline: 0 !important;
+  }
+
+  .ant-table-thead {
+    .ant-table-cell {
+      background: var(--table-header-bg-color);
+    }
+  }
+
+  .ant-table-row {
+    .ant-table-cell {
+      background: var(--table-row-bg-color);
+    }
+  }
 `;

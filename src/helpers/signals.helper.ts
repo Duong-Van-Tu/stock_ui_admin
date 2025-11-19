@@ -133,7 +133,43 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       performanceScore: stock[fieldMapping.performanceScore],
       avgSentiment: stock[fieldMapping.avgSentiment],
       verifyNews: stock[fieldMapping.verifyNews],
-      isPutOptions: stock[fieldMapping.isPutOptions]
+      isPutOptions: stock[fieldMapping.isPutOptions],
+      countSignal: stock[fieldMapping.countSignal]
     } as Signal;
   });
 };
+
+export const mobileColumnKeys = [
+  'symbol',
+  'avgSentiment',
+  'strategyName',
+  'timeFrame',
+  'AIRecommendationSignal',
+  'manualRecommendation',
+  'AIRating',
+  'AIExplain',
+  'entryDate',
+  'entryPrice',
+  'stopLoss',
+  'newStopLoss',
+  'takeProfit',
+  'exitDate',
+  'exitPrice',
+  'currentPrice',
+  'action'
+];
+
+export const detailColumnKeys = [
+  'index',
+  'strategyName',
+  'timeFrame',
+  'AIRecommendationSignal',
+  'manualRecommendation',
+  'AIRating',
+  'AIExplain',
+  'entryDate',
+  'entryPrice',
+  'exitDate',
+  'exitPrice',
+  'currentPrice'
+];
