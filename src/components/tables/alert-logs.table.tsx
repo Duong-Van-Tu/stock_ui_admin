@@ -69,6 +69,8 @@ import {
   mobileColumnKeys,
   transformSignalsData
 } from '@/helpers/signals.helper';
+import dayjs from 'dayjs';
+import { TimeZone } from '@/constants/timezone.constant';
 
 type AlertLogsTableProps = {
   isFilterPage?: boolean;
@@ -106,18 +108,18 @@ export const AlertLogsTable = ({
   const handleExpandRow = async (expanded: boolean, record: Signal) => {
     if (expanded) {
       setExpandedLoading((prev) => [...prev, record.symbol]);
-      const toEntryDate = new Date();
-      const fromEntryDate = new Date();
-      fromEntryDate.setDate(toEntryDate.getDate() - 3);
 
-      function formatDate(d: Date) {
-        return d.toISOString().slice(0, 10);
-      }
+      const toEntryDate = dayjs().tz(TimeZone.NEW_YORK);
+      const fromEntryDate = toEntryDate
+        .subtract(2, 'day')
+        .tz(TimeZone.NEW_YORK);
+
+      const formatDate = (d: dayjs.Dayjs) => d.format('YYYY-MM-DD');
+
       const detail = await defaultApiFetcher.get(
         'tickers/get-stock-alert-log',
         {
           query: {
-            isImport: 0,
             page: 1,
             limit: 9999,
             symbol: record.symbol,
@@ -1299,7 +1301,7 @@ export const AlertLogsTable = ({
                     icon={<Icon icon='arrowDown' width={16} height={16} />}
                   />
                 </Badge>
-              ) : (
+              ) : record.countSignal > 1 ? (
                 <Badge count={record.countSignal}>
                   <Button
                     style={{ width: '28px', height: '28px' }}
@@ -1307,7 +1309,7 @@ export const AlertLogsTable = ({
                     icon={<Icon icon='right' width={18} height={18} />}
                   />
                 </Badge>
-              ),
+              ) : null,
             expandedRowRender: (row) => (
               <Table
                 css={detailTableStyles}

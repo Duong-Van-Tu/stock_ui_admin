@@ -135,6 +135,8 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       verifyNews: stock[fieldMapping.verifyNews],
       isPutOptions: stock[fieldMapping.isPutOptions],
       countSignal: stock[fieldMapping.countSignal]
+        ? Number(stock[fieldMapping.countSignal])
+        : 0
     } as Signal;
   });
 };
