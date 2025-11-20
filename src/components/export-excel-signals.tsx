@@ -34,24 +34,19 @@ export const ExportExcelLog = ({
   const { setWatchList, resFromWS } = useContext(SocketContext);
   const [loading, setLoading] = useState(false);
 
-  const { fromEntryDate, toEntryDate, fromExitDate, toExitDate } = filter;
-
   const handleExportExcelSignal = async () => {
     setLoading(true);
     const response = await defaultApiFetcher.get(
       isFilterPage
-        ? 'tickers/get-stock-alert-log'
-        : 'tickers/get-stock-alert-log-filter',
+        ? 'tickers/get-stock-alert-log-filter'
+        : 'tickers/get-stock-alert-log',
       {
         query: {
           page: 1,
           limit: PAGINATION_PARAMS.unLimit,
           sortField: fieldMapping.entryDate,
-          fromEntryDate,
-          toEntryDate,
-          fromExitDate,
-          toExitDate,
-          sortType: 'desc'
+          sortType: 'desc',
+          ...filter
         }
       }
     );
