@@ -22,6 +22,7 @@ import {
 import { isMobile } from 'react-device-detect';
 import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
+import { PeriodOptions } from '@/constants/common.constant';
 
 type AlertLogsFilterProps = {
   customStyles?: SerializedStyles;
@@ -162,6 +163,11 @@ export const AlertLogsFilter = ({
     [industries, t]
   );
 
+  const periodOptions = Object.values(PeriodOptions).map((value) => ({
+    value,
+    label: value
+  }));
+
   const updateSearchParams = (key: string, value?: string) => {
     const params = new URLSearchParams(searchParams.toString());
     value ? params.set(key, value) : params.delete(key);
@@ -192,7 +198,8 @@ export const AlertLogsFilter = ({
         ? values.industry.includes(' & ')
           ? values.industry.replace(/ & /g, ' @ ')
           : values.industry
-        : ''
+        : '',
+      timeFrame: values.timeFrame
     });
   }, [form, debouncedEmit, isOption, symbol]);
 
@@ -206,7 +213,8 @@ export const AlertLogsFilter = ({
       toExitDate: undefined,
       strategyId: undefined,
       sector: undefined,
-      industry: undefined
+      industry: undefined,
+      timeFrame: undefined
     });
     form.submit();
   };
@@ -256,7 +264,7 @@ export const AlertLogsFilter = ({
         labelCol={{ span: isMobile ? 3 : undefined }}
         css={formStyles}
         layout='horizontal'
-        initialValues={{ quickRange: 'today' }}
+        initialValues={{ quickRange: 'today', timeFrame: '' }}
       >
         <Row gutter={[16, 12]} align='bottom' justify='end'>
           <Col css={fullWidthStyles}>
@@ -275,6 +283,29 @@ export const AlertLogsFilter = ({
                 options={strategyOptions}
                 onChange={(value) => {
                   updateSearchParams('strategyId', value?.toString());
+                  form.submit();
+                }}
+              />
+            </Form.Item>
+          </Col>
+          <Col css={fullWidthStyles}>
+            <Form.Item
+              css={formItemStyles}
+              name='timeFrame'
+              label={<span css={labelStyles}>{t('period')}</span>}
+            >
+              <Select
+                css={periodStyles}
+                options={[
+                  { value: '', label: t('allPeriod') },
+                  ...periodOptions
+                ]}
+                onChange={(value) => {
+                  if (value === '') {
+                    form.setFieldValue('timeFrame', undefined);
+                  } else {
+                    form.setFieldValue('timeFrame', value);
+                  }
                   form.submit();
                 }}
               />
@@ -433,6 +464,10 @@ const selectSectorStyles = css`
 
 const selectIndustryStyles = css`
   width: ${isMobile ? '100%' : '20rem !important'};
+`;
+
+const periodStyles = css`
+  width: ${isMobile ? '100%' : '12rem !important'};
 `;
 
 const selectQuickRangeStyles = css`

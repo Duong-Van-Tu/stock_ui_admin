@@ -20,8 +20,9 @@ import { defaultApiFetcher } from '@/utils/api-instances';
 import { useNotification } from '@/hooks/notification.hook';
 import { Empty, Select, Spin } from 'antd';
 import { calculateRSI, formatNumberShort, formatPercent } from '@/utils/common';
+import { PeriodOptions } from '@/constants/common.constant';
 
-const periodOptions = ['15M', '1H'];
+export const periodOptions = Object.values(PeriodOptions);
 
 type ExtendedCandlestickData = Omit<CandlestickData, 'time'> & {
   time: UTCTimestamp;
@@ -71,8 +72,11 @@ export const ChartBackTest = ({
   const tenkan135SeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
 
   const [selectedPeriod, setSelectedPeriod] = useState(
-    periodOptions.includes(period) ? period : '1H'
+    periodOptions.includes(period as PeriodOptions)
+      ? period
+      : PeriodOptions.OneHour
   );
+
   const [candlestickData, setCandlestickData] = useState<
     ExtendedCandlestickData[]
   >([]);

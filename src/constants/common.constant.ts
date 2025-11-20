@@ -44,3 +44,12 @@ export enum GapDirection {
   GAP_DOWN = 'DOWN',
   NO_CHANGE = 'NO_CHANGE'
 }
+
+export enum PeriodOptions {
+  OneDay = '1D',
+  OneHour = '1H',
+  ThirtyMinutes = '30M',
+  FifteenMinutes = '15M',
+  TenMinutes = '10M',
+  FiveMinutes = '5M'
+}
