@@ -110,6 +110,7 @@ export const AlertLogsFilter = ({
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const isFirstRender = useRef(true);
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
   const isOption = searchParams.get('isOption')
@@ -248,7 +249,10 @@ export const AlertLogsFilter = ({
   }, [symbol, form]);
 
   useEffect(() => {
-    handleQuickRangeChange(defaultQuickRange);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      handleQuickRangeChange(defaultQuickRange);
+    }
   }, [defaultQuickRange, handleQuickRangeChange]);
 
   useEffect(() => {
