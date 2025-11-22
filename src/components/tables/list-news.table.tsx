@@ -75,7 +75,7 @@ export const ListNewsTable = () => {
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
-          symbol: symbol ? symbol : undefined,
+          symbol: symbol ?? undefined,
           ...filteredFilter
         })
       );
@@ -85,24 +85,20 @@ export const ListNewsTable = () => {
   );
 
   useEffect(() => {
-    fetchListNews({});
     return () => {
       dispatch(resetState());
     };
-  }, [fetchListNews, dispatch]);
+  }, [dispatch]);
 
   const handleFilter = (values: {
     fromDate?: string;
     toDate?: string;
     urgency?: number[];
   }) => {
-    const next = { ...filter, ...values };
-    setFilter(next);
-    console.log('next filter', next);
+    const newFilter = { ...filter, ...values };
+    setFilter(newFilter);
     fetchListNews({
-      page: PAGINATION.currentPage,
-      pageSize: pagination.pageSize,
-      filter: next
+      filter: newFilter
     });
   };
 

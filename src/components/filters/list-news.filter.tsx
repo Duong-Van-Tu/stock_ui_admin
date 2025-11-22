@@ -14,6 +14,7 @@ import {
   watchSectors
 } from '@/redux/slices/stock-score.slice';
 import { isDesktop, isMobile } from 'react-device-detect';
+import { useSearchParams } from 'next/navigation';
 
 type Props = {
   customStyles?: SerializedStyles;
@@ -24,6 +25,8 @@ export const ListNewsFilter = ({ customStyles, onFilter }: Props) => {
   const t = useTranslations();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const symbol = searchParams.get('symbol');
 
   const industries = useAppSelector(watchIndustries);
   const sectors = useAppSelector(watchSectors);
@@ -66,7 +69,8 @@ export const ListNewsFilter = ({ customStyles, onFilter }: Props) => {
       toDate: to,
       urgency,
       sector: v.sector || undefined,
-      industry: v.industry || undefined
+      industry: v.industry || undefined,
+      symbol: symbol || undefined
     });
   };
 
@@ -118,6 +122,10 @@ export const ListNewsFilter = ({ customStyles, onFilter }: Props) => {
   useEffect(() => {
     dispatch(getSectorsV2());
   }, [dispatch]);
+
+  useEffect(() => {
+    form.submit();
+  }, [symbol, form]);
 
   return (
     <div css={[rootStyles, customStyles]}>
