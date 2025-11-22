@@ -1293,10 +1293,7 @@ export const AlertLogsTable = ({
               expanded ? (
                 <Badge count={record.countSignal} color='#faad14'>
                   <Button
-                    style={{
-                      width: '28px',
-                      height: '28px'
-                    }}
+                    css={expandIconBtnStyles}
                     onClick={(e) => onExpand(record, e)}
                     icon={<Icon icon='arrowDown' width={16} height={16} />}
                   />
@@ -1304,7 +1301,7 @@ export const AlertLogsTable = ({
               ) : record.countSignal > 1 ? (
                 <Badge count={record.countSignal} color='#faad14'>
                   <Button
-                    style={{ width: '28px', height: '28px' }}
+                    css={expandIconBtnStyles}
                     onClick={(e) => onExpand(record, e)}
                     icon={<Icon icon='right' width={18} height={18} />}
                   />
@@ -1497,4 +1494,9 @@ const detailTableStyles = css`
       background: var(--table-row-bg-color);
     }
   }
+`;
+
+const expandIconBtnStyles = css`
+  width: 2.8rem !important;
+  height: 2.8rem;
 `;
