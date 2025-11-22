@@ -207,7 +207,7 @@ export const AlertLogsFilter = ({
   const handleClearFilters = () => {
     form.resetFields();
     updateSearchParams('strategyId');
-    handleQuickRangeChange('today');
+    handleQuickRangeChange(defaultQuickRange);
     debouncedEmit({
       fromEntryDate: undefined,
       toEntryDate: undefined,
