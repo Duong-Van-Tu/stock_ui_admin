@@ -207,6 +207,7 @@ export const AlertLogsFilter = ({
   const handleClearFilters = () => {
     form.resetFields();
     updateSearchParams('strategyId');
+    handleQuickRangeChange('today');
     debouncedEmit({
       fromEntryDate: undefined,
       toEntryDate: undefined,
@@ -249,11 +250,19 @@ export const AlertLogsFilter = ({
   }, [symbol, form]);
 
   useEffect(() => {
-    if (isFirstRender.current) {
+    if (isFirstRender.current && latestEntryDate) {
       isFirstRender.current = false;
-      handleQuickRangeChange(defaultQuickRange);
+      const [start, end] = getEntryRangeByOption(
+        defaultQuickRange,
+        latestEntryDate
+      );
+      form.setFieldsValue({
+        quickRange: defaultQuickRange,
+        entryDate: start && end ? [start, end] : undefined
+      });
+      form.submit();
     }
-  }, [defaultQuickRange, handleQuickRangeChange]);
+  }, [defaultQuickRange, latestEntryDate, form]);
 
   useEffect(() => {
     handleQuickRangeChange(form.getFieldValue('quickRange'));
@@ -268,7 +277,7 @@ export const AlertLogsFilter = ({
         labelCol={{ span: isMobile ? 3 : undefined }}
         css={formStyles}
         layout='horizontal'
-        initialValues={{ quickRange: 'today', timeFrame: '' }}
+        initialValues={{ timeFrame: '' }}
       >
         <Row gutter={[16, 12]} align='bottom' justify='end'>
           <Col css={fullWidthStyles}>
