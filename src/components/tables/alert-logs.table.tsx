@@ -1376,6 +1376,9 @@ const tableWrapperStyles = css`
 `;
 
 const tableStyles = css`
+  .ant-badge-multiple-words {
+    padding: 0;
+  }
   .ant-table-cell {
     padding: ${isMobile
       ? '0.6rem 0.8rem !important'
