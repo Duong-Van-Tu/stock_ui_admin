@@ -232,5 +232,8 @@ export const fieldMapping: Record<string, string> = {
   storyText: 'story_text',
   source: 'info_source',
   isPutOptions: 'is_put_options',
-  countSignal: 'count_signal'
+  countSignal: 'count_signal',
+  grokRating: 'grok_rating',
+  grokReasoning: 'grok_reasoning',
+  grokRec: 'grok_rec'
 };

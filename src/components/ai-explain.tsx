@@ -5,13 +5,14 @@ import { useTranslations } from 'next-intl';
 type AIExplainProps = {
   symbol: string;
   text: string;
+  title?: string;
 };
-export const AIExplain = ({ symbol, text }: AIExplainProps) => {
+export const AIExplain = ({ symbol, text, title }: AIExplainProps) => {
   const t = useTranslations();
   return (
     <div css={rootStyles}>
       <h3>
-        {t('aiExplain')} (<span>{symbol}</span>)
+        {title ? title : t('aiExplain')} (<span>{symbol}</span>)
       </h3>
       <p>{text}</p>
     </div>

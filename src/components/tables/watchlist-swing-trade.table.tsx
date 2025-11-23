@@ -708,6 +708,72 @@ export const WatchlistSwingTradeTable = () => {
         )
     },
     {
+      title: t('grokRating'),
+      dataIndex: 'grokRating',
+      key: 'grokRating',
+      width: 100,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'grokRating' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('grokRating')
+      }),
+      align: 'center'
+    },
+    {
+      title: t('grokRec'),
+      dataIndex: 'grokRec',
+      key: 'grokRec',
+      width: 160,
+      defaultSortOrder: 'descend',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'grokRec' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('grokRec')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText
+            isPositive={value === Recommendation.BUY}
+            isNegative={value === Recommendation.SELL}
+          >
+            <span css={recommendationStyles}>{value}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
+      title: t('grokReasoning'),
+      dataIndex: 'grokReasoning',
+      key: 'grokReasoning',
+      width: 110,
+      align: 'center',
+      render: (value, record) =>
+        value ? (
+          <Button
+            onClick={() =>
+              modal.openModal(
+                <AIExplain
+                  title={t('grokReasoning')}
+                  symbol={record.symbol}
+                  text={value}
+                />
+              )
+            }
+            type='link'
+            block
+          >
+            {t('viewDetails')}
+          </Button>
+        ) : (
+          '-'
+        )
+    },
+    {
       title: t('gapUpDown'),
       dataIndex: 'percentGap',
       key: 'percentGap',

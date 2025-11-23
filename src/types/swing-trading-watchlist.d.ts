@@ -73,6 +73,10 @@ type WatchlistSwingTrade = {
   performanceWeek: number;
   performanceMonth: number;
   stockInfo: StockInfo;
+  grokRating: number;
+  grokRating: number;
+  grokReasoning: string;
+  grokRec: string;
 };
 
 type HistoryWatchlistSwingTrade = {
