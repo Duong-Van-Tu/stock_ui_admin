@@ -109,10 +109,9 @@ export const AlertLogsTable = ({
     if (expanded) {
       setExpandedLoading((prev) => [...prev, record.symbol]);
 
-      const toEntryDate = dayjs().tz(TimeZone.NEW_YORK);
-      const fromEntryDate = toEntryDate
-        .subtract(2, 'day')
-        .tz(TimeZone.NEW_YORK);
+      const entryDate = dayjs(record.entryDate).tz(TimeZone.NEW_YORK);
+      const fromEntryDate = entryDate.subtract(2, 'day').tz(TimeZone.NEW_YORK);
+      const toEntryDate = entryDate;
 
       const formatDate = (d: dayjs.Dayjs) => d.format('YYYY-MM-DD');
 
