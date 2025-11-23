@@ -176,5 +176,8 @@ export const detailColumnKeys = [
   'entryPrice',
   'exitDate',
   'exitPrice',
-  'currentPrice'
+  'currentPrice',
+  'grokRating',
+  'grokRec',
+  'grokReasoning'
 ];
