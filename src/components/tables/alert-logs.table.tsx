@@ -1383,9 +1383,7 @@ export const AlertLogsTable = ({
                 size='small'
                 pagination={false}
                 loading={expandedLoading.includes(row.symbol)}
-                scroll={{
-                  x: 1200
-                }}
+                scroll={{ x: 'max-content' }}
               />
             ),
             rowExpandable: (record) => record.countSignal > 1,
