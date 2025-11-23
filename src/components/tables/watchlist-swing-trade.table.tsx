@@ -659,7 +659,8 @@ export const WatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('AIRating')
       }),
-      align: 'center'
+      align: 'center',
+      render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
       title: t('aiRecommendation'),
@@ -719,7 +720,8 @@ export const WatchlistSwingTradeTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('grokRating')
       }),
-      align: 'center'
+      align: 'center',
+      render: (value) => (value ? roundToDecimals(value) : '-')
     },
     {
       title: t('grokRec'),

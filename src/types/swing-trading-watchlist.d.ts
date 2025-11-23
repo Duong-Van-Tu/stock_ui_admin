@@ -74,7 +74,6 @@ type WatchlistSwingTrade = {
   performanceMonth: number;
   stockInfo: StockInfo;
   grokRating: number;
-  grokRating: number;
   grokReasoning: string;
   grokRec: string;
 };

@@ -80,6 +80,9 @@ type Signal = {
   verifyNews: boolean;
   isPutOptions: boolean;
   countSignal: number;
+  grokRating: number;
+  grokReasoning: string;
+  grokRec: string;
 };
 
 type AlertLogsFilter = Filter & {
