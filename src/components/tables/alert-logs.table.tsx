@@ -5,6 +5,8 @@ import { Key, useCallback, useEffect, useState } from 'react';
 import {
   Badge,
   Button,
+  Checkbox,
+  Drawer,
   Segmented,
   Space,
   Table,
@@ -1229,7 +1231,7 @@ export const AlertLogsTable = ({
     ? baseColumns.filter((col) => mobileColumnKeys.includes(col.key as string))
     : baseColumns;
 
-  const detailColumns: TableColumnsType<Signal> = baseColumns
+  const detailColumns: TableColumnsType<Signal> = columns
     .filter((col) => detailColumnKeys.includes(col.key as string))
     .map((col, index) => ({
       ...col,
@@ -1238,181 +1240,236 @@ export const AlertLogsTable = ({
       fixed: index === 0 ? undefined : col.fixed
     }));
 
-  return (
-    <div css={rootStyles}>
-      <AlertLogsFilter onFilter={handleFilter} />
-      <div css={tableWrapperStyles}>
-        <div css={tableTopStyles}>
-          <div css={titleContainerStyles}>
-            <TableTitle customStyles={titleStyles}>
-              <span>
-                {isFilterPage ? t('alertLogsFilter') : t('alertLogs')}
-              </span>
-              <Tooltip title={!isMobile && t('refresh')}>
-                <Button
-                  onClick={handleRefresh}
-                  type='text'
-                  icon={
-                    <Icon
-                      customStyles={refreshIconStyles}
-                      icon='refresh'
-                      width={22}
-                      height={22}
-                    />
-                  }
-                  shape='circle'
-                />
-              </Tooltip>
-            </TableTitle>
-            <div css={exitBtnContainerStyles}>
-              {selectedIds.size > 0 && (
-                <Button
-                  onClick={() =>
-                    modal.openModal(
-                      <ExitSignal
-                        ids={Array.from(selectedIds)}
-                        setSelectedIds={setSelectedIds}
-                        title={t('exitSelectedSignals')}
-                        description={t('confirmExitSelected')}
-                      />,
-                      { width: 400 }
-                    )
-                  }
-                  icon={
-                    <Icon
-                      icon='exit'
-                      fill={
-                        selectedIds.size <= 0
-                          ? 'var(--gray-light-color)'
-                          : 'var(--orange-color)'
-                      }
-                      width={18}
-                      height={18}
-                    />
-                  }
-                  css={exitBtnStyles}
-                  disabled={selectedIds.size <= 0}
-                  size={isMobile ? 'small' : 'middle'}
-                  danger
-                >
-                  {t('exitSelected')}
-                </Button>
-              )}
-            </div>
-          </div>
+  const [visibleColumns, setVisibleColumns] = useState(
+    baseColumns.map((col) => col.key)
+  );
+  const [isDrawerVisible, setDrawerVisible] = useState(false);
 
-          <Segmented
-            css={segmentedStyles(sideBarCollapsed)}
-            options={[
-              {
-                label: <div css={segmentedLabelStyles}>{t('stocks')}</div>,
-                value: AlertLogsView.STOCKS
-              },
-              {
-                label: <div css={segmentedLabelStyles}>{t('options')}</div>,
-                value: AlertLogsView.OPTIONS
-              }
-            ]}
-            defaultValue={
-              isOption ? AlertLogsView.OPTIONS : AlertLogsView.STOCKS
-            }
-            onChange={(value) => handleChangeView(value)}
-          />
-          {(isDesktop || (isMobile && selectedIds.size > 0)) && (
-            <div css={actionStyles}>
-              {isDesktop && (
-                <Space>
-                  <ExportExcelLog filter={filter} isFilterPage={isFilterPage} />
-                  <ImportSymbolButton url='tickers-profile/import' />
-                  <DownloadSymbolTemplateButton />
-                </Space>
-              )}
-            </div>
-          )}
-        </div>
-        <Table<Signal>
-          size='small'
-          css={tableStyles}
-          rowKey={(record) => record.key}
-          rowSelection={isMobile ? undefined : rowSelection}
-          columns={columns}
-          dataSource={alertLogsData}
-          loading={loading}
-          scroll={{
-            x: 1200,
-            y:
-              alertLogsData.length > 0
-                ? isMobile
-                  ? height - 220
-                  : height - 366
-                : undefined
-          }}
-          sortDirections={['descend', 'ascend']}
-          locale={{
-            emptyText: (
-              <div css={emptyStyles(height - 420)}>
-                <EmptyDataTable />
+  const toggleDrawer = () => {
+    setDrawerVisible(!isDrawerVisible);
+  };
+
+  const handleColumnChange = (checkedValues: string[]) => {
+    setVisibleColumns(checkedValues);
+  };
+
+  const filteredColumns = baseColumns.filter((col) =>
+    visibleColumns.includes(col.key)
+  );
+
+  return (
+    <>
+      <div css={rootStyles}>
+        <AlertLogsFilter onFilter={handleFilter} />
+        <div css={tableWrapperStyles}>
+          <div css={tableTopStyles}>
+            <div css={titleContainerStyles}>
+              <TableTitle customStyles={titleStyles}>
+                <span>
+                  {isFilterPage ? t('alertLogsFilter') : t('alertLogs')}
+                </span>
+                <Tooltip title={!isMobile && t('refresh')}>
+                  <Button
+                    onClick={handleRefresh}
+                    type='text'
+                    icon={
+                      <Icon
+                        customStyles={refreshIconStyles}
+                        icon='refresh'
+                        width={22}
+                        height={22}
+                      />
+                    }
+                    shape='circle'
+                  />
+                </Tooltip>
+                <Tooltip title={!isMobile && t('setColumn')}>
+                  <Button
+                    onClick={toggleDrawer}
+                    type='text'
+                    icon={
+                      <Icon
+                        customStyles={refreshIconStyles}
+                        icon='columnSetting'
+                        width={22}
+                        height={22}
+                      />
+                    }
+                    shape='circle'
+                  />
+                </Tooltip>
+              </TableTitle>
+              <div css={exitBtnContainerStyles}>
+                {selectedIds.size > 0 && (
+                  <Button
+                    onClick={() =>
+                      modal.openModal(
+                        <ExitSignal
+                          ids={Array.from(selectedIds)}
+                          setSelectedIds={setSelectedIds}
+                          title={t('exitSelectedSignals')}
+                          description={t('confirmExitSelected')}
+                        />,
+                        { width: 400 }
+                      )
+                    }
+                    icon={
+                      <Icon
+                        icon='exit'
+                        fill={
+                          selectedIds.size <= 0
+                            ? 'var(--gray-light-color)'
+                            : 'var(--orange-color)'
+                        }
+                        width={18}
+                        height={18}
+                      />
+                    }
+                    css={exitBtnStyles}
+                    disabled={selectedIds.size <= 0}
+                    size={isMobile ? 'small' : 'middle'}
+                    danger
+                  >
+                    {t('exitSelected')}
+                  </Button>
+                )}
               </div>
-            )
-          }}
-          expandable={{
-            expandIcon: ({ expanded, onExpand, record }) =>
-              expanded ? (
-                <Badge count={record.countSignal} color='#faad14'>
-                  <Button
-                    css={expandIconBtnStyles}
-                    onClick={(e) => onExpand(record, e)}
-                    icon={<Icon icon='arrowDown' width={16} height={16} />}
-                  />
-                </Badge>
-              ) : record.countSignal > 1 ? (
-                <Badge count={record.countSignal} color='#faad14'>
-                  <Button
-                    css={expandIconBtnStyles}
-                    onClick={(e) => onExpand(record, e)}
-                    icon={<Icon icon='right' width={18} height={18} />}
-                  />
-                </Badge>
-              ) : null,
-            expandedRowRender: (row) => (
-              <Table
-                css={detailTableStyles}
-                dataSource={expandedSymbols[row.symbol] || []}
-                columns={detailColumns}
-                rowKey={(record) => record.key}
-                size='small'
-                pagination={false}
-                loading={expandedLoading.includes(row.symbol)}
-                scroll={{ x: 'max-content' }}
-              />
-            ),
-            rowExpandable: (record) => record.countSignal > 1,
-            onExpand: handleExpandRow
-          }}
-          pagination={{
-            position: ['bottomCenter'],
-            pageSizeOptions: [
-              '10',
-              '20',
-              '50',
-              '100',
-              '200',
-              '300',
-              '400',
-              '500'
-            ],
-            showSizeChanger: true,
-            showQuickJumper: true,
-            current: pagination.currentPage,
-            pageSize: pagination.pageSize,
-            total: pagination.total,
-            onChange: (page, pageSize) => {
-              fetchDataAlertLogs({ page, pageSize, filter });
-            }
-          }}
-        />
+            </div>
+
+            <Segmented
+              css={segmentedStyles(sideBarCollapsed)}
+              options={[
+                {
+                  label: <div css={segmentedLabelStyles}>{t('stocks')}</div>,
+                  value: AlertLogsView.STOCKS
+                },
+                {
+                  label: <div css={segmentedLabelStyles}>{t('options')}</div>,
+                  value: AlertLogsView.OPTIONS
+                }
+              ]}
+              defaultValue={
+                isOption ? AlertLogsView.OPTIONS : AlertLogsView.STOCKS
+              }
+              onChange={(value) => handleChangeView(value)}
+            />
+            {(isDesktop || (isMobile && selectedIds.size > 0)) && (
+              <div css={actionStyles}>
+                {isDesktop && (
+                  <Space>
+                    <ExportExcelLog
+                      filter={filter}
+                      isFilterPage={isFilterPage}
+                    />
+                    <ImportSymbolButton url='tickers-profile/import' />
+                    <DownloadSymbolTemplateButton />
+                  </Space>
+                )}
+              </div>
+            )}
+          </div>
+          <Table<Signal>
+            size='small'
+            css={tableStyles}
+            rowKey={(record) => record.key}
+            rowSelection={isMobile ? undefined : rowSelection}
+            columns={filteredColumns}
+            dataSource={alertLogsData}
+            loading={loading}
+            scroll={{
+              x: 1200,
+              y:
+                alertLogsData.length > 0
+                  ? isMobile
+                    ? height - 220
+                    : height - 366
+                  : undefined
+            }}
+            sortDirections={['descend', 'ascend']}
+            locale={{
+              emptyText: (
+                <div css={emptyStyles(height - 420)}>
+                  <EmptyDataTable />
+                </div>
+              )
+            }}
+            expandable={{
+              expandIcon: ({ expanded, onExpand, record }) =>
+                expanded ? (
+                  <Badge count={record.countSignal} color='#faad14'>
+                    <Button
+                      css={expandIconBtnStyles}
+                      onClick={(e) => onExpand(record, e)}
+                      icon={<Icon icon='arrowDown' width={16} height={16} />}
+                    />
+                  </Badge>
+                ) : record.countSignal > 1 ? (
+                  <Badge count={record.countSignal} color='#faad14'>
+                    <Button
+                      css={expandIconBtnStyles}
+                      onClick={(e) => onExpand(record, e)}
+                      icon={<Icon icon='right' width={18} height={18} />}
+                    />
+                  </Badge>
+                ) : null,
+              expandedRowRender: (row) => (
+                <Table
+                  css={detailTableStyles}
+                  dataSource={expandedSymbols[row.symbol] || []}
+                  columns={detailColumns}
+                  rowKey={(record) => record.key}
+                  size='small'
+                  pagination={false}
+                  loading={expandedLoading.includes(row.symbol)}
+                  scroll={{ x: 'max-content' }}
+                />
+              ),
+              rowExpandable: (record) => record.countSignal > 1,
+              onExpand: handleExpandRow
+            }}
+            pagination={{
+              position: ['bottomCenter'],
+              pageSizeOptions: [
+                '10',
+                '20',
+                '50',
+                '100',
+                '200',
+                '300',
+                '400',
+                '500'
+              ],
+              showSizeChanger: true,
+              showQuickJumper: true,
+              current: pagination.currentPage,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+              onChange: (page, pageSize) => {
+                fetchDataAlertLogs({ page, pageSize, filter });
+              }
+            }}
+          />
+        </div>
       </div>
-    </div>
+
+      <Drawer
+        title={t('setColumn')}
+        placement='right'
+        onClose={toggleDrawer}
+        visible={isDrawerVisible}
+      >
+        <Checkbox.Group
+          options={baseColumns.map((col) => ({
+            label: typeof col.title === 'function' ? col.title({}) : col.title,
+            value: String(col.key)
+          }))}
+          value={visibleColumns.map(String)}
+          onChange={(checkedValues) =>
+            handleColumnChange(checkedValues as string[])
+          }
+        />
+      </Drawer>
+    </>
   );
 };
 

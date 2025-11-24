@@ -56,6 +56,7 @@ import OptionChainPut from '@/assets/svg/option-chain-put.svg';
 import Right from '@/assets/svg/right.svg';
 import Left from '@/assets/svg/left.svg';
 import ArrowDown from '@/assets/svg/arrow-down.svg';
+import ColumnSetting from '@/assets/svg/column-setting.svg';
 
 type IconProps = {
   width?: number | string;
@@ -120,7 +121,8 @@ const svgList = {
   OptionChainPut,
   Right,
   Left,
-  ArrowDown
+  ArrowDown,
+  ColumnSetting
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = Object.entries(
