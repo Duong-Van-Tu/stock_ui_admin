@@ -107,7 +107,8 @@ export const AlertLogsTable = ({
 
   const handleExpandRow = async (expanded: boolean, record: Signal) => {
     if (expanded) {
-      setExpandedLoading((prev) => [...prev, record.symbol]);
+      const compositeKey = `${record.symbol}_${record.id}`;
+      setExpandedLoading((prev) => [...prev, compositeKey]);
 
       const entryDate = dayjs(record.entryDate).tz(TimeZone.NEW_YORK);
       const fromEntryDate = entryDate.subtract(2, 'day').tz(TimeZone.NEW_YORK);
@@ -130,9 +131,9 @@ export const AlertLogsTable = ({
 
       setExpandedSymbols((prev) => ({
         ...prev,
-        [record.symbol]: transformSignalsData(detail.data.result)
+        [compositeKey]: transformSignalsData(detail.data.result)
       }));
-      setExpandedLoading((prev) => prev.filter((sym) => sym !== record.symbol));
+      setExpandedLoading((prev) => prev.filter((key) => key !== compositeKey));
     }
   };
 
@@ -1374,18 +1375,21 @@ export const AlertLogsTable = ({
                   />
                 </Badge>
               ) : null,
-            expandedRowRender: (row) => (
-              <Table
-                css={detailTableStyles}
-                dataSource={expandedSymbols[row.symbol] || []}
-                columns={detailColumns}
-                rowKey={(record) => record.key}
-                size='small'
-                pagination={false}
-                loading={expandedLoading.includes(row.symbol)}
-                scroll={{ x: 'max-content' }}
-              />
-            ),
+            expandedRowRender: (row) => {
+              const compositeKey = `${row.symbol}_${row.id}`;
+              return (
+                <Table
+                  css={detailTableStyles}
+                  dataSource={expandedSymbols[compositeKey] || []}
+                  columns={detailColumns}
+                  rowKey={(record) => record.key}
+                  size='small'
+                  pagination={false}
+                  loading={expandedLoading.includes(compositeKey)}
+                  scroll={{ x: 'max-content' }}
+                />
+              );
+            },
             rowExpandable: (record) => record.countSignal > 1,
             onExpand: handleExpandRow
           }}
