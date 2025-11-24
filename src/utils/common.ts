@@ -332,3 +332,23 @@ export const calculateRSI = (
 
   return out;
 };
+
+export const toBusinessDay = (d: dayjs.Dayjs) => {
+  let dd = d;
+  while (dd.day() === 6 || dd.day() === 0) {
+    dd = dd.subtract(1, 'day');
+  }
+  return dd;
+};
+
+export const subtractBusinessDays = (d: dayjs.Dayjs, days: number) => {
+  let dd = d;
+  let count = 0;
+  while (count < days) {
+    dd = dd.subtract(1, 'day');
+    if (dd.day() !== 6 && dd.day() !== 0) {
+      count += 1;
+    }
+  }
+  return dd;
+};
