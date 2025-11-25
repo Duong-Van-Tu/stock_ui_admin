@@ -20,7 +20,9 @@ import {
   formatNumberShort,
   formatPercent,
   isNumeric,
-  roundToDecimals
+  roundToDecimals,
+  subtractBusinessDays,
+  toBusinessDay
 } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
@@ -113,8 +115,9 @@ export const AlertLogsTable = ({
       setExpandedLoading((prev) => [...prev, compositeKey]);
 
       const entryDate = dayjs(record.entryDate).tz(TimeZone.NEW_YORK);
-      const fromEntryDate = entryDate.subtract(2, 'day').tz(TimeZone.NEW_YORK);
-      const toEntryDate = entryDate;
+
+      const toEntryDate = toBusinessDay(entryDate);
+      const fromEntryDate = subtractBusinessDays(toEntryDate, 2);
 
       const formatDate = (d: dayjs.Dayjs) => d.format('YYYY-MM-DD');
 

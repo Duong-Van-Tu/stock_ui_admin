@@ -53,15 +53,18 @@ export const SymbolCell = ({
   const t = useTranslations();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerContent, setDrawerContent] = useState<ContentType | null>(null);
+  const [drawerOption, setDrawerOption] = useState<string>('');
 
-  const handleIconClick = (contentType: ContentType) => {
+  const handleIconClick = (contentType: ContentType, option?: string) => {
     setDrawerContent(contentType);
+    setDrawerOption(option ?? '');
     setDrawerVisible(true);
   };
 
   const handleDrawerClose = () => {
     setDrawerVisible(false);
     setDrawerContent(null);
+    setDrawerOption('');
   };
 
   return (
@@ -220,7 +223,7 @@ export const SymbolCell = ({
             <Button
               css={buttonStyles}
               type='text'
-              onClick={() => handleIconClick(ContentType.OPTIONS)}
+              onClick={() => handleIconClick(ContentType.OPTIONS, 'Call')}
             >
               <Icon icon='optionsChanges' width={18} height={18} />
             </Button>
@@ -233,7 +236,7 @@ export const SymbolCell = ({
             <Button
               css={buttonStyles}
               type='text'
-              onClick={() => handleIconClick(ContentType.OPTIONS)}
+              onClick={() => handleIconClick(ContentType.OPTIONS, 'Put')}
             >
               <Icon
                 fill='var(--negative-color)'
@@ -267,7 +270,7 @@ export const SymbolCell = ({
         visible={drawerVisible}
         contentType={drawerContent}
         onClose={handleDrawerClose}
-        option={isPutOptions ? 'Put' : 'Call'}
+        option={drawerOption}
       />
     </>
   );
