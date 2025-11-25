@@ -5,8 +5,6 @@ import { Key, useCallback, useEffect, useState } from 'react';
 import {
   Badge,
   Button,
-  Checkbox,
-  Drawer,
   Segmented,
   Space,
   Table,
@@ -75,6 +73,9 @@ import {
 } from '@/helpers/signals.helper';
 import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
+import { SetColumn } from './columns/set-column';
+import { VisibleColumnsStorageKey } from '@/constants/column.constant';
+import { useLocalStorage } from '@/hooks/local-storage.hook';
 
 type AlertLogsTableProps = {
   isFilterPage?: boolean;
@@ -89,6 +90,10 @@ export const AlertLogsTable = ({
   const searchParams = useSearchParams();
   const { height } = useWindowSize();
   const modal = useModal();
+  const storageKey = isFilterPage
+    ? VisibleColumnsStorageKey.AlertLogsFilter
+    : VisibleColumnsStorageKey.AlertLogs;
+
   const sideBarCollapsed = useAppSelector(watchSideBarCollapsed);
 
   const isOption = searchParams.get('isOption')
@@ -103,6 +108,7 @@ export const AlertLogsTable = ({
 
   const [filter, setFilter] = useState<AlertLogsFilter>({});
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isDrawerVisible, setDrawerVisible] = useState(false);
 
   const [expandedSymbols, setExpandedSymbols] = useState<
     Record<string, Signal[]>
@@ -166,9 +172,7 @@ export const AlertLogsTable = ({
     selectedRowKeys: alertLogsData
       .filter(({ hashAlertLogId }) => selectedIds.has(hashAlertLogId))
       .map(({ key }) => key),
-
     onChange: onSelectChange,
-
     getCheckboxProps: (record) => ({
       disabled: !!record.exitDate
     })
@@ -1244,10 +1248,11 @@ export const AlertLogsTable = ({
       fixed: index === 0 ? undefined : col.fixed
     }));
 
-  const [visibleColumns, setVisibleColumns] = useState(
-    baseColumns.map((col) => col.key)
-  );
-  const [isDrawerVisible, setDrawerVisible] = useState(false);
+  const { value: visibleColumns, setValue: setVisibleColumns } =
+    useLocalStorage<string[]>(
+      storageKey,
+      baseColumns.map((col) => col.key as string)
+    );
 
   const toggleDrawer = () => {
     setDrawerVisible(!isDrawerVisible);
@@ -1258,7 +1263,7 @@ export const AlertLogsTable = ({
   };
 
   const filteredColumns = baseColumns.filter((col) =>
-    visibleColumns.includes(col.key)
+    visibleColumns.includes(col.key as string)
   );
 
   return (
@@ -1416,18 +1421,21 @@ export const AlertLogsTable = ({
                     />
                   </Badge>
                 ) : null,
-              expandedRowRender: (row) => (
-                <Table
-                  css={detailTableStyles}
-                  dataSource={expandedSymbols[row.symbol] || []}
-                  columns={detailColumns}
-                  rowKey={(record) => record.key}
-                  size='small'
-                  pagination={false}
-                  loading={expandedLoading.includes(row.symbol)}
-                  scroll={{ x: 'max-content' }}
-                />
-              ),
+              expandedRowRender: (row) => {
+                const compositeKey = `${row.symbol}_${row.id}`;
+                return (
+                  <Table
+                    css={detailTableStyles}
+                    dataSource={expandedSymbols[compositeKey] || []}
+                    columns={detailColumns}
+                    rowKey={(record) => record.key}
+                    size='small'
+                    pagination={false}
+                    loading={expandedLoading.includes(compositeKey)}
+                    scroll={{ x: 'max-content' }}
+                  />
+                );
+              },
               rowExpandable: (record) => record.countSignal > 1,
               onExpand: handleExpandRow
             }}
@@ -1455,24 +1463,14 @@ export const AlertLogsTable = ({
           />
         </div>
       </div>
-
-      <Drawer
-        title={t('setColumn')}
-        placement='right'
-        onClose={toggleDrawer}
+      <SetColumn
         visible={isDrawerVisible}
-      >
-        <Checkbox.Group
-          options={baseColumns.map((col) => ({
-            label: typeof col.title === 'function' ? col.title({}) : col.title,
-            value: String(col.key)
-          }))}
-          value={visibleColumns.map(String)}
-          onChange={(checkedValues) =>
-            handleColumnChange(checkedValues as string[])
-          }
-        />
-      </Drawer>
+        columns={baseColumns}
+        visibleColumns={visibleColumns}
+        onChange={handleColumnChange}
+        onClose={toggleDrawer}
+        storageKey={storageKey}
+      />
     </>
   );
 };

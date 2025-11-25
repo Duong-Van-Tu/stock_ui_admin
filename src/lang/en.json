@@ -547,5 +547,6 @@
   "urgency": "Urgency",
   "optionChainCall": "Option Chain CALL",
   "optionChainPut": "Option Chain PUT",
-  "setColumn": "Set column"
+  "setColumn": "Set column",
+  "reset": "Reset"
 }

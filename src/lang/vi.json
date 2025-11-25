@@ -547,5 +547,6 @@
   "urgency": "Mức độ",
   "OptionChainCall": "Bảng quyền chọn mua",
   "OptionChainPut": "Bảng quyền chọn bán",
-  "setColumn": "Thiết lập cột"
+  "setColumn": "Thiết lập cột",
+  "reset": "Đặt lại"
 }
