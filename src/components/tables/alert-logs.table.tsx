@@ -1283,7 +1283,7 @@ export const AlertLogsTable = ({
                     type='text'
                     icon={
                       <Icon
-                        customStyles={refreshIconStyles}
+                        customStyles={iconStyles}
                         icon='refresh'
                         width={22}
                         height={22}
@@ -1298,7 +1298,7 @@ export const AlertLogsTable = ({
                     type='text'
                     icon={
                       <Icon
-                        customStyles={refreshIconStyles}
+                        customStyles={iconStyles}
                         icon='columnSetting'
                         width={22}
                         height={22}
@@ -1597,7 +1597,7 @@ const exitBtnContainerStyles = css`
   width: 14.5rem;
 `;
 
-const refreshIconStyles = css`
+const iconStyles = css`
   margin-top: 0.2rem;
 `;
 

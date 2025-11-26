@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Segmented, Table, TableColumnsType } from 'antd';
+import { Button, Segmented, Table, TableColumnsType, Tooltip } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   cleanFalsyValues,
@@ -19,7 +19,6 @@ import {
   watchWatchlistSwingTradePagination,
   getWatchlistSwingTrade,
   resetState
-  // autoUpdateWatchlistSwingTrade
 } from '@/redux/slices/swing-trading-watchlist.slice';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useTranslations } from 'next-intl';
@@ -48,6 +47,9 @@ import StockMiniChart, { DataPoint } from '../charts/stock-mini.chart';
 import { setSideBarCollapsed } from '@/redux/slices/app.slice';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import PriceRangeSlider from '../charts/price-range.chart';
+import { SetColumn } from './columns/set-column';
+import { useLocalStorage } from '@/hooks/local-storage.hook';
+import { VisibleColumnsStorageKey } from '@/constants/column.constant';
 
 export const WatchlistSwingTradeTable = () => {
   const t = useTranslations();
@@ -67,6 +69,9 @@ export const WatchlistSwingTradeTable = () => {
   const loading = useAppSelector(watchWatchlistSwingTradeLoading);
 
   const [filter, setFilter] = useState<WatchlistSwingTradeFilter>({});
+  const [isDrawerVisible, setDrawerVisible] = useState(false);
+
+  const storageKey = VisibleColumnsStorageKey.SwingTradingWatchlist;
 
   const { sortField, sortType, handleSortOrder } =
     useSortOrder<WatchlistSwingTradeFilter>({
@@ -82,8 +87,6 @@ export const WatchlistSwingTradeTable = () => {
         });
       }
     });
-
-  // const filteredFilter = useMemo(() => cleanFalsyValues(filter), [filter]);
 
   const handleChangeView = useCallback(
     (view: WatchlistView) => {
@@ -128,6 +131,15 @@ export const WatchlistSwingTradeTable = () => {
     [symbol, isETF]
   );
 
+  const handleRefresh = useCallback(() => {
+    fetchDataWatchList({
+      page: pagination.currentPage,
+      pageSize: pagination.pageSize,
+      filter
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchDataWatchList, pagination.currentPage, pagination.pageSize, filter]);
+
   const handleFilter = useCallback(
     (values: WatchlistSwingTradeFilter) => {
       setFilter((prev) => {
@@ -147,20 +159,6 @@ export const WatchlistSwingTradeTable = () => {
       dispatch(resetState());
     };
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     dispatch(
-  //       autoUpdateWatchlistSwingTrade({
-  //         page: pagination.currentPage,
-  //         limit: pagination.pageSize,
-  //         ...filteredFilter
-  //       })
-  //     );
-  //   }, 60000);
-
-  //   return () => clearInterval(intervalId);
-  // }, [dispatch, filteredFilter, pagination.currentPage, pagination.pageSize]);
 
   const columns: TableColumnsType<WatchlistSwingTrade> = [
     {
@@ -1235,98 +1233,158 @@ export const WatchlistSwingTradeTable = () => {
     }
   ];
 
-  return (
-    <div css={rootStyles}>
-      <WatchlistSwingTradeFilter
-        customStyles={filterContainerStyles}
-        onFilter={handleFilter}
-      />
-      <div css={tableContainerStyles}>
-        <div css={tableTopStyles}>
-          <div css={tableTopRightStyles}>
-            <TableTitle customStyles={titleStyles}>
-              {t('watchlistSwingTradeTitle')}
-            </TableTitle>
-            <div css={updatedAtStyles}>
-              {watchlistSwingTrade.length > 0 && (
-                <>
-                  <strong>{t('updatedAt')}:</strong>&nbsp;
-                  <span css={dateTextStyles}>
-                    {dayjs(watchlistSwingTrade[0].createdAt)
-                      .tz(TimeZone.NEW_YORK)
-                      .format('MMM D, YYYY h:mm A')}
-                  </span>
-                  <strong>{t('period')}:</strong>&nbsp;
-                  {watchlistSwingTrade[0].period}
-                </>
-              )}
-            </div>
-          </div>
-          {isDesktop && (
-            <Segmented
-              css={segmentedStyles}
-              options={[
-                {
-                  label: (
-                    <div css={segmentedLabelStyles}>{t('regularStocks')}</div>
-                  ),
-                  value: WatchlistView.STOCKS
-                },
-                {
-                  label: <div css={segmentedLabelStyles}>{t('etfStocks')}</div>,
-                  value: WatchlistView.ETF
-                }
-              ]}
-              defaultValue={isETF ? WatchlistView.ETF : WatchlistView.STOCKS}
-              onChange={(value) => handleChangeView(value)}
-            />
-          )}
+  const { value: visibleColumns, setValue: setVisibleColumns } =
+    useLocalStorage<string[]>(
+      storageKey,
+      columns.map((col) => col.key as string)
+    );
 
-          {!isMobile && <ExportExcelSwingWatchlist />}
-        </div>
-        <Table<WatchlistSwingTrade>
-          size={isMobile ? 'small' : 'middle'}
-          css={tableStyles}
-          rowKey='key'
-          columns={columns}
-          dataSource={watchlistSwingTrade}
-          loading={loading}
-          scroll={{
-            x: 1200,
-            y: watchlistSwingTrade.length > 0 ? height - 356 : undefined
-          }}
-          sortDirections={['descend', 'ascend']}
-          locale={{
-            emptyText: (
-              <div css={emptyStyles(height - 400)}>
-                <EmptyDataTable />
-              </div>
-            )
-          }}
-          pagination={{
-            position: ['bottomCenter'],
-            pageSizeOptions: [
-              '10',
-              '20',
-              '50',
-              '100',
-              '200',
-              '300',
-              '400',
-              '500'
-            ],
-            showSizeChanger: true,
-            showQuickJumper: true,
-            current: pagination.currentPage,
-            pageSize: pagination.pageSize,
-            total: pagination.total,
-            onChange: (page, pageSize) => {
-              fetchDataWatchList({ page, pageSize, filter });
-            }
-          }}
+  const toggleDrawer = () => {
+    setDrawerVisible(!isDrawerVisible);
+  };
+
+  const handleColumnChange = (checkedValues: string[]) => {
+    setVisibleColumns(checkedValues);
+  };
+
+  const filteredColumns = columns.filter((col) =>
+    visibleColumns.includes(col.key as string)
+  );
+
+  return (
+    <>
+      <div css={rootStyles}>
+        <WatchlistSwingTradeFilter
+          customStyles={filterContainerStyles}
+          onFilter={handleFilter}
         />
+        <div css={tableContainerStyles}>
+          <div css={tableTopStyles}>
+            <div css={tableTopRightStyles}>
+              <TableTitle customStyles={titleStyles}>
+                <span>{t('watchlistSwingTradeTitle')}</span>
+                <Tooltip title={!isMobile && t('refresh')}>
+                  <Button
+                    onClick={handleRefresh}
+                    type='text'
+                    icon={
+                      <Icon
+                        customStyles={iconStyles}
+                        icon='refresh'
+                        width={22}
+                        height={22}
+                      />
+                    }
+                    shape='circle'
+                  />
+                </Tooltip>
+                <Tooltip title={!isMobile && t('setColumn')}>
+                  <Button
+                    onClick={toggleDrawer}
+                    type='text'
+                    icon={
+                      <Icon
+                        customStyles={iconStyles}
+                        icon='columnSetting'
+                        width={22}
+                        height={22}
+                      />
+                    }
+                    shape='circle'
+                  />
+                </Tooltip>
+              </TableTitle>
+              <div css={updatedAtStyles}>
+                {watchlistSwingTrade.length > 0 && (
+                  <>
+                    <strong>{t('updatedAt')}:</strong>&nbsp;
+                    <span css={dateTextStyles}>
+                      {dayjs(watchlistSwingTrade[0].createdAt)
+                        .tz(TimeZone.NEW_YORK)
+                        .format('MMM D, YYYY h:mm A')}
+                    </span>
+                    <strong>{t('period')}:</strong>&nbsp;
+                    {watchlistSwingTrade[0].period}
+                  </>
+                )}
+              </div>
+            </div>
+            {isDesktop && (
+              <Segmented
+                css={segmentedStyles}
+                options={[
+                  {
+                    label: (
+                      <div css={segmentedLabelStyles}>{t('regularStocks')}</div>
+                    ),
+                    value: WatchlistView.STOCKS
+                  },
+                  {
+                    label: (
+                      <div css={segmentedLabelStyles}>{t('etfStocks')}</div>
+                    ),
+                    value: WatchlistView.ETF
+                  }
+                ]}
+                defaultValue={isETF ? WatchlistView.ETF : WatchlistView.STOCKS}
+                onChange={(value) => handleChangeView(value)}
+              />
+            )}
+
+            {!isMobile && <ExportExcelSwingWatchlist />}
+          </div>
+          <Table<WatchlistSwingTrade>
+            size={isMobile ? 'small' : 'middle'}
+            css={tableStyles}
+            rowKey='key'
+            columns={filteredColumns}
+            dataSource={watchlistSwingTrade}
+            loading={loading}
+            scroll={{
+              x: 1200,
+              y: watchlistSwingTrade.length > 0 ? height - 360 : undefined
+            }}
+            sortDirections={['descend', 'ascend']}
+            locale={{
+              emptyText: (
+                <div css={emptyStyles(height - 400)}>
+                  <EmptyDataTable />
+                </div>
+              )
+            }}
+            pagination={{
+              position: ['bottomCenter'],
+              pageSizeOptions: [
+                '10',
+                '20',
+                '50',
+                '100',
+                '200',
+                '300',
+                '400',
+                '500'
+              ],
+              showSizeChanger: true,
+              showQuickJumper: true,
+              current: pagination.currentPage,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+              onChange: (page, pageSize) => {
+                fetchDataWatchList({ page, pageSize, filter });
+              }
+            }}
+          />
+        </div>
       </div>
-    </div>
+      <SetColumn
+        visible={isDrawerVisible}
+        columns={columns}
+        visibleColumns={visibleColumns}
+        onChange={handleColumnChange}
+        onClose={toggleDrawer}
+        storageKey={storageKey}
+      />
+    </>
   );
 };
 
@@ -1347,7 +1405,13 @@ const tableStyles = css`
 `;
 
 const titleStyles = css`
-  min-width: 30%;
+  width: ${isMobile ? '100%' : 'unset'};
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  span {
+    line-height: 2rem;
+  }
 `;
 
 const tableTopStyles = css`
@@ -1425,4 +1489,8 @@ const dayChartBtnStyles = css`
   &:hover {
     background: unset !important;
   }
+`;
+
+const iconStyles = css`
+  margin-top: 0.2rem;
 `;
