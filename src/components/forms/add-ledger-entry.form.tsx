@@ -507,12 +507,33 @@ const formContainerStyles = css`
   padding-bottom: 4.8rem;
   max-height: calc(100vh - 14.8rem);
   width: 100%;
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  padding-right: ${isDesktop ? '1.4rem' : 0};
+
+  ${!isMobile &&
+  `
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f5f5f5;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 3px;
+    }
+    scrollbar-width: thin;
+    scrollbar-color: #c1c1c1 #f5f5f5;
+  `}
+
+  ${isMobile &&
+  `
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  `}
 `;
 
 const titleStyles = css`
