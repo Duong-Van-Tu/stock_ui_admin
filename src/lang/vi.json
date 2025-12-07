@@ -548,5 +548,6 @@
   "OptionChainCall": "Bảng quyền chọn mua",
   "OptionChainPut": "Bảng quyền chọn bán",
   "setColumn": "Thiết lập cột",
-  "reset": "Đặt lại"
+  "reset": "Đặt lại",
+  "sendOnlyToMyApp": "Chỉ gửi cho My App"
 }

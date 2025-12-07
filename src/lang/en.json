@@ -548,5 +548,6 @@
   "optionChainCall": "Option Chain CALL",
   "optionChainPut": "Option Chain PUT",
   "setColumn": "Set column",
-  "reset": "Reset"
+  "reset": "Reset",
+  "sendOnlyToMyApp": "Send only to My App"
 }

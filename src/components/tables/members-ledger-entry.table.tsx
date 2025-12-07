@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Table, Button, Tooltip, Space } from 'antd';
+import { Table, Button, Tooltip, Space, Checkbox } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -43,6 +43,7 @@ export function MembersLedgerEntry() {
   const [importing, setImporting] = useState<boolean>(false);
   const [sendingMap, setSendingMap] = useState<Record<string, boolean>>({});
   const [bulkSending, setBulkSending] = useState(false);
+  const [sendAppOnly, setSendAppOnly] = useState(false);
 
   const uniqueMembers = members
     .filter(
@@ -106,7 +107,8 @@ export function MembersLedgerEntry() {
           ...ledgerEntry!,
           notes: cleanNotes
         },
-        telegrams: member.telegram ? [member.telegram] : []
+        telegrams: member.telegram ? [member.telegram] : [],
+        sendApp: sendAppOnly
       })
     );
     if (isRequestSuccess(res)) {
@@ -141,7 +143,8 @@ export function MembersLedgerEntry() {
           ...ledgerEntry!,
           notes: cleanNotes
         },
-        telegrams
+        telegrams,
+        sendApp: sendAppOnly
       })
     );
 
@@ -254,7 +257,7 @@ export function MembersLedgerEntry() {
           />
         </Tooltip>
         <div css={actionHeaderStyles}>
-          <Space>
+          <Space >
             <Button
               type='primary'
               css={sendBtnStyles}
@@ -276,6 +279,12 @@ export function MembersLedgerEntry() {
             >
               {t('sendSelected')}
             </Button>
+            <Checkbox
+              checked={sendAppOnly}
+              onChange={(e) => setSendAppOnly(e.target.checked)}
+            >
+              {t('sendOnlyToMyApp')}
+            </Checkbox>
             <Button
               type='primary'
               css={entryInfoBtnStyles}

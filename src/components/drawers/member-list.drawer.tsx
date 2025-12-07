@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Table, Button, Drawer } from 'antd';
+import { Table, Button, Drawer, Checkbox } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -35,6 +35,7 @@ export default function MemberListDrawer({
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [sendingMap, setSendingMap] = useState<Record<string, boolean>>({});
   const [bulkSending, setBulkSending] = useState(false);
+  const [sendAppOnly, setSendAppOnly] = useState(false);
 
   const uniqueMembers = members
     .filter(
@@ -57,7 +58,8 @@ export default function MemberListDrawer({
           ...ledgerEntry!,
           notes: cleanNotes
         },
-        telegrams: member.telegram ? [member.telegram] : []
+        telegrams: member.telegram ? [member.telegram] : [],
+        sendApp: sendAppOnly
       })
     );
     if (isRequestSuccess(res)) {
@@ -92,7 +94,8 @@ export default function MemberListDrawer({
           ...ledgerEntry!,
           notes: cleanNotes
         },
-        telegrams
+        telegrams,
+        sendApp: sendAppOnly
       })
     );
 
@@ -216,6 +219,14 @@ export default function MemberListDrawer({
           >
             {t('sendSelected')}
           </Button>
+          <div css={checkboxWrapperStyles}>
+            <Checkbox
+              checked={sendAppOnly}
+              onChange={(e) => setSendAppOnly(e.target.checked)}
+            >
+              {t('sendOnlyToMyApp')}
+            </Checkbox>
+          </div>
         </div>
         <Table
           size={isMobile ? 'small' : 'middle'}
@@ -246,10 +257,16 @@ const actionHeaderStyles = css`
   padding: 2.4rem 0 1.2rem;
   display: flex;
   justify-content: ${isMobile ? 'flex-end' : 'space-between'};
+  align-items: center;
   .ant-space {
     width: ${isMobile && '100%'};
     justify-content: ${isMobile && 'space-between'};
   }
+`;
+
+const checkboxWrapperStyles = css`
+  display: flex;
+  align-items: center;
 `;
 
 const titleStyles = css`

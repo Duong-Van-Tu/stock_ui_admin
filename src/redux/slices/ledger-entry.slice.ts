@@ -186,6 +186,7 @@ export const ledgerEntrySlice = createAppSlice({
         emails: string[];
         telegrams: string[];
         ledgerEntry: LedgerEntry;
+        sendApp: boolean;
       }) => {
         const response = await defaultApiFetcher.post(
           'users/send-ledger-email',
