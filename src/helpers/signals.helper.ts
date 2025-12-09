@@ -168,6 +168,7 @@ export const detailColumnKeys = [
   'index',
   'strategyName',
   'timeFrame',
+  'manualRecommendation',
   'entryDate',
   'entryPrice',
   'currentPrice',
@@ -176,7 +177,5 @@ export const detailColumnKeys = [
   'grokReasoning',
   'highestPrice',
   'highestPrice3Days',
-  'lowestPrice3Days',
-  'highestPrice7Days',
-  'lowestPrice7Days'
+  'lowestPrice3Days'
 ];
