@@ -169,7 +169,6 @@ export const detailColumnKeys = [
   'strategyName',
   'timeFrame',
   'manualRecommendation',
-  'AIExplain',
   'entryDate',
   'entryPrice',
   'currentPrice',
