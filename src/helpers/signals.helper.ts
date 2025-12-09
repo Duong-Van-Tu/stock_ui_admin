@@ -168,16 +168,15 @@ export const detailColumnKeys = [
   'index',
   'strategyName',
   'timeFrame',
-  'AIRecommendationSignal',
   'manualRecommendation',
-  'AIRating',
   'AIExplain',
   'entryDate',
   'entryPrice',
-  'exitDate',
-  'exitPrice',
   'currentPrice',
   'grokRating',
   'grokRec',
-  'grokReasoning'
+  'grokReasoning',
+  'highestPrice',
+  'highestPrice3Days',
+  'lowestPrice3Days'
 ];
