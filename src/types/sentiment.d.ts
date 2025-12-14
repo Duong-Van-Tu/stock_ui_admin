@@ -117,3 +117,13 @@ type FinnhubAndLsegNewsTableItem = {
   horizon: string;
   newsType: string;
 };
+
+type NewsScore = {
+  key: string;
+  symbol: string;
+  finnhubAggScore: number;
+  lsegAggScore: number;
+  avgAggScore: number;
+  finnhubLatestDatetime: string;
+  lsegLatestDatetime: string;
+};

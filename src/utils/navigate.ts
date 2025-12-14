@@ -43,6 +43,10 @@ export namespace PageURLs {
     return withPrefix('/finnhub-lseg');
   }
 
+  export function ofInsightScore() {
+    return withPrefix('/insight-score');
+  }
+
   export function ofHighActivity() {
     return withPrefix('/high-activity');
   }

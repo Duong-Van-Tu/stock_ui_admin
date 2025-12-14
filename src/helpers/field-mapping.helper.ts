@@ -242,5 +242,11 @@ export const fieldMapping: Record<string, string> = {
   articleScore: 'article_score',
   timeWeight: 'time_weight',
   weightedScore: 'weighted_score',
-  sourceType: 'source_type'
+  sourceType: 'source_type',
+  finnhubAggScore: 'finnhub_agg_score',
+  lsegAggScore: 'lseg_agg_score',
+  avgAggScore: 'avg_agg_score',
+  finnhubLatestDatetime: 'finnhub_latest_datetime',
+  lsegLatestDatetime: 'lseg_latest_datetime',
+  typeDay: 'type_day'
 };

@@ -362,4 +362,4 @@ export const isUrl = (text: string): boolean => {
 };
 
 export const scaleScore = (value?: number): number | undefined =>
-  isNumeric(value) ? roundToDecimals(value)! * 10 : undefined;
+  isNumeric(value) ? roundToDecimals(value! * 10, 1)! : undefined;

@@ -73,6 +73,12 @@ export const getMenuStructure = (
       link: PageURLs.ofNews()
     },
     {
+      label: t('newsScores'),
+      key: 'insight-score',
+      iconType: 'insightScore',
+      link: PageURLs.ofInsightScore()
+    },
+    {
       label: t('finnhubLsegNews'),
       key: 'finnhub-lseg',
       iconType: 'finnhubLseg',

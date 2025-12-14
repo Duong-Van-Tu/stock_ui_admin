@@ -31,8 +31,10 @@ import EllipsisText from '../ellipsis-text';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useModal } from '@/hooks/modal.hook';
 import { SentimentSCore } from '../charts/sentiment-score.chart';
+import { useTranslations } from 'next-intl';
 
 export const FinnhubAndLsegNewsTable = () => {
+  const t = useTranslations();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
@@ -99,7 +101,7 @@ export const FinnhubAndLsegNewsTable = () => {
   const columns: TableColumnsType<FinnhubAndLsegNewsTableItem> = useMemo(
     () => [
       {
-        title: 'STT',
+        title: t('stt'),
         dataIndex: 'index',
         key: 'index',
         width: 70,
@@ -120,33 +122,18 @@ export const FinnhubAndLsegNewsTable = () => {
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('symbol')
         }),
-        render: (value) => (
-          <div css={symbolColumnStyles}>
-            <div css={listSymbolStyles}>
-              {(value
-                ? Array.isArray(value)
-                  ? value
-                  : String(value)
-                      .split(',')
-                      .map((s) => s.trim())
-                : []
-              ).map((symbol: string) => (
-                <SymbolCell key={symbol} symbol={symbol} />
-              ))}
-            </div>
-          </div>
-        )
+        render: (value) => <SymbolCell symbol={value} />
       },
       {
         title: 'Source',
-        dataIndex: 'source',
-        key: 'source',
-        width: 80,
+        dataIndex: 'sourceType',
+        key: 'sourceType',
+        width: 86,
         sorter: true,
         showSorterTooltip: false,
-        sortOrder: sortField === 'source' ? sortType : null,
+        sortOrder: sortField === 'sourceType' ? sortType : null,
         onHeaderCell: () => ({
-          onClick: () => handleSortOrder('source')
+          onClick: () => handleSortOrder('sourceType')
         }),
         align: 'center'
       },
@@ -162,7 +149,7 @@ export const FinnhubAndLsegNewsTable = () => {
           onClick: () => handleSortOrder('datetime')
         }),
         align: 'center',
-        render: (value) => <DateTimeCell value={value} />
+        render: (value) => (value ? <DateTimeCell value={value} /> : '-')
       },
       {
         title: 'Headline',
@@ -175,7 +162,8 @@ export const FinnhubAndLsegNewsTable = () => {
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('headline')
         }),
-        render: (value) => <EllipsisText text={value} maxLines={2} />
+        render: (value) =>
+          value ? <EllipsisText text={value} maxLines={2} /> : '-'
       },
       {
         title: 'Story',
@@ -236,7 +224,7 @@ export const FinnhubAndLsegNewsTable = () => {
           onClick: () => handleSortOrder('direction')
         }),
         align: 'center',
-        render: (value) => value ?? '-'
+        render: (value) => (value ? value : '-')
       },
       {
         title: 'Horizon',
@@ -470,18 +458,4 @@ const storyStyles = css`
   p {
     margin-bottom: 0;
   }
-`;
-
-const symbolColumnStyles = css`
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-`;
-
-const listSymbolStyles = css`
-  display: flex;
-  flex-direction: column;
-  max-height: 10.4rem;
-  overflow-y: auto;
 `;

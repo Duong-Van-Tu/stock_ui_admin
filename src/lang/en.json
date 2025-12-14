@@ -551,5 +551,7 @@
   "reset": "Reset",
   "sendOnlyToMyApp": "Send only to My App",
   "finnhubLsegNews": "Finnhub & LSEG News",
-  "finnhubLsegNewsPage": "Page Finnhub & LSEG News"
+  "finnhubLsegNewsDescription": "Finnhub & LSEG News Page",
+  "newsScores": "News scores",
+  "newsScoresDescription": "News scores Page"
 }

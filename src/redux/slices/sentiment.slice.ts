@@ -4,7 +4,8 @@ import {
   transformCountSentiment,
   transformLisNewsSentiment,
   transformListNewsLatest,
-  transformListWatcher
+  transformListWatcher,
+  transformNewsScores
 } from '@/helpers/sentiment.helper';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
@@ -19,6 +20,7 @@ export type SentimentState = {
   loadingNewsSentiment: boolean;
   loadingListNews: boolean;
   loadingFinnhubAndLsegNews: boolean;
+  loadingNewsScores: boolean;
   listNews: NewsSentiment[];
   countSentiment: CountSentiment;
   companyNews: CompanyNews[];
@@ -26,11 +28,13 @@ export type SentimentState = {
   newLatest: NewsLatest[];
   newsSentiment: NewsSentiment[];
   finnhubAndLsegNews: any[];
+  newsScores: NewsScore[];
   pagination: Pagination;
   listWatcherPagination: Pagination;
   newsLatestPagination: Pagination;
   listNewsPagination: Pagination;
   finnhubAndLsegNewsPagination: Pagination;
+  newsScoresPagination: Pagination;
 };
 
 const initialState: SentimentState = {
@@ -41,6 +45,7 @@ const initialState: SentimentState = {
   loadingNewsSentiment: false,
   loadingListNews: false,
   loadingFinnhubAndLsegNews: false,
+  loadingNewsScores: false,
   listNews: [],
   countSentiment: {
     countPositive: 0,
@@ -53,11 +58,13 @@ const initialState: SentimentState = {
   newLatest: [],
   newsSentiment: [],
   finnhubAndLsegNews: [],
+  newsScores: [],
   pagination: PAGINATION,
   listWatcherPagination: PAGINATION,
   newsLatestPagination: PAGINATION,
   listNewsPagination: PAGINATION,
-  finnhubAndLsegNewsPagination: PAGINATION
+  finnhubAndLsegNewsPagination: PAGINATION,
+  newsScoresPagination: PAGINATION
 };
 
 export const SentimentSlice = createAppSlice({
@@ -68,9 +75,7 @@ export const SentimentSlice = createAppSlice({
       async ({ symbol, query }: SentimentParams) => {
         const response = await defaultApiFetcher.get(
           `stock-scores/count-sentiment-detail/${symbol}`,
-          {
-            query
-          }
+          { query }
         );
         return response.data[0];
       },
@@ -84,10 +89,10 @@ export const SentimentSlice = createAppSlice({
         },
         rejected: (state) => {
           state.loadingCountSentiment = false;
-          state.countSentiment = state.countSentiment;
         }
       }
     ),
+
     getCompanyNews: create.asyncThunk(
       async ({ symbol, query }: SentimentParams) => {
         const response = await defaultApiFetcher.get(
@@ -116,13 +121,12 @@ export const SentimentSlice = createAppSlice({
         }
       }
     ),
+
     getListWatcher: create.asyncThunk(
       async (query?: SentimentFilter) => {
         const response = await defaultApiFetcher.get(
           'stock-scores/list-watcher',
-          {
-            query
-          }
+          { query }
         );
         return response.data;
       },
@@ -146,13 +150,12 @@ export const SentimentSlice = createAppSlice({
         }
       }
     ),
+
     getNewsLatest: create.asyncThunk(
       async (query?: SentimentFilter) => {
         const response = await defaultApiFetcher.get(
           'stock-scores/list-news-latest',
-          {
-            query
-          }
+          { query }
         );
         return response.data;
       },
@@ -176,6 +179,7 @@ export const SentimentSlice = createAppSlice({
         }
       }
     ),
+
     getTickerNewsSentiment: create.asyncThunk(
       async ({ symbol, query }: SentimentParams) => {
         const response = await defaultApiFetcher.get(
@@ -200,13 +204,12 @@ export const SentimentSlice = createAppSlice({
         }
       }
     ),
+
     getListNews: create.asyncThunk(
       async (query?: Record<string, any>) => {
         const response = await defaultApiFetcher.get(
           'tickers/get-news-sentiment-details',
-          {
-            query
-          }
+          { query }
         );
         return response.data;
       },
@@ -231,6 +234,7 @@ export const SentimentSlice = createAppSlice({
         }
       }
     ),
+
     getFinnhubAndLsegNews: create.asyncThunk(
       async (query?: Record<string, any>) => {
         const response = await defaultApiFetcher.get('news/list', {
@@ -244,11 +248,8 @@ export const SentimentSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.loadingFinnhubAndLsegNews = false;
-
           const result = action.payload.result ?? [];
-
           state.finnhubAndLsegNews = transformFinnhubAndLsegNews(result);
-
           state.finnhubAndLsegNewsPagination = {
             currentPage: action.payload.currentPage,
             pageSize: Number(action.payload.limit),
@@ -262,6 +263,37 @@ export const SentimentSlice = createAppSlice({
         }
       }
     ),
+
+    getNewsScores: create.asyncThunk(
+      async (query?: Record<string, any>) => {
+        const response = await defaultApiFetcher.get('news/news-scores', {
+          query: query ? convertParamsByMapping(query) : {}
+        });
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loadingNewsScores = true;
+        },
+        fulfilled: (state, action) => {
+          state.loadingNewsScores = false;
+          state.newsScores = transformNewsScores(
+            action.payload.data?.result || action.payload.result || []
+          );
+          state.newsScoresPagination = {
+            currentPage: action.payload.currentPage,
+            pageSize: action.payload.limit,
+            total: action.payload.totalResult
+          };
+        },
+        rejected: (state) => {
+          state.loadingNewsScores = false;
+          state.newsScores = [];
+          state.newsScoresPagination = PAGINATION;
+        }
+      }
+    ),
+
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -286,7 +318,10 @@ export const SentimentSlice = createAppSlice({
     watchFinnhubAndLsegNewsLoading: (state) => state.loadingFinnhubAndLsegNews,
     watchFinnhubAndLsegNews: (state) => state.finnhubAndLsegNews,
     watchFinnhubAndLsegNewsPagination: (state) =>
-      state.finnhubAndLsegNewsPagination
+      state.finnhubAndLsegNewsPagination,
+    watchNewsScoresLoading: (state) => state.loadingNewsScores,
+    watchNewsScores: (state) => state.newsScores,
+    watchNewsScoresPagination: (state) => state.newsScoresPagination
   }
 });
 
@@ -308,7 +343,10 @@ export const {
   watchListNewsPagination,
   watchFinnhubAndLsegNewsLoading,
   watchFinnhubAndLsegNews,
-  watchFinnhubAndLsegNewsPagination
+  watchFinnhubAndLsegNewsPagination,
+  watchNewsScoresLoading,
+  watchNewsScores,
+  watchNewsScoresPagination
 } = SentimentSlice.selectors;
 
 export const {
@@ -319,5 +357,6 @@ export const {
   getTickerNewsSentiment,
   getListNews,
   getFinnhubAndLsegNews,
+  getNewsScores,
   resetState
 } = SentimentSlice.actions;

@@ -551,5 +551,7 @@
   "reset": "Đặt lại",
   "sendOnlyToMyApp": "Chỉ gửi cho My App",
   "finnhubLsegNews": "Tin tức từ Finnhub & LSEG",
-  "finnhubLsegNewsPage": "Trang tin tức Finnhub & LSEG"
+  "finnhubLsegNewsPage": "Trang tin tức Finnhub & LSEG",
+  "insightScore": "Điểm tin tức",
+  "insightScorePage": "Trang điểm tin tức"
 }

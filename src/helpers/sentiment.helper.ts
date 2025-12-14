@@ -177,3 +177,15 @@ export const transformFinnhubAndLsegNews = (
     sourceType: item[fieldMapping.sourceType]
   }));
 };
+
+export const transformNewsScores = (list: any[] = []): NewsScore[] => {
+  return list.map((item) => ({
+    key: uuid(),
+    symbol: item.symbol,
+    finnhubAggScore: Number(item[fieldMapping.finnhubAggScore]),
+    lsegAggScore: Number(item[fieldMapping.lsegAggScore]),
+    avgAggScore: Number(item[fieldMapping.avgAggScore]),
+    finnhubLatestDatetime: item[fieldMapping.finnhubLatestDatetime],
+    lsegLatestDatetime: item[fieldMapping.lsegLatestDatetime]
+  }));
+};
