@@ -73,16 +73,16 @@ export const getMenuStructure = (
       link: PageURLs.ofNews()
     },
     {
-      label: t('earnings'),
-      key: 'earnings',
-      iconType: 'earnings',
-      link: PageURLs.ofEarings()
-    },
-    {
       label: t('finnhubLsegNews'),
       key: 'finnhub-lseg',
       iconType: 'finnhubLseg',
       link: PageURLs.ofFinnhubLsegNews()
+    },
+    {
+      label: t('earnings'),
+      key: 'earnings',
+      iconType: 'earnings',
+      link: PageURLs.ofEarings()
     },
     // ...(!isMobile
     //   ? [

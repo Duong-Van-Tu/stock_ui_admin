@@ -102,7 +102,7 @@ export const FinnhubAndLsegNewsTable = () => {
         title: 'STT',
         dataIndex: 'index',
         key: 'index',
-        width: 64,
+        width: 70,
         align: 'center',
         fixed: !isMobile && 'left',
         render: (_v, _r, index) =>
