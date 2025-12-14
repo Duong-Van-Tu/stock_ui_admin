@@ -246,6 +246,7 @@ export const NewsScoresTable = () => {
           <Radio.Group
             value={filter.typeDay}
             onChange={(e) => handleTypeDayChange(e.target.value)}
+            buttonStyle='solid'
           >
             <Radio.Button value={1}>1 Day</Radio.Button>
             <Radio.Button value={3}>3 Day</Radio.Button>
