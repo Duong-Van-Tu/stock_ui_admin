@@ -235,5 +235,12 @@ export const fieldMapping: Record<string, string> = {
   countSignal: 'count_signal',
   grokRating: 'grok_rating',
   grokReasoning: 'grok_reasoning',
-  grokRec: 'grok_rec'
+  grokRec: 'grok_rec',
+  newsRelevance: 'news_relevance',
+  newsScore: 'news_score',
+  newsType: 'news_type',
+  articleScore: 'article_score',
+  timeWeight: 'time_weight',
+  weightedScore: 'weighted_score',
+  sourceType: 'source_type'
 };

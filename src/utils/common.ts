@@ -286,11 +286,11 @@ export const tidyTime = (t?: string): string =>
     .replace(/\s+/g, ' ')
     .replace(/:00(?=\s*[ap]m)$/i, '');
 
-export const getTextColor = (clamped: number) => {
-  if (clamped === 0) return '#ffcf4d';
-  if (clamped > 0 && clamped <= 1) return '#91cf60';
-  if (clamped > 1 && clamped <= 2) return '#1a9850';
-  if (clamped < 0 && clamped >= -1) return '#fc8d59';
+export const getTextColor = (value: number) => {
+  if (value === 0) return '#ffcf4d';
+  if (value > 0 && value <= 5) return '#91cf60';
+  if (value > 5) return '#1a9850';
+  if (value < 0 && value >= -5) return '#fc8d59';
   return '#d73027';
 };
 
@@ -352,3 +352,14 @@ export const subtractBusinessDays = (d: dayjs.Dayjs, days: number) => {
   }
   return dd;
 };
+
+export const isUrl = (text: string): boolean => {
+  try {
+    return !!new URL(text);
+  } catch {
+    return false;
+  }
+};
+
+export const scaleScore = (value?: number): number | undefined =>
+  isNumeric(value) ? roundToDecimals(value)! * 10 : undefined;

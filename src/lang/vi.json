@@ -549,5 +549,7 @@
   "OptionChainPut": "Bảng quyền chọn bán",
   "setColumn": "Thiết lập cột",
   "reset": "Đặt lại",
-  "sendOnlyToMyApp": "Chỉ gửi cho My App"
+  "sendOnlyToMyApp": "Chỉ gửi cho My App",
+  "finnhubLsegNews": "Tin tức từ Finnhub & LSEG",
+  "finnhubLsegNewsPage": "Trang tin tức Finnhub & LSEG"
 }

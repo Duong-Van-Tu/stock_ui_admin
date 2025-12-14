@@ -1,6 +1,7 @@
 import { Impact, Sentiment } from '@/constants/common.constant';
 import { v4 as uuid } from 'uuid';
 import { fieldMapping } from './field-mapping.helper';
+import { scaleScore } from '@/utils/common';
 
 export const transformCountSentiment = (sentiment: any): CountSentiment => {
   return {
@@ -148,5 +149,31 @@ export const transformLisNewsSentiment = (listNews: any[]): NewsSentiment[] => {
     versionCreated: item[fieldMapping.versionCreated],
     story: item[fieldMapping.storyText],
     source: item[fieldMapping.source]
+  }));
+};
+
+export const transformFinnhubAndLsegNews = (
+  list: any[] = []
+): FinnhubAndLsegNewsTableItem[] => {
+  return list.map((item) => ({
+    key: uuid(),
+    id: item.id,
+    symbol: item.symbol,
+    datetime: item.datetime,
+    headline: item.headline,
+    image: item.image,
+    source: item.source,
+    summary: item.summary,
+    url: item.url,
+    createDate: item[fieldMapping.createDate],
+    newsRelevance: item[fieldMapping.newsRelevance],
+    newsScore: scaleScore(item[fieldMapping.newsScore]),
+    articleScore: scaleScore(item[fieldMapping.articleScore]),
+    weightedScore: scaleScore(item[fieldMapping.weightedScore]),
+    timeWeight: item[fieldMapping.timeWeight],
+    direction: item.direction,
+    horizon: item.horizon,
+    newsType: item[fieldMapping.newsType],
+    sourceType: item[fieldMapping.sourceType]
   }));
 };

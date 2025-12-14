@@ -1,5 +1,6 @@
 import {
   transformCompanyNews,
+  transformFinnhubAndLsegNews,
   transformCountSentiment,
   transformLisNewsSentiment,
   transformListNewsLatest,
@@ -17,16 +18,19 @@ export type SentimentState = {
   loadingNewsLatest: boolean;
   loadingNewsSentiment: boolean;
   loadingListNews: boolean;
+  loadingFinnhubAndLsegNews: boolean;
   listNews: NewsSentiment[];
   countSentiment: CountSentiment;
   companyNews: CompanyNews[];
   listWatcher: ListWatcher[];
   newLatest: NewsLatest[];
   newsSentiment: NewsSentiment[];
+  finnhubAndLsegNews: any[];
   pagination: Pagination;
   listWatcherPagination: Pagination;
   newsLatestPagination: Pagination;
   listNewsPagination: Pagination;
+  finnhubAndLsegNewsPagination: Pagination;
 };
 
 const initialState: SentimentState = {
@@ -36,6 +40,7 @@ const initialState: SentimentState = {
   loadingNewsLatest: false,
   loadingNewsSentiment: false,
   loadingListNews: false,
+  loadingFinnhubAndLsegNews: false,
   listNews: [],
   countSentiment: {
     countPositive: 0,
@@ -47,10 +52,12 @@ const initialState: SentimentState = {
   listWatcher: [],
   newLatest: [],
   newsSentiment: [],
+  finnhubAndLsegNews: [],
   pagination: PAGINATION,
   listWatcherPagination: PAGINATION,
   newsLatestPagination: PAGINATION,
-  listNewsPagination: PAGINATION
+  listNewsPagination: PAGINATION,
+  finnhubAndLsegNewsPagination: PAGINATION
 };
 
 export const SentimentSlice = createAppSlice({
@@ -224,6 +231,37 @@ export const SentimentSlice = createAppSlice({
         }
       }
     ),
+    getFinnhubAndLsegNews: create.asyncThunk(
+      async (query?: Record<string, any>) => {
+        const response = await defaultApiFetcher.get('news/list', {
+          query: query ? convertParamsByMapping(query) : {}
+        });
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loadingFinnhubAndLsegNews = true;
+        },
+        fulfilled: (state, action) => {
+          state.loadingFinnhubAndLsegNews = false;
+
+          const result = action.payload.result ?? [];
+
+          state.finnhubAndLsegNews = transformFinnhubAndLsegNews(result);
+
+          state.finnhubAndLsegNewsPagination = {
+            currentPage: action.payload.currentPage,
+            pageSize: Number(action.payload.limit),
+            total: action.payload.totalResult
+          };
+        },
+        rejected: (state) => {
+          state.loadingFinnhubAndLsegNews = false;
+          state.finnhubAndLsegNews = [];
+          state.finnhubAndLsegNewsPagination = PAGINATION;
+        }
+      }
+    ),
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -244,7 +282,11 @@ export const SentimentSlice = createAppSlice({
     watchTickerNewsSentiment: (state) => state.newsSentiment,
     watchListNewsLoading: (state) => state.loadingListNews,
     watchListNews: (state) => state.listNews,
-    watchListNewsPagination: (state) => state.listNewsPagination
+    watchListNewsPagination: (state) => state.listNewsPagination,
+    watchFinnhubAndLsegNewsLoading: (state) => state.loadingFinnhubAndLsegNews,
+    watchFinnhubAndLsegNews: (state) => state.finnhubAndLsegNews,
+    watchFinnhubAndLsegNewsPagination: (state) =>
+      state.finnhubAndLsegNewsPagination
   }
 });
 
@@ -263,7 +305,10 @@ export const {
   watchTickerNewsSentiment,
   watchListNewsLoading,
   watchListNews,
-  watchListNewsPagination
+  watchListNewsPagination,
+  watchFinnhubAndLsegNewsLoading,
+  watchFinnhubAndLsegNews,
+  watchFinnhubAndLsegNewsPagination
 } = SentimentSlice.selectors;
 
 export const {
@@ -273,5 +318,6 @@ export const {
   getNewsLatest,
   getTickerNewsSentiment,
   getListNews,
+  getFinnhubAndLsegNews,
   resetState
 } = SentimentSlice.actions;

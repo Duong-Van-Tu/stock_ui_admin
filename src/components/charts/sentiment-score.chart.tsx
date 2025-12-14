@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
 import { css } from '@emotion/react';
 import ReactECharts from 'echarts-for-react';
 import type { EChartsOption } from 'echarts';
@@ -10,7 +9,7 @@ type SentimentSCoreProps = {
 };
 
 export const SentimentSCore = ({ score }: SentimentSCoreProps) => {
-  const clamped = Math.max(-2, Math.min(2, score));
+  const clamped = Math.max(-10, Math.min(10, score));
   const displayValue = String(score);
 
   const option: EChartsOption = {
@@ -21,8 +20,8 @@ export const SentimentSCore = ({ score }: SentimentSCoreProps) => {
     series: [
       {
         type: 'gauge',
-        min: -2,
-        max: 2,
+        min: -10,
+        max: 10,
         startAngle: 90,
         endAngle: -270,
         clockwise: false,

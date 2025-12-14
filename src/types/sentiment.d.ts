@@ -9,6 +9,9 @@ type SentimentFilter = Filter & {
   urgency?: number[];
   sector?: string;
   industry?: string;
+  startDate?: string;
+  endDate?: string;
+  sourceType?: string;
 };
 
 type CountSentiment = {
@@ -91,4 +94,26 @@ type NewsSentiment = {
   story?: string;
   source: string;
   urgency: number;
+};
+
+type FinnhubAndLsegNewsTableItem = {
+  key: string;
+  id: string;
+  symbol: string;
+  datetime: string;
+  headline: string;
+  summary: string;
+  image?: string;
+  url: string;
+  source: string;
+  sourceType: string;
+  createDate: string;
+  newsRelevance: number;
+  newsScore?: number;
+  articleScore?: number;
+  weightedScore?: number;
+  timeWeight: number;
+  direction: string;
+  horizon: string;
+  newsType: string;
 };

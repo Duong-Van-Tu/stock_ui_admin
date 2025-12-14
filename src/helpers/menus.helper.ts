@@ -79,10 +79,10 @@ export const getMenuStructure = (
       link: PageURLs.ofEarings()
     },
     {
-      label: t('AISentiment'),
-      key: 'AI-sentiment',
-      iconType: 'aiSentiment',
-      link: PageURLs.ofAISentiment()
+      label: t('finnhubLsegNews'),
+      key: 'finnhub-lseg',
+      iconType: 'finnhubLseg',
+      link: PageURLs.ofFinnhubLsegNews()
     },
     // ...(!isMobile
     //   ? [

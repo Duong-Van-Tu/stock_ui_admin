@@ -39,6 +39,10 @@ export namespace PageURLs {
     return withPrefix('/AI-sentiment');
   }
 
+  export function ofFinnhubLsegNews() {
+    return withPrefix('/finnhub-lseg');
+  }
+
   export function ofHighActivity() {
     return withPrefix('/high-activity');
   }
