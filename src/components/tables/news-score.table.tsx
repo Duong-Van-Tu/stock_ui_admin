@@ -22,7 +22,7 @@ import { isMobile } from 'react-device-detect';
 import { useTranslations } from 'next-intl';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { DateTimeCell } from './columns/date-time-cell.column';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { PageURLs } from '@/utils/navigate';
 import { SentimentSCore } from '../charts/sentiment-score.chart';
 
@@ -30,6 +30,8 @@ export const NewsScoresTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const route = useRouter();
+  const searchParams = useSearchParams();
+  const symbol = searchParams.get('symbol');
   const { height } = useWindowSize();
 
   const loading = useAppSelector(watchNewsScoresLoading);
@@ -66,11 +68,12 @@ export const NewsScoresTable = () => {
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
+          symbol: symbol ?? undefined,
           ...cleanFalsyValues(filter)
         })
       );
     },
-    [dispatch, sortField, sortType]
+    [dispatch, sortField, sortType, symbol]
   );
 
   useEffect(() => {
@@ -78,7 +81,7 @@ export const NewsScoresTable = () => {
     return () => {
       dispatch(resetState());
     };
-  }, [dispatch]);
+  }, [dispatch, symbol]);
 
   const handleTypeDayChange = (value: number) => {
     const newFilter = {
@@ -229,7 +232,8 @@ export const NewsScoresTable = () => {
       pagination.pageSize,
       sortField,
       sortType,
-      handleSortOrder
+      handleSortOrder,
+      route
     ]
   );
 
