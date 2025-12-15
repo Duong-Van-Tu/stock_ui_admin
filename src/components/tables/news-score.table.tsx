@@ -228,6 +228,7 @@ export const NewsScoresTable = () => {
       }
     ],
     [
+      t,
       pagination.currentPage,
       pagination.pageSize,
       sortField,
