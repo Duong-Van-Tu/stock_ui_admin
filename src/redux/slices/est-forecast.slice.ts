@@ -140,12 +140,22 @@ export const estForecastSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.submitting = false;
+
           if (action.payload) {
-            const [updated] = transformEstForecast([action.payload]);
+            const [updatedListItem] = transformEstForecast([action.payload]);
+            const [updatedFilterItem] = transformEstForecastFilter([
+              action.payload
+            ]);
+
             state.list = state.list.map((item) =>
-              item.id === updated.id ? updated : item
+              item.id === updatedListItem.id ? updatedListItem : item
             );
-            state.detail = updated;
+
+            state.filterList = state.filterList.map((item) =>
+              item.id === updatedFilterItem.id ? updatedFilterItem : item
+            );
+
+            state.detail = updatedListItem;
           }
         },
         rejected: (state) => {

@@ -1,15 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Table, TableColumnsType, Button, Space, Tooltip } from 'antd';
+import {
+  Table,
+  TableColumnsType,
+  Button,
+  Space,
+  Tooltip,
+  Input,
+  InputNumber,
+  DatePicker
+} from 'antd';
+import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   watchEstForecastLoading,
   getEstForecastFilterPaging,
   deleteEstForecast,
   watchEstForecastFilterList,
-  watchEstForecastPagination
+  watchEstForecastPagination,
+  updateEstForecast
 } from '@/redux/slices/est-forecast.slice';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { formatMarketCap, isNumeric, roundToDecimals } from '@/utils/common';
@@ -30,6 +41,11 @@ export const EstForecastSelectedTable = () => {
   const filterList = useAppSelector(watchEstForecastFilterList);
   const pagination = useAppSelector(watchEstForecastPagination);
 
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingRow, setEditingRow] = useState<Partial<EstForecastFilterItem>>(
+    {}
+  );
+
   const handleGoBack = () => {
     router.push(PageURLs.ofEstForecast());
   };
@@ -47,12 +63,102 @@ export const EstForecastSelectedTable = () => {
     );
   }, [dispatch, pagination.currentPage, pagination.pageSize]);
 
+  const startEdit = (record: EstForecastFilterItem) => {
+    setEditingId(record.id!);
+    setEditingRow(record);
+  };
+
+  const saveEdit = () => {
+    if (!editingId) return;
+
+    dispatch(
+      updateEstForecast({
+        id: editingId,
+        payload: editingRow as any
+      })
+    );
+
+    setEditingId(null);
+    setEditingRow({});
+  };
+
+  const renderNumber = (
+    value: any,
+    field: keyof EstForecastFilterItem,
+    record: EstForecastFilterItem,
+    suffix?: string
+  ) => {
+    if (editingId === record.id) {
+      return (
+        <InputNumber
+          value={editingRow[field] as number}
+          onChange={(v) => setEditingRow((prev) => ({ ...prev, [field]: v }))}
+          style={{ width: '100%' }}
+        />
+      );
+    }
+
+    if (!isNumeric(value)) return '-';
+
+    return (
+      <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+        {roundToDecimals(value, 2)}
+        {suffix}
+      </PositiveNegativeText>
+    );
+  };
+
+  const renderText = (
+    value: any,
+    field: keyof EstForecastFilterItem,
+    record: EstForecastFilterItem
+  ) => {
+    if (editingId === record.id) {
+      return (
+        <Input
+          value={editingRow[field] as string}
+          onChange={(e) =>
+            setEditingRow((prev) => ({
+              ...prev,
+              [field]: e.target.value
+            }))
+          }
+        />
+      );
+    }
+    return value || '-';
+  };
+
+  const renderDate = (
+    value: string | undefined,
+    field: keyof EstForecastFilterItem,
+    record: EstForecastFilterItem
+  ) => {
+    if (editingId === record.id) {
+      const currentValue = (editingRow[field] as string | undefined) ?? value;
+
+      return (
+        <DatePicker
+          value={currentValue ? dayjs(currentValue) : null}
+          showTime
+          style={{ width: '100%' }}
+          onChange={(d) =>
+            setEditingRow((prev) => ({
+              ...prev,
+              [field]: d ? d.toISOString() : null
+            }))
+          }
+        />
+      );
+    }
+
+    return value ? <DateTimeCell value={value} /> : '-';
+  };
+
   const columns: TableColumnsType<EstForecastFilterItem> = useMemo(
     () => [
       {
         title: t('stt'),
-        dataIndex: 'index',
-        key: 'index',
         width: 60,
         align: 'center',
         fixed: 'left',
@@ -62,7 +168,6 @@ export const EstForecastSelectedTable = () => {
       {
         title: t('symbol'),
         dataIndex: 'symbol',
-        key: 'symbol',
         width: isMobile ? 110 : 160,
         fixed: 'left',
         render: (_, record) => (
@@ -72,153 +177,104 @@ export const EstForecastSelectedTable = () => {
           />
         )
       },
-      { title: 'Industry', dataIndex: 'industry', key: 'industry', width: 160 },
+      { title: 'Industry', dataIndex: 'industry', width: 160 },
       {
         title: 'Market Cap',
         dataIndex: 'marketCapEstForecast',
-        key: 'marketCapEstForecast',
         width: 110,
         align: 'center',
-        render: (value) => (value ? formatMarketCap(value / 1000000) : '-')
+        render: (v) => (v ? formatMarketCap(v / 1_000_000) : '-')
       },
       {
         title: t('epsEstimate'),
         dataIndex: 'epsEstimate',
-        key: 'epsEstimate',
         width: 120,
         align: 'center',
-        render: (v) =>
-          isNumeric(v) ? (
-            <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
-              {roundToDecimals(v, 2)}
-            </PositiveNegativeText>
-          ) : (
-            '-'
-          )
+        render: (v, r) => renderNumber(v, 'epsEstimate', r)
       },
       {
         title: t('epsActual'),
         dataIndex: 'reportedEps',
-        key: 'reportedEps',
         width: 120,
         align: 'center',
-        render: (v) =>
-          isNumeric(v) ? (
-            <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
-              {roundToDecimals(v, 2)}
-            </PositiveNegativeText>
-          ) : (
-            '-'
-          )
+        render: (v, r) => renderNumber(v, 'reportedEps', r)
       },
       {
         title: 'Surprise',
         dataIndex: 'surprise',
-        key: 'surprise',
         width: 110,
         align: 'center',
-        render: (v) =>
-          isNumeric(v) ? (
-            <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
-              {roundToDecimals(v, 2)}%
-            </PositiveNegativeText>
-          ) : (
-            '-'
-          )
+        render: (v, r) => renderNumber(v, 'surprise', r, '%')
       },
       {
         title: 'YTD %',
         dataIndex: 'ytdPerformance',
-        key: 'ytdPerformance',
         width: 110,
         align: 'center',
-        render: (v) =>
-          isNumeric(v) ? (
-            <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
-              {roundToDecimals(v, 2)}%
-            </PositiveNegativeText>
-          ) : (
-            '-'
-          )
+        render: (v, r) => renderNumber(v, 'ytdPerformance', r, '%')
       },
       {
         title: 'Price Target',
         dataIndex: 'priceTarget',
-        key: 'priceTarget',
         width: 120,
         align: 'center',
-        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+        render: (v, r) => renderNumber(v, 'priceTarget', r)
       },
       {
         title: t('aiRating'),
         dataIndex: 'aiRating',
-        key: 'aiRating',
         width: 100,
         align: 'center',
-        render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
+        render: (v, r) => renderNumber(v, 'aiRating', r)
       },
       {
         title: t('totalScore'),
         dataIndex: 'totalScoreEstForecast',
-        key: 'totalScoreEstForecast',
         width: 120,
         align: 'center',
-        render: (v) =>
-          isNumeric(v) ? (
-            <PositiveNegativeText isPositive={v > 7} isNegative={v < 4}>
-              {roundToDecimals(v, 2)}
-            </PositiveNegativeText>
-          ) : (
-            '-'
-          )
+        render: (v, r) => renderNumber(v, 'totalScoreEstForecast', r)
       },
       {
         title: 'Router Recommendation',
         dataIndex: 'routerRec',
-        key: 'routerRec',
-        align: 'center',
         width: 140,
-        render: (v) => (v ? v : '-')
+        align: 'center',
+        render: (v, r) => renderText(v, 'routerRec', r)
       },
       {
         title: 'Yahoo Recommendation',
         dataIndex: 'yahooRec',
-        key: 'yahooRec',
-        align: 'center',
         width: 140,
-        render: (v) => (v ? v : '-')
+        align: 'center',
+        render: (v, r) => renderText(v, 'yahooRec', r)
       },
       {
         title: 'Call Time',
         dataIndex: 'callTime',
-        key: 'callTime',
-        width: 120,
+        width: 204,
         align: 'center',
-        render: (v) => (v ? <DateTimeCell value={v} /> : '-')
+        render: (v, r) => renderDate(v, 'callTime', r)
       },
       {
         title: 'Growth',
         dataIndex: 'growth',
-        align: 'center',
-        key: 'growth',
         width: 100,
-        render: (v) => (v ? v : '-')
+        align: 'center',
+        render: (v, r) => renderText(v, 'growth', r)
       },
       {
         title: 'GPT',
         dataIndex: 'gpt',
-        key: 'gpt',
         width: 100,
         align: 'center',
-        render: (v) => (v ? v : '-')
+        render: (v, r) => renderText(v, 'gpt', r)
       },
       {
         title: 'Forecast',
         dataIndex: 'forecast',
-        key: 'forecast',
         width: 120,
         align: 'center',
-        render: (v) => (v ? v : '-')
+        render: (v, r) => renderText(v, 'forecast', r)
       },
       {
         title: 'EPS Point',
@@ -226,7 +282,7 @@ export const EstForecastSelectedTable = () => {
         key: 'epsEstimatePoint',
         width: 100,
         align: 'center',
-        render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
+        render: (v, r) => renderNumber(v, 'epsEstimatePoint', r)
       },
       {
         title: 'AI Point',
@@ -234,7 +290,7 @@ export const EstForecastSelectedTable = () => {
         key: 'aiRatingPoint',
         width: 100,
         align: 'center',
-        render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
+        render: (v, r) => renderNumber(v, 'aiRatingPoint', r)
       },
       {
         title: 'Total Score Point',
@@ -242,25 +298,35 @@ export const EstForecastSelectedTable = () => {
         key: 'totalScorePoint',
         width: 138,
         align: 'center',
-        render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
+        render: (v, r) => renderNumber(v, 'totalScorePoint', r)
       },
       {
         title: 'Updated',
         dataIndex: 'updatedAt',
-        key: 'updatedAt',
-        width: 120,
+        width: 204,
         align: 'center',
-        render: (v) => (v ? <DateTimeCell value={v} /> : '-')
+        render: (v, r) => renderDate(v, 'updatedAt', r)
       },
       {
         title: 'Action',
-        key: 'action',
         width: 160,
         align: 'center',
         fixed: !isMobile && 'right',
         render: (_, record) => (
           <Space>
-            <Button type='primary'>Edit</Button>
+            {editingId === record.id ? (
+              <Button
+                style={{ background: '#52c41a', borderColor: '#52c41a' }}
+                type='primary'
+                onClick={saveEdit}
+              >
+                Save
+              </Button>
+            ) : (
+              <Button type='primary' onClick={() => startEdit(record)}>
+                Edit
+              </Button>
+            )}
             <Button
               danger
               onClick={() => dispatch(deleteEstForecast(record.id!))}
@@ -271,7 +337,7 @@ export const EstForecastSelectedTable = () => {
         )
       }
     ],
-    [t, dispatch, pagination.currentPage, pagination.pageSize]
+    [t, pagination.currentPage, pagination.pageSize, editingId, editingRow]
   );
 
   return (
@@ -289,10 +355,10 @@ export const EstForecastSelectedTable = () => {
           <TableTitle>Selected Est Forecast</TableTitle>
         </div>
 
-        <Table<EstForecastFilterItem>
+        <Table
+          rowKey='id'
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
-          rowKey='id'
           columns={columns}
           dataSource={filterList}
           loading={loading}
