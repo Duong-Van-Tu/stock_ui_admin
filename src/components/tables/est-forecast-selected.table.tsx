@@ -32,6 +32,15 @@ import { PageURLs } from '@/utils/navigate';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { SymbolCell } from './columns/symbol-cell.column';
 
+const forecastColor = (v?: string) => {
+  const value = v?.toLowerCase();
+  if (value === 'green') return '#52c41a';
+  if (value === 'yellow') return '#fadb14';
+  if (value === 'orange') return '#fa8c16';
+  if (value === 'red') return '#ff4d4f';
+  return '#595959';
+};
+
 export const EstForecastSelectedTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
@@ -167,14 +176,6 @@ export const EstForecastSelectedTable = () => {
   const columns: TableColumnsType<EstForecastFilterItem> = useMemo(
     () => [
       {
-        title: t('stt'),
-        width: 60,
-        align: 'center',
-        fixed: 'left',
-        render: (_, __, index) =>
-          index + 1 + (pagination.currentPage - 1) * pagination.pageSize
-      },
-      {
         title: t('symbol'),
         dataIndex: 'symbol',
         width: isMobile ? 110 : 160,
@@ -186,65 +187,129 @@ export const EstForecastSelectedTable = () => {
           />
         )
       },
+      {
+        title: 'Created At',
+        dataIndex: 'createdAt',
+        width: 200,
+        fixed: 'left',
+        align: 'center',
+        render: (v, r) => renderDate(v, 'createdAt', r)
+      },
       { title: 'Industry', dataIndex: 'industry', width: 160 },
       {
-        title: 'Market Cap',
+        title: 'Call Time',
+        dataIndex: 'callTime',
+        width: 140,
+        align: 'center',
+        render: (v, r) => renderText(v, 'callTime', r)
+      },
+      {
+        title: 'Beta',
+        dataIndex: 'beta',
+        width: 90,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'beta', r)
+      },
+      {
+        title: 'Market CAP',
         dataIndex: 'marketCapEstForecast',
-        width: 110,
+        width: 130,
         align: 'center',
         render: (v) => (v ? formatMarketCap(v / 1_000_000) : '-')
       },
       {
-        title: t('epsEstimate'),
+        title: 'Result',
+        dataIndex: 'result',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderText(v, 'result', r)
+      },
+      {
+        title: 'EPS Estimate',
         dataIndex: 'epsEstimate',
         width: 120,
         align: 'center',
         render: (v, r) => renderNumber(v, 'epsEstimate', r)
       },
       {
-        title: t('epsActual'),
+        title: 'EPS Point',
+        dataIndex: 'epsEstimatePoint',
+        width: 100,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'epsEstimatePoint', r)
+      },
+      {
+        title: 'Reported EPS',
         dataIndex: 'reportedEps',
         width: 120,
         align: 'center',
         render: (v, r) => renderNumber(v, 'reportedEps', r)
       },
       {
-        title: 'Surprise',
+        title: 'Surprise %',
         dataIndex: 'surprise',
         width: 110,
         align: 'center',
         render: (v, r) => renderNumber(v, 'surprise', r, '%')
       },
       {
-        title: 'YTD %',
+        title: 'Sentiment from Reuters',
+        dataIndex: 'routerRec',
+        width: 180,
+        align: 'center',
+        render: (v, r) => renderText(v, 'routerRec', r)
+      },
+      {
+        title: 'Notes',
+        dataIndex: 'gpt',
+        width: 160,
+        align: 'center',
+        render: (v, r) => renderText(v, 'gpt', r)
+      },
+      {
+        title: 'Prev Pattern',
+        dataIndex: 'prevEstimate',
+        width: 200,
+        align: 'center',
+        render: (v, r) => renderText(v, 'prevEstimate', r)
+      },
+      {
+        title: 'Performance',
         dataIndex: 'ytdPerformance',
-        width: 110,
+        width: 120,
         align: 'center',
         render: (v, r) => renderNumber(v, 'ytdPerformance', r, '%')
       },
       {
-        title: 'Price Target',
-        dataIndex: 'priceTarget',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'priceTarget', r)
-      },
-      {
-        title: t('aiRating'),
+        title: 'AI Rating',
         dataIndex: 'aiRating',
         width: 100,
         align: 'center',
         render: (v, r) => renderNumber(v, 'aiRating', r)
       },
       {
-        title: t('totalScore'),
+        title: 'AI Point',
+        dataIndex: 'aiRatingPoint',
+        width: 100,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'aiRatingPoint', r)
+      },
+      {
+        title: 'Total Score',
         dataIndex: 'totalScoreEstForecast',
         width: 120,
         align: 'center',
         render: (v, r) => renderNumber(v, 'totalScoreEstForecast', r)
       },
       {
-        title: 'Router Recommendation',
+        title: 'Total Score Point',
+        dataIndex: 'totalScorePoint',
+        width: 138,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'totalScorePoint', r)
+      },
+      {
+        title: 'Reuter Recommendation',
         dataIndex: 'routerRec',
         width: 140,
         align: 'center',
@@ -258,14 +323,14 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderText(v, 'yahooRec', r)
       },
       {
-        title: 'Call Time',
-        dataIndex: 'callTime',
-        width: 204,
+        title: 'Price Target',
+        dataIndex: 'priceTarget',
+        width: 120,
         align: 'center',
-        render: (v, r) => renderDate(v, 'callTime', r)
+        render: (v, r) => renderNumber(v, 'priceTarget', r)
       },
       {
-        title: 'Ngrok',
+        title: 'Grok',
         dataIndex: 'ngrok',
         width: 100,
         align: 'center',
@@ -283,35 +348,11 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'forecast',
         width: 120,
         align: 'center',
-        render: (v, r) => renderText(v, 'forecast', r)
-      },
-      {
-        title: 'EPS Point',
-        dataIndex: 'epsEstimatePoint',
-        width: 100,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'epsEstimatePoint', r)
-      },
-      {
-        title: 'AI Point',
-        dataIndex: 'aiRatingPoint',
-        width: 100,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'aiRatingPoint', r)
-      },
-      {
-        title: 'Total Score Point',
-        dataIndex: 'totalScorePoint',
-        width: 138,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'totalScorePoint', r)
-      },
-      {
-        title: 'Created At',
-        dataIndex: 'createdAt',
-        width: 204,
-        align: 'center',
-        render: (v, r) => renderDate(v, 'createdAt', r)
+        render: (v) => (
+          <span style={{ color: forecastColor(v), fontWeight: 600 }}>
+            {v || '-'}
+          </span>
+        )
       },
       {
         title: 'Updated',
@@ -385,7 +426,7 @@ export const EstForecastSelectedTable = () => {
           columns={columns}
           dataSource={filterList}
           loading={loading}
-          scroll={{ x: 2000 }}
+          scroll={{ x: 2400 }}
           pagination={{
             current: pagination.currentPage,
             pageSize: pagination.pageSize,
