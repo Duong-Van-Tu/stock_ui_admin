@@ -33,7 +33,7 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
     yahooRec: item[fieldMapping.yahooRec],
     priceTarget: toNumber(item[fieldMapping.priceTarget]),
 
-    growth: item.growth,
+    ngrok: item.ngrok,
     gpt: item.gpt,
     forecast: item.forecast,
 
@@ -68,7 +68,7 @@ export const transformEstForecastFilter = (
     routerRec: item[fieldMapping.routerRec],
     yahooRec: item[fieldMapping.yahooRec],
     priceTarget: toNumber(item[fieldMapping.priceTarget]),
-    growth: item.growth,
+    ngrok: item.ngrok,
     gpt: item.gpt,
     forecast: item.forecast,
     epsEstimatePoint: item[fieldMapping.epsEstimatePoint],
@@ -78,7 +78,7 @@ export const transformEstForecastFilter = (
     totalScorePoint: item[fieldMapping.totalScorePoint],
     yahooRecPoint: item[fieldMapping.yahooRecPoint],
     priceTargetPoint: item[fieldMapping.priceTargetPoint],
-    growthPoint: item[fieldMapping.growthPoint],
+    ngrokPoint: item[fieldMapping.ngrokPoint],
     gptPoint: item[fieldMapping.gptPoint],
     createdAt: item[fieldMapping.createdAt],
     updatedAt: item[fieldMapping.updatedAt],

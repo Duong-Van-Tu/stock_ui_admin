@@ -18,7 +18,7 @@ type EstForecast = {
   routerRec: string;
   yahooRec: string;
   priceTarget: number;
-  growth: string;
+  ngrok: string;
   gpt: string;
   forecast: string;
   createdAt?: string;
@@ -44,7 +44,7 @@ type EstForecastFilterItem = {
   routerRec: string;
   yahooRec: string;
   priceTarget: number;
-  growth: string;
+  ngrok: string;
   gpt: string;
   forecast: string;
   epsEstimatePoint: number;
@@ -54,7 +54,7 @@ type EstForecastFilterItem = {
   totalScorePoint: number;
   yahooRecPoint: number;
   priceTargetPoint: number;
-  growthPoint: number;
+  ngrokPoint: number;
   gptPoint: number;
   createdAt?: string;
   updatedAt?: string;

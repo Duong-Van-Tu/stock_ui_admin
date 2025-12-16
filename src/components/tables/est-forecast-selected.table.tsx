@@ -266,10 +266,10 @@ export const EstForecastSelectedTable = () => {
       },
       {
         title: 'Ngrok',
-        dataIndex: 'growth',
+        dataIndex: 'ngrok',
         width: 100,
         align: 'center',
-        render: (v, r) => renderText(v, 'growth', r)
+        render: (v, r) => renderText(v, 'ngrok', r)
       },
       {
         title: 'GPT',
