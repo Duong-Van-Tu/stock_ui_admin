@@ -25,26 +25,20 @@ import { isMobile } from 'react-device-detect';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { formatMarketCap, isNumeric, roundToDecimals } from '@/utils/common';
 import { TableTitle } from './title.table';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Icon } from '../icons';
 import { PageURLs } from '@/utils/navigate';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { SymbolCell } from './columns/symbol-cell.column';
 
-const forecastColor = (v?: string) => {
-  const value = v?.toLowerCase();
-  if (value === 'green') return '#52c41a';
-  if (value === 'yellow') return '#fadb14';
-  if (value === 'orange') return '#fa8c16';
-  if (value === 'red') return '#ff4d4f';
-  return '#595959';
-};
+const FORECAST_COLORS = ['#52c41a', '#fadb14', '#fa8c16', '#ff4d4f'];
 
 export const EstForecastSelectedTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const loading = useAppSelector(watchEstForecastLoading);
   const filterList = useAppSelector(watchEstForecastFilterList);
@@ -59,18 +53,31 @@ export const EstForecastSelectedTable = () => {
     router.push(PageURLs.ofEstForecast());
   };
 
+  // ✅ UPDATE: paging + symbol từ URL
   const handlePageChange = (page: number, pageSize: number) => {
-    dispatch(getEstForecastFilterPaging({ page, limit: pageSize }));
+    const symbol = searchParams.get('symbol') || undefined;
+
+    dispatch(
+      getEstForecastFilterPaging({
+        page,
+        limit: pageSize,
+        symbol
+      })
+    );
   };
 
+  // ✅ UPDATE: load data + symbol từ URL
   useEffect(() => {
+    const symbol = searchParams.get('symbol') || undefined;
+
     dispatch(
       getEstForecastFilterPaging({
         page: pagination.currentPage,
-        limit: pagination.pageSize
+        limit: pagination.pageSize,
+        symbol
       })
     );
-  }, [dispatch, pagination.currentPage, pagination.pageSize]);
+  }, [dispatch, pagination.currentPage, pagination.pageSize, searchParams]);
 
   const startEdit = (record: EstForecastFilterItem) => {
     setEditingId(record.id!);
@@ -91,6 +98,7 @@ export const EstForecastSelectedTable = () => {
     setEditingRow({});
   }, [dispatch, editingId, editingRow]);
 
+  // ===== GIỮ NGUYÊN =====
   const renderNumber = useCallback(
     (
       value: any,
@@ -191,7 +199,6 @@ export const EstForecastSelectedTable = () => {
         title: 'Created At',
         dataIndex: 'createdAt',
         width: 200,
-        fixed: 'left',
         align: 'center',
         render: (v, r) => renderDate(v, 'createdAt', r)
       },
@@ -348,18 +355,52 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'forecast',
         width: 120,
         align: 'center',
-        render: (v) => (
-          <span style={{ color: forecastColor(v), fontWeight: 600 }}>
-            {v || '-'}
-          </span>
-        )
-      },
-      {
-        title: 'Updated',
-        dataIndex: 'updatedAt',
-        width: 204,
-        align: 'center',
-        render: (v, r) => renderDate(v, 'updatedAt', r)
+        render: (v, r) => {
+          if (editingId === r.id) {
+            return (
+              <div
+                style={{ display: 'flex', gap: 6, justifyContent: 'center' }}
+              >
+                {FORECAST_COLORS.map((color) => {
+                  const active = editingRow.forecast === color;
+                  return (
+                    <div
+                      key={color}
+                      onClick={() =>
+                        setEditingRow((prev) => ({ ...prev, forecast: color }))
+                      }
+                      style={{
+                        width: 16,
+                        height: 16,
+                        borderRadius: 4,
+                        backgroundColor: color,
+                        cursor: 'pointer',
+                        border: active ? '1px solid #3d3d3d' : '1px solid #ccc'
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            );
+          }
+
+          if (!v) {
+            return '-';
+          }
+
+          return (
+            <div
+              style={{
+                width: '80px',
+                height: '24px',
+                margin: '0 auto',
+                borderRadius: 4,
+                backgroundColor: v,
+                border: '1px solid #ccc'
+              }}
+            />
+          );
+        }
       },
       {
         title: 'Action',
