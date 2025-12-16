@@ -8,7 +8,7 @@ import {
   getEstForecastFilter,
   addEstForecast
 } from '@/redux/slices/est-forecast.slice';
-import { Table, TableColumnsType, Button, DatePicker } from 'antd';
+import { Table, TableColumnsType, Button, DatePicker, Spin } from 'antd';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatMarketCap, isNumeric, roundToDecimals } from '@/utils/common';
@@ -250,40 +250,42 @@ export const EstForecastTable = () => {
   const hasSymbol = Boolean(symbol);
 
   return (
-    <div css={rootStyles}>
-      <div css={tableWrapperStyles}>
-        <div css={titleRowStyles}>
-          <TableTitle>Est Forecast</TableTitle>
-          <Button
-            type='primary'
-            css={viewSelectedButtonStyles}
-            onClick={() => router.push(PageURLs.ofEstForecastSelected())}
-          >
-            View selected symbols
-          </Button>
-        </div>
-
-        {hasSymbol && list.length > 0 ? (
-          <Table
-            size={isMobile ? 'small' : 'middle'}
-            css={tableStyles}
-            rowKey={(record) => record.key!}
-            columns={columns}
-            dataSource={list}
-            loading={loading}
-            scroll={{
-              x: 2000,
-              y: list.length > 0 ? height - 240 : undefined
-            }}
-            pagination={false}
-          />
-        ) : (
-          <div css={emptyStyles(height - 300)}>
-            <EmptyDataTable />
+    <Spin spinning={loading}>
+      <div css={rootStyles}>
+        <div css={tableWrapperStyles}>
+          <div css={titleRowStyles}>
+            <TableTitle>Est Forecast</TableTitle>
+            <Button
+              type='primary'
+              css={viewSelectedButtonStyles}
+              onClick={() => router.push(PageURLs.ofEstForecastSelected())}
+            >
+              View selected symbols
+            </Button>
           </div>
-        )}
+
+          {hasSymbol && list.length > 0 ? (
+            <Table
+              size={isMobile ? 'small' : 'middle'}
+              css={tableStyles}
+              rowKey={(record) => record.key!}
+              columns={columns}
+              dataSource={list}
+              loading={loading}
+              scroll={{
+                x: 2000,
+                y: list.length > 0 ? height - 240 : undefined
+              }}
+              pagination={false}
+            />
+          ) : (
+            <div css={emptyStyles(height - 300)}>
+              <EmptyDataTable />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </Spin>
   );
 };
 

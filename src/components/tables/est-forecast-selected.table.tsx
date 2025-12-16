@@ -20,7 +20,7 @@ import {
   watchEstForecastPagination,
   updateEstForecast
 } from '@/redux/slices/est-forecast.slice';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { isMobile } from 'react-device-detect';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { formatMarketCap, isNumeric, roundToDecimals } from '@/utils/common';
@@ -68,7 +68,7 @@ export const EstForecastSelectedTable = () => {
     setEditingRow(record);
   };
 
-  const saveEdit = () => {
+  const saveEdit = useCallback(() => {
     if (!editingId) return;
 
     dispatch(
@@ -80,80 +80,89 @@ export const EstForecastSelectedTable = () => {
 
     setEditingId(null);
     setEditingRow({});
-  };
+  }, [dispatch, editingId, editingRow]);
 
-  const renderNumber = (
-    value: any,
-    field: keyof EstForecastFilterItem,
-    record: EstForecastFilterItem,
-    suffix?: string
-  ) => {
-    if (editingId === record.id) {
-      return (
-        <InputNumber
-          value={editingRow[field] as number}
-          onChange={(v) => setEditingRow((prev) => ({ ...prev, [field]: v }))}
-          style={{ width: '100%' }}
-        />
-      );
-    }
+  const renderNumber = useCallback(
+    (
+      value: any,
+      field: keyof EstForecastFilterItem,
+      record: EstForecastFilterItem,
+      suffix?: string
+    ) => {
+      if (editingId === record.id) {
+        return (
+          <InputNumber
+            value={editingRow[field] as number}
+            onChange={(v) => setEditingRow((prev) => ({ ...prev, [field]: v }))}
+            style={{ width: '100%' }}
+          />
+        );
+      }
 
-    if (!isNumeric(value)) return '-';
-
-    return (
-      <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-        {roundToDecimals(value, 2)}
-        {suffix}
-      </PositiveNegativeText>
-    );
-  };
-
-  const renderText = (
-    value: any,
-    field: keyof EstForecastFilterItem,
-    record: EstForecastFilterItem
-  ) => {
-    if (editingId === record.id) {
-      return (
-        <Input
-          value={editingRow[field] as string}
-          onChange={(e) =>
-            setEditingRow((prev) => ({
-              ...prev,
-              [field]: e.target.value
-            }))
-          }
-        />
-      );
-    }
-    return value || '-';
-  };
-
-  const renderDate = (
-    value: string | undefined,
-    field: keyof EstForecastFilterItem,
-    record: EstForecastFilterItem
-  ) => {
-    if (editingId === record.id) {
-      const currentValue = (editingRow[field] as string | undefined) ?? value;
+      if (!isNumeric(value)) return '-';
 
       return (
-        <DatePicker
-          value={currentValue ? dayjs(currentValue) : null}
-          showTime
-          style={{ width: '100%' }}
-          onChange={(d) =>
-            setEditingRow((prev) => ({
-              ...prev,
-              [field]: d ? d.toISOString() : null
-            }))
-          }
-        />
+        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+          {roundToDecimals(value, 2)}
+          {suffix}
+        </PositiveNegativeText>
       );
-    }
+    },
+    [editingId, editingRow]
+  );
 
-    return value ? <DateTimeCell value={value} /> : '-';
-  };
+  const renderText = useCallback(
+    (
+      value: any,
+      field: keyof EstForecastFilterItem,
+      record: EstForecastFilterItem
+    ) => {
+      if (editingId === record.id) {
+        return (
+          <Input
+            value={editingRow[field] as string}
+            onChange={(e) =>
+              setEditingRow((prev) => ({
+                ...prev,
+                [field]: e.target.value
+              }))
+            }
+          />
+        );
+      }
+      return value || '-';
+    },
+    [editingId, editingRow]
+  );
+
+  const renderDate = useCallback(
+    (
+      value: string | undefined,
+      field: keyof EstForecastFilterItem,
+      record: EstForecastFilterItem
+    ) => {
+      if (editingId === record.id) {
+        const currentValue = (editingRow[field] as string | undefined) ?? value;
+
+        return (
+          <DatePicker
+            value={currentValue ? dayjs(currentValue) : null}
+            showTime
+            style={{ width: '100%' }}
+            onChange={(d) =>
+              setEditingRow((prev) => ({
+                ...prev,
+                [field]: d ? d.toISOString() : null
+              }))
+            }
+          />
+        );
+      }
+
+      return value ? <DateTimeCell value={value} /> : '-';
+    },
+    [editingId, editingRow]
+  );
 
   const columns: TableColumnsType<EstForecastFilterItem> = useMemo(
     () => [
@@ -279,7 +288,6 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'EPS Point',
         dataIndex: 'epsEstimatePoint',
-        key: 'epsEstimatePoint',
         width: 100,
         align: 'center',
         render: (v, r) => renderNumber(v, 'epsEstimatePoint', r)
@@ -287,7 +295,6 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'AI Point',
         dataIndex: 'aiRatingPoint',
-        key: 'aiRatingPoint',
         width: 100,
         align: 'center',
         render: (v, r) => renderNumber(v, 'aiRatingPoint', r)
@@ -295,7 +302,6 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'Total Score Point',
         dataIndex: 'totalScorePoint',
-        key: 'totalScorePoint',
         width: 138,
         align: 'center',
         render: (v, r) => renderNumber(v, 'totalScorePoint', r)
@@ -344,7 +350,17 @@ export const EstForecastSelectedTable = () => {
         )
       }
     ],
-    [t, pagination.currentPage, pagination.pageSize, editingId, editingRow]
+    [
+      t,
+      pagination.currentPage,
+      pagination.pageSize,
+      editingId,
+      renderNumber,
+      renderText,
+      renderDate,
+      saveEdit,
+      dispatch
+    ]
   );
 
   return (
