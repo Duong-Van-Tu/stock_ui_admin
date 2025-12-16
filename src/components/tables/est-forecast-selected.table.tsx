@@ -37,7 +37,7 @@ export const EstForecastSelectedTable = () => {
   const handlePageChange = (page: number, pageSize: number) => {
     dispatch(
       getEstForecastFilterPaging({
-        page: page,
+        page,
         limit: pageSize
       })
     );
@@ -52,7 +52,7 @@ export const EstForecastSelectedTable = () => {
     );
   }, [dispatch, pagination.currentPage, pagination.pageSize]);
 
-  const columns: TableColumnsType<EstForecast> = useMemo(
+  const columns: TableColumnsType<EstForecastFilterItem> = useMemo(
     () => [
       {
         title: t('stt'),
@@ -77,7 +77,6 @@ export const EstForecastSelectedTable = () => {
           />
         )
       },
-
       {
         title: 'Industry',
         dataIndex: 'industry',
@@ -129,7 +128,6 @@ export const EstForecastSelectedTable = () => {
             <span>-</span>
           )
       },
-
       {
         title: 'Price Target',
         dataIndex: 'priceTarget',
@@ -146,7 +144,6 @@ export const EstForecastSelectedTable = () => {
         align: 'center',
         render: (value) => (value ? roundToDecimals(value) : '-')
       },
-
       {
         title: t('totalScore'),
         dataIndex: 'totalScoreEstForecast',
@@ -162,7 +159,6 @@ export const EstForecastSelectedTable = () => {
             '-'
           )
       },
-
       {
         title: 'Updated',
         dataIndex: 'createdAt',
@@ -208,7 +204,7 @@ export const EstForecastSelectedTable = () => {
           <TableTitle>Selected Est Forecast</TableTitle>
         </div>
 
-        <Table<EstForecast>
+        <Table<EstForecastFilterItem>
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey='id'

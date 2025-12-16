@@ -9,7 +9,7 @@ export type EstForecastState = {
   submitting: boolean;
   deleting: boolean;
   list: EstForecast[];
-  filterList: EstForecast[];
+  filterList: EstForecastFilterItem[];
   pagination: Pagination;
   detail?: EstForecast | null;
 };
@@ -64,7 +64,9 @@ export const estForecastSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.loading = false;
-          state.filterList = transformEstForecast(action.payload.result || []);
+          state.filterList = transformEstForecast(
+            action.payload.result || []
+          ) as EstForecastFilterItem[];
           state.pagination = {
             currentPage: action.payload.currentPage,
             pageSize: action.payload.limit,
