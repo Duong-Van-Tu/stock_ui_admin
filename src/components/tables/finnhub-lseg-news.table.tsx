@@ -344,6 +344,7 @@ export const FinnhubAndLsegNewsTable = () => {
       }
     ],
     [
+      t,
       isLseg,
       pagination.currentPage,
       pagination.pageSize,

@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import Link from 'next/link';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   resetState,
@@ -16,11 +15,17 @@ import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { TableTitle } from './title.table';
 import { isMobile } from 'react-device-detect';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { PageURLs } from '@/utils/navigate';
+import { useTranslations } from 'next-intl';
+import { PositiveNegativeText } from '../positive-negative-text';
+import { SymbolCell } from './columns/symbol-cell.column';
+import { PlusOutlined } from '@ant-design/icons';
 
 export const EstForecastTable = () => {
+  const t = useTranslations();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
@@ -85,50 +90,53 @@ export const EstForecastTable = () => {
   const columns: TableColumnsType<EstForecast> = useMemo(
     () => [
       {
-        title: 'Symbol',
+        title: t('symbol'),
         dataIndex: 'symbol',
         key: 'symbol',
-        width: 90,
-        fixed: !isMobile && 'left'
-      },
-      { title: 'Company', dataIndex: 'company', key: 'company', width: 180 },
-      { title: 'Industry', dataIndex: 'industry', key: 'industry', width: 160 },
-      {
-        title: 'Call Time',
-        dataIndex: 'callTime',
-        key: 'callTime',
-        width: 140
+        width: isMobile ? 110 : 160,
+        fixed: 'left',
+        render: (_, record) => (
+          <SymbolCell
+            symbol={record.symbol}
+            companyName={isMobile ? undefined : record.company}
+          />
+        )
       },
       {
-        title: 'Beta',
-        dataIndex: 'beta',
-        key: 'beta',
-        width: 90,
-        align: 'center',
-        render: (v) => (isNumeric(v) ? v : '-')
+        title: 'Industry',
+        dataIndex: 'industry',
+        key: 'industry',
+        width: 160
       },
       {
-        title: 'Market Cap',
-        dataIndex: 'marketCapEstForecast',
-        key: 'marketCapEstForecast',
-        width: 140
-      },
-      { title: 'Result', dataIndex: 'result', key: 'result', width: 120 },
-      {
-        title: 'EPS Est',
+        title: t('epsEstimate'),
         dataIndex: 'epsEstimate',
         key: 'epsEstimate',
-        width: 110,
+        width: 120,
         align: 'center',
-        render: (v) => (isNumeric(v) ? v : '-')
+        render: (value) =>
+          value ? (
+            <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+              <span>{roundToDecimals(value, 2)}</span>
+            </PositiveNegativeText>
+          ) : (
+            <span>-</span>
+          )
       },
       {
-        title: 'Reported EPS',
+        title: t('epsActual'),
         dataIndex: 'reportedEps',
         key: 'reportedEps',
         width: 120,
         align: 'center',
-        render: (v) => (isNumeric(v) ? v : '-')
+        render: (value) =>
+          value ? (
+            <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+              <span>{roundToDecimals(value, 2)}</span>
+            </PositiveNegativeText>
+          ) : (
+            <span>-</span>
+          )
       },
       {
         title: 'Surprise',
@@ -136,7 +144,45 @@ export const EstForecastTable = () => {
         key: 'surprise',
         width: 110,
         align: 'center',
-        render: (v) => (isNumeric(v) ? `${roundToDecimals(v, 2)}%` : '-')
+        render: (value) =>
+          value ? (
+            <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+              <span>{roundToDecimals(value, 2)}%</span>
+            </PositiveNegativeText>
+          ) : (
+            <span>-</span>
+          )
+      },
+      {
+        title: 'Price Target',
+        dataIndex: 'priceTarget',
+        key: 'priceTarget',
+        width: 120,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      },
+      {
+        title: t('aiRating'),
+        dataIndex: 'aiRating',
+        key: 'aiRating',
+        width: 100,
+        align: 'center',
+        render: (value) => (value ? roundToDecimals(value) : '-')
+      },
+      {
+        title: t('totalScore'),
+        dataIndex: 'totalScoreEstForecast',
+        key: 'totalScoreEstForecast',
+        width: 120,
+        align: 'center',
+        render: (value) =>
+          isNumeric(value) ? (
+            <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
+              <span>{roundToDecimals(value, 2)}</span>
+            </PositiveNegativeText>
+          ) : (
+            '-'
+          )
       },
       {
         title: 'Updated',
@@ -147,16 +193,16 @@ export const EstForecastTable = () => {
         render: (v) => (v ? <DateTimeCell value={v} /> : '-')
       },
       {
-        title: 'Action',
+        title: 'Actions',
         key: 'action',
-        width: 120,
+        width: 100,
         align: 'center',
         fixed: !isMobile && 'right',
         render: (_, record) =>
           addedSymbols.has(record.symbol) ? null : (
             <Button
               type='primary'
-              size='small'
+              icon={<PlusOutlined />}
               onClick={() => handleAdd(record)}
             >
               Add
@@ -164,27 +210,24 @@ export const EstForecastTable = () => {
           )
       }
     ],
-    [handleAdd, addedSymbols]
+    [t, handleAdd, addedSymbols]
   );
-
   const hasSymbol = Boolean(symbol);
-
   return (
     <div css={rootStyles}>
       <div css={tableWrapperStyles}>
         <div css={titleRowStyles}>
-          <TableTitle>
-            Est Forecast
-            <Link
-              href={PageURLs.ofEstForecastSelected()}
-              style={{ marginLeft: 12, fontSize: 14, color: '#1677ff' }}
-            >
-              View selected symbols
-            </Link>
-          </TableTitle>
+          <TableTitle>Est Forecast</TableTitle>
+          <Button
+            type='primary'
+            css={viewSelectedButtonStyles}
+            onClick={() => router.push(PageURLs.ofEstForecastSelected())}
+          >
+            View selected symbols
+          </Button>
         </div>
 
-        {hasSymbol ? (
+        {hasSymbol && list.length > 0 ? (
           <Table<EstForecast>
             size={isMobile ? 'small' : 'middle'}
             css={tableStyles}
@@ -228,7 +271,14 @@ const tableWrapperStyles = css`
 const titleRowStyles = css`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 1.2rem 1.6rem;
+`;
+
+const viewSelectedButtonStyles = css`
+  margin-left: 12px;
+  font-size: 14px;
+  font-weight: 500;
 `;
 
 const tableStyles = css`
@@ -238,6 +288,7 @@ const tableStyles = css`
 `;
 
 const emptyStyles = (height: number) => css`
+  border-top: 1px solid var(--border-table-color);
   height: ${height}px;
   display: flex;
   justify-content: center;

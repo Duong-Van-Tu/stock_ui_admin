@@ -81,7 +81,7 @@ export const NewsScoresTable = () => {
     return () => {
       dispatch(resetState());
     };
-  }, [dispatch, symbol]);
+  }, [filter, fetchData, dispatch, symbol]);
 
   const handleTypeDayChange = (value: number) => {
     const newFilter = {

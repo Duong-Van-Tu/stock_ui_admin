@@ -174,17 +174,14 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'Action',
         key: 'action',
-        width: 180,
+        width: 160,
         align: 'center',
         fixed: !isMobile && 'right',
         render: (_, record) => (
           <Space>
-            <Button type='primary' size='small'>
-              Edit
-            </Button>
+            <Button type='primary'>Edit</Button>
             <Button
               danger
-              size='small'
               onClick={() => dispatch(deleteEstForecast(record.id!))}
             >
               Delete
@@ -193,7 +190,7 @@ export const EstForecastSelectedTable = () => {
         )
       }
     ],
-    [dispatch]
+    [t, dispatch, pagination.currentPage, pagination.pageSize]
   );
 
   return (
