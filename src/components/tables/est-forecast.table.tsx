@@ -8,9 +8,10 @@ import {
   getEstForecastFilter,
   addEstForecast
 } from '@/redux/slices/est-forecast.slice';
-import { Table, TableColumnsType, Button } from 'antd';
+import { Table, TableColumnsType, Button, DatePicker } from 'antd';
+import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { cleanFalsyValues, isNumeric, roundToDecimals } from '@/utils/common';
+import { isNumeric, roundToDecimals } from '@/utils/common';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { TableTitle } from './title.table';
@@ -35,29 +36,28 @@ export const EstForecastTable = () => {
   const list = useAppSelector(watchEstForecastList);
 
   const [addedSymbols, setAddedSymbols] = useState<Set<string>>(new Set());
+  const [createdDates, setCreatedDates] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    dispatch(
-      getEstForecastFilter(
-        cleanFalsyValues({
-          symbol: symbol ?? undefined
+    setAddedSymbols(new Set());
+    setCreatedDates({});
+
+    if (symbol) {
+      dispatch(
+        getEstForecastFilter({
+          symbol
         })
-      )
-    );
+      );
+    }
 
     return () => {
       dispatch(resetState());
-      setAddedSymbols(new Set());
     };
   }, [dispatch, symbol]);
 
   const handleAdd = useCallback(
     (record: EstForecast) => {
-      setAddedSymbols((prev) => {
-        const next = new Set(prev);
-        next.add(record.symbol);
-        return next;
-      });
+      setAddedSymbols((prev) => new Set(prev).add(record.symbol));
 
       dispatch(
         addEstForecast({
@@ -80,11 +80,12 @@ export const EstForecastTable = () => {
           priceTarget: record.priceTarget,
           growth: record.growth,
           gpt: record.gpt,
-          forecast: record.forecast
+          forecast: record.forecast,
+          createdAt: createdDates[record.symbol]
         })
       );
     },
-    [dispatch]
+    [dispatch, createdDates]
   );
 
   const columns: TableColumnsType<EstForecast> = useMemo(
@@ -102,46 +103,54 @@ export const EstForecastTable = () => {
           />
         )
       },
+      { title: 'Company', dataIndex: 'company', width: 200 },
+      { title: 'Industry', dataIndex: 'industry', width: 160 },
+      { title: 'Beta', dataIndex: 'beta', width: 80, align: 'center' },
       {
-        title: 'Industry',
-        dataIndex: 'industry',
-        key: 'industry',
-        width: 160
+        title: 'Market Cap',
+        dataIndex: 'marketCapEstForecast',
+        width: 130,
+        align: 'center',
+        render: (v) => (v ? v : '-')
       },
       {
         title: t('epsEstimate'),
         dataIndex: 'epsEstimate',
-        key: 'epsEstimate',
         width: 120,
         align: 'center',
-        render: (value) =>
-          value ? (
-            <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-              <span>{roundToDecimals(value, 2)}</span>
+        render: (v) =>
+          isNumeric(v) ? (
+            <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+              {roundToDecimals(v, 2)}
             </PositiveNegativeText>
           ) : (
-            <span>-</span>
+            '-'
           )
       },
       {
         title: t('epsActual'),
         dataIndex: 'reportedEps',
-        key: 'reportedEps',
         width: 120,
         align: 'center',
-        render: (value) =>
-          value ? (
-            <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-              <span>{roundToDecimals(value, 2)}</span>
+        render: (v) =>
+          isNumeric(v) ? (
+            <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+              {roundToDecimals(v, 2)}
             </PositiveNegativeText>
           ) : (
-            <span>-</span>
+            '-'
           )
       },
       {
         title: 'Surprise',
         dataIndex: 'surprise',
-        key: 'surprise',
+        width: 110,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? `${roundToDecimals(v, 2)}%` : '-')
+      },
+      {
+        title: 'YTD %',
+        dataIndex: 'ytdPerformance',
         width: 110,
         align: 'center',
         render: (value) =>
@@ -156,7 +165,6 @@ export const EstForecastTable = () => {
       {
         title: 'Price Target',
         dataIndex: 'priceTarget',
-        key: 'priceTarget',
         width: 120,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
@@ -164,15 +172,13 @@ export const EstForecastTable = () => {
       {
         title: t('aiRating'),
         dataIndex: 'aiRating',
-        key: 'aiRating',
         width: 100,
         align: 'center',
-        render: (value) => (value ? roundToDecimals(value) : '-')
+        render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
       },
       {
         title: t('totalScore'),
         dataIndex: 'totalScoreEstForecast',
-        key: 'totalScoreEstForecast',
         width: 120,
         align: 'center',
         render: (value) =>
@@ -185,16 +191,38 @@ export const EstForecastTable = () => {
           )
       },
       {
-        title: 'Updated',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-        width: 140,
+        title: 'Yahoo Rec',
+        dataIndex: 'yahooRec',
         align: 'center',
-        render: (v) => (v ? <DateTimeCell value={v} /> : '-')
+        width: 160
+      },
+      {
+        title: 'Created At',
+        dataIndex: 'createdAt',
+        width: 204,
+        align: 'center',
+        render: (_, record) =>
+          addedSymbols.has(record.symbol) ? (
+            <DateTimeCell value={createdDates[record.symbol]} />
+          ) : (
+            <DatePicker
+              showTime
+              value={
+                createdDates[record.symbol]
+                  ? dayjs(createdDates[record.symbol])
+                  : null
+              }
+              onChange={(d) =>
+                setCreatedDates((prev) => ({
+                  ...prev,
+                  [record.symbol]: d ? d.toISOString() : ''
+                }))
+              }
+            />
+          )
       },
       {
         title: 'Actions',
-        key: 'action',
         width: 100,
         align: 'center',
         fixed: !isMobile && 'right',
@@ -210,9 +238,11 @@ export const EstForecastTable = () => {
           )
       }
     ],
-    [t, handleAdd, addedSymbols]
+    [t, handleAdd, addedSymbols, createdDates]
   );
+
   const hasSymbol = Boolean(symbol);
+
   return (
     <div css={rootStyles}>
       <div css={tableWrapperStyles}>
@@ -228,7 +258,7 @@ export const EstForecastTable = () => {
         </div>
 
         {hasSymbol && list.length > 0 ? (
-          <Table<EstForecast>
+          <Table
             size={isMobile ? 'small' : 'middle'}
             css={tableStyles}
             rowKey={(record) => record.key!}
@@ -236,15 +266,8 @@ export const EstForecastTable = () => {
             dataSource={list}
             loading={loading}
             scroll={{
-              x: 1200,
+              x: 2000,
               y: list.length > 0 ? height - 240 : undefined
-            }}
-            locale={{
-              emptyText: (
-                <div css={emptyStyles(height - 300)}>
-                  <EmptyDataTable />
-                </div>
-              )
             }}
             pagination={false}
           />

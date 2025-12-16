@@ -90,6 +90,12 @@ export const getMenuStructure = (
       iconType: 'earnings',
       link: PageURLs.ofEarings()
     },
+    {
+      label: 'Est Forecast',
+      key: 'forecast',
+      iconType: 'forecast',
+      link: PageURLs.ofEstForecast()
+    },
     // ...(!isMobile
     //   ? [
     //       {

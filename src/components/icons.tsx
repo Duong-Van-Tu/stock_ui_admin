@@ -59,6 +59,7 @@ import ArrowDown from '@/assets/svg/arrow-down.svg';
 import ColumnSetting from '@/assets/svg/column-setting.svg';
 import FinnhubLseg from '@/assets/svg/finhub–lseg-news.svg';
 import InsightScore from '@/assets/svg/insight-score.svg';
+import Forecast from '@/assets/svg/est-forecast.svg';
 
 type IconProps = {
   width?: number | string;
@@ -126,7 +127,8 @@ const svgList = {
   ArrowDown,
   ColumnSetting,
   FinnhubLseg,
-  InsightScore
+  InsightScore,
+  Forecast
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = Object.entries(

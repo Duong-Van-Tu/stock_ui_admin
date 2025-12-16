@@ -301,6 +301,13 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'totalScorePoint', r)
       },
       {
+        title: 'Created At',
+        dataIndex: 'createdAt',
+        width: 204,
+        align: 'center',
+        render: (v, r) => renderDate(v, 'createdAt', r)
+      },
+      {
         title: 'Updated',
         dataIndex: 'updatedAt',
         width: 204,

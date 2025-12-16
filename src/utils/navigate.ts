@@ -95,9 +95,9 @@ export namespace PageURLs {
   }
 
   export function ofEstForecast() {
-    return withPrefix('/est-forecast');
+    return withPrefix('/forecast');
   }
   export function ofEstForecastSelected() {
-    return withPrefix('/est-forecast/selected');
+    return withPrefix('/forecast/selected');
   }
 }
