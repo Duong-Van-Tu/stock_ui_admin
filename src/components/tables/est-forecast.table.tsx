@@ -11,7 +11,7 @@ import {
 import { Table, TableColumnsType, Button, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { isNumeric, roundToDecimals } from '@/utils/common';
+import { formatMarketCap, isNumeric, roundToDecimals } from '@/utils/common';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { TableTitle } from './title.table';
@@ -105,13 +105,19 @@ export const EstForecastTable = () => {
       },
       { title: 'Company', dataIndex: 'company', width: 200 },
       { title: 'Industry', dataIndex: 'industry', width: 160 },
-      { title: 'Beta', dataIndex: 'beta', width: 80, align: 'center' },
+      {
+        title: 'Beta',
+        dataIndex: 'beta',
+        width: 80,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      },
       {
         title: 'Market Cap',
         dataIndex: 'marketCapEstForecast',
         width: 130,
         align: 'center',
-        render: (v) => (v ? v : '-')
+        render: (v) => (v ? formatMarketCap(v / 1_000_000) : '-')
       },
       {
         title: t('epsEstimate'),
