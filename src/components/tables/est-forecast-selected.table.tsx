@@ -53,23 +53,13 @@ export const EstForecastSelectedTable = () => {
     router.push(PageURLs.ofEstForecast());
   };
 
-  // ✅ UPDATE: paging + symbol từ URL
   const handlePageChange = (page: number, pageSize: number) => {
     const symbol = searchParams.get('symbol') || undefined;
-
-    dispatch(
-      getEstForecastFilterPaging({
-        page,
-        limit: pageSize,
-        symbol
-      })
-    );
+    dispatch(getEstForecastFilterPaging({ page, limit: pageSize, symbol }));
   };
 
-  // ✅ UPDATE: load data + symbol từ URL
   useEffect(() => {
     const symbol = searchParams.get('symbol') || undefined;
-
     dispatch(
       getEstForecastFilterPaging({
         page: pagination.currentPage,
@@ -86,19 +76,16 @@ export const EstForecastSelectedTable = () => {
 
   const saveEdit = useCallback(() => {
     if (!editingId) return;
-
     dispatch(
       updateEstForecast({
         id: editingId,
         payload: editingRow as any
       })
     );
-
     setEditingId(null);
     setEditingRow({});
   }, [dispatch, editingId, editingRow]);
 
-  // ===== GIỮ NGUYÊN =====
   const renderNumber = useCallback(
     (
       value: any,
@@ -115,9 +102,7 @@ export const EstForecastSelectedTable = () => {
           />
         );
       }
-
       if (!isNumeric(value)) return '-';
-
       return (
         <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
           {roundToDecimals(value, 2)}
@@ -139,10 +124,7 @@ export const EstForecastSelectedTable = () => {
           <Input
             value={editingRow[field] as string}
             onChange={(e) =>
-              setEditingRow((prev) => ({
-                ...prev,
-                [field]: e.target.value
-              }))
+              setEditingRow((prev) => ({ ...prev, [field]: e.target.value }))
             }
           />
         );
@@ -160,7 +142,6 @@ export const EstForecastSelectedTable = () => {
     ) => {
       if (editingId === record.id) {
         const currentValue = (editingRow[field] as string | undefined) ?? value;
-
         return (
           <DatePicker
             value={currentValue ? dayjs(currentValue) : null}
@@ -175,7 +156,6 @@ export const EstForecastSelectedTable = () => {
           />
         );
       }
-
       return value ? <DateTimeCell value={value} /> : '-';
     },
     [editingId, editingRow]
@@ -316,11 +296,18 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'totalScorePoint', r)
       },
       {
-        title: 'Reuter Recommendation',
-        dataIndex: 'routerRec',
+        title: 'Price Target',
+        dataIndex: 'priceTarget',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'priceTarget', r)
+      },
+      {
+        title: 'Price Target Point',
+        dataIndex: 'priceTargetPoint',
         width: 140,
         align: 'center',
-        render: (v, r) => renderText(v, 'routerRec', r)
+        render: (v, r) => renderNumber(v, 'priceTargetPoint', r)
       },
       {
         title: 'Yahoo Recommendation',
@@ -330,11 +317,11 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderText(v, 'yahooRec', r)
       },
       {
-        title: 'Price Target',
-        dataIndex: 'priceTarget',
-        width: 120,
+        title: 'Yahoo Rec Point',
+        dataIndex: 'yahooRecPoint',
+        width: 140,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'priceTarget', r)
+        render: (v, r) => renderNumber(v, 'yahooRecPoint', r)
       },
       {
         title: 'Grok',
@@ -344,11 +331,25 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderText(v, 'ngrok', r)
       },
       {
+        title: 'Grok Point',
+        dataIndex: 'ngrokPoint',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'ngrokPoint', r)
+      },
+      {
         title: 'GPT',
         dataIndex: 'gpt',
         width: 100,
         align: 'center',
         render: (v, r) => renderText(v, 'gpt', r)
+      },
+      {
+        title: 'GPT Point',
+        dataIndex: 'gptPoint',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'gptPoint', r)
       },
       {
         title: 'Forecast',
@@ -383,11 +384,7 @@ export const EstForecastSelectedTable = () => {
               </div>
             );
           }
-
-          if (!v) {
-            return '-';
-          }
-
+          if (!v) return '-';
           return (
             <div
               style={{
@@ -403,7 +400,7 @@ export const EstForecastSelectedTable = () => {
         }
       },
       {
-        title: 'Action',
+        title: 'Actions',
         width: 160,
         align: 'center',
         fixed: !isMobile && 'right',
@@ -432,6 +429,7 @@ export const EstForecastSelectedTable = () => {
         )
       }
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       t,
       pagination.currentPage,
@@ -467,7 +465,7 @@ export const EstForecastSelectedTable = () => {
           columns={columns}
           dataSource={filterList}
           loading={loading}
-          scroll={{ x: 2400 }}
+          scroll={{ x: 1200 }}
           pagination={{
             current: pagination.currentPage,
             pageSize: pagination.pageSize,
