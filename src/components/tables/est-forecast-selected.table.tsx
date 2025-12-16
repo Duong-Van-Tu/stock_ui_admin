@@ -12,7 +12,7 @@ import {
 import { useEffect, useMemo } from 'react';
 import { isMobile } from 'react-device-detect';
 import { DateTimeCell } from './columns/date-time-cell.column';
-import { isNumeric, roundToDecimals } from '@/utils/common';
+import { formatMarketCap, isNumeric, roundToDecimals } from '@/utils/common';
 import { TableTitle } from './title.table';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -35,12 +35,7 @@ export const EstForecastSelectedTable = () => {
   };
 
   const handlePageChange = (page: number, pageSize: number) => {
-    dispatch(
-      getEstForecastFilterPaging({
-        page,
-        limit: pageSize
-      })
-    );
+    dispatch(getEstForecastFilterPaging({ page, limit: pageSize }));
   };
 
   useEffect(() => {
@@ -77,11 +72,14 @@ export const EstForecastSelectedTable = () => {
           />
         )
       },
+      { title: 'Industry', dataIndex: 'industry', key: 'industry', width: 160 },
       {
-        title: 'Industry',
-        dataIndex: 'industry',
-        key: 'industry',
-        width: 160
+        title: 'Market Cap',
+        dataIndex: 'marketCapEstForecast',
+        key: 'marketCapEstForecast',
+        width: 110,
+        align: 'center',
+        render: (value) => (value ? formatMarketCap(value / 1000000) : '-')
       },
       {
         title: t('epsEstimate'),
@@ -89,13 +87,13 @@ export const EstForecastSelectedTable = () => {
         key: 'epsEstimate',
         width: 120,
         align: 'center',
-        render: (value) =>
-          value ? (
-            <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-              <span>{roundToDecimals(value, 2)}</span>
+        render: (v) =>
+          isNumeric(v) ? (
+            <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+              {roundToDecimals(v, 2)}
             </PositiveNegativeText>
           ) : (
-            <span>-</span>
+            '-'
           )
       },
       {
@@ -104,13 +102,13 @@ export const EstForecastSelectedTable = () => {
         key: 'reportedEps',
         width: 120,
         align: 'center',
-        render: (value) =>
-          value ? (
-            <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-              <span>{roundToDecimals(value, 2)}</span>
+        render: (v) =>
+          isNumeric(v) ? (
+            <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+              {roundToDecimals(v, 2)}
             </PositiveNegativeText>
           ) : (
-            <span>-</span>
+            '-'
           )
       },
       {
@@ -119,13 +117,28 @@ export const EstForecastSelectedTable = () => {
         key: 'surprise',
         width: 110,
         align: 'center',
-        render: (value) =>
-          value ? (
-            <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
-              <span>{roundToDecimals(value, 2)}%</span>
+        render: (v) =>
+          isNumeric(v) ? (
+            <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+              {roundToDecimals(v, 2)}%
             </PositiveNegativeText>
           ) : (
-            <span>-</span>
+            '-'
+          )
+      },
+      {
+        title: 'YTD %',
+        dataIndex: 'ytdPerformance',
+        key: 'ytdPerformance',
+        width: 110,
+        align: 'center',
+        render: (v) =>
+          isNumeric(v) ? (
+            <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+              {roundToDecimals(v, 2)}%
+            </PositiveNegativeText>
+          ) : (
+            '-'
           )
       },
       {
@@ -142,7 +155,7 @@ export const EstForecastSelectedTable = () => {
         key: 'aiRating',
         width: 100,
         align: 'center',
-        render: (value) => (value ? roundToDecimals(value) : '-')
+        render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
       },
       {
         title: t('totalScore'),
@@ -150,20 +163,92 @@ export const EstForecastSelectedTable = () => {
         key: 'totalScoreEstForecast',
         width: 120,
         align: 'center',
-        render: (value) =>
-          isNumeric(value) ? (
-            <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
-              <span>{roundToDecimals(value, 2)}</span>
+        render: (v) =>
+          isNumeric(v) ? (
+            <PositiveNegativeText isPositive={v > 7} isNegative={v < 4}>
+              {roundToDecimals(v, 2)}
             </PositiveNegativeText>
           ) : (
             '-'
           )
       },
       {
-        title: 'Updated',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
+        title: 'Router Recommendation',
+        dataIndex: 'routerRec',
+        key: 'routerRec',
+        align: 'center',
         width: 140,
+        render: (v) => (v ? v : '-')
+      },
+      {
+        title: 'Yahoo Recommendation',
+        dataIndex: 'yahooRec',
+        key: 'yahooRec',
+        align: 'center',
+        width: 140,
+        render: (v) => (v ? v : '-')
+      },
+      {
+        title: 'Call Time',
+        dataIndex: 'callTime',
+        key: 'callTime',
+        width: 120,
+        align: 'center',
+        render: (v) => (v ? <DateTimeCell value={v} /> : '-')
+      },
+      {
+        title: 'Growth',
+        dataIndex: 'growth',
+        align: 'center',
+        key: 'growth',
+        width: 100,
+        render: (v) => (v ? v : '-')
+      },
+      {
+        title: 'GPT',
+        dataIndex: 'gpt',
+        key: 'gpt',
+        width: 100,
+        align: 'center',
+        render: (v) => (v ? v : '-')
+      },
+      {
+        title: 'Forecast',
+        dataIndex: 'forecast',
+        key: 'forecast',
+        width: 120,
+        align: 'center',
+        render: (v) => (v ? v : '-')
+      },
+      {
+        title: 'EPS Point',
+        dataIndex: 'epsEstimatePoint',
+        key: 'epsEstimatePoint',
+        width: 100,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
+      },
+      {
+        title: 'AI Point',
+        dataIndex: 'aiRatingPoint',
+        key: 'aiRatingPoint',
+        width: 100,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
+      },
+      {
+        title: 'Total Score Point',
+        dataIndex: 'totalScorePoint',
+        key: 'totalScorePoint',
+        width: 138,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
+      },
+      {
+        title: 'Updated',
+        dataIndex: 'updatedAt',
+        key: 'updatedAt',
+        width: 120,
         align: 'center',
         render: (v) => (v ? <DateTimeCell value={v} /> : '-')
       },
@@ -211,7 +296,7 @@ export const EstForecastSelectedTable = () => {
           columns={columns}
           dataSource={filterList}
           loading={loading}
-          scroll={{ x: 1200 }}
+          scroll={{ x: 2000 }}
           pagination={{
             current: pagination.currentPage,
             pageSize: pagination.pageSize,

@@ -47,5 +47,16 @@ type EstForecastFilterItem = {
   growth: string;
   gpt: string;
   forecast: string;
+  epsEstimatePoint: number;
+  prevEstimatePoint: number;
+  ytdPerformancePoint: number;
+  aiRatingPoint: number;
+  totalScorePoint: number;
+  yahooRecPoint: number;
+  priceTargetPoint: number;
+  growthPoint: number;
+  gptPoint: number;
   createdAt?: string;
+  updatedAt?: string;
+  importedFrom?: string;
 };

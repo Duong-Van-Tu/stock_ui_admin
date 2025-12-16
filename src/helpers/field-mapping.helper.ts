@@ -259,5 +259,14 @@ export const fieldMapping: Record<string, string> = {
   totalScoreEstForecast: 'total_score',
   routerRec: 'router_rec',
   yahooRec: 'yahoo_rec',
-  priceTarget: 'price_target'
+  priceTarget: 'price_target',
+  epsEstimatePoint: 'eps_estimate_point',
+  prevEstimatePoint: 'prev_estimate_point',
+  ytdPerformancePoint: 'ytd_performance_point',
+  aiRatingPoint: 'ai_rating_point',
+  totalScorePoint: 'total_score_point',
+  yahooRecPoint: 'yahoo_rec_point',
+  priceTargetPoint: 'price_target_point',
+  growthPoint: 'growth_point',
+  gptPoint: 'gpt_point'
 };

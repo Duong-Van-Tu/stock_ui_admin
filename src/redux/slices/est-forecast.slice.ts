@@ -2,7 +2,10 @@ import { PAGINATION } from '@/constants/pagination.constant';
 import { convertParamsByMapping } from '@/utils/common';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
-import { transformEstForecast } from '@/helpers/est-forecast.helper';
+import {
+  transformEstForecast,
+  transformEstForecastFilter
+} from '@/helpers/est-forecast.helper';
 
 export type EstForecastState = {
   loading: boolean;
@@ -64,7 +67,7 @@ export const estForecastSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.loading = false;
-          state.filterList = transformEstForecast(
+          state.filterList = transformEstForecastFilter(
             action.payload.result || []
           ) as EstForecastFilterItem[];
           state.pagination = {
