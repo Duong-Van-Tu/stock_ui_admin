@@ -265,7 +265,7 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderDate(v, 'callTime', r)
       },
       {
-        title: 'Growth',
+        title: 'Ngrok',
         dataIndex: 'growth',
         width: 100,
         align: 'center',
