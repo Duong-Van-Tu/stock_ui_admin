@@ -91,16 +91,8 @@ export const estForecastSlice = createAppSlice({
         pending: (state) => {
           state.submitting = true;
         },
-        fulfilled: (state, action) => {
+        fulfilled: (state) => {
           state.submitting = false;
-
-          if (action.payload) {
-            const [item] = transformEstForecast([action.payload]);
-
-            state.list.unshift(item);
-            state.filterList.unshift(item);
-            state.pagination.total = state.pagination.total + 1;
-          }
         },
         rejected: (state) => {
           state.submitting = false;

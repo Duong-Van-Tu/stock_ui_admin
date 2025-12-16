@@ -152,6 +152,7 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'totalScoreEstForecast',
         key: 'totalScoreEstForecast',
         width: 120,
+        align: 'center',
         render: (value) =>
           isNumeric(value) ? (
             <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
