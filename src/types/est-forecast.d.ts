@@ -1,0 +1,25 @@
+type EstForecast = {
+  id?: number;
+  key?: string;
+  symbol: string;
+  company: string;
+  industry: string;
+  callTime: string;
+  beta: number;
+  marketCapEstForecast: string;
+  result: string;
+  epsEstimate: number;
+  reportedEps: number;
+  surprise: number;
+  prevEstimate: string;
+  ytdPerformance: number;
+  aiRating: number;
+  totalScoreEstForecast: number;
+  routerRec: string;
+  yahooRec: string;
+  priceTarget: number;
+  growth: string;
+  gpt: string;
+  forecast: string;
+  createdAt?: string;
+};

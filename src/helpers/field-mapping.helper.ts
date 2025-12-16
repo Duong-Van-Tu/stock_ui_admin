@@ -248,5 +248,16 @@ export const fieldMapping: Record<string, string> = {
   avgAggScore: 'avg_agg_score',
   finnhubLatestDatetime: 'finnhub_latest_datetime',
   lsegLatestDatetime: 'lseg_latest_datetime',
-  typeDay: 'type_day'
+  typeDay: 'type_day',
+  callTime: 'call_time',
+  marketCapEstForecast: 'market_cap',
+  epsEstimate: 'eps_estimate',
+  reportedEps: 'reported_eps',
+  prevEstimate: 'prev_estimate',
+  ytdPerformance: 'ytd_performance',
+  aiRating: 'ai_rating',
+  totalScoreEstForecast: 'total_score',
+  routerRec: 'router_rec',
+  yahooRec: 'yahoo_rec',
+  priceTarget: 'price_target'
 };

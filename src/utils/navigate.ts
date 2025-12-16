@@ -93,4 +93,11 @@ export namespace PageURLs {
   export function ofOptionChainPut() {
     return withPrefix('/option-chain-put');
   }
+
+  export function ofEstForecast() {
+    return withPrefix('/est-forecast');
+  }
+  export function ofEstForecastSelected() {
+    return withPrefix('/est-forecast/selected');
+  }
 }

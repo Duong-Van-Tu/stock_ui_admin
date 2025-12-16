@@ -1,6 +1,7 @@
 import { appSlice } from './slices/app.slice';
 import { authSlice } from './slices/auth.slice';
 import { earningsSlice } from './slices/earnings.slice';
+import { estForecastSlice } from './slices/est-forecast.slice';
 import { highActivitySlice } from './slices/high-activity.slice';
 import { ledgerEntrySlice } from './slices/ledger-entry.slice';
 import { membersSlice } from './slices/members.slice';
@@ -27,5 +28,6 @@ export const slices = [
   swingTradingWatchlistSlice,
   ledgerEntrySlice,
   membersSlice,
-  optionChangesSlice
+  optionChangesSlice,
+  estForecastSlice
 ];
