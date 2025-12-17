@@ -267,6 +267,6 @@ export const fieldMapping: Record<string, string> = {
   totalScorePoint: 'total_score_point',
   yahooRecPoint: 'yahoo_rec_point',
   priceTargetPoint: 'price_target_point',
-  ngrokPoint: 'ngrok_point',
+  grokPoint: 'grok_point',
   gptPoint: 'gpt_point'
 };

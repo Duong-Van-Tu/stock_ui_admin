@@ -325,17 +325,17 @@ export const EstForecastSelectedTable = () => {
       },
       {
         title: 'Grok',
-        dataIndex: 'ngrok',
+        dataIndex: 'grok',
         width: 100,
         align: 'center',
-        render: (v, r) => renderText(v, 'ngrok', r)
+        render: (v, r) => renderText(v, 'grok', r)
       },
       {
         title: 'Grok Point',
-        dataIndex: 'ngrokPoint',
+        dataIndex: 'grokPoint',
         width: 120,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'ngrokPoint', r)
+        render: (v, r) => renderNumber(v, 'grokPoint', r)
       },
       {
         title: 'GPT',

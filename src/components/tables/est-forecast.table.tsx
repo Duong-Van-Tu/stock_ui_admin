@@ -78,7 +78,7 @@ export const EstForecastTable = () => {
           routerRec: record.routerRec,
           yahooRec: record.yahooRec,
           priceTarget: record.priceTarget,
-          ngrok: record.ngrok,
+          grok: record.grok,
           gpt: record.gpt,
           forecast: record.forecast,
           createdAt: createdDates[record.symbol]
