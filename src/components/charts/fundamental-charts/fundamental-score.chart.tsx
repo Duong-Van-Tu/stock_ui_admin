@@ -51,7 +51,7 @@ export function FundamentalScoreChart({ symbol }: FundamentalScoreProps) {
                 ? t('netIncomeScore')
                 : index === 3
                 ? t('grossIncomeScore')
-                : t('grossIncomeScore')
+                : t('revenueScore')
             }
           />
         ))}
