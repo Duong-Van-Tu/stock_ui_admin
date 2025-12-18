@@ -24,7 +24,7 @@ import { SymbolCell } from './columns/symbol-cell.column';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PageURLs } from '@/utils/navigate';
-import { SentimentSCore } from '../charts/sentiment-score.chart';
+import { PositiveNegativeText } from '../positive-negative-text';
 
 export const NewsScoresTable = () => {
   const t = useTranslations();
@@ -131,9 +131,9 @@ export const NewsScoresTable = () => {
         }),
         render: (value) =>
           isNumeric(value) ? (
-            <div css={sentimentScoreStyles}>
-              <SentimentSCore score={roundToDecimals(value, 1)!} />
-            </div>
+            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+              {roundToDecimals(value)}
+            </PositiveNegativeText>
           ) : (
             '-'
           )
@@ -152,9 +152,51 @@ export const NewsScoresTable = () => {
         }),
         render: (value) =>
           isNumeric(value) ? (
-            <div css={sentimentScoreStyles}>
-              <SentimentSCore score={roundToDecimals(value, 1)!} />
-            </div>
+            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+              {roundToDecimals(value)}
+            </PositiveNegativeText>
+          ) : (
+            '-'
+          )
+      },
+      {
+        title: 'Finnhub Total Articles',
+        dataIndex: 'finnhubTotalArticles',
+        key: 'finnhubTotalArticles',
+        width: 86,
+        align: 'center',
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'finnhubTotalArticles' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('finnhubTotalArticles')
+        }),
+        render: (value) =>
+          isNumeric(value) ? (
+            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+              {roundToDecimals(value)}
+            </PositiveNegativeText>
+          ) : (
+            '-'
+          )
+      },
+      {
+        title: 'LSEG Total Articles',
+        dataIndex: 'lsegTotalArticles',
+        key: 'lsegTotalArticles',
+        width: 82,
+        align: 'center',
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'lsegTotalArticles' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('lsegTotalArticles')
+        }),
+        render: (value) =>
+          isNumeric(value) ? (
+            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+              {roundToDecimals(value)}
+            </PositiveNegativeText>
           ) : (
             '-'
           )
@@ -174,9 +216,9 @@ export const NewsScoresTable = () => {
         }),
         render: (value) =>
           isNumeric(value) ? (
-            <div css={sentimentScoreStyles}>
-              <SentimentSCore score={roundToDecimals(value, 1)!} />
-            </div>
+            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+              {roundToDecimals(value)}
+            </PositiveNegativeText>
           ) : (
             '-'
           )
@@ -316,9 +358,4 @@ const emptyStyles = (height: number) => css`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const sentimentScoreStyles = css`
-  height: 4.6rem;
-  text-align: center;
 `;

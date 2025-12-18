@@ -126,4 +126,8 @@ type NewsScore = {
   avgAggScore: number;
   finnhubLatestDatetime: string;
   lsegLatestDatetime: string;
+  lsegLatestDatetime: string;
+  lsegLatestDatetime: string;
+  finnhubTotalArticles: number;
+  lsegTotalArticles: number;
 };

@@ -269,5 +269,7 @@ export const fieldMapping: Record<string, string> = {
   priceTargetPoint: 'price_target_point',
   grokPoint: 'grok_point',
   gptPoint: 'gpt_point',
-  lsegNews: 'news_lseg'
+  lsegNews: 'news_lseg',
+  finnhubTotalArticles: 'finnhub_total_articles',
+  lsegTotalArticles: 'lseg_total_articles'
 };

@@ -185,6 +185,8 @@ export const transformNewsScores = (list: any[] = []): NewsScore[] => {
     finnhubAggScore: Number(item[fieldMapping.finnhubAggScore]),
     lsegAggScore: Number(item[fieldMapping.lsegAggScore]),
     avgAggScore: Number(item[fieldMapping.avgAggScore]),
+    finnhubTotalArticles: Number(item[fieldMapping.finnhubTotalArticles]),
+    lsegTotalArticles: Number(item[fieldMapping.lsegTotalArticles]),
     finnhubLatestDatetime: item[fieldMapping.finnhubLatestDatetime],
     lsegLatestDatetime: item[fieldMapping.lsegLatestDatetime]
   }));
