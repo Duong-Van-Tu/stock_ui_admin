@@ -21,6 +21,7 @@ import {
   roundToDecimals
 } from '@/utils/common';
 import { PositiveNegativeText } from '@/components/positive-negative-text';
+import { useRouter } from 'next/navigation';
 
 type SymbolCellProps = {
   symbol: string;
@@ -35,6 +36,7 @@ type SymbolCellProps = {
   isSellSignal?: boolean;
   symbolColor?: string;
   isPutOptions?: boolean;
+  lsegNews?: boolean;
 };
 
 export const SymbolCell = ({
@@ -48,9 +50,11 @@ export const SymbolCell = ({
   isOptions = false,
   isPutOptions = false,
   isSellSignal = false,
+  lsegNews = false,
   symbolColor
 }: SymbolCellProps) => {
   const t = useTranslations();
+  const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerContent, setDrawerContent] = useState<ContentType | null>(null);
   const [drawerOption, setDrawerOption] = useState<string>('');
@@ -193,6 +197,21 @@ export const SymbolCell = ({
                     : 'var(--positive-color)'
                 }
               />
+            </Button>
+          </Tooltip>
+        )}
+        {lsegNews && (
+          <Tooltip
+            title={isMobile ? null : capitalizeFirstLetter(t('optionChainPut'))}
+          >
+            <Button
+              css={buttonStyles}
+              type='text'
+              onClick={() =>
+                router.push(`${PageURLs.ofFinnhubLsegNews()}?symbol=${symbol}`)
+              }
+            >
+              <Icon icon='finnhubLseg' width={18} height={18} />
             </Button>
           </Tooltip>
         )}

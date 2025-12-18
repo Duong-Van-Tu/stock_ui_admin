@@ -253,7 +253,7 @@ export const AlertLogsTable = ({
       title: t('symbol'),
       dataIndex: 'symbol',
       key: 'symbol',
-      width: isMobile ? 110 : 160,
+      width: isMobile ? 120 : 170,
       fixed: 'left',
       render: (_, record) => (
         <SymbolCell
@@ -267,6 +267,7 @@ export const AlertLogsTable = ({
           isOptions={!!record.isOptions}
           isSellSignal={latestHitOnePercent.includes(record.symbol)}
           isPutOptions={!!record.isPutOptions}
+          lsegNews={!!record.lsegNews}
         />
       )
     },

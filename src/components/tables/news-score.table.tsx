@@ -29,7 +29,7 @@ import { SentimentSCore } from '../charts/sentiment-score.chart';
 export const NewsScoresTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const route = useRouter();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
   const { height } = useWindowSize();
@@ -168,6 +168,7 @@ export const NewsScoresTable = () => {
         sorter: true,
         showSorterTooltip: false,
         sortOrder: sortField === 'avgAggScore' ? sortType : null,
+        hidden: true,
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('avgAggScore')
         }),
@@ -217,7 +218,7 @@ export const NewsScoresTable = () => {
         render: (_, record) => (
           <Button
             onClick={() =>
-              route.push(
+              router.push(
                 `${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`
               )
             }
@@ -234,7 +235,7 @@ export const NewsScoresTable = () => {
       sortField,
       sortType,
       handleSortOrder,
-      route
+      router
     ]
   );
 

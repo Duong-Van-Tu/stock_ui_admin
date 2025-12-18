@@ -268,5 +268,6 @@ export const fieldMapping: Record<string, string> = {
   yahooRecPoint: 'yahoo_rec_point',
   priceTargetPoint: 'price_target_point',
   grokPoint: 'grok_point',
-  gptPoint: 'gpt_point'
+  gptPoint: 'gpt_point',
+  lsegNews: 'news_lseg'
 };

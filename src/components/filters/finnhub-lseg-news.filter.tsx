@@ -2,11 +2,12 @@
 import { css, SerializedStyles } from '@emotion/react';
 import { Form, Row, Col, DatePicker, Space, Button } from 'antd';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { SelectFilter } from './select-filter';
 import { useEffect } from 'react';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { TimeZone } from '@/constants/timezone.constant';
 
 type Props = {
   customStyles?: SerializedStyles;
@@ -19,9 +20,13 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
 
-  const updateSearchParams = (key: string, value?: string) => {
+  const updateSearchParams = (
+    paramsObj: Record<string, string | undefined>
+  ) => {
     const params = new URLSearchParams(searchParams.toString());
-    value ? params.set(key, value) : params.delete(key);
+    Object.entries(paramsObj).forEach(([key, value]) => {
+      value ? params.set(key, value) : params.delete(key);
+    });
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
@@ -31,13 +36,24 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
       sourceType?: 'all' | 'finnhub' | 'lseg';
     };
 
-    const startDate = v.range?.[0]?.startOf('day').toISOString();
-    const endDate = v.range?.[1]?.endOf('day').toISOString();
+    const startDate = v.range?.[0]
+      ?.tz(TimeZone.NEW_YORK, true)
+      .startOf('day')
+      .toISOString();
+
+    const endDate = v.range?.[1]
+      ?.tz(TimeZone.NEW_YORK, true)
+      .endOf('day')
+      .toISOString();
 
     const sourceType =
       v.sourceType && v.sourceType !== 'all' ? v.sourceType : undefined;
 
-    updateSearchParams('sourceType', sourceType);
+    updateSearchParams({
+      sourceType,
+      startDate,
+      endDate
+    });
 
     onFilter({
       startDate,
@@ -50,16 +66,44 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
   const submit = () => triggerFilter();
 
   const handleClear = () => {
-    form.resetFields();
-    form.setFieldValue('sourceType', 'all');
-    form.setFieldValue('range', undefined);
-    updateSearchParams('sourceType');
+    const end = dayjs().tz(TimeZone.NEW_YORK);
+    const start = end.subtract(2, 'day');
+
+    form.setFieldsValue({
+      sourceType: 'all',
+      range: [start, end]
+    });
+
+    updateSearchParams({
+      sourceType: undefined,
+      startDate: start.startOf('day').toISOString(),
+      endDate: end.endOf('day').toISOString()
+    });
+
     triggerFilter();
   };
 
   useEffect(() => {
     const sourceTypeFromUrl = searchParams.get('sourceType') ?? 'all';
+    const startDateFromUrl = searchParams.get('startDate');
+    const endDateFromUrl = searchParams.get('endDate');
+
     form.setFieldValue('sourceType', sourceTypeFromUrl);
+
+    if (startDateFromUrl && endDateFromUrl) {
+      form.setFieldValue('range', [
+        dayjs(startDateFromUrl).tz(TimeZone.NEW_YORK),
+        dayjs(endDateFromUrl).tz(TimeZone.NEW_YORK)
+      ]);
+      return;
+    }
+
+    const end = dayjs().tz(TimeZone.NEW_YORK);
+    const start = end.subtract(2, 'day');
+
+    form.setFieldsValue({
+      range: [start, end]
+    });
   }, [searchParams, form]);
 
   useEffect(() => {
