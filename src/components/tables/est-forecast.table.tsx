@@ -48,7 +48,6 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
 
   const handleAdd = useCallback(
     (record: EstForecast) => {
-      console.log('Created Date:', createdDates[record.symbol]);
       setAddedSymbols((prev) => new Set(prev).add(record.symbol));
       dispatch(
         addEstForecast({
@@ -73,6 +72,8 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
           gpt: record.gpt,
           forecast: record.forecast,
           createdAt: createdDates[record.symbol]
+            ? dayjs(createdDates[record.symbol]).format('YYYY/MM/DD')
+            : undefined
         })
       );
       closeModal();
@@ -99,7 +100,7 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
       {
         title: 'Created At',
         dataIndex: 'createdAt',
-        width: 204,
+        width: 150,
         align: 'center',
         render: (_, record) => {
           console.log('Record Symbol:', record.symbol);
@@ -107,7 +108,6 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
             <DateTimeCell value={createdDates[record.symbol]} />
           ) : (
             <DatePicker
-              showTime
               value={
                 createdDates[record.symbol]
                   ? dayjs(createdDates[record.symbol])

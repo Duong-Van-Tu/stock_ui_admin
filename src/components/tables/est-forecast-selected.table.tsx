@@ -199,7 +199,6 @@ export const EstForecastSelectedTable = () => {
         return (
           <DatePicker
             value={currentValue ? dayjs(currentValue) : null}
-            showTime
             style={{ width: '100%' }}
             onChange={(d) =>
               setEditingRow((prev) => ({
@@ -232,7 +231,7 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'Created At',
         dataIndex: 'createdAt',
-        width: 204,
+        width: 150,
         align: 'center',
         render: (v, r) => renderDate(v, 'createdAt', r)
       },
