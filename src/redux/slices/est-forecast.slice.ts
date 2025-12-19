@@ -9,18 +9,26 @@ import {
 
 export type EstForecastState = {
   loading: boolean;
+  listLoading: boolean;
+  filterLoading: boolean;
   submitting: boolean;
   deleting: boolean;
+  adding: boolean;
+  addSuccess: boolean;
   list: EstForecast[];
   filterList: EstForecastFilterItem[];
   pagination: Pagination;
-  detail?: EstForecast | null;
+  detail?: EstForecastFilterItem | null;
 };
 
 const initialState: EstForecastState = {
   loading: false,
+  listLoading: false,
+  filterLoading: false,
   submitting: false,
   deleting: false,
+  adding: false,
+  addSuccess: false,
   list: [],
   filterList: [],
   pagination: PAGINATION,
@@ -41,14 +49,14 @@ export const estForecastSlice = createAppSlice({
       },
       {
         pending: (state) => {
-          state.loading = true;
+          state.listLoading = true;
         },
         fulfilled: (state, action) => {
-          state.loading = false;
+          state.listLoading = false;
           state.list = transformEstForecast(action.payload || []);
         },
         rejected: (state) => {
-          state.loading = false;
+          state.listLoading = false;
           state.list = [];
         }
       }
@@ -63,10 +71,10 @@ export const estForecastSlice = createAppSlice({
       },
       {
         pending: (state) => {
-          state.loading = true;
+          state.filterLoading = true;
         },
         fulfilled: (state, action) => {
-          state.loading = false;
+          state.filterLoading = false;
           state.filterList = transformEstForecastFilter(
             action.payload.result || []
           ) as EstForecastFilterItem[];
@@ -77,7 +85,7 @@ export const estForecastSlice = createAppSlice({
           };
         },
         rejected: (state) => {
-          state.loading = false;
+          state.filterLoading = false;
           state.filterList = [];
           state.pagination = PAGINATION;
         }
@@ -94,13 +102,16 @@ export const estForecastSlice = createAppSlice({
       },
       {
         pending: (state) => {
-          state.submitting = true;
+          state.adding = true;
+          state.addSuccess = false;
         },
         fulfilled: (state) => {
-          state.submitting = false;
+          state.adding = false;
+          state.addSuccess = true;
         },
         rejected: (state) => {
-          state.submitting = false;
+          state.adding = false;
+          state.addSuccess = false;
         }
       }
     ),
@@ -112,22 +123,25 @@ export const estForecastSlice = createAppSlice({
       },
       {
         pending: (state) => {
-          state.loading = true;
           state.detail = null;
         },
         fulfilled: (state, action) => {
-          state.loading = false;
           state.detail = action.payload;
         },
         rejected: (state) => {
-          state.loading = false;
           state.detail = null;
         }
       }
     ),
 
     updateEstForecast: create.asyncThunk(
-      async ({ id, payload }: { id: number; payload: EstForecast }) => {
+      async ({
+        id,
+        payload
+      }: {
+        id: number;
+        payload: EstForecastFilterItem;
+      }) => {
         const response = await defaultApiFetcher.put(
           `est-forecast/${id}`,
           convertParamsByMapping(payload)
@@ -142,20 +156,15 @@ export const estForecastSlice = createAppSlice({
           state.submitting = false;
 
           if (action.payload) {
-            const [updatedListItem] = transformEstForecast([action.payload]);
             const [updatedFilterItem] = transformEstForecastFilter([
               action.payload
             ]);
-
-            state.list = state.list.map((item) =>
-              item.id === updatedListItem.id ? updatedListItem : item
-            );
 
             state.filterList = state.filterList.map((item) =>
               item.id === updatedFilterItem.id ? updatedFilterItem : item
             );
 
-            state.detail = updatedListItem;
+            state.detail = updatedFilterItem;
           }
         },
         rejected: (state) => {
@@ -190,6 +199,11 @@ export const estForecastSlice = createAppSlice({
       }
     ),
 
+    resetAddEstForecastState: create.reducer((state) => {
+      state.adding = false;
+      state.addSuccess = false;
+    }),
+
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -197,8 +211,12 @@ export const estForecastSlice = createAppSlice({
 
   selectors: {
     watchEstForecastLoading: (state) => state.loading,
+    watchEstForecastListLoading: (state) => state.listLoading,
+    watchEstForecastFilterLoading: (state) => state.filterLoading,
     watchEstForecastSubmitting: (state) => state.submitting,
     watchEstForecastDeleting: (state) => state.deleting,
+    watchEstForecastAdding: (state) => state.adding,
+    watchEstForecastAddSuccess: (state) => state.addSuccess,
     watchEstForecastList: (state) => state.list,
     watchEstForecastFilterList: (state) => state.filterList,
     watchEstForecastPagination: (state) => state.pagination,
@@ -208,8 +226,12 @@ export const estForecastSlice = createAppSlice({
 
 export const {
   watchEstForecastLoading,
+  watchEstForecastListLoading,
+  watchEstForecastFilterLoading,
   watchEstForecastSubmitting,
   watchEstForecastDeleting,
+  watchEstForecastAdding,
+  watchEstForecastAddSuccess,
   watchEstForecastList,
   watchEstForecastFilterList,
   watchEstForecastPagination,
@@ -223,5 +245,6 @@ export const {
   getEstForecastDetail,
   updateEstForecast,
   deleteEstForecast,
+  resetAddEstForecastState,
   resetState
 } = estForecastSlice.actions;

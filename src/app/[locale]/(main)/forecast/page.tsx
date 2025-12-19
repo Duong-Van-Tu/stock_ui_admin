@@ -1,7 +1,7 @@
 'use client';
 
-import { EstForecastTable } from '@/components/tables/est-forecast.table';
+import { EstForecastSelectedTable } from '@/components/tables/est-forecast-selected.table';
 
 export default function EstForecastSelected() {
-  return <EstForecastTable />;
+  return <EstForecastSelectedTable />;
 }

@@ -25,7 +25,7 @@ type EstForecast = {
 };
 
 type EstForecastFilterItem = {
-  id?: number;
+  id: number;
   key?: string;
   symbol: string;
   company: string;

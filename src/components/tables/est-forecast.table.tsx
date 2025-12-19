@@ -3,36 +3,32 @@ import { css } from '@emotion/react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   resetState,
-  watchEstForecastLoading,
+  watchEstForecastListLoading,
   watchEstForecastList,
   getEstForecastFilter,
   addEstForecast
 } from '@/redux/slices/est-forecast.slice';
-import { Table, TableColumnsType, Button, DatePicker, Spin } from 'antd';
+import { Table, TableColumnsType, Button, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatMarketCap, isNumeric, roundToDecimals } from '@/utils/common';
-import { useWindowSize } from '@/hooks/window-size.hook';
-import { EmptyDataTable } from './empty.table';
-import { TableTitle } from './title.table';
 import { isMobile } from 'react-device-detect';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { DateTimeCell } from './columns/date-time-cell.column';
-import { PageURLs } from '@/utils/navigate';
 import { useTranslations } from 'next-intl';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { PlusOutlined } from '@ant-design/icons';
+import { useModal } from '@/hooks/modal.hook';
 
-export const EstForecastTable = () => {
+type EstForecastTableProps = {
+  symbol: string;
+};
+export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
   const t = useTranslations();
-  const router = useRouter();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const symbol = searchParams.get('symbol');
-  const { height } = useWindowSize();
+  const { closeModal } = useModal();
 
-  const loading = useAppSelector(watchEstForecastLoading);
+  const loading = useAppSelector(watchEstForecastListLoading);
   const list = useAppSelector(watchEstForecastList);
 
   const [addedSymbols, setAddedSymbols] = useState<Set<string>>(new Set());
@@ -58,7 +54,7 @@ export const EstForecastTable = () => {
   const handleAdd = useCallback(
     (record: EstForecast) => {
       setAddedSymbols((prev) => new Set(prev).add(record.symbol));
-
+      closeModal();
       dispatch(
         addEstForecast({
           symbol: record.symbol,
@@ -85,7 +81,8 @@ export const EstForecastTable = () => {
         })
       );
     },
-    [dispatch, createdDates]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [closeModal, dispatch, createdDates]
   );
 
   const columns: TableColumnsType<EstForecast> = useMemo(
@@ -103,8 +100,32 @@ export const EstForecastTable = () => {
           />
         )
       },
-      { title: 'Company', dataIndex: 'company', width: 200 },
-      { title: 'Industry', dataIndex: 'industry', width: 160 },
+      {
+        title: 'Created At',
+        dataIndex: 'createdAt',
+        width: 204,
+        align: 'center',
+        render: (_, record) =>
+          addedSymbols.has(record.symbol) ? (
+            <DateTimeCell value={createdDates[record.symbol]} />
+          ) : (
+            <DatePicker
+              showTime
+              value={
+                createdDates[record.symbol]
+                  ? dayjs(createdDates[record.symbol])
+                  : null
+              }
+              onChange={(d) =>
+                setCreatedDates((prev) => ({
+                  ...prev,
+                  [record.symbol]: d ? d.toISOString() : ''
+                }))
+              }
+            />
+          )
+      },
+      { title: 'Industry', dataIndex: 'industry', width: 160, align: 'center' },
       {
         title: 'Beta',
         dataIndex: 'beta',
@@ -203,31 +224,6 @@ export const EstForecastTable = () => {
         width: 160
       },
       {
-        title: 'Created At',
-        dataIndex: 'createdAt',
-        width: 204,
-        align: 'center',
-        render: (_, record) =>
-          addedSymbols.has(record.symbol) ? (
-            <DateTimeCell value={createdDates[record.symbol]} />
-          ) : (
-            <DatePicker
-              showTime
-              value={
-                createdDates[record.symbol]
-                  ? dayjs(createdDates[record.symbol])
-                  : null
-              }
-              onChange={(d) =>
-                setCreatedDates((prev) => ({
-                  ...prev,
-                  [record.symbol]: d ? d.toISOString() : ''
-                }))
-              }
-            />
-          )
-      },
-      {
         title: 'Actions',
         width: 100,
         align: 'center',
@@ -247,81 +243,36 @@ export const EstForecastTable = () => {
     [t, handleAdd, addedSymbols, createdDates]
   );
 
-  const hasSymbol = Boolean(symbol);
-
   return (
-    <Spin spinning={loading}>
-      <div css={rootStyles}>
-        <div css={tableWrapperStyles}>
-          <div css={titleRowStyles}>
-            <TableTitle>Est Forecast</TableTitle>
-            <Button
-              type='primary'
-              css={viewSelectedButtonStyles}
-              onClick={() => router.push(PageURLs.ofEstForecastSelected())}
-            >
-              View selected symbols
-            </Button>
-          </div>
-
-          {hasSymbol && list.length > 0 ? (
-            <Table
-              size={isMobile ? 'small' : 'middle'}
-              css={tableStyles}
-              rowKey={(record) => record.key!}
-              columns={columns}
-              dataSource={list}
-              loading={loading}
-              scroll={{
-                x: 2000,
-                y: list.length > 0 ? height - 240 : undefined
-              }}
-              pagination={false}
-            />
-          ) : (
-            <div css={emptyStyles(height - 300)}>
-              <EmptyDataTable />
-            </div>
-          )}
-        </div>
-      </div>
-    </Spin>
+    <div css={rootStyles}>
+      <h1>Search results</h1>
+      <Table
+        size={isMobile ? 'small' : 'middle'}
+        css={tableStyles}
+        rowKey={(record) => record.key!}
+        columns={columns}
+        dataSource={list}
+        loading={loading}
+        scroll={{
+          x: 2000,
+          y: undefined
+        }}
+        pagination={false}
+      />
+    </div>
   );
 };
 
 const rootStyles = css`
-  display: flex;
-  flex-direction: column;
-`;
-
-const tableWrapperStyles = css`
-  border: 1px solid var(--border-table-color);
-  border-radius: 0.8rem;
-`;
-
-const titleRowStyles = css`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.2rem 1.6rem;
-`;
-
-const viewSelectedButtonStyles = css`
-  margin-left: 12px;
-  font-size: 14px;
-  font-weight: 500;
+  h1 {
+    text-align: center;
+    font-size: 2.8rem;
+    font-weight: 600;
+  }
 `;
 
 const tableStyles = css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
-`;
-
-const emptyStyles = (height: number) => css`
-  border-top: 1px solid var(--border-table-color);
-  height: ${height}px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;

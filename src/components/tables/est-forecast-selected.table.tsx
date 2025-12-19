@@ -5,7 +5,6 @@ import {
   TableColumnsType,
   Button,
   Space,
-  Tooltip,
   Input,
   InputNumber,
   DatePicker
@@ -13,49 +12,78 @@ import {
 import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  watchEstForecastLoading,
+  watchEstForecastFilterLoading,
   getEstForecastFilterPaging,
   deleteEstForecast,
   watchEstForecastFilterList,
   watchEstForecastPagination,
-  updateEstForecast
+  updateEstForecast,
+  watchEstForecastAddSuccess,
+  resetAddEstForecastState
 } from '@/redux/slices/est-forecast.slice';
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { isMobile } from 'react-device-detect';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { formatMarketCap, isNumeric, roundToDecimals } from '@/utils/common';
 import { TableTitle } from './title.table';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Icon } from '../icons';
-import { PageURLs } from '@/utils/navigate';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { SymbolCell } from './columns/symbol-cell.column';
+import { useModal } from '@/hooks/modal.hook';
+import { EstForecastTable } from './est-forecast.table';
+import { TimeZone } from '@/constants/timezone.constant';
+
+const { RangePicker } = DatePicker;
 
 const FORECAST_COLORS = ['#52c41a', '#fadb14', '#fa8c16', '#ff4d4f'];
 
 export const EstForecastSelectedTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const { openModal } = useModal();
 
-  const loading = useAppSelector(watchEstForecastLoading);
+  const loading = useAppSelector(watchEstForecastFilterLoading);
   const filterList = useAppSelector(watchEstForecastFilterList);
+  console.log({ filterList });
   const pagination = useAppSelector(watchEstForecastPagination);
+  const addSuccess = useAppSelector(watchEstForecastAddSuccess);
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingRow, setEditingRow] = useState<Partial<EstForecastFilterItem>>(
     {}
   );
+  const [searchValue, setSearchValue] = useState('');
 
-  const handleGoBack = () => {
-    router.push(PageURLs.ofEstForecast());
+  const now = dayjs().tz(TimeZone.NEW_YORK);
+  const defaultStartDate = now.subtract(2, 'day').startOf('day');
+  const defaultEndDate = now.endOf('day');
+
+  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    defaultStartDate,
+    defaultEndDate
+  ]);
+
+  const handleSearch = (value: string) => {
+    if (!value) return;
+    setSearchValue(value);
+    openModal(<EstForecastTable symbol={value} />, {
+      width: 1200
+    });
   };
 
   const handlePageChange = (page: number, pageSize: number) => {
     const symbol = searchParams.get('symbol') || undefined;
-    dispatch(getEstForecastFilterPaging({ page, limit: pageSize, symbol }));
+    dispatch(
+      getEstForecastFilterPaging({
+        page,
+        limit: pageSize,
+        symbol,
+        startDate: dateRange[0].toISOString(),
+        endDate: dateRange[1].toISOString()
+      })
+    );
   };
 
   useEffect(() => {
@@ -64,10 +92,25 @@ export const EstForecastSelectedTable = () => {
       getEstForecastFilterPaging({
         page: pagination.currentPage,
         limit: pagination.pageSize,
-        symbol
+        symbol,
+        startDate: dateRange[0].toISOString(),
+        endDate: dateRange[1].toISOString(),
+        sortField: 'created_at',
+        sortType: 'desc'
       })
     );
-  }, [dispatch, pagination.currentPage, pagination.pageSize, searchParams]);
+
+    if (addSuccess) {
+      dispatch(resetAddEstForecastState());
+    }
+  }, [
+    addSuccess,
+    dispatch,
+    pagination.currentPage,
+    pagination.pageSize,
+    searchParams,
+    dateRange
+  ]);
 
   const startEdit = (record: EstForecastFilterItem) => {
     setEditingId(record.id!);
@@ -242,7 +285,7 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'Sentiment from Reuters',
         dataIndex: 'routerRec',
-        width: 180,
+        width: 120,
         align: 'center',
         render: (v, r) => renderText(v, 'routerRec', r)
       },
@@ -401,7 +444,7 @@ export const EstForecastSelectedTable = () => {
       },
       {
         title: 'Actions',
-        width: 160,
+        width: 170,
         align: 'center',
         fixed: !isMobile && 'right',
         render: (_, record) => (
@@ -419,6 +462,7 @@ export const EstForecastSelectedTable = () => {
                 Edit
               </Button>
             )}
+
             <Button
               danger
               onClick={() => dispatch(deleteEstForecast(record.id!))}
@@ -447,19 +491,27 @@ export const EstForecastSelectedTable = () => {
     <div css={rootStyles}>
       <div css={tableWrapperStyles}>
         <div css={titleRowStyles}>
-          <Tooltip title={isMobile ? null : t('back')}>
-            <Button
-              shape='circle'
-              type='text'
-              icon={<Icon icon='back' width={18} height={18} />}
-              onClick={handleGoBack}
-            />
-          </Tooltip>
           <TableTitle>Selected Est Forecast</TableTitle>
+          <Space>
+            <RangePicker
+              value={dateRange}
+              onChange={(v) => v && setDateRange(v as any)}
+              showTime
+            />
+            <Input.Search
+              placeholder='Search to add to Est Forecast'
+              enterButton='Search'
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
+              onSearch={handleSearch}
+              allowClear
+              style={{ width: 320 }}
+            />
+          </Space>
         </div>
 
         <Table
-          rowKey='id'
+          rowKey={(record) => record.key!}
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           columns={columns}
@@ -494,6 +546,7 @@ const tableWrapperStyles = css`
 const titleRowStyles = css`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.4rem;
   padding: 1.2rem 1rem;
 `;
