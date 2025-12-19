@@ -23,7 +23,6 @@ import {
 } from '@/redux/slices/est-forecast.slice';
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { isMobile } from 'react-device-detect';
-import { DateTimeCell } from './columns/date-time-cell.column';
 import { formatMarketCap, isNumeric, roundToDecimals } from '@/utils/common';
 import { TableTitle } from './title.table';
 import { useSearchParams } from 'next/navigation';
@@ -32,7 +31,6 @@ import { PositiveNegativeText } from '../positive-negative-text';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useModal } from '@/hooks/modal.hook';
 import { EstForecastTable } from './est-forecast.table';
-import { TimeZone } from '@/constants/timezone.constant';
 
 const { RangePicker } = DatePicker;
 
@@ -46,7 +44,6 @@ export const EstForecastSelectedTable = () => {
 
   const loading = useAppSelector(watchEstForecastFilterLoading);
   const filterList = useAppSelector(watchEstForecastFilterList);
-  console.log({ filterList });
   const pagination = useAppSelector(watchEstForecastPagination);
   const addSuccess = useAppSelector(watchEstForecastAddSuccess);
 
@@ -56,7 +53,7 @@ export const EstForecastSelectedTable = () => {
   );
   const [searchValue, setSearchValue] = useState('');
 
-  const now = dayjs().tz(TimeZone.NEW_YORK);
+  const now = dayjs();
   const defaultStartDate = now.subtract(2, 'day').startOf('day');
   const defaultEndDate = now.endOf('day');
 
@@ -99,18 +96,32 @@ export const EstForecastSelectedTable = () => {
         sortType: 'desc'
       })
     );
-
-    if (addSuccess) {
-      dispatch(resetAddEstForecastState());
-    }
   }, [
-    addSuccess,
     dispatch,
     pagination.currentPage,
     pagination.pageSize,
     searchParams,
     dateRange
   ]);
+
+  useEffect(() => {
+    if (addSuccess) {
+      dispatch(
+        getEstForecastFilterPaging({
+          page: 1,
+          limit: 100,
+          startDate: dateRange[0].toISOString(),
+          endDate: dateRange[1].toISOString(),
+          sortField: 'created_at',
+          sortType: 'desc'
+        })
+      );
+    }
+
+    if (addSuccess) {
+      dispatch(resetAddEstForecastState());
+    }
+  }, [dispatch, addSuccess, dateRange]);
 
   const startEdit = (record: EstForecastFilterItem) => {
     setEditingId(record.id!);
@@ -199,7 +210,7 @@ export const EstForecastSelectedTable = () => {
           />
         );
       }
-      return value ? <DateTimeCell value={value} /> : '-';
+      return value ? <div>{dayjs(value).format('MM/DD/YYYY hh:mm')}</div> : '-';
     },
     [editingId, editingRow]
   );
@@ -221,7 +232,7 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'Created At',
         dataIndex: 'createdAt',
-        width: 200,
+        width: 204,
         align: 'center',
         render: (v, r) => renderDate(v, 'createdAt', r)
       },
@@ -496,7 +507,6 @@ export const EstForecastSelectedTable = () => {
             <RangePicker
               value={dateRange}
               onChange={(v) => v && setDateRange(v as any)}
-              showTime
             />
             <Input.Search
               placeholder='Search to add to Est Forecast'

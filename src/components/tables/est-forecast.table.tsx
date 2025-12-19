@@ -48,8 +48,8 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
 
   const handleAdd = useCallback(
     (record: EstForecast) => {
+      console.log('Created Date:', createdDates[record.symbol]);
       setAddedSymbols((prev) => new Set(prev).add(record.symbol));
-      closeModal();
       dispatch(
         addEstForecast({
           symbol: record.symbol,
@@ -75,6 +75,7 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
           createdAt: createdDates[record.symbol]
         })
       );
+      closeModal();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [closeModal, dispatch, createdDates]
@@ -100,8 +101,9 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         dataIndex: 'createdAt',
         width: 204,
         align: 'center',
-        render: (_, record) =>
-          addedSymbols.has(record.symbol) ? (
+        render: (_, record) => {
+          console.log('Record Symbol:', record.symbol);
+          return addedSymbols.has(record.symbol) ? (
             <DateTimeCell value={createdDates[record.symbol]} />
           ) : (
             <DatePicker
@@ -111,14 +113,20 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
                   ? dayjs(createdDates[record.symbol])
                   : null
               }
-              onChange={(d) =>
+              onChange={(d) => {
+                const formattedDate = d ? d.format('YYYY-MM-DD HH:mm:ss') : '';
+                console.log(
+                  `Updated Date for ${record.symbol}:`,
+                  formattedDate
+                );
                 setCreatedDates((prev) => ({
                   ...prev,
-                  [record.symbol]: d ? d.toISOString() : ''
-                }))
-              }
+                  [record.symbol]: formattedDate
+                }));
+              }}
             />
-          )
+          );
+        }
       },
       { title: 'Industry', dataIndex: 'industry', width: 160, align: 'center' },
       {
