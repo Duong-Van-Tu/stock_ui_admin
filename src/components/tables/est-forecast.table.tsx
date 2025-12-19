@@ -2,7 +2,6 @@
 import { css } from '@emotion/react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  resetState,
   watchEstForecastListLoading,
   watchEstForecastList,
   getEstForecastFilter,
@@ -45,10 +44,6 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         })
       );
     }
-
-    return () => {
-      dispatch(resetState());
-    };
   }, [dispatch, symbol]);
 
   const handleAdd = useCallback(
