@@ -140,7 +140,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       countSignal: stock[fieldMapping.countSignal]
         ? Number(stock[fieldMapping.countSignal])
         : 0,
-      lsegNews: stock[fieldMapping.lsegNews]
+      lsegNews: Number(stock[fieldMapping.lsegNews])
     } as Signal;
   });
 };

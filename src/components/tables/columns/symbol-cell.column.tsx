@@ -36,7 +36,7 @@ type SymbolCellProps = {
   isSellSignal?: boolean;
   symbolColor?: string;
   isPutOptions?: boolean;
-  lsegNews?: boolean;
+  lsegNews?: number;
 };
 
 export const SymbolCell = ({
@@ -50,7 +50,7 @@ export const SymbolCell = ({
   isOptions = false,
   isPutOptions = false,
   isSellSignal = false,
-  lsegNews = false,
+  lsegNews,
   symbolColor
 }: SymbolCellProps) => {
   const t = useTranslations();
@@ -200,10 +200,8 @@ export const SymbolCell = ({
             </Button>
           </Tooltip>
         )}
-        {lsegNews && (
-          <Tooltip
-            title={isMobile ? null : capitalizeFirstLetter(t('optionChainPut'))}
-          >
+        {(lsegNews === 0 || lsegNews === 1) && (
+          <Tooltip title={isMobile ? null : t('news')}>
             <Button
               css={buttonStyles}
               type='text'
@@ -211,7 +209,16 @@ export const SymbolCell = ({
                 router.push(`${PageURLs.ofFinnhubLsegNews()}?symbol=${symbol}`)
               }
             >
-              <Icon icon='finnhubLseg' width={18} height={18} />
+              <Icon
+                icon='finnhubLseg'
+                fill={
+                  lsegNews === 0
+                    ? 'var(--negative-color)'
+                    : 'var(--positive-color)'
+                }
+                width={18}
+                height={18}
+              />
             </Button>
           </Tooltip>
         )}

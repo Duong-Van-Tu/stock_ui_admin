@@ -267,7 +267,7 @@ export const AlertLogsTable = ({
           isOptions={!!record.isOptions}
           isSellSignal={latestHitOnePercent.includes(record.symbol)}
           isPutOptions={!!record.isPutOptions}
-          lsegNews={!!record.lsegNews}
+          lsegNews={record.lsegNews}
         />
       )
     },

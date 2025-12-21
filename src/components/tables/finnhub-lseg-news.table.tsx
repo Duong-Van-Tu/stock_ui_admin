@@ -333,6 +333,7 @@ export const FinnhubAndLsegNewsTable = () => {
           onClick: () => handleSortOrder('newsScore')
         }),
         align: 'center',
+        
         render: (value) =>
           isNumeric(value) ? (
             <div css={sentimentScoreStyles}>

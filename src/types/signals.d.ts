@@ -83,7 +83,7 @@ type Signal = {
   grokRating: number;
   grokReasoning: string;
   grokRec: string;
-  lsegNews: boolean;
+  lsegNews: number;
 };
 
 type AlertLogsFilter = Filter & {
