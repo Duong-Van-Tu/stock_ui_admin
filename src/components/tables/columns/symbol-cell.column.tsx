@@ -212,9 +212,11 @@ export const SymbolCell = ({
               <Icon
                 icon='finnhubLseg'
                 fill={
-                  lsegNews === 0
+                  lsegNews === 1
+                    ? 'var(--positive-color)'
+                    : `${lsegNews}` === '-1'
                     ? 'var(--negative-color)'
-                    : 'var(--positive-color)'
+                    : ''
                 }
                 width={18}
                 height={18}
