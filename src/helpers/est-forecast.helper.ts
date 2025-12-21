@@ -20,7 +20,7 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
     marketCapEstForecast: item[fieldMapping.marketCapEstForecast],
     result: item.result,
 
-    epsEstimate: toNumber(item[fieldMapping.epsEstimate]),
+    epsEstimateESTEarnings: toNumber(item[fieldMapping.epsEstimateESTEarnings]),
     reportedEps: toNumber(item[fieldMapping.reportedEps]),
     surprise: toNumber(item.surprise),
     prevEstimate: item[fieldMapping.prevEstimate],
@@ -58,7 +58,7 @@ export const transformEstForecastFilter = (
     beta: toNumber(item.beta),
     marketCapEstForecast: item[fieldMapping.marketCapEstForecast],
     result: item.result,
-    epsEstimate: toNumber(item[fieldMapping.epsEstimate]),
+    epsEstimateESTEarnings: toNumber(item[fieldMapping.epsEstimateESTEarnings]),
     reportedEps: toNumber(item[fieldMapping.reportedEps]),
     surprise: toNumber(item.surprise),
     prevEstimate: item[fieldMapping.prevEstimate],

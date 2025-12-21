@@ -251,7 +251,7 @@ export const fieldMapping: Record<string, string> = {
   typeDay: 'type_day',
   callTime: 'call_time',
   marketCapEstForecast: 'market_cap',
-  epsEstimate: 'eps_estimate',
+  epsEstimateESTEarnings: 'eps_estimate',
   reportedEps: 'reported_eps',
   prevEstimate: 'prev_pattern',
   ytdPerformance: 'ytd_performance',

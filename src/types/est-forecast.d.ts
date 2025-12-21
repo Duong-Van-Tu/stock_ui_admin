@@ -8,7 +8,7 @@ type EstForecast = {
   beta: number;
   marketCapEstForecast: string;
   result: string;
-  epsEstimate: number;
+  epsEstimateESTEarnings: number;
   reportedEps: number;
   surprise: number;
   prevEstimate: string;
@@ -34,7 +34,7 @@ type EstForecastFilterItem = {
   beta: number;
   marketCapEstForecast: string;
   result: string;
-  epsEstimate: number;
+  epsEstimateESTEarnings: number;
   reportedEps: number;
   surprise: number;
   prevEstimate: string;

@@ -269,7 +269,7 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'epsEstimate',
         width: 120,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'epsEstimate', r)
+        render: (v, r) => renderNumber(v, 'epsEstimateESTEarnings', r)
       },
       {
         title: 'EPS Point',

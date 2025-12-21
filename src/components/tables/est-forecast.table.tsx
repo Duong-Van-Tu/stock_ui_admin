@@ -58,7 +58,7 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
           beta: record.beta,
           marketCapEstForecast: record.marketCapEstForecast,
           result: record.result,
-          epsEstimate: record.epsEstimate,
+          epsEstimateESTEarnings: record.epsEstimateESTEarnings,
           reportedEps: record.reportedEps,
           surprise: record.surprise,
           prevEstimate: record.prevEstimate,
@@ -145,7 +145,7 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
       },
       {
         title: t('epsEstimate'),
-        dataIndex: 'epsEstimate',
+        dataIndex: 'epsEstimateESTEarnings',
         width: 120,
         align: 'center',
         render: (v) =>
