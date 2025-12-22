@@ -17,19 +17,16 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
 
     callTime: item[fieldMapping.callTime],
     beta: toNumber(item.beta),
+
     marketCapEstForecast: item[fieldMapping.marketCapEstForecast],
     result: item.result,
 
     epsEstimateESTEarnings: toNumber(item[fieldMapping.epsEstimateESTEarnings]),
-    reportedEps: toNumber(item[fieldMapping.reportedEps]),
     surprise: toNumber(item.surprise),
-    prevEstimate: item[fieldMapping.prevEstimate],
 
     ytdPerformance: toNumber(item[fieldMapping.ytdPerformance]),
     aiRating: toNumber(item[fieldMapping.aiRating]),
-    totalScoreEstForecast: toNumber(item[fieldMapping.totalScoreEstForecast]),
 
-    routerRec: item[fieldMapping.routerRec],
     yahooRec: item[fieldMapping.yahooRec],
     priceTarget: toNumber(item[fieldMapping.priceTarget]),
 
@@ -37,7 +34,60 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
     gpt: item.gpt,
     forecast: item.forecast,
 
-    createdAt: item[fieldMapping.createdAt]
+    createdAt: item[fieldMapping.createdAt],
+
+    revenueForecast: toNumber(item[fieldMapping.revenueForecast]),
+    revenueForecastPoint: toNumber(item[fieldMapping.revenueForecastPoint]),
+
+    netMargin: toNumber(item[fieldMapping.netMargin]),
+    netMarginPoint: toNumber(item[fieldMapping.netMarginPoint]),
+
+    epsTrend: toNumber(item[fieldMapping.epsTrend]),
+    epsTrendPoint: toNumber(item[fieldMapping.epsTrendPoint]),
+
+    beatFreq: toNumber(item[fieldMapping.beatFreq]),
+    beatFreqPoint: toNumber(item[fieldMapping.beatFreqPoint]),
+
+    avgSurpriseMagnitude: toNumber(item[fieldMapping.avgSurpriseMagnitude]),
+    avgSurpriseMagnitudePoint: toNumber(
+      item[fieldMapping.avgSurpriseMagnitudePoint]
+    ),
+
+    postEarningDrift: toNumber(item[fieldMapping.postEarningDrift]),
+    postEarningDriftPoint: toNumber(item[fieldMapping.postEarningDriftPoint]),
+
+    grokRatingPoint: toNumber(item[fieldMapping.grokRatingPoint]),
+    gptRatingPoint: toNumber(item[fieldMapping.gptRatingPoint]),
+
+    lsegNewsScore1d: toNumber(item[fieldMapping.lsegNewsScore1d]),
+    lsegNewsScore1dPoint: toNumber(item[fieldMapping.lsegNewsScore1dPoint]),
+
+    lsegNewsScore3d: toNumber(item[fieldMapping.lsegNewsScore3d]),
+    lsegNewsScore3dPoint: toNumber(item[fieldMapping.lsegNewsScore3dPoint]),
+
+    article12h: toNumber(item[fieldMapping.article12h]),
+    article12hPoint: toNumber(item[fieldMapping.article12hPoint]),
+
+    marketpsychEarningsDirectionZ: toNumber(
+      item[fieldMapping.marketpsychEarningsDirectionZ]
+    ),
+    marketpsychEarningsForecastZ: toNumber(
+      item[fieldMapping.marketpsychEarningsForecastZ]
+    ),
+    marketpsychRevenueDirectionZ: toNumber(
+      item[fieldMapping.marketpsychRevenueDirectionZ]
+    ),
+    marketpsychRevenueForecastZ: toNumber(
+      item[fieldMapping.marketpsychRevenueForecastZ]
+    ),
+    marketpsychPriceUpZ: toNumber(item[fieldMapping.marketpsychPriceUpZ]),
+    marketpsychOptimismZ: toNumber(item[fieldMapping.marketpsychOptimismZ]),
+    marketpsychTrustZ: toNumber(item[fieldMapping.marketpsychTrustZ]),
+
+    aggregateScore: toNumber(item[fieldMapping.aggregateScore]),
+    aggregateScorePoint: toNumber(item[fieldMapping.aggregateScorePoint]),
+
+    noteForTrader: item[fieldMapping.noteForTrader]
   }));
 };
 
