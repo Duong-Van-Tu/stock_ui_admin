@@ -66,12 +66,12 @@ export const getMenuStructure = (
       iconType: 'alertFilter',
       link: PageURLs.ofAlertLogsFilter()
     },
-    {
-      label: t('news'),
-      key: 'news',
-      iconType: 'news',
-      link: PageURLs.ofNews()
-    },
+    // {
+    //   label: t('news'),
+    //   key: 'news',
+    //   iconType: 'news',
+    //   link: PageURLs.ofNews()
+    // },
     {
       label: t('newsScores'),
       key: 'insight-score',
@@ -91,7 +91,7 @@ export const getMenuStructure = (
       link: PageURLs.ofEarings()
     },
     {
-      label: 'Est Forecast',
+      label: 'Earnings Strategy',
       key: 'forecast',
       iconType: 'forecast',
       link: PageURLs.ofEstForecast()
