@@ -20,6 +20,7 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
 
     marketCapEstForecast: item[fieldMapping.marketCapEstForecast],
     result: item.result,
+    noteForTrader: item[fieldMapping.noteForTrader],
 
     epsEstimateESTEarnings: toNumber(item[fieldMapping.epsEstimateESTEarnings]),
     surprise: toNumber(item.surprise),
@@ -85,9 +86,7 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
     marketpsychTrustZ: toNumber(item[fieldMapping.marketpsychTrustZ]),
 
     aggregateScore: toNumber(item[fieldMapping.aggregateScore]),
-    aggregateScorePoint: toNumber(item[fieldMapping.aggregateScorePoint]),
-
-    noteForTrader: item[fieldMapping.noteForTrader]
+    aggregateScorePoint: toNumber(item[fieldMapping.aggregateScorePoint])
   }));
 };
 
@@ -101,37 +100,119 @@ export const transformEstForecastFilter = (
   return data.map((item) => ({
     id: item.id,
     key: uuid(),
+
     symbol: item.symbol,
     company: item.company,
     industry: item.industry,
+
     callTime: item[fieldMapping.callTime],
     beta: toNumber(item.beta),
+
     marketCapEstForecast: item[fieldMapping.marketCapEstForecast],
+    marketCap: item.market_cap,
+
     result: item.result,
+    noteForTrader: item[fieldMapping.noteForTrader],
+    forecast: item.forecast,
+
     epsEstimateESTEarnings: toNumber(item[fieldMapping.epsEstimateESTEarnings]),
-    reportedEps: toNumber(item[fieldMapping.reportedEps]),
-    surprise: toNumber(item.surprise),
+    epsEstimatePoint: toNumber(item[fieldMapping.epsEstimatePoint]),
+
     prevEstimate: item[fieldMapping.prevEstimate],
+
+    revenueForecast: toNumber(item[fieldMapping.revenueForecast]),
+    revenueForecastPoint: toNumber(item[fieldMapping.revenueForecastPoint]),
+
+    netMargin: toNumber(item[fieldMapping.netMargin]),
+    netMarginPoint: toNumber(item[fieldMapping.netMarginPoint]),
+
+    epsTrend: toNumber(item[fieldMapping.epsTrend]),
+    epsTrendPoint: toNumber(item[fieldMapping.epsTrendPoint]),
+
+    beatFreq: toNumber(item[fieldMapping.beatFreq]),
+    beatFreqPoint: toNumber(item[fieldMapping.beatFreqPoint]),
+
+    avgSurpriseMagnitude: toNumber(item[fieldMapping.avgSurpriseMagnitude]),
+    avgSurpriseMagnitudePoint: toNumber(
+      item[fieldMapping.avgSurpriseMagnitudePoint]
+    ),
+
+    postEarningDrift: toNumber(item[fieldMapping.postEarningDrift]),
+    postEarningDriftPoint: toNumber(item[fieldMapping.postEarningDriftPoint]),
+
     ytdPerformance: toNumber(item[fieldMapping.ytdPerformance]),
+    ytdPerformancePoint: toNumber(item[fieldMapping.ytdPerformancePoint]),
+
     aiRating: toNumber(item[fieldMapping.aiRating]),
-    totalScoreEstForecast: toNumber(item[fieldMapping.totalScoreEstForecast]),
+    aiRatingPoint: toNumber(item[fieldMapping.aiRatingPoint]),
+
+    aggregateScore: toNumber(item[fieldMapping.aggregateScore]),
+    aggregateScorePoint: toNumber(item[fieldMapping.aggregateScorePoint]),
+
     routerRec: item[fieldMapping.routerRec],
     yahooRec: item[fieldMapping.yahooRec],
+    yahooRecPoint: toNumber(item[fieldMapping.yahooRecPoint]),
+
     priceTarget: toNumber(item[fieldMapping.priceTarget]),
+    priceTargetPoint: toNumber(item[fieldMapping.priceTargetPoint]),
+
     grok: item.grok,
+    grokPoint: toNumber(item[fieldMapping.grokPoint]),
+
     gpt: item.gpt,
-    forecast: item.forecast,
-    epsEstimatePoint: item[fieldMapping.epsEstimatePoint],
-    prevEstimatePoint: item[fieldMapping.prevEstimatePoint],
-    ytdPerformancePoint: item[fieldMapping.ytdPerformancePoint],
-    aiRatingPoint: item[fieldMapping.aiRatingPoint],
-    totalScorePoint: item[fieldMapping.totalScorePoint],
-    yahooRecPoint: item[fieldMapping.yahooRecPoint],
-    priceTargetPoint: item[fieldMapping.priceTargetPoint],
-    grokPoint: item[fieldMapping.grokPoint],
-    gptPoint: item[fieldMapping.gptPoint],
+    gptPoint: toNumber(item[fieldMapping.gptPoint]),
+
+    lsegNewsScore1d: toNumber(item[fieldMapping.lsegNewsScore1d]),
+    lsegNewsScore1dPoint: toNumber(item[fieldMapping.lsegNewsScore1dPoint]),
+
+    lsegNewsScore3d: toNumber(item[fieldMapping.lsegNewsScore3d]),
+    lsegNewsScore3dPoint: toNumber(item[fieldMapping.lsegNewsScore3dPoint]),
+
+    article12h: toNumber(item[fieldMapping.article12h]),
+    article12hPoint: toNumber(item[fieldMapping.article12hPoint]),
+
+    marketpsychEarningsDirectionZ: toNumber(
+      item[fieldMapping.marketpsychEarningsDirectionZ]
+    ),
+    marketpsychEarningsDirectionZPoint: toNumber(
+      item[fieldMapping.marketpsychEarningsDirectionZPoint]
+    ),
+
+    marketpsychEarningsForecastZ: toNumber(
+      item[fieldMapping.marketpsychEarningsForecastZ]
+    ),
+    marketpsychEarningsForecastZPoint: toNumber(
+      item[fieldMapping.marketpsychEarningsForecastZPoint]
+    ),
+
+    marketpsychRevenueDirectionZ: toNumber(
+      item[fieldMapping.marketpsychRevenueDirectionZ]
+    ),
+    marketpsychRevenueDirectionZPoint: toNumber(
+      item[fieldMapping.marketpsychRevenueDirectionZPoint]
+    ),
+
+    marketpsychRevenueForecastZ: toNumber(
+      item[fieldMapping.marketpsychRevenueForecastZ]
+    ),
+    marketpsychRevenueForecastZPoint: toNumber(
+      item[fieldMapping.marketpsychRevenueForecastZPoint]
+    ),
+
+    marketpsychPriceUpZ: toNumber(item[fieldMapping.marketpsychPriceUpZ]),
+    marketpsychPriceUpZPoint: toNumber(
+      item[fieldMapping.marketpsychPriceUpZPoint]
+    ),
+
+    marketpsychOptimismZ: toNumber(item[fieldMapping.marketpsychOptimismZ]),
+    marketpsychOptimismZPoint: toNumber(
+      item[fieldMapping.marketpsychOptimismZPoint]
+    ),
+
+    marketpsychTrustZ: toNumber(item[fieldMapping.marketpsychTrustZ]),
+    marketpsychTrustZPoint: toNumber(item[fieldMapping.marketpsychTrustZPoint]),
+
     createdAt: item[fieldMapping.createdAt],
-    updatedAt: item[fieldMapping.updatedAt],
-    importedFrom: item[fieldMapping.importedFrom]
+    updatedAt: item[fieldMapping.updatedAt]
   }));
 };
