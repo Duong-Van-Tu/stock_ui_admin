@@ -27,7 +27,6 @@ import { formatMarketCap, isNumeric, roundToDecimals } from '@/utils/common';
 import { TableTitle } from './title.table';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { PositiveNegativeText } from '../positive-negative-text';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useModal } from '@/hooks/modal.hook';
 import { EstForecastTable } from './est-forecast.table';
@@ -65,9 +64,7 @@ export const EstForecastSelectedTable = () => {
   const handleSearch = (value: string) => {
     if (!value) return;
     setSearchValue(value);
-    openModal(<EstForecastTable symbol={value} />, {
-      width: 1600
-    });
+    openModal(<EstForecastTable symbol={value} />, { width: 1600 });
   };
 
   const handlePageChange = (page: number, pageSize: number) => {
@@ -77,8 +74,8 @@ export const EstForecastSelectedTable = () => {
         page,
         limit: pageSize,
         symbol,
-        startDate: dateRange[0].toISOString(),
-        endDate: dateRange[1].toISOString()
+        startDate: dayjs(dateRange[0]).add(1, 'day').toISOString(),
+        endDate: dayjs(dateRange[1]).add(1, 'day').toISOString()
       })
     );
   };
@@ -90,8 +87,8 @@ export const EstForecastSelectedTable = () => {
         page: pagination.currentPage,
         limit: pagination.pageSize,
         symbol,
-        startDate: dateRange[0].toISOString(),
-        endDate: dateRange[1].toISOString(),
+        startDate: dayjs(dateRange[0]).add(1, 'day').toISOString(),
+        endDate: dayjs(dateRange[1]).add(1, 'day').toISOString(),
         sortField: 'created_at',
         sortType: 'desc'
       })
@@ -116,26 +113,18 @@ export const EstForecastSelectedTable = () => {
           sortType: 'desc'
         })
       );
-    }
-
-    if (addSuccess) {
       dispatch(resetAddEstForecastState());
     }
   }, [dispatch, addSuccess, dateRange]);
 
   const startEdit = (record: EstForecastFilterItem) => {
-    setEditingId(record.id!);
+    setEditingId(record.id);
     setEditingRow(record);
   };
 
   const saveEdit = useCallback(() => {
     if (!editingId) return;
-    dispatch(
-      updateEstForecast({
-        id: editingId,
-        payload: editingRow as any
-      })
-    );
+    dispatch(updateEstForecast({ id: editingId, payload: editingRow as any }));
     setEditingId(null);
     setEditingRow({});
   }, [dispatch, editingId, editingRow]);
@@ -158,10 +147,10 @@ export const EstForecastSelectedTable = () => {
       }
       if (!isNumeric(value)) return '-';
       return (
-        <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+        <div>
           {roundToDecimals(value, 2)}
           {suffix}
-        </PositiveNegativeText>
+        </div>
       );
     },
     [editingId, editingRow]
@@ -178,7 +167,10 @@ export const EstForecastSelectedTable = () => {
           <Input
             value={editingRow[field] as string}
             onChange={(e) =>
-              setEditingRow((prev) => ({ ...prev, [field]: e.target.value }))
+              setEditingRow((prev) => ({
+                ...prev,
+                [field]: e.target.value
+              }))
             }
           />
         );
@@ -203,13 +195,15 @@ export const EstForecastSelectedTable = () => {
             onChange={(d) =>
               setEditingRow((prev) => ({
                 ...prev,
-                [field]: d ? d.toISOString() : null
+                [field]: d
+                  ? dayjs.utc(d.format('YYYY-MM-DD')).toISOString()
+                  : null
               }))
             }
           />
         );
       }
-      return value ? <div>{dayjs(value).format('MM/DD/YYYY hh:mm')}</div> : '-';
+      return value ? <div>{dayjs(value).utc().format('MM-DD-YYYY')}</div> : '-';
     },
     [editingId, editingRow]
   );
@@ -248,14 +242,353 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'beta',
         width: 90,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'beta', r)
+        render: (v) => roundToDecimals(v)
       },
       {
-        title: 'Market CAP',
+        title: 'Market Cap',
         dataIndex: 'marketCapEstForecast',
         width: 130,
         align: 'center',
         render: (v) => (v ? formatMarketCap(v / 1_000_000) : '-')
+      },
+      {
+        title: 'EPS Estimate',
+        dataIndex: 'epsEstimateESTEarnings',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'epsEstimateESTEarnings', r)
+      },
+      {
+        title: 'EPS Point',
+        dataIndex: 'epsEstimatePoint',
+        width: 110,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'epsEstimatePoint', r)
+      },
+      {
+        title: 'Revenue Forecast',
+        dataIndex: 'revenueForecast',
+        width: 150,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'revenueForecast', r)
+      },
+      {
+        title: 'Revenue Forecast Point',
+        dataIndex: 'revenueForecastPoint',
+        width: 182,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'revenueForecastPoint', r)
+      },
+      {
+        title: 'Net Margin',
+        dataIndex: 'netMargin',
+        width: 130,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'netMargin', r, '%')
+      },
+      {
+        title: 'Net Margin Point',
+        dataIndex: 'netMarginPoint',
+        width: 160,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'netMarginPoint', r)
+      },
+      {
+        title: 'EPS Trend',
+        dataIndex: 'epsTrend',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'epsTrend', r)
+      },
+      {
+        title: 'EPS Trend Point',
+        dataIndex: 'epsTrendPoint',
+        width: 160,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'epsTrendPoint', r)
+      },
+      {
+        title: 'Beat Freq',
+        dataIndex: 'beatFreq',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'beatFreq', r)
+      },
+      {
+        title: 'Beat Freq Point',
+        dataIndex: 'beatFreqPoint',
+        width: 160,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'beatFreqPoint', r)
+      },
+      {
+        title: 'Avg Surprise',
+        dataIndex: 'avgSurpriseMagnitude',
+        width: 140,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'avgSurpriseMagnitude', r)
+      },
+      {
+        title: 'Avg Surprise Point',
+        dataIndex: 'avgSurpriseMagnitudePoint',
+        width: 180,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'avgSurpriseMagnitudePoint', r)
+      },
+      {
+        title: 'Post Earning Drift',
+        dataIndex: 'postEarningDrift',
+        width: 170,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'postEarningDrift', r)
+      },
+      {
+        title: 'Post Earning Drift Point',
+        dataIndex: 'postEarningDriftPoint',
+        width: 210,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'postEarningDriftPoint', r)
+      },
+      {
+        title: 'YTD Performance',
+        dataIndex: 'ytdPerformance',
+        width: 150,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'ytdPerformance', r, '%')
+      },
+      {
+        title: 'YTD Performance Point',
+        dataIndex: 'ytdPerformancePoint',
+        width: 180,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'ytdPerformancePoint', r)
+      },
+      {
+        title: 'AI Rating',
+        dataIndex: 'aiRating',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'aiRating', r)
+      },
+      {
+        title: 'AI Rating Point',
+        dataIndex: 'aiRatingPoint',
+        width: 160,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'aiRatingPoint', r)
+      },
+      {
+        title: 'Aggregate Score',
+        dataIndex: 'aggregateScore',
+        width: 150,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'aggregateScore', r)
+      },
+      {
+        title: 'Aggregate Score Point',
+        dataIndex: 'aggregateScorePoint',
+        width: 190,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'aggregateScorePoint', r)
+      },
+      {
+        title: 'Yahoo Rec',
+        dataIndex: 'yahooRec',
+        width: 170,
+        align: 'center',
+        render: (v, r) => renderText(v, 'yahooRec', r)
+      },
+      {
+        title: 'Yahoo Rec Point',
+        dataIndex: 'yahooRecPoint',
+        width: 170,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'yahooRecPoint', r)
+      },
+      {
+        title: 'Price Target',
+        dataIndex: 'priceTarget',
+        width: 140,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'priceTarget', r)
+      },
+      {
+        title: 'Price Target Point',
+        dataIndex: 'priceTargetPoint',
+        width: 180,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'priceTargetPoint', r)
+      },
+      {
+        title: 'Grok',
+        dataIndex: 'grok',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderText(v, 'grok', r)
+      },
+      {
+        title: 'Grok Point',
+        dataIndex: 'grokPoint',
+        width: 150,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'grokPoint', r)
+      },
+      {
+        title: 'GPT',
+        dataIndex: 'gpt',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderText(v, 'gpt', r)
+      },
+      {
+        title: 'GPT Point',
+        dataIndex: 'gptPoint',
+        width: 150,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'gptPoint', r)
+      },
+      {
+        title: 'Reuters 1D',
+        dataIndex: 'lsegNewsScore1d',
+        width: 130,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'lsegNewsScore1d', r)
+      },
+      {
+        title: 'Reuters 1D Point',
+        dataIndex: 'lsegNewsScore1dPoint',
+        width: 180,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'lsegNewsScore1dPoint', r)
+      },
+      {
+        title: 'Reuters 3D',
+        dataIndex: 'lsegNewsScore3d',
+        width: 130,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'lsegNewsScore3d', r)
+      },
+      {
+        title: 'Reuters 3D Point',
+        dataIndex: 'lsegNewsScore3dPoint',
+        width: 180,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'lsegNewsScore3dPoint', r)
+      },
+      {
+        title: 'Article 12h',
+        dataIndex: 'article12h',
+        width: 130,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'article12h', r)
+      },
+      {
+        title: 'Article 12h Point',
+        dataIndex: 'article12hPoint',
+        width: 180,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'article12hPoint', r)
+      },
+      {
+        title: 'MarketPsych Earnings Dir Z',
+        dataIndex: 'marketpsychEarningsDirectionZ',
+        width: 208,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'marketpsychEarningsDirectionZ', r)
+      },
+      {
+        title: 'MarketPsych Earnings Dir Z Point',
+        dataIndex: 'marketpsychEarningsDirectionZPoint',
+        width: 246,
+        align: 'center',
+        render: (v, r) =>
+          renderNumber(v, 'marketpsychEarningsDirectionZPoint', r)
+      },
+      {
+        title: 'MarketPsych Earnings Forecast Z',
+        dataIndex: 'marketpsychEarningsForecastZ',
+        width: 248,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'marketpsychEarningsForecastZ', r)
+      },
+      {
+        title: 'MarketPsych Earnings Forecast Z Point',
+        dataIndex: 'marketpsychEarningsForecastZPoint',
+        width: 290,
+        align: 'center',
+        render: (v, r) =>
+          renderNumber(v, 'marketpsychEarningsForecastZPoint', r)
+      },
+      {
+        title: 'MarketPsych Revenue Dir Z',
+        dataIndex: 'marketpsychRevenueDirectionZ',
+        width: 210,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'marketpsychRevenueDirectionZ', r)
+      },
+      {
+        title: 'MarketPsych Revenue Dir Z Point',
+        dataIndex: 'marketpsychRevenueDirectionZPoint',
+        width: 248,
+        align: 'center',
+        render: (v, r) =>
+          renderNumber(v, 'marketpsychRevenueDirectionZPoint', r)
+      },
+      {
+        title: 'MarketPsych Revenue Forecast Z',
+        dataIndex: 'marketpsychRevenueForecastZ',
+        width: 248,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'marketpsychRevenueForecastZ', r)
+      },
+      {
+        title: 'MarketPsych Revenue Forecast Z Point',
+        dataIndex: 'marketpsychRevenueForecastZPoint',
+        width: 286,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'marketpsychRevenueForecastZPoint', r)
+      },
+      {
+        title: 'MarketPsych Price Up Z',
+        dataIndex: 'marketpsychPriceUpZ',
+        width: 184,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'marketpsychPriceUpZ', r)
+      },
+      {
+        title: 'MarketPsych Price Up Z Point',
+        dataIndex: 'marketpsychPriceUpZPoint',
+        width: 240,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'marketpsychPriceUpZPoint', r)
+      },
+      {
+        title: 'MarketPsych Optimism Z',
+        dataIndex: 'marketpsychOptimismZ',
+        width: 190,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'marketpsychOptimismZ', r)
+      },
+      {
+        title: 'MarketPsych Optimism Z Point',
+        dataIndex: 'marketpsychOptimismZPoint',
+        width: 230,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'marketpsychOptimismZPoint', r)
+      },
+      {
+        title: 'MarketPsych Trust Z',
+        dataIndex: 'marketpsychTrustZ',
+        width: 164,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'marketpsychTrustZ', r)
+      },
+      {
+        title: 'MarketPsych Trust Z Point',
+        dataIndex: 'marketpsychTrustZPoint',
+        width: 200,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'marketpsychTrustZPoint', r)
       },
       {
         title: 'Result',
@@ -265,144 +598,11 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderText(v, 'result', r)
       },
       {
-        title: 'EPS Estimate',
-        dataIndex: 'epsEstimate',
-        width: 120,
+        title: 'Note for Trader',
+        dataIndex: 'noteForTrader',
+        width: 130,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'epsEstimateESTEarnings', r)
-      },
-      {
-        title: 'EPS Point',
-        dataIndex: 'epsEstimatePoint',
-        width: 100,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'epsEstimatePoint', r)
-      },
-      {
-        title: 'Reported EPS',
-        dataIndex: 'reportedEps',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'reportedEps', r)
-      },
-      {
-        title: 'Surprise %',
-        dataIndex: 'surprise',
-        width: 110,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'surprise', r, '%')
-      },
-      {
-        title: 'Sentiment from Reuters',
-        dataIndex: 'routerRec',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderText(v, 'routerRec', r)
-      },
-      {
-        title: 'Notes',
-        dataIndex: 'gpt',
-        width: 160,
-        align: 'center',
-        render: (v, r) => renderText(v, 'gpt', r)
-      },
-      {
-        title: 'Prev Pattern',
-        dataIndex: 'prevEstimate',
-        width: 200,
-        align: 'center',
-        render: (v, r) => renderText(v, 'prevEstimate', r)
-      },
-      {
-        title: 'Performance',
-        dataIndex: 'ytdPerformance',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'ytdPerformance', r, '%')
-      },
-      {
-        title: 'AI Rating',
-        dataIndex: 'aiRating',
-        width: 100,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'aiRating', r)
-      },
-      {
-        title: 'AI Point',
-        dataIndex: 'aiRatingPoint',
-        width: 100,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'aiRatingPoint', r)
-      },
-      {
-        title: 'Total Score',
-        dataIndex: 'totalScoreEstForecast',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'totalScoreEstForecast', r)
-      },
-      {
-        title: 'Total Score Point',
-        dataIndex: 'totalScorePoint',
-        width: 138,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'totalScorePoint', r)
-      },
-      {
-        title: 'Price Target',
-        dataIndex: 'priceTarget',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'priceTarget', r)
-      },
-      {
-        title: 'Price Target Point',
-        dataIndex: 'priceTargetPoint',
-        width: 140,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'priceTargetPoint', r)
-      },
-      {
-        title: 'Yahoo Recommendation',
-        dataIndex: 'yahooRec',
-        width: 140,
-        align: 'center',
-        render: (v, r) => renderText(v, 'yahooRec', r)
-      },
-      {
-        title: 'Yahoo Rec Point',
-        dataIndex: 'yahooRecPoint',
-        width: 140,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'yahooRecPoint', r)
-      },
-      {
-        title: 'Grok',
-        dataIndex: 'grok',
-        width: 100,
-        align: 'center',
-        render: (v, r) => renderText(v, 'grok', r)
-      },
-      {
-        title: 'Grok Point',
-        dataIndex: 'grokPoint',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'grokPoint', r)
-      },
-      {
-        title: 'GPT',
-        dataIndex: 'gpt',
-        width: 100,
-        align: 'center',
-        render: (v, r) => renderText(v, 'gpt', r)
-      },
-      {
-        title: 'GPT Point',
-        dataIndex: 'gptPoint',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'gptPoint', r)
+        render: (v, r) => renderText(v, 'noteForTrader', r)
       },
       {
         title: 'Forecast',
@@ -472,10 +672,9 @@ export const EstForecastSelectedTable = () => {
                 Edit
               </Button>
             )}
-
             <Button
               danger
-              onClick={() => dispatch(deleteEstForecast(record.id!))}
+              onClick={() => dispatch(deleteEstForecast(record.id))}
             >
               Delete
             </Button>
@@ -486,9 +685,9 @@ export const EstForecastSelectedTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       t,
-      pagination.currentPage,
-      pagination.pageSize,
+      isMobile,
       editingId,
+      editingRow,
       renderNumber,
       renderText,
       renderDate,
