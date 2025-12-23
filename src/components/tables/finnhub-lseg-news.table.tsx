@@ -165,14 +165,27 @@ export const FinnhubAndLsegNewsTable = () => {
         }),
         render: (value, record) => (
           <div css={titleCellStyles}>
-            {record.breakingNews === 1 && (
+            {!!record.breakingNews && (
               <Tooltip
                 css={fireIconStyles}
                 title={isMobile ? null : t('breakingNews')}
               >
                 <Button
                   type='text'
-                  icon={<Icon icon='fire' width={18} height={18} />}
+                  icon={
+                    <Icon
+                      fill={
+                        record.breakingNews === 1
+                          ? 'var(--positive-color)'
+                          : record.breakingNews === -1
+                          ? 'var(--negative-color)'
+                          : ''
+                      }
+                      icon='fire'
+                      width={18}
+                      height={18}
+                    />
+                  }
                   shape='circle'
                 />
               </Tooltip>

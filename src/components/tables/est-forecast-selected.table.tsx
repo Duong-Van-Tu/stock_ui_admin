@@ -217,6 +217,7 @@ export const EstForecastSelectedTable = () => {
         fixed: 'left',
         render: (_, record) => (
           <SymbolCell
+            symbolColor={record.forecast}
             symbol={record.symbol}
             companyName={isMobile ? undefined : record.company}
           />

@@ -200,7 +200,7 @@ export const SymbolCell = ({
             </Button>
           </Tooltip>
         )}
-        {(lsegNews === 0 || lsegNews === 1) && (
+        {isNumeric(lsegNews) && (
           <Tooltip title={isMobile ? null : t('news')}>
             <Button
               css={buttonStyles}
@@ -214,7 +214,7 @@ export const SymbolCell = ({
                 fill={
                   lsegNews === 1
                     ? 'var(--positive-color)'
-                    : `${lsegNews}` === '-1'
+                    : lsegNews === -1
                     ? 'var(--negative-color)'
                     : ''
                 }
