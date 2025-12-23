@@ -701,7 +701,7 @@ export const EstForecastSelectedTable = () => {
     <div css={rootStyles}>
       <div css={tableWrapperStyles}>
         <div css={titleRowStyles}>
-          <TableTitle>Selected Est Forecast</TableTitle>
+          <TableTitle>Earnings Strategy</TableTitle>
           <Space>
             <RangePicker
               value={dateRange}
