@@ -8,7 +8,7 @@ import {
   watchFinnhubAndLsegNewsPagination,
   getFinnhubAndLsegNews
 } from '@/redux/slices/sentiment.slice';
-import { Button, Table, TableColumnsType } from 'antd';
+import { Button, Table, TableColumnsType, Tooltip } from 'antd';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
@@ -32,6 +32,7 @@ import { SymbolCell } from './columns/symbol-cell.column';
 import { useModal } from '@/hooks/modal.hook';
 import { SentimentSCore } from '../charts/sentiment-score.chart';
 import { useTranslations } from 'next-intl';
+import { Icon } from '../icons';
 
 export const FinnhubAndLsegNewsTable = () => {
   const t = useTranslations();
@@ -162,8 +163,23 @@ export const FinnhubAndLsegNewsTable = () => {
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('headline')
         }),
-        render: (value) =>
-          value ? <EllipsisText text={value} maxLines={2} /> : '-'
+        render: (value, record) => (
+          <div css={titleCellStyles}>
+            {record.breakingNews === 1 && (
+              <Tooltip
+                css={fireIconStyles}
+                title={isMobile ? null : t('breakingNews')}
+              >
+                <Button
+                  type='text'
+                  icon={<Icon icon='fire' width={18} height={18} />}
+                  shape='circle'
+                />
+              </Tooltip>
+            )}
+            <EllipsisText text={value} maxLines={2} />
+          </div>
+        )
       },
       {
         title: 'Story',
@@ -333,7 +349,7 @@ export const FinnhubAndLsegNewsTable = () => {
           onClick: () => handleSortOrder('newsScore')
         }),
         align: 'center',
-        
+
         render: (value) =>
           isNumeric(value) ? (
             <div css={sentimentScoreStyles}>
@@ -460,4 +476,15 @@ const storyStyles = css`
   p {
     margin-bottom: 0;
   }
+`;
+
+const titleCellStyles = css`
+  position: relative;
+  padding-left: 1rem;
+`;
+
+const fireIconStyles = css`
+  position: absolute;
+  left: -1.8rem;
+  top: -1.4rem;
 `;

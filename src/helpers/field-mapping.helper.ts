@@ -301,5 +301,6 @@ export const fieldMapping: Record<string, string> = {
   marketpsychTrustZ: 'marketpsych_trust_z',
   aggregateScore: 'aggregate_score',
   aggregateScorePoint: 'aggregate_score_point',
-  noteForTrader: 'note_for_trader'
+  noteForTrader: 'note_for_trader',
+  breakingNews: 'breaking_news'
 };

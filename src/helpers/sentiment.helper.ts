@@ -174,7 +174,8 @@ export const transformFinnhubAndLsegNews = (
     direction: item.direction,
     horizon: item.horizon,
     newsType: item[fieldMapping.newsType],
-    sourceType: item[fieldMapping.sourceType]
+    sourceType: item[fieldMapping.sourceType],
+    breakingNews: Number(item[fieldMapping.breakingNews])
   }));
 };
 

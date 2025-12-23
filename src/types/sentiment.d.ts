@@ -116,6 +116,7 @@ type FinnhubAndLsegNewsTableItem = {
   direction: string;
   horizon: string;
   newsType: string;
+  breakingNews: number;
 };
 
 type NewsScore = {
