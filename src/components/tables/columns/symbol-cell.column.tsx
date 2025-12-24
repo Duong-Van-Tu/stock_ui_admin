@@ -175,7 +175,7 @@ export const SymbolCell = ({
               href={PageURLs.ofStockDetail(symbol, signalId)}
               target={isDesktop ? '_blank' : undefined}
             >
-              {symbol}
+              <span>{symbol}</span>
             </Link>
           )}
         </Popover>
@@ -288,7 +288,7 @@ export const SymbolCell = ({
       </div>
 
       {companyName && (
-        <div css={companyNameStyles}>
+        <div css={companyNameStyles(!!symbolColor)}>
           <EllipsisText text={companyName} maxLines={1} />
         </div>
       )}
@@ -326,9 +326,11 @@ const buttonStyles = css`
   border-radius: 50%;
 `;
 
-const companyNameStyles = css`
+const companyNameStyles = (isColorSymbol: boolean) => css`
   font-size: 1.4rem;
   line-height: 1.6rem;
+  position: ${isColorSymbol && 'absolute'};
+  color: ${isColorSymbol ? 'var(--white-color)' : 'var(--text-color)'};
 `;
 
 const scoreWrapperStyles = css`
@@ -364,9 +366,22 @@ const sellIconStyles = css`
 `;
 
 const symbolColorStyles = (color: string) => css`
-  color: ${color};
+  color: var(--white-color);
+  background: ${color};
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  width: 100%;
   &:hover {
-    color: ${color};
+    color: var(--white-color);
     opacity: 0.9;
+  }
+
+  span {
+    position: absolute;
+    top: 0.4rem;
+    left: 1rem;
   }
 `;
