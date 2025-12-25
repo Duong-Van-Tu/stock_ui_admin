@@ -25,6 +25,7 @@ import { DateTimeCell } from './columns/date-time-cell.column';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PageURLs } from '@/utils/navigate';
 import { PositiveNegativeText } from '../positive-negative-text';
+import Link from 'next/link';
 
 export const NewsScoresTable = () => {
   const t = useTranslations();
@@ -129,11 +130,18 @@ export const NewsScoresTable = () => {
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('finnhubAggScore')
         }),
-        render: (value) =>
+        render: (value, record) =>
           isNumeric(value) ? (
-            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
-              {roundToDecimals(value)}
-            </PositiveNegativeText>
+            <Link
+              href={`${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`}
+            >
+              <PositiveNegativeText
+                isNegative={value < 0}
+                isPositive={value > 0}
+              >
+                {roundToDecimals(value)}
+              </PositiveNegativeText>
+            </Link>
           ) : (
             '-'
           )
@@ -150,11 +158,18 @@ export const NewsScoresTable = () => {
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('lsegAggScore')
         }),
-        render: (value) =>
+        render: (value, record) =>
           isNumeric(value) ? (
-            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
-              {roundToDecimals(value)}
-            </PositiveNegativeText>
+            <Link
+              href={`${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`}
+            >
+              <PositiveNegativeText
+                isNegative={value < 0}
+                isPositive={value > 0}
+              >
+                {roundToDecimals(value)}
+              </PositiveNegativeText>
+            </Link>
           ) : (
             '-'
           )

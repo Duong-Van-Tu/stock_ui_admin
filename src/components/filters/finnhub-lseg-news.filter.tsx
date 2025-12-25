@@ -33,7 +33,7 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
   const triggerFilter = () => {
     const v = form.getFieldsValue() as {
       range?: [Dayjs, Dayjs];
-      sourceType?: 'all' | 'finnhub' | 'lseg';
+      sourceType?: 'finnhub' | 'lseg';
     };
 
     const startDate = v.range?.[0]
@@ -46,8 +46,7 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
       .endOf('day')
       .toISOString();
 
-    const sourceType =
-      v.sourceType && v.sourceType !== 'all' ? v.sourceType : undefined;
+    const sourceType = v.sourceType;
 
     updateSearchParams({
       sourceType,
@@ -70,7 +69,7 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
     const start = end.subtract(2, 'day');
 
     form.setFieldsValue({
-      sourceType: 'all',
+      sourceType: 'lseg',
       range: [start, end]
     });
 
@@ -84,7 +83,7 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
   };
 
   useEffect(() => {
-    const sourceTypeFromUrl = searchParams.get('sourceType') ?? 'all';
+    const sourceTypeFromUrl = searchParams.get('sourceType') ?? 'lseg';
     const startDateFromUrl = searchParams.get('startDate');
     const endDateFromUrl = searchParams.get('endDate');
 
@@ -117,7 +116,7 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
         layout='horizontal'
         css={formStyles}
         onFinish={submit}
-        initialValues={{ sourceType: 'all' }}
+        initialValues={{ sourceType: 'lseg' }}
       >
         <Row
           gutter={isDesktop ? [16, 12] : [16, 20]}
@@ -140,16 +139,15 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
                 name='sourceType'
                 label='Source type'
                 options={[
-                  { value: 'all', label: 'All' },
                   { value: 'finnhub', label: 'Finnhub' },
-                  { value: 'lseg', label: 'LSGE' }
+                  { value: 'lseg', label: 'LSEG' }
                 ]}
                 onSelect={(v) => {
-                  form.setFieldValue('sourceType', v ?? 'all');
+                  form.setFieldValue('sourceType', v ?? 'lseg');
                   triggerFilter();
                 }}
                 onClear={() => {
-                  form.setFieldValue('sourceType', 'all');
+                  form.setFieldValue('sourceType', 'lseg');
                   triggerFilter();
                 }}
                 width={isMobile ? 'calc(100vw - 5rem)' : '14rem'}
