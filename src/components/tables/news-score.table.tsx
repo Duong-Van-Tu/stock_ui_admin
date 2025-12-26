@@ -133,13 +133,15 @@ export const NewsScoresTable = () => {
         render: (value, record) =>
           isNumeric(value) ? (
             <Link
-              href={`${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`}
+              href={`${PageURLs.ofFinnhubLsegNews()}?symbol=${
+                record.symbol
+              }&sourceType=finnhub`}
             >
               <PositiveNegativeText
                 isNegative={value < 0}
                 isPositive={value > 0}
               >
-                {roundToDecimals(value)}
+                <span css={scoreNewsLinkStyles}>{roundToDecimals(value)}</span>
               </PositiveNegativeText>
             </Link>
           ) : (
@@ -161,13 +163,15 @@ export const NewsScoresTable = () => {
         render: (value, record) =>
           isNumeric(value) ? (
             <Link
-              href={`${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`}
+              href={`${PageURLs.ofFinnhubLsegNews()}?symbol=${
+                record.symbol
+              }&sourceType=lseg`}
             >
               <PositiveNegativeText
                 isNegative={value < 0}
                 isPositive={value > 0}
               >
-                {roundToDecimals(value)}
+                <span css={scoreNewsLinkStyles}>{roundToDecimals(value)}</span>
               </PositiveNegativeText>
             </Link>
           ) : (
@@ -373,4 +377,8 @@ const emptyStyles = (height: number) => css`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const scoreNewsLinkStyles = css`
+  text-decoration: underline;
 `;
