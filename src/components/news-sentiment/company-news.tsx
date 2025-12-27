@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   getFinnhubAndLsegNews,
+  resetState,
   watchFinnhubAndLsegNews,
   watchFinnhubAndLsegNewsLoading,
   watchFinnhubAndLsegNewsPagination
@@ -47,7 +48,10 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
 
   useEffect(() => {
     fetchCompanyNews({});
-  }, [fetchCompanyNews]);
+    return () => {
+      dispatch(resetState());
+    };
+  }, [fetchCompanyNews, dispatch]);
 
   const columns: TableColumnsType<FinnhubAndLsegNewsTableItem> = useMemo(
     () => [
@@ -149,7 +153,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
           )
       }
     ],
-    [pagination.currentPage, pagination.pageSize]
+    []
   );
 
   return (
