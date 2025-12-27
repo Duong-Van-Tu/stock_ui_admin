@@ -1,16 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { useCallback, useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Collapse } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import {
-  getCountSentiment,
-  watchCountSentiment
-} from '@/redux/slices/sentiment.slice';
+import { getNewsScores, watchNewsScores } from '@/redux/slices/sentiment.slice';
 import { CountCard } from './count-card';
 import { useTranslations } from 'next-intl';
+import dayjs from 'dayjs';
 
 type CountSentimentProps = {
   symbol: string;
@@ -25,15 +23,35 @@ export const CountSentiment = ({
 }: CountSentimentProps) => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const countSentiment = useAppSelector(watchCountSentiment);
+  const newsScores = useAppSelector(watchNewsScores);
 
-  const fetchCountSentiment = useCallback(() => {
-    dispatch(getCountSentiment({ symbol, query: { fromDate, toDate } }));
-  }, [dispatch, symbol, fromDate, toDate]);
+  const dayType = useMemo(() => {
+    if (!fromDate || !toDate) return undefined;
+
+    const diff = dayjs(toDate).diff(dayjs(fromDate), 'day');
+
+    if (diff <= 1) return 1;
+    if (diff <= 3) return 3;
+    return 7;
+  }, [fromDate, toDate]);
 
   useEffect(() => {
-    fetchCountSentiment();
-  }, [fetchCountSentiment]);
+    dispatch(
+      getNewsScores({
+        symbol,
+        fromDate,
+        toDate,
+        typeDay: dayType,
+        page: 1,
+        limit: 10
+      })
+    );
+  }, [dispatch, symbol, fromDate, toDate, dayType]);
+
+  const score = useMemo(
+    () => newsScores?.find((item) => item.symbol === symbol),
+    [newsScores, symbol]
+  );
 
   const collapseItems = [
     {
@@ -44,22 +62,31 @@ export const CountSentiment = ({
           <div css={cardRowContainerStyles}>
             <CountCard
               title={t('positiveTitle')}
-              value={countSentiment.countPositive}
+              rows={[
+                { label: 'Finnhub', value: score?.finnhubPositiveCount },
+                { label: 'LSEG', value: score?.lsegPositiveCount }
+              ]}
               isPositive
             />
-            <CountCard
-              title={t('veryPositiveTitle')}
-              value={countSentiment.countVeryPositive}
-              isPositive
-            />
+
             <CountCard
               title={t('negativeTitle')}
-              value={countSentiment.countNegative}
+              rows={[
+                { label: 'Finnhub', value: score?.finnhubNegativeCount },
+                { label: 'LSEG', value: score?.lsegNegativeCount }
+              ]}
               isNegative
             />
+
             <CountCard
-              title={t('veryNegativeTitle')}
-              value={countSentiment.countVeryNegative}
+              title='LSEG Good BK'
+              value={score?.lsegGoodBkCount}
+              isPositive
+            />
+
+            <CountCard
+              title='LSEG Bad BK'
+              value={score?.lsegBadBkCount}
               isNegative
             />
           </div>
@@ -98,18 +125,12 @@ const cardRowContainerStyles = css`
   gap: 1.6rem;
 
   & > * {
-    flex: 1 1 16rem;
+    flex: 1 1 18rem;
   }
 
   @media (max-width: 406px) {
     & > * {
-      flex: 1 1 12rem;
-    }
-  }
-
-  @media (min-width: 576px) {
-    & > * {
-      flex: 1 1 19rem;
+      flex: 1 1 14rem;
     }
   }
 `;

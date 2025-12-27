@@ -127,8 +127,13 @@ type NewsScore = {
   avgAggScore: number;
   finnhubLatestDatetime: string;
   lsegLatestDatetime: string;
-  lsegLatestDatetime: string;
-  lsegLatestDatetime: string;
   finnhubTotalArticles: number;
   lsegTotalArticles: number;
+  finnhubPositiveCount: number;
+  finnhubNegativeCount: number;
+  lsegPositiveCount: number;
+  lsegNegativeCount: number;
+  marketCapBillion: number;
+  lsegBadBkCount: number;
+  lsegGoodBkCount: number;
 };

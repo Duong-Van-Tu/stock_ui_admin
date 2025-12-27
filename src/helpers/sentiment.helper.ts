@@ -187,8 +187,15 @@ export const transformNewsScores = (list: any[] = []): NewsScore[] => {
     lsegAggScore: Number(item[fieldMapping.lsegAggScore]),
     avgAggScore: Number(item[fieldMapping.avgAggScore]),
     finnhubTotalArticles: Number(item[fieldMapping.finnhubTotalArticles]),
+    finnhubNegativeCount: Number(item[fieldMapping.finnhubNegativeCount]),
     lsegTotalArticles: Number(item[fieldMapping.lsegTotalArticles]),
     finnhubLatestDatetime: item[fieldMapping.finnhubLatestDatetime],
-    lsegLatestDatetime: item[fieldMapping.lsegLatestDatetime]
+    lsegLatestDatetime: item[fieldMapping.lsegLatestDatetime],
+    marketCapBillion: Number(item[fieldMapping.marketCapBillion]),
+    lsegNegativeCount: Number(item[fieldMapping.lsegNegativeCount]),
+    lsegPositiveCount: Number(item[fieldMapping.lsegPositiveCount]),
+    finnhubPositiveCount: Number(item[fieldMapping.finnhubPositiveCount]),
+    lsegBadBkCount: Number(item[fieldMapping.lsegBadBkCount]),
+    lsegGoodBkCount: Number(item[fieldMapping.lsegGoodBkCount])
   }));
 };
