@@ -3,27 +3,20 @@ import { css } from '@emotion/react';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  getCompanyNews,
-  watchCompanyNews,
-  watchCompanyNewsLoading,
-  watchCompanyNewsPagination
+  getFinnhubAndLsegNews,
+  watchFinnhubAndLsegNews,
+  watchFinnhubAndLsegNewsLoading,
+  watchFinnhubAndLsegNewsPagination
 } from '@/redux/slices/sentiment.slice';
-import { Table, TableColumnsType, Tag } from 'antd';
+import { Table, TableColumnsType } from 'antd';
 import { EmptyDataTable } from '../tables/empty.table';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { DateTimeCell } from '../tables/columns/date-time-cell.column';
-import { PositiveNegativeText } from '../positive-negative-text';
 import { isNumeric, roundToDecimals } from '@/utils/common';
-import { useTranslations } from 'next-intl';
-import {
-  getImpactColor,
-  getSentimentText,
-  isNegativeSentiment,
-  isPositiveSentiment
-} from '@/helpers/sentiment.helper';
 import EllipsisText from '../ellipsis-text';
 import { isMobile } from 'react-device-detect';
+import { PositiveNegativeText } from '../positive-negative-text';
 
 type CompanyNewsProps = {
   symbol: string;
@@ -32,18 +25,20 @@ type CompanyNewsProps = {
 };
 
 export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
-  const t = useTranslations();
   const dispatch = useAppDispatch();
-  const companyNews = useAppSelector(watchCompanyNews);
-  const loading = useAppSelector(watchCompanyNewsLoading);
-  const pagination = useAppSelector(watchCompanyNewsPagination);
+  const listNews = useAppSelector(watchFinnhubAndLsegNews);
+  const loading = useAppSelector(watchFinnhubAndLsegNewsLoading);
+  const pagination = useAppSelector(watchFinnhubAndLsegNewsPagination);
 
   const fetchCompanyNews = useCallback(
     ({ page = PAGINATION_PARAMS.offset, pageSize = 5 }: PageChangeParams) => {
       dispatch(
-        getCompanyNews({
+        getFinnhubAndLsegNews({
           symbol,
-          query: { fromDate, toDate, page, limit: pageSize }
+          startDate: fromDate,
+          endDate: toDate,
+          page,
+          limit: pageSize
         })
       );
     },
@@ -54,103 +49,120 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
     fetchCompanyNews({});
   }, [fetchCompanyNews]);
 
-  const columns: TableColumnsType<CompanyNews> = [
-    {
-      title: t('timestamp'),
-      dataIndex: 'timestamp',
-      key: 'timestamp',
-      width: 120,
-      fixed: !isMobile && 'left',
-      align: 'center',
-      render: (value) => <DateTimeCell value={value} />
-    },
-    {
-      title: t('sentimentScore'),
-      dataIndex: 'sentimentScore',
-      key: 'sentimentScore',
-      width: 150,
-      align: 'center',
-      render: (value) =>
-        isNumeric(value) ? (
-          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
-            <span>{roundToDecimals(value, 2)}</span>
-          </PositiveNegativeText>
-        ) : (
-          <span>-</span>
-        )
-    },
-    {
-      title: t('sentimentScore1w'),
-      dataIndex: 'sentimentScore1w',
-      key: 'sentimentScore1w',
-      width: 140,
-      align: 'center',
-      render: (value) =>
-        isNumeric(value) ? (
-          <PositiveNegativeText isPositive={value > 7} isNegative={value < 4}>
-            <span>{roundToDecimals(value, 2)}</span>
-          </PositiveNegativeText>
-        ) : (
-          <span>-</span>
-        )
-    },
-    {
-      title: t('impact'),
-      dataIndex: 'impact',
-      key: 'impact',
-      width: 120,
-      align: 'center',
-      render: (value) => <Tag color={getImpactColor(value)}>{value}</Tag>
-    },
-    {
-      title: t('headline'),
-      dataIndex: 'headline',
-      key: 'headline',
-      width: 160,
-      render: (value) => <EllipsisText text={value} maxLines={1} />
-    },
-    {
-      title: t('source'),
-      dataIndex: 'source',
-      key: 'source',
-      width: 120,
-      align: 'center'
-    },
-    {
-      title: t('sentiment'),
-      dataIndex: 'sentiment',
-      key: 'sentiment',
-      width: isMobile ? 130 : 140,
-      align: 'center',
-      fixed: 'right',
-      render: (value, record) => (
-        <>
-          <PositiveNegativeText
-            isPositive={isPositiveSentiment(value)}
-            isNegative={isNegativeSentiment(value)}
-          >
-            <span>{getSentimentText(value, t)}</span>
-          </PositiveNegativeText>
-          <br />
-          <a href={record.url} target='_blank'>
-            ({t('viewDetails')})
-          </a>
-        </>
-      )
-    }
-  ];
+  const columns: TableColumnsType<FinnhubAndLsegNewsTableItem> = useMemo(
+    () => [
+      {
+        title: 'Source',
+        dataIndex: 'sourceType',
+        key: 'sourceType',
+        width: 86,
+        align: 'center',
+        fixed: !isMobile && 'left'
+      },
+      {
+        title: 'Publishing Time',
+        dataIndex: 'datetime',
+        key: 'datetime',
+        width: 150,
+        align: 'center',
+        render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+      },
+      {
+        title: 'Headline',
+        dataIndex: 'headline',
+        key: 'headline',
+        width: 180,
+        render: (value) => <EllipsisText text={value} maxLines={2} />
+      },
+
+      {
+        title: 'Relevance',
+        dataIndex: 'newsRelevance',
+        key: 'newsRelevance',
+        width: 120,
+        align: 'center'
+      },
+      {
+        title: 'Direction',
+        dataIndex: 'direction',
+        key: 'direction',
+        width: 90,
+        align: 'center',
+        render: (value) => (value ? value : '-')
+      },
+      {
+        title: 'Horizon',
+        dataIndex: 'horizon',
+        key: 'horizon',
+        width: 100,
+        align: 'center',
+        render: (value) => value ?? '-'
+      },
+      {
+        title: 'News Type',
+        dataIndex: 'newsType',
+        key: 'newsType',
+        width: 140,
+        align: 'center',
+        render: (value) =>
+          value ? <EllipsisText text={value} maxLines={2} /> : '-'
+      },
+      {
+        title: 'Article Score',
+        dataIndex: 'articleScore',
+        key: 'articleScore',
+        width: 140,
+        align: 'center',
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'Time Weight',
+        dataIndex: 'timeWeight',
+        key: 'timeWeight',
+        width: 130,
+        align: 'center',
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'Weighted Score',
+        dataIndex: 'weightedScore',
+        key: 'weightedScore',
+        width: 150,
+        align: 'center',
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'News Score',
+        dataIndex: 'newsScore',
+        key: 'newsScore',
+        width: 120,
+        fixed: !isMobile && 'right',
+        align: 'center',
+
+        render: (value) =>
+          isNumeric(value) ? (
+            <PositiveNegativeText isNegative={value > 0} isPositive={value < 0}>
+              {roundToDecimals(value)}
+            </PositiveNegativeText>
+          ) : (
+            '-'
+          )
+      }
+    ],
+    [pagination.currentPage, pagination.pageSize]
+  );
 
   return (
-    <Table<CompanyNews>
+    <Table<FinnhubAndLsegNewsTableItem>
       size={isMobile ? 'small' : 'middle'}
       bordered={false}
       css={tableStyles}
       loading={loading}
       rowKey={(record) => record.key}
       columns={columns}
-      dataSource={companyNews}
-      showHeader={companyNews?.length > 0}
-      scroll={companyNews.length > 0 ? { x: 600, y: undefined } : undefined}
+      dataSource={listNews}
+      showHeader={listNews?.length > 0}
+      scroll={listNews.length > 0 ? { x: 600, y: undefined } : undefined}
       locale={{
         emptyText: (
           <div css={emptyStyles}>
