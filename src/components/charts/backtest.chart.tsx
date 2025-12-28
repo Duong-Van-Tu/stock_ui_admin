@@ -192,15 +192,28 @@ export const ChartBackTest = ({
       });
 
       const data = res.data || [];
-      const transformed: ExtendedCandlestickData[] = data.map((item: any) => ({
-        time: Math.floor(item.timestamp / 1000) as UTCTimestamp,
-        open: item.open,
-        high: item.high,
-        low: item.low,
-        close: item.close,
-        volume: item.volume,
-        sma_volume: item.sma_volume
-      }));
+      const uniqueData = Array.from(
+        new Map(
+          data.map((item: any) => [Math.floor(item.timestamp / 1000), item])
+        ).values()
+      );
+
+      uniqueData.sort(
+        (a: any, b: any) =>
+          Math.floor(a.timestamp / 1000) - Math.floor(b.timestamp / 1000)
+      );
+
+      const transformed: ExtendedCandlestickData[] = uniqueData.map(
+        (item: any) => ({
+          time: Math.floor(item.timestamp / 1000) as UTCTimestamp,
+          open: item.open,
+          high: item.high,
+          low: item.low,
+          close: item.close,
+          volume: item.volume,
+          sma_volume: item.sma_volume
+        })
+      );
 
       const volumes = transformed.map((d) => d.volume ?? 0);
       const sma8Values = calculateSMA(volumes, 8);
