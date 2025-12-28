@@ -5,7 +5,8 @@ import {
   transformLisNewsSentiment,
   transformListNewsLatest,
   transformListWatcher,
-  transformNewsScores
+  transformNewsScores,
+  transformNewsScoreBySymbol
 } from '@/helpers/sentiment.helper';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
@@ -35,6 +36,8 @@ export type SentimentState = {
   listNewsPagination: Pagination;
   finnhubAndLsegNewsPagination: Pagination;
   newsScoresPagination: Pagination;
+  newsScoreBySymbol: NewsScoreBySymbol | null;
+  loadingNewsScoreBySymbol: boolean;
 };
 
 const initialState: SentimentState = {
@@ -59,6 +62,8 @@ const initialState: SentimentState = {
   newsSentiment: [],
   finnhubAndLsegNews: [],
   newsScores: [],
+  newsScoreBySymbol: null,
+  loadingNewsScoreBySymbol: false,
   pagination: PAGINATION,
   listWatcherPagination: PAGINATION,
   newsLatestPagination: PAGINATION,
@@ -294,6 +299,28 @@ export const SentimentSlice = createAppSlice({
       }
     ),
 
+    getNewsScoreBySymbol: create.asyncThunk(
+      async ({ symbol }: { symbol: string }) => {
+        const response = await defaultApiFetcher.get('news/scores-by-symbol', {
+          query: { symbol }
+        });
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loadingNewsScoreBySymbol = true;
+        },
+        fulfilled: (state, action) => {
+          state.loadingNewsScoreBySymbol = false;
+          state.newsScoreBySymbol = transformNewsScoreBySymbol(action.payload);
+        },
+        rejected: (state) => {
+          state.loadingNewsScoreBySymbol = false;
+          state.newsScoreBySymbol = null;
+        }
+      }
+    ),
+
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -321,6 +348,7 @@ export const SentimentSlice = createAppSlice({
       state.finnhubAndLsegNewsPagination,
     watchNewsScoresLoading: (state) => state.loadingNewsScores,
     watchNewsScores: (state) => state.newsScores,
+    watchNewsScoreBySymbol: (state) => state.newsScoreBySymbol,
     watchNewsScoresPagination: (state) => state.newsScoresPagination
   }
 });
@@ -346,10 +374,12 @@ export const {
   watchFinnhubAndLsegNewsPagination,
   watchNewsScoresLoading,
   watchNewsScores,
+  watchNewsScoreBySymbol,
   watchNewsScoresPagination
 } = SentimentSlice.selectors;
 
 export const {
+  getNewsScoreBySymbol,
   getCountSentiment,
   getCompanyNews,
   getListWatcher,

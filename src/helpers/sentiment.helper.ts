@@ -199,3 +199,13 @@ export const transformNewsScores = (list: any[] = []): NewsScore[] => {
     lsegGoodBkCount: Number(item[fieldMapping.lsegGoodBkCount])
   }));
 };
+
+export const transformNewsScoreBySymbol = (data: any): NewsScoreBySymbol => ({
+  symbol: data.symbol,
+  finnhubScore1d: Number(data.finnhub_score_1d),
+  finnhubScore3d: Number(data.finnhub_score_3d),
+  finnhubScore1w: Number(data.finnhub_score_1w),
+  lsegScore1d: Number(data.lseg_score_1d),
+  lsegScore3d: Number(data.lseg_score_3d),
+  lsegScore1w: Number(data.lseg_score_1w)
+});

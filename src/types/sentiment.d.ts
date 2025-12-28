@@ -137,3 +137,13 @@ type NewsScore = {
   lsegBadBkCount: number;
   lsegGoodBkCount: number;
 };
+
+type NewsScoreBySymbol = {
+  symbol: string;
+  finnhubScore1d: number;
+  finnhubScore3d: number;
+  finnhubScore1w: number;
+  lsegScore1d: number;
+  lsegScore3d: number;
+  lsegScore1w: number;
+};
