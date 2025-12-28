@@ -117,7 +117,15 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
         key: 'articleScore',
         width: 140,
         align: 'center',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+
+        render: (value) =>
+          isNumeric(value) ? (
+            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+              {roundToDecimals(value)}
+            </PositiveNegativeText>
+          ) : (
+            '-'
+          )
       },
       {
         title: 'Time Weight',
@@ -125,7 +133,8 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
         key: 'timeWeight',
         width: 130,
         align: 'center',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+
+        render: (value) => (isNumeric(value) ? roundToDecimals(value, 4) : '-')
       },
       {
         title: 'Weighted Score',
@@ -133,7 +142,14 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
         key: 'weightedScore',
         width: 150,
         align: 'center',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+        render: (value) =>
+          isNumeric(value) ? (
+            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+              {roundToDecimals(value, 4)}
+            </PositiveNegativeText>
+          ) : (
+            '-'
+          )
       },
       {
         title: 'News Score',
@@ -145,7 +161,7 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
 
         render: (value) =>
           isNumeric(value) ? (
-            <PositiveNegativeText isNegative={value > 0} isPositive={value < 0}>
+            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
               {roundToDecimals(value)}
             </PositiveNegativeText>
           ) : (
