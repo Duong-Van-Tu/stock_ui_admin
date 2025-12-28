@@ -76,6 +76,7 @@ import { TimeZone } from '@/constants/timezone.constant';
 import { SetColumn } from './columns/set-column';
 import { VisibleColumnsStorageKey } from '@/constants/column.constant';
 import { useLocalStorage } from '@/hooks/local-storage.hook';
+import { TrendCell } from './columns/trend-cell.column';
 
 type AlertLogsTableProps = {
   isFilterPage?: boolean;
@@ -508,6 +509,21 @@ export const AlertLogsTable = ({
         ) : (
           '-'
         )
+    },
+    {
+      title: 'Trend',
+      key: 'trend',
+      width: 120,
+      align: 'center',
+      render: (_, record) => (
+        <TrendCell
+          value={{
+            '1H': record.trend1h,
+            '1D': record.trend1d,
+            '1W': record.trend1w
+          }}
+        />
+      )
     },
     {
       title: t('entryDate'),

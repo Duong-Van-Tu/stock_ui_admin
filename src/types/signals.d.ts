@@ -84,6 +84,9 @@ type Signal = {
   grokReasoning: string;
   grokRec: string;
   lsegNews: number;
+  trend1d: string;
+  trend1h: string;
+  trend1w: string;
 };
 
 type AlertLogsFilter = Filter & {
