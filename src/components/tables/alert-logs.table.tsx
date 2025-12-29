@@ -108,6 +108,7 @@ export const AlertLogsTable = ({
   const latestHitOnePercent = useAppSelector(watchLatestHitOnePercent);
 
   const [filter, setFilter] = useState<AlertLogsFilter>({});
+  const [isFilterReady, setIsFilterReady] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isDrawerVisible, setDrawerVisible] = useState(false);
 
@@ -156,11 +157,13 @@ export const AlertLogsTable = ({
       currentFilter: filter,
       onChange: (_field, _order, newFilter) => {
         setFilter(newFilter);
-        fetchDataAlertLogs({
-          page: PAGINATION.currentPage,
-          pageSize: pagination.pageSize,
-          filter: newFilter
-        });
+        if (isFilterReady) {
+          fetchDataAlertLogs({
+            page: PAGINATION.currentPage,
+            pageSize: pagination.pageSize,
+            filter: newFilter
+          });
+        }
       }
     });
 
@@ -197,9 +200,19 @@ export const AlertLogsTable = ({
         })
       );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [symbol]
+    [dispatch, isFilterPage, sortField, sortType, symbol]
   );
+
+  useEffect(() => {
+    if (isFilterReady) {
+      fetchDataAlertLogs({
+        page: pagination.currentPage,
+        pageSize: pagination.pageSize,
+        filter
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFilterReady]);
 
   const handleFilter = (values: AlertLogsFilter) => {
     const newFilter = {
@@ -208,6 +221,11 @@ export const AlertLogsTable = ({
     };
     setFilter(newFilter);
     fetchDataAlertLogs({ filter: newFilter });
+  };
+
+  const handleFilterReady = (values: AlertLogsFilter) => {
+    setFilter(values);
+    setIsFilterReady(true);
   };
 
   const handleChangeView = useCallback(
@@ -1287,7 +1305,10 @@ export const AlertLogsTable = ({
   return (
     <>
       <div css={rootStyles}>
-        <AlertLogsFilter onFilter={handleFilter} />
+        <AlertLogsFilter
+          onFilter={handleFilter}
+          onFilterReady={handleFilterReady}
+        />
         <div css={tableWrapperStyles}>
           <div css={tableTopStyles}>
             <div css={titleContainerStyles}>

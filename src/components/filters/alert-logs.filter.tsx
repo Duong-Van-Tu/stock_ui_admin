@@ -27,6 +27,7 @@ import { PeriodOptions } from '@/constants/common.constant';
 type AlertLogsFilterProps = {
   customStyles?: SerializedStyles;
   onFilter: (values: AlertLogsFilter) => void;
+  onFilterReady: (values: AlertLogsFilter) => void;
 };
 
 const { RangePicker } = DatePicker;
@@ -105,7 +106,8 @@ function useDebounced(fn: (...args: any[]) => void, delay: number) {
 
 export const AlertLogsFilter = ({
   customStyles,
-  onFilter
+  onFilter,
+  onFilterReady
 }: AlertLogsFilterProps) => {
   const t = useTranslations();
   const router = useRouter();
@@ -240,33 +242,33 @@ export const AlertLogsFilter = ({
   }, [dispatch]);
 
   useEffect(() => {
-    if (strategyId) {
-      form.setFieldValue('strategyId', strategyId);
-    }
-  }, [form, strategyId]);
-
-  useEffect(() => {
-    form.submit();
-  }, [symbol, form]);
-
-  useEffect(() => {
-    if (isFirstRender.current && latestEntryDate) {
+    if (isFirstRender.current && latestEntryDate && strategies?.length) {
       isFirstRender.current = false;
       const [start, end] = getEntryRangeByOption(
         defaultQuickRange,
         latestEntryDate
       );
-      form.setFieldsValue({
+      const initialValues = {
         quickRange: defaultQuickRange,
-        entryDate: start && end ? [start, end] : undefined
-      });
-      form.submit();
-    }
-  }, [defaultQuickRange, latestEntryDate, form]);
+        entryDate: start && end ? [start, end] : undefined,
+        strategyId: strategyId
+      };
+      form.setFieldsValue(initialValues);
 
-  useEffect(() => {
-    handleQuickRangeChange(form.getFieldValue('quickRange'));
-  }, [isOption, form, handleQuickRangeChange]);
+      const filterPayload: AlertLogsFilter = {
+        isImport: isOption === 1 ? 1 : 0,
+        fromEntryDate: start?.tz(TimeZone.NEW_YORK).format(fmt),
+        toEntryDate: end?.tz(TimeZone.NEW_YORK).format(fmt),
+        strategyId: strategyId,
+        symbol: symbol || undefined,
+        sector: '',
+        industry: '',
+        timeFrame: ''
+      };
+      onFilterReady(filterPayload);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultQuickRange, latestEntryDate, form, strategies, strategyId]);
 
   return (
     <div css={[rootStyles, customStyles]}>
