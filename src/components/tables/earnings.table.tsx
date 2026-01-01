@@ -151,6 +151,7 @@ export const EarningsTable = () => {
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'avgSentiment' ? sortType : null,
+      hidden: true,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('avgSentiment')
       }),

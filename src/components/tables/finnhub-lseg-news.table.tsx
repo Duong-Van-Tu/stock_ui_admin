@@ -30,9 +30,9 @@ import { DateTimeCell } from './columns/date-time-cell.column';
 import EllipsisText from '../ellipsis-text';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { useModal } from '@/hooks/modal.hook';
-import { SentimentSCore } from '../charts/sentiment-score.chart';
 import { useTranslations } from 'next-intl';
 import { Icon } from '../icons';
+import { PositiveNegativeText } from '../positive-negative-text';
 
 export const FinnhubAndLsegNewsTable = () => {
   const t = useTranslations();
@@ -365,9 +365,9 @@ export const FinnhubAndLsegNewsTable = () => {
 
         render: (value) =>
           isNumeric(value) ? (
-            <div css={sentimentScoreStyles}>
-              <SentimentSCore score={value} />
-            </div>
+            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+              {roundToDecimals(value)}
+            </PositiveNegativeText>
           ) : (
             '-'
           )
@@ -470,11 +470,6 @@ const emptyStyles = (height: number) => css`
 
 const titleStyles = css`
   padding: 1.2rem 1.6rem;
-`;
-
-const sentimentScoreStyles = css`
-  height: 4.6rem;
-  text-align: center;
 `;
 
 const storyStyles = css`
