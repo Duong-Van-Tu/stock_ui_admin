@@ -195,13 +195,16 @@ export const AlertLogsTable = ({
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
-          symbol: symbol ?? undefined,
           ...filter
         })
       );
     },
-    [dispatch, isFilterPage, sortField, sortType, symbol]
+    [dispatch, isFilterPage, sortField, sortType]
   );
+
+  useEffect(() => {
+    setFilter((prev) => ({ ...prev, symbol: symbol ?? undefined }));
+  }, [symbol]);
 
   useEffect(() => {
     if (isFilterReady) {
@@ -211,8 +214,22 @@ export const AlertLogsTable = ({
         filter
       });
     }
+  }, [
+    isFilterReady,
+    pagination.currentPage,
+    pagination.pageSize,
+    filter,
+    fetchDataAlertLogs
+  ]);
+
+  useEffect(() => {
+    if (!isFilterPage) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete('isOption');
+      router.replace(`${pathname}?${params.toString()}`);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFilterReady]);
+  }, [isFilterPage]);
 
   const handleFilter = (values: AlertLogsFilter) => {
     const newFilter = {
