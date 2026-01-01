@@ -237,7 +237,6 @@ export const AlertLogsTable = ({
       ...values
     };
     setFilter(newFilter);
-    fetchDataAlertLogs({ filter: newFilter });
   };
 
   const handleFilterReady = (values: AlertLogsFilter) => {

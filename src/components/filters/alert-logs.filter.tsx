@@ -91,19 +91,6 @@ function getEntryRangeByOption(
   }
 }
 
-function useDebounced(fn: (...args: any[]) => void, delay: number) {
-  const tRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const fnRef = useRef(fn);
-  fnRef.current = fn;
-  return useCallback(
-    (...args: any[]) => {
-      if (tRef.current) clearTimeout(tRef.current);
-      tRef.current = setTimeout(() => fnRef.current(...args), delay);
-    },
-    [delay]
-  );
-}
-
 export const AlertLogsFilter = ({
   customStyles,
   onFilter,
@@ -177,18 +164,9 @@ export const AlertLogsFilter = ({
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
-  const prevKeyRef = useRef<string | null>(null);
-  const debouncedEmit = useDebounced((payload: AlertLogsFilter) => {
-    const key = JSON.stringify(payload);
-    if (prevKeyRef.current !== key) {
-      prevKeyRef.current = key;
-      onFilter(payload);
-    }
-  }, 300);
-
   const handleSearch = useCallback(() => {
     const values = form.getFieldsValue();
-    debouncedEmit({
+    onFilter({
       isImport: isOption ? 1 : 0,
       fromEntryDate: values.entryDate?.[0]?.tz(TimeZone.NEW_YORK).format(fmt),
       toEntryDate: values.entryDate?.[1]?.tz(TimeZone.NEW_YORK).format(fmt),
@@ -204,23 +182,13 @@ export const AlertLogsFilter = ({
         : '',
       timeFrame: values.timeFrame
     });
-  }, [form, debouncedEmit, isOption, symbol]);
+  }, [form, onFilter, isOption, symbol]);
 
   const handleClearFilters = () => {
     form.resetFields();
     updateSearchParams('strategyId');
     handleQuickRangeChange(defaultQuickRange);
-    debouncedEmit({
-      fromEntryDate: undefined,
-      toEntryDate: undefined,
-      fromExitDate: undefined,
-      toExitDate: undefined,
-      strategyId: undefined,
-      sector: undefined,
-      industry: undefined,
-      timeFrame: undefined
-    });
-    form.submit();
+    handleSearch();
   };
 
   const handleQuickRangeChange = useCallback(
@@ -230,9 +198,9 @@ export const AlertLogsFilter = ({
         quickRange: value,
         entryDate: start && end ? [start, end] : undefined
       });
-      form.submit();
+      handleSearch();
     },
-    [form, latestEntryDate]
+    [form, latestEntryDate, handleSearch]
   );
 
   useEffect(() => {
@@ -298,7 +266,7 @@ export const AlertLogsFilter = ({
                 options={strategyOptions}
                 onChange={(value) => {
                   updateSearchParams('strategyId', value?.toString());
-                  form.submit();
+                  handleSearch();
                 }}
               />
             </Form.Item>
@@ -311,17 +279,13 @@ export const AlertLogsFilter = ({
             >
               <Select
                 css={periodStyles}
+                allowClear
                 options={[
                   { value: '', label: t('allPeriod') },
                   ...periodOptions
                 ]}
-                onChange={(value) => {
-                  if (value === '') {
-                    form.setFieldValue('timeFrame', undefined);
-                  } else {
-                    form.setFieldValue('timeFrame', value);
-                  }
-                  form.submit();
+                onChange={() => {
+                  handleSearch();
                 }}
               />
             </Form.Item>
@@ -396,7 +360,7 @@ export const AlertLogsFilter = ({
                 onChange={(value) => {
                   form.setFieldValue('industry', '');
                   if (value) dispatch(getIndustriesV2(value as string));
-                  form.submit();
+                  handleSearch();
                 }}
               />
             </Form.Item>
@@ -417,7 +381,7 @@ export const AlertLogsFilter = ({
                 options={industryOptions}
                 disabled={!form.getFieldValue('sector')}
                 onChange={() => {
-                  form.submit();
+                  handleSearch();
                 }}
               />
             </Form.Item>
