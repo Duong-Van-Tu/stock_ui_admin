@@ -11,7 +11,7 @@ import {
   TableColumnsType,
   Tooltip
 } from 'antd';
-import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
+import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   calculatePercentage,
   formatMarketCap,
@@ -157,13 +157,6 @@ export const AlertLogsTable = ({
       currentFilter: filter,
       onChange: (_field, _order, newFilter) => {
         setFilter(newFilter);
-        if (isFilterReady) {
-          fetchDataAlertLogs({
-            page: PAGINATION.currentPage,
-            pageSize: pagination.pageSize,
-            filter: newFilter
-          });
-        }
       }
     });
 

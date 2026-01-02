@@ -69,10 +69,10 @@ export const ExportExcelLog = ({
         'Period',
         'Real Candle Entry',
         'Expect Candle Entry',
-        'AI Rating',
-        'AI Recommendation',
+        'Grok Rating',
+        'Grok Recommendation',
         'Manual Recommendation',
-        'AI Explain',
+        'Grok Reasoning',
         'Entry date',
         'Entry price',
         'Exit date',
@@ -192,16 +192,14 @@ export const ExportExcelLog = ({
                 .tz(TimeZone.NEW_YORK)
                 .format('YYYY-MM-DD HH:mm')
             : '-',
-          log.AIRating,
-          log.AIRecommendationSignal
-            ? capitalizeAllLetters(
-                RecommendationText[log.AIRecommendationSignal]
-              )
+          log.grokRating ?? '-',
+          log.grokRec
+            ? capitalizeAllLetters(RecommendationText[log.grokRec])
             : '-',
           log.manualRecommendation
             ? capitalizeAllLetters(RecommendationText[log.manualRecommendation])
             : '-',
-          log.AIExplain ?? '-',
+          log.grokReasoning ?? '-',
           log.entryDate
             ? dayjs(log.entryDate)
                 .tz(TimeZone.NEW_YORK)
