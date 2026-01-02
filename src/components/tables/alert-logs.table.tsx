@@ -195,11 +195,12 @@ export const AlertLogsTable = ({
           limit: pageSize,
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
-          ...filter
+          ...filter,
+          isImport: isOption
         })
       );
     },
-    [dispatch, isFilterPage, sortField, sortType]
+    [dispatch, isFilterPage, sortField, sortType, isOption]
   );
 
   useEffect(() => {
@@ -219,7 +220,8 @@ export const AlertLogsTable = ({
     pagination.currentPage,
     pagination.pageSize,
     filter,
-    fetchDataAlertLogs
+    fetchDataAlertLogs,
+    isOption
   ]);
 
   useEffect(() => {
