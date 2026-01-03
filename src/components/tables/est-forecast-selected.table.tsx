@@ -132,14 +132,14 @@ export const EstForecastSelectedTable = () => {
   const renderNumber = useCallback(
     (
       value: any,
-      field: keyof EstForecastFilterItem,
+      field: keyof EstForecastFilterItem | string,
       record: EstForecastFilterItem,
       suffix?: string
     ) => {
       if (editingId === record.id) {
         return (
           <InputNumber
-            value={editingRow[field] as number}
+            value={(editingRow as any)[field] as number}
             onChange={(v) => setEditingRow((prev) => ({ ...prev, [field]: v }))}
             style={{ width: '100%' }}
           />
@@ -159,13 +159,13 @@ export const EstForecastSelectedTable = () => {
   const renderText = useCallback(
     (
       value: any,
-      field: keyof EstForecastFilterItem,
+      field: keyof EstForecastFilterItem | string,
       record: EstForecastFilterItem
     ) => {
       if (editingId === record.id) {
         return (
           <Input
-            value={editingRow[field] as string}
+            value={(editingRow as any)[field] as string}
             onChange={(e) =>
               setEditingRow((prev) => ({
                 ...prev,
@@ -183,11 +183,12 @@ export const EstForecastSelectedTable = () => {
   const renderDate = useCallback(
     (
       value: string | undefined,
-      field: keyof EstForecastFilterItem,
+      field: keyof EstForecastFilterItem | string,
       record: EstForecastFilterItem
     ) => {
       if (editingId === record.id) {
-        const currentValue = (editingRow[field] as string | undefined) ?? value;
+        const currentValue =
+          ((editingRow as any)[field] as string | undefined) ?? value;
         return (
           <DatePicker
             value={currentValue ? dayjs(currentValue) : null}
@@ -489,6 +490,13 @@ export const EstForecastSelectedTable = () => {
         width: 180,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsScore1dPoint', r)
+      },
+      {
+        title: 'LSEG News Total Score Point',
+        dataIndex: 'lsegNewsTotalScorePoint',
+        width: 200,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'lsegNewsTotalScorePoint', r)
       },
       {
         title: 'LSEG News Score (3D)',

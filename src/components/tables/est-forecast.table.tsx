@@ -58,6 +58,7 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
           revenueBeatFreqPoint: Number(record.revenueBeatFreqPoint || 0),
           gptRating: Number(record.gptRating || 0),
           gptRatingPoint: Number(record.gptRatingPoint || 0),
+          lsegNewsTotalScorePoint: Number(record.lsegNewsTotalScorePoint || 0),
           earningsDate: createdDates[record.symbol]
             ? dayjs(createdDates[record.symbol]).format('YYYY-MM-DD')
             : record.earningsDate
@@ -295,6 +296,13 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         width: 140,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 3) : '-')
+      },
+      {
+        title: 'LSEG News Total Score Point',
+        dataIndex: 'lsegNewsTotalScorePoint',
+        width: 180,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
         title: 'LSEG News Score (3D)',

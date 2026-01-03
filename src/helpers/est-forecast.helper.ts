@@ -61,6 +61,9 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
 
     lsegNewsScore1d: toNumber(item[fieldMapping.lsegNewsScore1d]),
     lsegNewsScore1dPoint: toNumber(item[fieldMapping.lsegNewsScore1dPoint]),
+    lsegNewsTotalScorePoint: toNumber(
+      item[fieldMapping.lsegNewsTotalScorePoint]
+    ),
 
     lsegNewsScore3d: toNumber(item[fieldMapping.lsegNewsScore3d]),
     lsegNewsScore3dPoint: toNumber(item[fieldMapping.lsegNewsScore3dPoint]),
@@ -165,6 +168,9 @@ export const transformEstForecastFilter = (
 
     lsegNewsScore1d: toNumber(item[fieldMapping.lsegNewsScore1d]),
     lsegNewsScore1dPoint: toNumber(item[fieldMapping.lsegNewsScore1dPoint]),
+    lsegNewsTotalScorePoint: toNumber(
+      item[fieldMapping.lsegNewsTotalScorePoint]
+    ),
 
     lsegNewsScore3d: toNumber(item[fieldMapping.lsegNewsScore3d]),
     lsegNewsScore3dPoint: toNumber(item[fieldMapping.lsegNewsScore3dPoint]),

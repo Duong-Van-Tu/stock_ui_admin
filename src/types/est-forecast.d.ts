@@ -36,6 +36,7 @@ type EstForecast = {
   gptRatingPoint: number;
   lsegNewsScore1d: number;
   lsegNewsScore1dPoint: number;
+  lsegNewsTotalScorePoint: number;
   lsegNewsScore3d: number;
   lsegNewsScore3dPoint: number;
   article12h: number;

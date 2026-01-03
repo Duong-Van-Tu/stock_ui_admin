@@ -265,6 +265,7 @@ export const fieldMapping: Record<string, string> = {
   grokPoint: 'grok_point',
   gptPoint: 'gpt_point',
   lsegNews: 'news_lseg',
+  lsegNewsTotalScorePoint: 'lseg_news_total_score_point',
   finnhubTotalArticles: 'finnhub_total_articles',
   lsegTotalArticles: 'lseg_total_articles',
   revenueForecast: 'revenue_forecast',
