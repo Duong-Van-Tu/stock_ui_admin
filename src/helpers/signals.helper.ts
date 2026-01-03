@@ -102,6 +102,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       lowestPricePercent: stock[fieldMapping.lowestPricePercent],
       currentPricePercent: stock[fieldMapping.currentPricePercent],
       isOptions: !!stock[fieldMapping.isOptions],
+      categoryId: stock[fieldMapping.categoryId],
       newStopLoss: co?.newStopLoss ?? '',
       spikeVolumeM15Info:
         spikeBar || confirmBar

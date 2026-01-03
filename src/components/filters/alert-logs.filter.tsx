@@ -14,6 +14,11 @@ import {
   watchLatestEntryDate
 } from '@/redux/slices/signals.slice';
 import {
+  getCategories,
+  watchCategories,
+  watchCategoriesLoading
+} from '@/redux/slices/signals.slice';
+import {
   getIndustriesV2,
   getSectorsV2,
   watchIndustries,
@@ -118,6 +123,8 @@ export const AlertLogsFilter = ({
 
   const industries = useAppSelector(watchIndustries);
   const sectors = useAppSelector(watchSectors);
+  const categories = useAppSelector(watchCategories);
+  const categoriesLoading = useAppSelector(watchCategoriesLoading);
 
   const defaultQuickRange: QuickRange = useMemo(() => {
     if (!latestEntryDate) return 'today';
@@ -173,6 +180,7 @@ export const AlertLogsFilter = ({
       fromExitDate: values.exitDate?.[0]?.tz(TimeZone.NEW_YORK).format(fmt),
       toExitDate: values.exitDate?.[1]?.tz(TimeZone.NEW_YORK).format(fmt),
       strategyId: values.strategyId,
+      categoryId: values.categoryId ? Number(values.categoryId) : undefined,
       symbol: symbol || undefined,
       sector: values.sector || '',
       industry: values.industry
@@ -187,6 +195,7 @@ export const AlertLogsFilter = ({
   const handleClearFilters = () => {
     form.resetFields();
     updateSearchParams('strategyId');
+    updateSearchParams('categoryId');
     handleQuickRangeChange(defaultQuickRange);
     handleSearch();
   };
@@ -207,6 +216,7 @@ export const AlertLogsFilter = ({
     dispatch(getStrategies());
     dispatch(getLatestEntryDate());
     dispatch(getSectorsV2());
+    dispatch(getCategories());
   }, [dispatch]);
 
   useEffect(() => {
@@ -228,6 +238,9 @@ export const AlertLogsFilter = ({
         fromEntryDate: start?.tz(TimeZone.NEW_YORK).format(fmt),
         toEntryDate: end?.tz(TimeZone.NEW_YORK).format(fmt),
         strategyId: strategyId,
+        categoryId: searchParams.get('categoryId')
+          ? Number(searchParams.get('categoryId'))
+          : undefined,
         symbol: symbol || undefined,
         sector: '',
         industry: '',
@@ -381,6 +394,31 @@ export const AlertLogsFilter = ({
                 options={industryOptions}
                 disabled={!form.getFieldValue('sector')}
                 onChange={() => {
+                  handleSearch();
+                }}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col css={fullWidthStyles}>
+            <Form.Item
+              css={formItemStyles}
+              name='categoryId'
+              label={<span css={labelStyles}>{t('category')}</span>}
+            >
+              <Select
+                allowClear
+                loading={categoriesLoading}
+                placeholder={t('selectCategory')}
+                options={[
+                  { value: '', label: t('all') },
+                  ...(categories || []).map((c) => ({
+                    value: c.id,
+                    label: c.category_name
+                  }))
+                ]}
+                onChange={(value) => {
+                  updateSearchParams('categoryId', value?.toString());
                   handleSearch();
                 }}
               />

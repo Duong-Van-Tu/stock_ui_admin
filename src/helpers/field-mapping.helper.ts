@@ -153,6 +153,7 @@ export const fieldMapping: Record<string, string> = {
   hashAlertLogId: 'hash_alert_log_id',
   fromMarketCap: 'frommarketCap',
   toMarketCap: 'tomarketCap',
+  categoryId: 'category_id',
   birthofday: 'dateOfBirth',
   manualRecommendation: 'manual_recommendation',
   strongBuy: 'sbuy',

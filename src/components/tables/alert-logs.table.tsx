@@ -11,6 +11,7 @@ import {
   TableColumnsType,
   Tooltip
 } from 'antd';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   calculatePercentage,
@@ -37,6 +38,13 @@ import {
   watchAlertLogsLoading,
   watchAlertLogsPagination,
   watchLatestHitOnePercent
+} from '@/redux/slices/signals.slice';
+import {
+  getCategories,
+  watchCategories,
+  watchCategoryActionMap,
+  addAlertLogToCategory,
+  deleteAlertLogInCategory
 } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
@@ -106,6 +114,8 @@ export const AlertLogsTable = ({
   const pagination = useAppSelector(watchAlertLogsPagination);
   const loading = useAppSelector(watchAlertLogsLoading);
   const latestHitOnePercent = useAppSelector(watchLatestHitOnePercent);
+  const categories = useAppSelector(watchCategories);
+  const categoryActionMap = useAppSelector(watchCategoryActionMap);
 
   const [filter, setFilter] = useState<AlertLogsFilter>({});
   const [isFilterReady, setIsFilterReady] = useState(false);
@@ -267,6 +277,13 @@ export const AlertLogsTable = ({
       dispatch(resetState());
     };
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!categories || categories.length === 0) {
+      dispatch(getCategories());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const baseColumns: TableColumnsType<Signal> = [
     {
@@ -1195,11 +1212,49 @@ export const AlertLogsTable = ({
       key: 'action',
       fixed: isMobile ? undefined : 'right',
       align: 'center',
-      width: 130,
+      width: 160,
       render: (_, record) => {
         const isExit = !!record.exitDate;
         return (
           <Space size='small'>
+            {!(record as any).categoryId ? (
+              <Tooltip title={isMobile ? null : t('trade')}>
+                <Button
+                  size='small'
+                  icon={<PlusOutlined />}
+                  style={{
+                    borderColor: 'var(--success-color)',
+                    color: 'var(--success-color)'
+                  }}
+                  onClick={() =>
+                    dispatch(
+                      addAlertLogToCategory({
+                        alertLogId: record.id,
+                        categoryId: 1
+                      })
+                    )
+                  }
+                  loading={!!categoryActionMap?.[record.id]}
+                />
+              </Tooltip>
+            ) : (
+              <Tooltip title={isMobile ? null : t('removeFromTrade')}>
+                <Button
+                  size='small'
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={() =>
+                    dispatch(
+                      deleteAlertLogInCategory({
+                        alertLogId: record.id,
+                        categoryId: (record as any).categoryId
+                      })
+                    )
+                  }
+                  loading={!!categoryActionMap?.[record.id]}
+                />
+              </Tooltip>
+            )}
             <Tooltip title={isMobile ? null : t('notes')}>
               <Button
                 onClick={() =>

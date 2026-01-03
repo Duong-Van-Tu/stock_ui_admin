@@ -87,6 +87,7 @@ type Signal = {
   trend1d: string;
   trend1h: string;
   trend1w: string;
+  categoryId?: number;
 };
 
 type AlertLogsFilter = Filter & {
@@ -96,6 +97,7 @@ type AlertLogsFilter = Filter & {
   toExitDate?: Date | string;
   isImport?: 0 | 1;
   strategyId?: number;
+  categoryId?: number;
   sector?: string;
   industry?: string;
   timeFrame?: string;

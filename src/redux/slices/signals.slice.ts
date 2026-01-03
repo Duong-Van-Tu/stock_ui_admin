@@ -15,6 +15,7 @@ export type SignalsState = {
   alertLogsLoading: boolean;
   signalStrategyLoading: Record<number, boolean>;
   exitLoading: boolean;
+  categoryActionLoading: Record<number, boolean>;
   pagination: Pagination;
   paginationByStrategyId: Record<number, Pagination>;
   signal: Signal | null;
@@ -26,6 +27,8 @@ export type SignalsState = {
   latestEntryDateLoading: boolean;
   latestHitOnePercent: string[];
   latestHitOnePercentLoading: boolean;
+  categories: Array<{ id: number; category_name: string }>;
+  categoriesLoading: boolean;
 };
 
 const initialState: SignalsState = {
@@ -33,6 +36,7 @@ const initialState: SignalsState = {
   alertLogsLoading: false,
   exitLoading: false,
   signalStrategyLoading: {},
+  categoryActionLoading: {},
   strategies: [],
   alertLogsData: [],
   signalOptions: [],
@@ -43,7 +47,9 @@ const initialState: SignalsState = {
   latestEntryDate: null,
   latestEntryDateLoading: false,
   latestHitOnePercent: [],
-  latestHitOnePercentLoading: false
+  latestHitOnePercentLoading: false,
+  categories: [],
+  categoriesLoading: false
 };
 
 export const signalSlice = createAppSlice({
@@ -294,6 +300,87 @@ export const signalSlice = createAppSlice({
       }
     ),
 
+    getCategories: create.asyncThunk(
+      async () => {
+        const response = await defaultApiFetcher.get(
+          'stock-alert-log-categories/list'
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.categoriesLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.categoriesLoading = false;
+          state.categories = action.payload ?? [];
+        },
+        rejected: (state) => {
+          state.categoriesLoading = false;
+          state.categories = [];
+        }
+      }
+    ),
+
+    addAlertLogToCategory: create.asyncThunk(
+      async (params: { alertLogId: number; categoryId: number }) => {
+        await defaultApiFetcher.post(
+          'tickers/add-alert-log-to-category',
+          convertParamsByMapping(params)
+        );
+        return params;
+      },
+      {
+        pending: (state, action) => {
+          const { alertLogId } = action.meta.arg;
+          state.categoryActionLoading[alertLogId] = true;
+        },
+        fulfilled: (state, action) => {
+          const { alertLogId, categoryId } = action.payload;
+          state.categoryActionLoading[alertLogId] = false;
+          state.alertLogsData = state.alertLogsData.map((s) =>
+            s.id === alertLogId ? { ...s, categoryId } : s
+          );
+        },
+        rejected: (state, action) => {
+          const { alertLogId } = action.meta.arg as { alertLogId: number };
+          state.categoryActionLoading[alertLogId] = false;
+        }
+      }
+    ),
+
+    deleteAlertLogInCategory: create.asyncThunk(
+      async (params: { alertLogId: number; categoryId: number }) => {
+        await defaultApiFetcher.post(
+          'tickers/delete-alert-log-in-category',
+          convertParamsByMapping(params)
+        );
+        return params;
+      },
+      {
+        pending: (state, action) => {
+          const { alertLogId } = action.meta.arg;
+          state.categoryActionLoading[alertLogId] = true;
+        },
+        fulfilled: (state, action) => {
+          const { alertLogId } = action.payload;
+          state.categoryActionLoading[alertLogId] = false;
+          state.alertLogsData = state.alertLogsData.map((s) => {
+            if (s.id === alertLogId) {
+              const copy = { ...(s as any) } as any;
+              delete copy.categoryId;
+              return copy as Signal;
+            }
+            return s;
+          });
+        },
+        rejected: (state, action) => {
+          const { alertLogId } = action.meta.arg as { alertLogId: number };
+          state.categoryActionLoading[alertLogId] = false;
+        }
+      }
+    ),
+
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -317,7 +404,12 @@ export const signalSlice = createAppSlice({
     watchLatestEntryDateLoading: (state) => state.latestEntryDateLoading,
     watchLatestHitOnePercentLoading: (state) =>
       state.latestHitOnePercentLoading,
-    watchLatestHitOnePercent: (state) => state.latestHitOnePercent
+    watchLatestHitOnePercent: (state) => state.latestHitOnePercent,
+    watchCategories: (state) => state.categories,
+    watchCategoriesLoading: (state) => state.categoriesLoading,
+    watchCategoryActionLoading: (state) => (alertLogId: number) =>
+      state.categoryActionLoading[alertLogId] || false,
+    watchCategoryActionMap: (state) => state.categoryActionLoading
   }
 });
 
@@ -336,7 +428,11 @@ export const {
   watchLatestEntryDate,
   watchLatestEntryDateLoading,
   watchLatestHitOnePercentLoading,
-  watchLatestHitOnePercent
+  watchLatestHitOnePercent,
+  watchCategories,
+  watchCategoriesLoading,
+  watchCategoryActionLoading,
+  watchCategoryActionMap
 } = signalSlice.selectors;
 
 export const {
@@ -349,7 +445,10 @@ export const {
   resetState,
   getSignalById,
   getLatestEntryDate,
-  getLatestHitOnePercent
+  getLatestHitOnePercent,
+  getCategories,
+  addAlertLogToCategory,
+  deleteAlertLogInCategory
 } = signalSlice.actions;
 
 export const autoUpdateSignalData =
