@@ -17,7 +17,7 @@ type EstForecast = {
   grok: string;
   gpt: string;
   forecast: string;
-  createdAt?: string;
+  earningsDate: string;
   revenueForecast: number;
   revenueForecastPoint: number;
   netMargin: number;
@@ -112,7 +112,7 @@ type EstForecastFilterItem = {
   marketpsychOptimismZPoint: number;
   marketpsychTrustZ: number;
   marketpsychTrustZPoint: number;
-  createdAt: string;
+  earningsDate: string;
   updatedAt: string;
   noteForTrader: string;
 };

@@ -52,9 +52,9 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
       dispatch(
         addEstForecast({
           ...record,
-          createdAt: createdDates[record.symbol]
-            ? dayjs(createdDates[record.symbol]).format('YYYY/MM/DD')
-            : record.createdAt
+          earningsDate: createdDates[record.symbol]
+            ? dayjs(createdDates[record.symbol]).format('YYYY-MM-DD')
+            : record.earningsDate
         })
       );
       closeModal();
@@ -78,19 +78,23 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         )
       },
       {
-        title: 'Created At',
-        dataIndex: 'createdAt',
+        title: 'Earnings Date',
+        dataIndex: 'earningsDate',
         width: 150,
         align: 'center',
         render: (_, record) => {
           console.log('Record Symbol:', record.symbol);
           return addedSymbols.has(record.symbol) ? (
-            <DateTimeCell value={createdDates[record.symbol]} />
+            <DateTimeCell
+              value={createdDates[record.symbol] || record.earningsDate || ''}
+            />
           ) : (
             <DatePicker
               value={
                 createdDates[record.symbol]
                   ? dayjs(createdDates[record.symbol])
+                  : record.earningsDate
+                  ? dayjs(record.earningsDate)
                   : null
               }
               onChange={(d) => {

@@ -89,7 +89,7 @@ export const EstForecastSelectedTable = () => {
         symbol,
         startDate: dayjs(dateRange[0]).add(1, 'day').toISOString(),
         endDate: dayjs(dateRange[1]).add(1, 'day').toISOString(),
-        sortField: 'created_at',
+        sortField: 'earnings_date',
         sortType: 'desc'
       })
     );
@@ -109,7 +109,7 @@ export const EstForecastSelectedTable = () => {
           limit: 100,
           startDate: dateRange[0].toISOString(),
           endDate: dateRange[1].toISOString(),
-          sortField: 'created_at',
+          sortField: 'earnings_date',
           sortType: 'desc'
         })
       );
@@ -224,11 +224,11 @@ export const EstForecastSelectedTable = () => {
         )
       },
       {
-        title: 'Created At',
-        dataIndex: 'createdAt',
+        title: 'Earnings Date',
+        dataIndex: 'earningsDate',
         width: 150,
         align: 'center',
-        render: (v, r) => renderDate(v, 'createdAt', r)
+        render: (v, r) => renderDate(v, 'earningsDate', r)
       },
       { title: 'Industry', dataIndex: 'industry', width: 160 },
       {

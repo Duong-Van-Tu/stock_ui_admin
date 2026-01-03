@@ -314,5 +314,6 @@ export const fieldMapping: Record<string, string> = {
   lsegGoodBkCount: 'lseg_good_bk_count',
   trend1d: 'trend_1d',
   trend1h: 'trend_1h',
-  trend1w: 'trend_1w'
+  trend1w: 'trend_1w',
+  earningsDate: 'earnings_date'
 };

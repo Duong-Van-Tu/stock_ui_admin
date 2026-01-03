@@ -35,7 +35,7 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
     gpt: item.gpt,
     forecast: item.forecast,
 
-    createdAt: item[fieldMapping.createdAt],
+    earningsDate: item[fieldMapping.earningsDate],
 
     revenueForecast: toNumber(item[fieldMapping.revenueForecast]),
     revenueForecastPoint: toNumber(item[fieldMapping.revenueForecastPoint]),
@@ -212,7 +212,7 @@ export const transformEstForecastFilter = (
     marketpsychTrustZ: toNumber(item[fieldMapping.marketpsychTrustZ]),
     marketpsychTrustZPoint: toNumber(item[fieldMapping.marketpsychTrustZPoint]),
 
-    createdAt: item[fieldMapping.createdAt],
+    earningsDate: item[fieldMapping.earningsDate],
     updatedAt: item[fieldMapping.updatedAt]
   }));
 };
