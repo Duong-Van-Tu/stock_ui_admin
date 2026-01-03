@@ -309,18 +309,18 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'epsTrendPoint', r)
       },
       {
-        title: 'Beat Freq',
-        dataIndex: 'beatFreq',
-        width: 120,
+        title: 'EPS Beat Freq',
+        dataIndex: 'epsBeatFreq',
+        width: 140,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'beatFreq', r)
+        render: (v, r) => renderNumber(v, 'epsBeatFreq', r, '%')
       },
       {
-        title: 'Beat Freq Point',
-        dataIndex: 'beatFreqPoint',
-        width: 160,
+        title: 'EPS Beat Freq Point',
+        dataIndex: 'epsBeatFreqPoint',
+        width: 180,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'beatFreqPoint', r)
+        render: (v, r) => renderNumber(v, 'epsBeatFreqPoint', r)
       },
       {
         title: 'Avg Surprise',
@@ -328,6 +328,20 @@ export const EstForecastSelectedTable = () => {
         width: 140,
         align: 'center',
         render: (v, r) => renderNumber(v, 'avgSurpriseMagnitude', r)
+      },
+      {
+        title: 'Revenue Beat Freq',
+        dataIndex: 'revenueBeatFreq',
+        width: 160,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'revenueBeatFreq', r, '%')
+      },
+      {
+        title: 'Revenue Beat Freq Point',
+        dataIndex: 'revenueBeatFreqPoint',
+        width: 200,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'revenueBeatFreqPoint', r)
       },
       {
         title: 'Avg Surprise Point',
@@ -449,28 +463,42 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'gptPoint', r)
       },
       {
-        title: 'Reuters 1D',
+        title: 'GPT Rating',
+        dataIndex: 'gptRating',
+        width: 140,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'gptRating', r)
+      },
+      {
+        title: 'GPT Rating Point',
+        dataIndex: 'gptRatingPoint',
+        width: 170,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'gptRatingPoint', r)
+      },
+      {
+        title: 'LSEG News Score (1D)',
         dataIndex: 'lsegNewsScore1d',
         width: 130,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsScore1d', r)
       },
       {
-        title: 'Reuters 1D Point',
+        title: 'LSEG News Score (1D) Point',
         dataIndex: 'lsegNewsScore1dPoint',
         width: 180,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsScore1dPoint', r)
       },
       {
-        title: 'Reuters 3D',
+        title: 'LSEG News Score (3D)',
         dataIndex: 'lsegNewsScore3d',
         width: 130,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsScore3d', r)
       },
       {
-        title: 'Reuters 3D Point',
+        title: 'LSEG News Score (3D) Point',
         dataIndex: 'lsegNewsScore3dPoint',
         width: 180,
         align: 'center',
@@ -590,13 +618,6 @@ export const EstForecastSelectedTable = () => {
         width: 200,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychTrustZPoint', r)
-      },
-      {
-        title: 'Result',
-        dataIndex: 'result',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderText(v, 'result', r)
       },
       {
         title: 'Note for Trader',

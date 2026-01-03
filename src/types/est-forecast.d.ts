@@ -7,7 +7,6 @@ type EstForecast = {
   callTime: string;
   beta: number;
   marketCapEstForecast: string;
-  result: string;
   epsEstimateESTEarnings: number;
   surprise: number;
   ytdPerformance: number;
@@ -24,13 +23,16 @@ type EstForecast = {
   netMarginPoint: number;
   epsTrend: number;
   epsTrendPoint: number;
-  beatFreq: number;
-  beatFreqPoint: number;
   avgSurpriseMagnitude: number;
   avgSurpriseMagnitudePoint: number;
+  epsBeatFreq: number;
+  epsBeatFreqPoint: number;
+  revenueBeatFreq: number;
+  revenueBeatFreqPoint: number;
   postEarningDrift: number;
   postEarningDriftPoint: number;
   grokRatingPoint: number;
+  gptRating: number;
   gptRatingPoint: number;
   lsegNewsScore1d: number;
   lsegNewsScore1dPoint: number;
@@ -60,7 +62,6 @@ type EstForecastFilterItem = {
   beta: number;
   marketCapEstForecast: string;
   marketCap: string;
-  result: string;
   forecast: string;
   epsEstimateESTEarnings: number;
   epsEstimatePoint: number;
@@ -71,10 +72,12 @@ type EstForecastFilterItem = {
   netMarginPoint: number;
   epsTrend: number;
   epsTrendPoint: number;
-  beatFreq: number;
-  beatFreqPoint: number;
   avgSurpriseMagnitude: number;
   avgSurpriseMagnitudePoint: number;
+  epsBeatFreq: number;
+  epsBeatFreqPoint: number;
+  revenueBeatFreq: number;
+  revenueBeatFreqPoint: number;
   postEarningDrift: number;
   postEarningDriftPoint: number;
   ytdPerformance: number;
@@ -92,6 +95,8 @@ type EstForecastFilterItem = {
   grokPoint: number;
   gpt: string;
   gptPoint: number;
+  gptRating: number;
+  gptRatingPoint: number;
   lsegNewsScore1d: number;
   lsegNewsScore1dPoint: number;
   lsegNewsScore3d: number;

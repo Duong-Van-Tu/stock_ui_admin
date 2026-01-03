@@ -52,6 +52,12 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
       dispatch(
         addEstForecast({
           ...record,
+          epsBeatFreq: Number(record.epsBeatFreq || 0),
+          epsBeatFreqPoint: Number(record.epsBeatFreqPoint || 0),
+          revenueBeatFreq: Number(record.revenueBeatFreq || 0),
+          revenueBeatFreqPoint: Number(record.revenueBeatFreqPoint || 0),
+          gptRating: Number(record.gptRating || 0),
+          gptRatingPoint: Number(record.gptRatingPoint || 0),
           earningsDate: createdDates[record.symbol]
             ? dayjs(createdDates[record.symbol]).format('YYYY-MM-DD')
             : record.earningsDate
@@ -191,8 +197,36 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         render: (v) => (isNumeric(v) ? `${roundToDecimals(v, 2)}%` : '-')
       },
       {
+        title: 'EPS Beat Freq',
+        dataIndex: 'epsBeatFreq',
+        width: 160,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? `${roundToDecimals(v, 2)}%` : '-')
+      },
+      {
+        title: 'EPS Beat Freq Point',
+        dataIndex: 'epsBeatFreqPoint',
+        width: 180,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      },
+      {
         title: 'Avg Surprise Magnitude (Prev 6 earnings)',
         dataIndex: 'avgSurpriseMagnitude',
+        width: 200,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      },
+      {
+        title: 'Revenue Beat Freq',
+        dataIndex: 'revenueBeatFreq',
+        width: 170,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? `${roundToDecimals(v, 2)}%` : '-')
+      },
+      {
+        title: 'Revenue Beat Freq Point',
+        dataIndex: 'revenueBeatFreqPoint',
         width: 200,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
@@ -241,6 +275,20 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
       },
       { title: 'Grok Predict', dataIndex: 'grok', width: 160, align: 'center' },
       { title: 'GPT Predict', dataIndex: 'gpt', width: 160, align: 'center' },
+      {
+        title: 'GPT Rating',
+        dataIndex: 'gptRating',
+        width: 140,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      },
+      {
+        title: 'GPT Rating Point',
+        dataIndex: 'gptRatingPoint',
+        width: 170,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      },
       {
         title: 'LSEG News Score (1D)',
         dataIndex: 'lsegNewsScore1d',
@@ -324,13 +372,6 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
           ) : (
             '-'
           )
-      },
-      {
-        title: 'Result',
-        dataIndex: 'result',
-        width: 110,
-        align: 'center',
-        render: (v) => (v ? <EllipsisText text={v} maxLines={2} /> : '-')
       },
       {
         title: 'Note for Trader',
