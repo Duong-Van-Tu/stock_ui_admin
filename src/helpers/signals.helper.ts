@@ -141,6 +141,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       countSignal: stock[fieldMapping.countSignal]
         ? Number(stock[fieldMapping.countSignal])
         : 0,
+      allEntryGood: !!stock[fieldMapping.allEntryGood],
       lsegNews: Number(stock[fieldMapping.lsegNews]),
       trend1h: stock[fieldMapping.trend1h],
       trend1d: stock[fieldMapping.trend1d],

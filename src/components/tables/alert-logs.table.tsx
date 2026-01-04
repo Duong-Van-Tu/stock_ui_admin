@@ -109,6 +109,10 @@ export const AlertLogsTable = ({
     ? Number(searchParams.get('isOption'))
     : 0;
 
+  const inTrade = searchParams.get('inTrade')
+    ? Number(searchParams.get('inTrade'))
+    : 0;
+
   const symbol = searchParams.get('symbol');
   const alertLogsData = useAppSelector(watchAlertLogsData);
   const pagination = useAppSelector(watchAlertLogsPagination);
@@ -191,19 +195,23 @@ export const AlertLogsTable = ({
       pageSize = PAGINATION_PARAMS.limit,
       filter
     }: PageChangeParams = {}) => {
-      dispatch(
-        getAlertLogs({
-          isFilterPage,
-          page,
-          limit: pageSize,
-          sortField: fieldMapping[sortField] ?? sortField,
-          sortType: convertSortType(sortType),
-          ...filter,
-          isImport: isOption
-        })
-      );
+      const params: any = {
+        isFilterPage,
+        page,
+        limit: pageSize,
+        sortField: fieldMapping[sortField] ?? sortField,
+        sortType: convertSortType(sortType),
+        ...filter,
+        isImport: isOption
+      };
+
+      if (inTrade) {
+        params.categoryId = 1;
+      }
+
+      dispatch(getAlertLogs(params));
     },
-    [dispatch, isFilterPage, sortField, sortType, isOption]
+    [dispatch, isFilterPage, sortField, sortType, isOption, inTrade]
   );
 
   useEffect(() => {
@@ -253,10 +261,13 @@ export const AlertLogsTable = ({
     (view: AlertLogsView) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      if (view === AlertLogsView.STOCKS) {
-        params.delete('isOption');
-      } else {
+      params.delete('isOption');
+      params.delete('inTrade');
+
+      if (view === AlertLogsView.OPTIONS) {
         params.set('isOption', '1');
+      } else if (view === AlertLogsView.IN_TRADE) {
+        params.set('inTrade', '1');
       }
 
       router.replace(`${pathname}?${params.toString()}`);
@@ -1460,10 +1471,22 @@ export const AlertLogsTable = ({
                 {
                   label: <div css={segmentedLabelStyles}>{t('options')}</div>,
                   value: AlertLogsView.OPTIONS
+                },
+                {
+                  label: (
+                    <div css={segmentedLabelStyles}>
+                      {t('inTrade').toUpperCase()}
+                    </div>
+                  ),
+                  value: AlertLogsView.IN_TRADE
                 }
               ]}
               defaultValue={
-                isOption ? AlertLogsView.OPTIONS : AlertLogsView.STOCKS
+                inTrade
+                  ? AlertLogsView.IN_TRADE
+                  : isOption
+                  ? AlertLogsView.OPTIONS
+                  : AlertLogsView.STOCKS
               }
               onChange={(value) => handleChangeView(value)}
             />
@@ -1508,9 +1531,10 @@ export const AlertLogsTable = ({
               )
             }}
             expandable={{
-              expandIcon: ({ expanded, onExpand, record }) =>
-                expanded ? (
-                  <Badge count={record.countSignal} color='#faad14'>
+              expandIcon: ({ expanded, onExpand, record }) => {
+                const badgeColor = record.allEntryGood ? '#52c41a' : '#faad14';
+                return expanded ? (
+                  <Badge count={record.countSignal} color={badgeColor}>
                     <Button
                       css={expandIconBtnStyles}
                       onClick={(e) => onExpand(record, e)}
@@ -1518,14 +1542,15 @@ export const AlertLogsTable = ({
                     />
                   </Badge>
                 ) : record.countSignal > 1 ? (
-                  <Badge count={record.countSignal} color='#faad14'>
+                  <Badge count={record.countSignal} color={badgeColor}>
                     <Button
                       css={expandIconBtnStyles}
                       onClick={(e) => onExpand(record, e)}
                       icon={<Icon icon='right' width={18} height={18} />}
                     />
                   </Badge>
-                ) : null,
+                ) : null;
+              },
               expandedRowRender: (row) => {
                 const compositeKey = `${row.symbol}_${row.id}`;
                 return (

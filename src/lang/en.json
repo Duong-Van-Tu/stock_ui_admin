@@ -560,5 +560,6 @@
   "finnhubLsegNews": "Finnhub & LSEG News",
   "finnhubLsegNewsDescription": "Finnhub & LSEG News Page",
   "newsScores": "News scores",
-  "newsScoresDescription": "News scores Page"
+  "newsScoresDescription": "News scores Page",
+  "inTrade": "In Trade"
 }

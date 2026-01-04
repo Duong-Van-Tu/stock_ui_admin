@@ -2,7 +2,8 @@ import { fieldMapping } from '@/helpers/field-mapping.helper';
 
 export enum AlertLogsView {
   STOCKS,
-  OPTIONS
+  OPTIONS,
+  IN_TRADE
 }
 
 export enum WatchlistView {

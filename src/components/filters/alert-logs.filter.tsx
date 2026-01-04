@@ -13,11 +13,7 @@ import {
   getLatestEntryDate,
   watchLatestEntryDate
 } from '@/redux/slices/signals.slice';
-import {
-  getCategories,
-  watchCategories,
-  watchCategoriesLoading
-} from '@/redux/slices/signals.slice';
+import { getCategories } from '@/redux/slices/signals.slice';
 import {
   getIndustriesV2,
   getSectorsV2,
@@ -123,8 +119,6 @@ export const AlertLogsFilter = ({
 
   const industries = useAppSelector(watchIndustries);
   const sectors = useAppSelector(watchSectors);
-  const categories = useAppSelector(watchCategories);
-  const categoriesLoading = useAppSelector(watchCategoriesLoading);
 
   const defaultQuickRange: QuickRange = useMemo(() => {
     if (!latestEntryDate) return 'today';
@@ -400,30 +394,7 @@ export const AlertLogsFilter = ({
             </Form.Item>
           </Col>
 
-          <Col css={fullWidthStyles}>
-            <Form.Item
-              css={formItemStyles}
-              name='categoryId'
-              label={<span css={labelStyles}>{t('category')}</span>}
-            >
-              <Select
-                allowClear
-                loading={categoriesLoading}
-                placeholder={t('selectCategory')}
-                options={[
-                  { value: '', label: t('all') },
-                  ...(categories || []).map((c) => ({
-                    value: c.id,
-                    label: c.category_name
-                  }))
-                ]}
-                onChange={(value) => {
-                  updateSearchParams('categoryId', value?.toString());
-                  handleSearch();
-                }}
-              />
-            </Form.Item>
-          </Col>
+          {/* Category filter removed per design request */}
 
           <Col css={actionStyles}>
             <Space size='small'>
