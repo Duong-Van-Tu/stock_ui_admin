@@ -1223,7 +1223,7 @@ export const AlertLogsTable = ({
       key: 'action',
       fixed: isMobile ? undefined : 'right',
       align: 'center',
-      width: 160,
+      width: 170,
       render: (_, record) => {
         const isExit = !!record.exitDate;
         return (
@@ -1231,12 +1231,14 @@ export const AlertLogsTable = ({
             {!(record as any).categoryId ? (
               <Tooltip title={isMobile ? null : t('trade')}>
                 <Button
-                  size='small'
-                  icon={<PlusOutlined />}
-                  style={{
-                    borderColor: 'var(--success-color)',
-                    color: 'var(--success-color)'
-                  }}
+                  icon={
+                    <Icon
+                      icon='add'
+                      width={20}
+                      height={20}
+                      fill='var(--positive-color)'
+                    />
+                  }
                   onClick={() =>
                     dispatch(
                       addAlertLogToCategory({
@@ -1251,9 +1253,14 @@ export const AlertLogsTable = ({
             ) : (
               <Tooltip title={isMobile ? null : t('removeFromTrade')}>
                 <Button
-                  size='small'
-                  danger
-                  icon={<DeleteOutlined />}
+                  icon={
+                    <Icon
+                      icon='trash'
+                      width={22}
+                      height={22}
+                      fill='var(--negative-color)'
+                    />
+                  }
                   onClick={() =>
                     dispatch(
                       deleteAlertLogInCategory({
