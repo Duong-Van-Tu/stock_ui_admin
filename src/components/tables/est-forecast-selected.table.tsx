@@ -12,26 +12,33 @@ import {
 import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  watchEstForecastFilterLoading,
-  getEstForecastFilterPaging,
   deleteEstForecast,
-  watchEstForecastFilterList,
-  watchEstForecastPagination,
+  getEstForecastFilterPaging,
+  resetAddEstForecastState,
   updateEstForecast,
   watchEstForecastAddSuccess,
-  resetAddEstForecastState
+  watchEstForecastFilterList,
+  watchEstForecastFilterLoading,
+  watchEstForecastPagination
 } from '@/redux/slices/est-forecast.slice';
-import { useEffect, useMemo, useState, useCallback } from 'react';
-import { isMobile } from 'react-device-detect';
-import { formatMarketCap, isNumeric, roundToDecimals } from '@/utils/common';
-import { TableTitle } from './title.table';
-import { useSearchParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import { SymbolCell } from './columns/symbol-cell.column';
 import { useModal } from '@/hooks/modal.hook';
 import { EstForecastTable } from './est-forecast.table';
-
-const { RangePicker } = DatePicker;
+import { isNumeric, roundToDecimals } from '@/utils/common';
+import { EstForecastFilter } from '../filters/est-forecast.filter';
+import { cleanFalsyValues } from '@/utils/common';
+import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
+import { fieldMapping } from '@/helpers/field-mapping.helper';
+import { convertSortType } from '@/utils/sort-table';
+import { useSortOrder } from '@/hooks/sort-order.hook';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
+import { SymbolCell } from './columns/symbol-cell.column';
+import { formatMarketCap, formatNumberShort } from '@/utils/common';
+import { isMobile } from 'react-device-detect';
+import { useWindowSize } from '@/hooks/window-size.hook';
+import { EmptyDataTable } from './empty.table';
+import { TableTitle } from './title.table';
 
 const FORECAST_COLORS = ['#52c41a', '#fadb14', '#fa8c16', '#ff4d4f'];
 
@@ -40,6 +47,8 @@ export const EstForecastSelectedTable = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const { openModal } = useModal();
+  const { height } = useWindowSize();
+  const locale = useLocale() || 'en';
 
   const loading = useAppSelector(watchEstForecastFilterLoading);
   const filterList = useAppSelector(watchEstForecastFilterList);
@@ -51,15 +60,74 @@ export const EstForecastSelectedTable = () => {
     {}
   );
   const [searchValue, setSearchValue] = useState('');
+  const [filter, setFilter] = useState<{
+    startDate?: string;
+    endDate?: string;
+    symbol?: string;
+  }>({
+    startDate: dayjs().format('YYYY-MM-DD'),
+    endDate: dayjs().format('YYYY-MM-DD')
+  });
 
-  const now = dayjs();
-  const defaultStartDate = now.subtract(2, 'day').startOf('day');
-  const defaultEndDate = now.endOf('day');
+  const earningDate = useMemo(
+    () =>
+      filter.startDate
+        ? dayjs(filter.startDate, 'YYYY-MM-DD').format('YYYY-MM-DD')
+        : dayjs().format('YYYY-MM-DD'),
+    [filter.startDate]
+  );
 
-  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
-    defaultStartDate,
-    defaultEndDate
-  ]);
+  const { sortField, sortType, handleSortOrder } = useSortOrder<any>({
+    defaultField: 'earningsDate',
+    defaultOrder: 'descend',
+    currentFilter: filter,
+    onChange: (_field, _order, newFilter) => {
+      fetchEstForecast({ filter: newFilter });
+    }
+  });
+
+  const handleFilter = (values: { startDate: string; endDate: string }) => {
+    const newFilter = { ...filter, ...values, symbol: searchValue };
+    setFilter(newFilter);
+    fetchEstForecast({ filter: newFilter });
+  };
+
+  const fetchEstForecast = useCallback(
+    ({
+      page = PAGINATION_PARAMS.offset,
+      pageSize = PAGINATION_PARAMS.limit,
+      filter
+    }: PageChangeParams = {}) => {
+      const { ...restFilter } = filter || {};
+      const filteredFilter = cleanFalsyValues(restFilter);
+      const symbol = searchParams.get('symbol') || undefined;
+
+      dispatch(
+        getEstForecastFilterPaging({
+          page,
+          limit: pageSize,
+          sortField: fieldMapping[sortField] ?? sortField,
+          sortType: convertSortType(sortType),
+          ...filteredFilter,
+          symbol: filteredFilter.symbol || symbol || undefined
+        })
+      );
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dispatch, sortField, sortType]
+  );
+
+  useEffect(() => {
+    const symbol = searchParams.get('symbol');
+    fetchEstForecast({
+      filter: {
+        startDate: earningDate,
+        endDate: earningDate,
+        symbol: symbol || undefined
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchEstForecast, searchParams]);
 
   const handleSearch = (value: string) => {
     if (!value) return;
@@ -68,54 +136,16 @@ export const EstForecastSelectedTable = () => {
   };
 
   const handlePageChange = (page: number, pageSize: number) => {
-    const symbol = searchParams.get('symbol') || undefined;
-    dispatch(
-      getEstForecastFilterPaging({
-        page,
-        limit: pageSize,
-        symbol,
-        startDate: dayjs(dateRange[0]).add(1, 'day').toISOString(),
-        endDate: dayjs(dateRange[1]).add(1, 'day').toISOString()
-      })
-    );
+    fetchEstForecast({ page, pageSize, filter });
   };
 
   useEffect(() => {
-    const symbol = searchParams.get('symbol') || undefined;
-    dispatch(
-      getEstForecastFilterPaging({
-        page: pagination.currentPage,
-        limit: pagination.pageSize,
-        symbol,
-        startDate: dayjs(dateRange[0]).add(1, 'day').toISOString(),
-        endDate: dayjs(dateRange[1]).add(1, 'day').toISOString(),
-        sortField: 'earnings_date',
-        sortType: 'desc'
-      })
-    );
-  }, [
-    dispatch,
-    pagination.currentPage,
-    pagination.pageSize,
-    searchParams,
-    dateRange
-  ]);
-
-  useEffect(() => {
     if (addSuccess) {
-      dispatch(
-        getEstForecastFilterPaging({
-          page: 1,
-          limit: 100,
-          startDate: dateRange[0].toISOString(),
-          endDate: dateRange[1].toISOString(),
-          sortField: 'earnings_date',
-          sortType: 'desc'
-        })
-      );
+      fetchEstForecast({ filter });
       dispatch(resetAddEstForecastState());
     }
-  }, [dispatch, addSuccess, dateRange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addSuccess]);
 
   const startEdit = (record: EstForecastFilterItem) => {
     setEditingId(record.id);
@@ -165,17 +195,15 @@ export const EstForecastSelectedTable = () => {
       if (editingId === record.id) {
         return (
           <Input
-            value={(editingRow as any)[field] as string}
+            value={(editingRow as any)[field]}
             onChange={(e) =>
-              setEditingRow((prev) => ({
-                ...prev,
-                [field]: e.target.value
-              }))
+              setEditingRow((prev) => ({ ...prev, [field]: e.target.value }))
             }
+            style={{ width: '100%' }}
           />
         );
       }
-      return value || '-';
+      return value ?? '-';
     },
     [editingId, editingRow]
   );
@@ -207,6 +235,35 @@ export const EstForecastSelectedTable = () => {
       return value ? <div>{dayjs(value).utc().format('MM-DD-YYYY')}</div> : '-';
     },
     [editingId, editingRow]
+  );
+
+  const renderAction = useCallback(
+    (_: any, record: EstForecastFilterItem) => {
+      return (
+        <Space>
+          {editingId === record.id ? (
+            <>
+              <Button
+                style={{ background: '#52c41a', borderColor: '#52c41a' }}
+                type='primary'
+                onClick={saveEdit}
+              >
+                Save
+              </Button>
+              <Button onClick={() => setEditingId(null)}>Cancel</Button>
+            </>
+          ) : (
+            <Button type='primary' onClick={() => startEdit(record)}>
+              Edit
+            </Button>
+          )}
+          <Button danger onClick={() => dispatch(deleteEstForecast(record.id))}>
+            Delete
+          </Button>
+        </Space>
+      );
+    },
+    [dispatch, editingId, saveEdit]
   );
 
   const columns: TableColumnsType<EstForecastFilterItem> = useMemo(
@@ -251,7 +308,13 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'marketCapEstForecast',
         width: 130,
         align: 'center',
-        render: (v) => (v ? formatMarketCap(v / 1_000_000) : '-')
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'marketCap' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('marketCap')
+        }),
+        render: (value) => (value ? formatMarketCap(value) : '-')
       },
       {
         title: 'EPS Estimate',
@@ -272,7 +335,12 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'revenueForecast',
         width: 150,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'revenueForecast', r)
+        render: (v, r) => {
+          if (editingId === r.id) {
+            return renderNumber(v, 'revenueForecast', r);
+          }
+          return formatNumberShort(v);
+        }
       },
       {
         title: 'Revenue Forecast Point',
@@ -683,33 +751,11 @@ export const EstForecastSelectedTable = () => {
         }
       },
       {
-        title: 'Actions',
-        width: 170,
+        title: t('action'),
+        width: editingId ? 260 : 170,
         align: 'center',
         fixed: !isMobile && 'right',
-        render: (_, record) => (
-          <Space>
-            {editingId === record.id ? (
-              <Button
-                style={{ background: '#52c41a', borderColor: '#52c41a' }}
-                type='primary'
-                onClick={saveEdit}
-              >
-                Save
-              </Button>
-            ) : (
-              <Button type='primary' onClick={() => startEdit(record)}>
-                Edit
-              </Button>
-            )}
-            <Button
-              danger
-              onClick={() => dispatch(deleteEstForecast(record.id))}
-            >
-              Delete
-            </Button>
-          </Space>
-        )
+        render: renderAction
       }
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -728,34 +774,43 @@ export const EstForecastSelectedTable = () => {
 
   return (
     <div css={rootStyles}>
+      <EstForecastFilter onFilter={handleFilter} />
+
       <div css={tableWrapperStyles}>
         <div css={titleRowStyles}>
-          <TableTitle>Earnings Strategy</TableTitle>
-          <Space>
-            <RangePicker
-              value={dateRange}
-              onChange={(v) => v && setDateRange(v as any)}
-            />
-            <Input.Search
-              placeholder='Search to add to Est Forecast'
-              enterButton='Search'
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
-              onSearch={handleSearch}
-              allowClear
-              style={{ width: 320 }}
-            />
-          </Space>
+          <TableTitle>
+            {t('earningTitle')}{' '}
+            {dayjs(earningDate).locale(locale).format('ddd, MMM DD')}
+          </TableTitle>
+          <Input.Search
+            placeholder={t('searchToAddEstForecast')}
+            enterButton={t('search')}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
+            onSearch={handleSearch}
+            allowClear
+            style={{ width: 320 }}
+          />
         </div>
 
         <Table
+          loading={loading}
           rowKey={(record) => record.key!}
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           columns={columns}
           dataSource={filterList}
-          loading={loading}
-          scroll={{ x: 1200 }}
+          scroll={{
+            x: 1200,
+            y: filterList.length > 0 ? height - 326 : undefined
+          }}
+          locale={{
+            emptyText: (
+              <div css={emptyStyles(height - 400)}>
+                <EmptyDataTable />
+              </div>
+            )
+          }}
           pagination={{
             current: pagination.currentPage,
             pageSize: pagination.pageSize,
@@ -774,6 +829,7 @@ export const EstForecastSelectedTable = () => {
 const rootStyles = css`
   display: flex;
   flex-direction: column;
+  gap: 1.4rem;
 `;
 
 const tableWrapperStyles = css`
@@ -785,12 +841,22 @@ const titleRowStyles = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.4rem;
-  padding: 1.2rem 1rem;
+  padding: 1.2rem 1.6rem;
 `;
 
 const tableStyles = css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
+  .ant-pagination {
+    margin: 1.2rem 0 !important;
+    gap: 0.4rem;
+  }
+`;
+
+const emptyStyles = (height: number) => css`
+  height: ${height}px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;

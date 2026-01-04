@@ -19,6 +19,7 @@ export type EstForecastState = {
   filterList: EstForecastFilterItem[];
   pagination: Pagination;
   detail?: EstForecastFilterItem | null;
+  summary: CountByDate[];
 };
 
 const initialState: EstForecastState = {
@@ -32,7 +33,8 @@ const initialState: EstForecastState = {
   list: [],
   filterList: [],
   pagination: PAGINATION,
-  detail: null
+  detail: null,
+  summary: []
 };
 
 export const estForecastSlice = createAppSlice({
@@ -58,6 +60,27 @@ export const estForecastSlice = createAppSlice({
         rejected: (state) => {
           state.listLoading = false;
           state.list = [];
+        }
+      }
+    ),
+
+    getCountEstForecast: create.asyncThunk(
+      async (query: { fromDate: string; toDate: string }) => {
+        const response = await defaultApiFetcher.get(
+          'est-forecast/get-count-by-date',
+          { query }
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.summary = [];
+        },
+        fulfilled: (state, action) => {
+          state.summary = action.payload || [];
+        },
+        rejected: (state) => {
+          state.summary = [];
         }
       }
     ),
@@ -220,7 +243,8 @@ export const estForecastSlice = createAppSlice({
     watchEstForecastList: (state) => state.list,
     watchEstForecastFilterList: (state) => state.filterList,
     watchEstForecastPagination: (state) => state.pagination,
-    watchEstForecastDetail: (state) => state.detail
+    watchEstForecastDetail: (state) => state.detail,
+    watchEstForecastSummary: (state) => state.summary
   }
 });
 
@@ -235,11 +259,13 @@ export const {
   watchEstForecastList,
   watchEstForecastFilterList,
   watchEstForecastPagination,
-  watchEstForecastDetail
+  watchEstForecastDetail,
+  watchEstForecastSummary
 } = estForecastSlice.selectors;
 
 export const {
   getEstForecastFilter,
+  getCountEstForecast,
   getEstForecastFilterPaging,
   addEstForecast,
   getEstForecastDetail,

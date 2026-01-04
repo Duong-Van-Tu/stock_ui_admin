@@ -561,5 +561,6 @@
   "finnhubLsegNewsDescription": "Finnhub & LSEG News Page",
   "newsScores": "News scores",
   "newsScoresDescription": "News scores Page",
-  "inTrade": "In Trade"
+  "inTrade": "In Trade",
+  "searchToAddEstForecast": "Search to add to Est Forecast"
 }

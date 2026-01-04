@@ -122,3 +122,8 @@ type EstForecastFilterItem = {
   updatedAt: string;
   noteForTrader: string;
 };
+
+type CountByDate = {
+  date: string;
+  total: number;
+};
