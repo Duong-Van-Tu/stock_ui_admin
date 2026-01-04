@@ -117,6 +117,18 @@ type FinnhubAndLsegNewsTableItem = {
   horizon: string;
   newsType: string;
   breakingNews: number;
+  impactScore: number;
+  sector: string;
+  industry: string;
+  grokRating: number;
+  grokRec: string;
+  grokReasoning: string;
+  currentPrice: number;
+  entryDate: string;
+  entryPrice: number;
+  highestPrice: number;
+  highest3DaysPrice: number;
+  lowest3DaysPrice: number;
 };
 
 type NewsScore = {

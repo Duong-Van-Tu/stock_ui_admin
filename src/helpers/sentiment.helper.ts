@@ -175,7 +175,19 @@ export const transformFinnhubAndLsegNews = (
     horizon: item.horizon,
     newsType: item[fieldMapping.newsType],
     sourceType: item[fieldMapping.sourceType],
-    breakingNews: Number(item[fieldMapping.breakingNews])
+    breakingNews: Number(item[fieldMapping.breakingNews]),
+    impactScore: item[fieldMapping.impactScore],
+    sector: item.sector,
+    industry: item.industry,
+    grokRating: item[fieldMapping.grokRating],
+    grokRec: item[fieldMapping.grokRec],
+    grokReasoning: item[fieldMapping.grokReasoning],
+    currentPrice: item[fieldMapping.currentPrice],
+    entryDate: item[fieldMapping.entryDate],
+    entryPrice: item[fieldMapping.entryPrice],
+    highestPrice: item[fieldMapping.highestPrice],
+    highest3DaysPrice: item[fieldMapping.highestPrice3Days],
+    lowest3DaysPrice: item[fieldMapping.lowestPrice3Days]
   }));
 };
 

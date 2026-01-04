@@ -33,6 +33,7 @@ import { useModal } from '@/hooks/modal.hook';
 import { useTranslations } from 'next-intl';
 import { Icon } from '../icons';
 import { PositiveNegativeText } from '../positive-negative-text';
+import { Recommendation } from '@/constants/common.constant';
 
 export const FinnhubAndLsegNewsTable = () => {
   const t = useTranslations();
@@ -84,6 +85,14 @@ export const FinnhubAndLsegNewsTable = () => {
     },
     [symbol, dispatch, sortField, sortType]
   );
+
+  const handleRefresh = useCallback(() => {
+    fetchListNews({
+      page: pagination.currentPage,
+      pageSize: pagination.pageSize,
+      filter
+    });
+  }, [fetchListNews, pagination.currentPage, pagination.pageSize, filter]);
 
   useEffect(() => {
     return () => {
@@ -281,7 +290,8 @@ export const FinnhubAndLsegNewsTable = () => {
           onClick: () => handleSortOrder('newsType')
         }),
         align: 'center',
-        render: (value) => value ?? '-'
+        render: (value) =>
+          value ? <EllipsisText text={value} maxLines={2} /> : '-'
       },
       {
         title: 'Article Score',
@@ -350,6 +360,205 @@ export const FinnhubAndLsegNewsTable = () => {
           )
       },
       {
+        title: 'Impact Score',
+        dataIndex: 'impactScore',
+        key: 'impactScore',
+        width: 130,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'impactScore' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('impactScore')
+        }),
+        align: 'center',
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'Sector',
+        dataIndex: 'sector',
+        key: 'sector',
+        width: 200,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'sector' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('sector')
+        }),
+        align: 'center',
+        render: (value) =>
+          value ? <EllipsisText text={value} maxLines={2} /> : '-'
+      },
+      {
+        title: 'Industry',
+        dataIndex: 'industry',
+        key: 'industry',
+        width: 180,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'industry' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('industry')
+        }),
+        align: 'center',
+        render: (value) =>
+          value ? <EllipsisText text={value} maxLines={2} /> : '-'
+      },
+      {
+        title: 'Grok Rating',
+        dataIndex: 'grokRating',
+        key: 'grokRating',
+        width: 120,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'grokRating' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('grokRating')
+        }),
+        align: 'center',
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'Grok Recommendation',
+        dataIndex: 'grokRec',
+        key: 'grokRec',
+        width: 180,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'grokRec' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('grokRec')
+        }),
+        align: 'center',
+        render: (value) =>
+          value ? (
+            <PositiveNegativeText
+              isPositive={value === Recommendation.BUY}
+              isNegative={value === Recommendation.SELL}
+            >
+              <span>{`${value}`.toLocaleUpperCase()}</span>
+            </PositiveNegativeText>
+          ) : (
+            <span>-</span>
+          )
+      },
+      {
+        title: 'Grok Reasoning',
+        dataIndex: 'grokReasoning',
+        key: 'grokReasoning',
+        width: 146,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'grokReasoning' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('grokReasoning')
+        }),
+        align: 'center',
+        render: (value, record) =>
+          value ? (
+            <Button
+              onClick={() =>
+                modal.openModal(
+                  <div css={storyStyles}>
+                    <h2>{`Grok Reasoning (${record.symbol})`}</h2>
+                    <p>{value}</p>
+                  </div>,
+                  { width: 1000 }
+                )
+              }
+              type='link'
+              block
+            >
+              View Details
+            </Button>
+          ) : (
+            '-'
+          )
+      },
+      {
+        title: 'Current Price',
+        dataIndex: 'currentPrice',
+        key: 'currentPrice',
+        width: 130,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'currentPrice' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('currentPrice')
+        }),
+        align: 'center',
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'Entry Date',
+        dataIndex: 'entryDate',
+        key: 'entryDate',
+        width: 150,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'entryDate' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('entryDate')
+        }),
+        align: 'center',
+        render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+      },
+      {
+        title: 'Entry Price',
+        dataIndex: 'entryPrice',
+        key: 'entryPrice',
+        width: 120,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'entryPrice' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('entryPrice')
+        }),
+        align: 'center',
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'Highest Price',
+        dataIndex: 'highestPrice',
+        key: 'highestPrice',
+        width: 130,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'highestPrice' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('highestPrice')
+        }),
+        align: 'center',
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'Highest 3 Days Price',
+        dataIndex: 'highest3DaysPrice',
+        key: 'highest3DaysPrice',
+        width: 150,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'highest3DaysPrice' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('highest3DaysPrice')
+        }),
+        align: 'center',
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'Lowest 3 Days Price',
+        dataIndex: 'lowest3DaysPrice',
+        key: 'lowest3DaysPrice',
+        width: 150,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'lowest3DaysPrice' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('lowest3DaysPrice')
+        }),
+        align: 'center',
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
         title: 'News Score',
         dataIndex: 'newsScore',
         key: 'newsScore',
@@ -391,7 +600,20 @@ export const FinnhubAndLsegNewsTable = () => {
         <FinnhubAndLsegNewsFilter onFilter={handleFilter} />
       </div>
       <div css={tableWrapperStyles}>
-        <TableTitle customStyles={titleStyles}>Finnhub & LSEG News</TableTitle>
+        <div css={tableTopStyles}>
+          <TableTitle customStyles={titleStyles}>
+            Finnhub & LSEG News
+          </TableTitle>
+          <div css={actionStyles}>
+            <Button
+              type='primary'
+              icon={<Icon icon='reload' />}
+              onClick={handleRefresh}
+            >
+              {t('refresh')}
+            </Button>
+          </div>
+        </div>
         <Table<any>
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
@@ -401,7 +623,7 @@ export const FinnhubAndLsegNewsTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: dataSource.length > 0 ? height - 314 : undefined
+            y: dataSource.length > 0 ? height - 336 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -444,6 +666,21 @@ const rootStyles = css`
   gap: 1.4rem;
 `;
 
+const tableTopStyles = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 1.6rem;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+`;
+
+const actionStyles = css`
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.2rem;
+`;
+
 const filterBarStyles = css`
   border: 1px solid var(--border-table-color);
   border-radius: 0.6rem;
@@ -469,7 +706,13 @@ const emptyStyles = (height: number) => css`
 `;
 
 const titleStyles = css`
-  padding: 1.2rem 1.6rem;
+  width: ${isMobile ? '100%' : 'unset'};
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  span {
+    line-height: 2rem;
+  }
 `;
 
 const storyStyles = css`
