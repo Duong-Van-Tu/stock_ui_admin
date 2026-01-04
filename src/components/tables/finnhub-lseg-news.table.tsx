@@ -12,7 +12,7 @@ import { Button, Table, TableColumnsType, Tooltip } from 'antd';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
-import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
+import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   cleanFalsyValues,
   isNumeric,
@@ -50,6 +50,7 @@ export const FinnhubAndLsegNewsTable = () => {
   const pagination = useAppSelector(watchFinnhubAndLsegNewsPagination);
 
   const [filter, setFilter] = useState<SentimentFilter>({});
+  const [isFilterReady, setIsFilterReady] = useState(false);
 
   const { sortField, sortType, handleSortOrder } = useSortOrder({
     defaultField: 'datetime',
@@ -57,11 +58,6 @@ export const FinnhubAndLsegNewsTable = () => {
     currentFilter: filter,
     onChange: (_field, _order, newFilter) => {
       setFilter(newFilter);
-      fetchListNews({
-        page: PAGINATION.currentPage,
-        pageSize: pagination.pageSize,
-        filter: newFilter
-      });
     }
   });
 
@@ -100,10 +96,29 @@ export const FinnhubAndLsegNewsTable = () => {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    setFilter((prev) => ({ ...prev, symbol: symbol ?? undefined }));
+  }, [symbol]);
+
+  useEffect(() => {
+    if (isFilterReady) {
+      fetchListNews({
+        page: 1,
+        pageSize: pagination.pageSize,
+        filter
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFilterReady, filter, sortField, sortType]);
+
   const handleFilter = (values: SentimentFilter) => {
     const newFilter = { ...filter, ...values };
     setFilter(newFilter);
-    fetchListNews({ filter: newFilter });
+  };
+
+  const handleFilterReady = (values: SentimentFilter) => {
+    setFilter(values);
+    setIsFilterReady(true);
   };
 
   const dataSource = Array.isArray(listNews) ? listNews : [];
@@ -597,22 +612,32 @@ export const FinnhubAndLsegNewsTable = () => {
   return (
     <div css={rootStyles}>
       <div css={filterBarStyles}>
-        <FinnhubAndLsegNewsFilter onFilter={handleFilter} />
+        <FinnhubAndLsegNewsFilter
+          onFilter={handleFilter}
+          onFilterReady={handleFilterReady}
+        />
       </div>
       <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
           <TableTitle customStyles={titleStyles}>
-            Finnhub & LSEG News
+            <span>Finnhub & LSEG News</span>
+            <Tooltip title={!isMobile && t('refresh')}>
+              <Button
+                onClick={handleRefresh}
+                type='text'
+                icon={
+                  <Icon
+                    customStyles={iconStyles}
+                    icon='refresh'
+                    width={22}
+                    height={22}
+                  />
+                }
+                shape='circle'
+              />
+            </Tooltip>
           </TableTitle>
-          <div css={actionStyles}>
-            <Button
-              type='primary'
-              icon={<Icon icon='reload' />}
-              onClick={handleRefresh}
-            >
-              {t('refresh')}
-            </Button>
-          </div>
+          <div css={actionStyles}></div>
         </div>
         <Table<any>
           size={isMobile ? 'small' : 'middle'}
@@ -738,4 +763,8 @@ const fireIconStyles = css`
   position: absolute;
   left: -1.8rem;
   top: -1.4rem;
+`;
+
+const iconStyles = css`
+  margin-top: 0.2rem;
 `;

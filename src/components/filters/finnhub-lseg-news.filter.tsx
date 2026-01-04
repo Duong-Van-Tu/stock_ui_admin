@@ -1,24 +1,65 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
-import { Form, Row, Col, DatePicker, Space, Button } from 'antd';
+import { Form, Row, Col, DatePicker, Space, Button, Select } from 'antd';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
 import dayjs, { Dayjs } from 'dayjs';
 import { SelectFilter } from './select-filter';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { TimeZone } from '@/constants/timezone.constant';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import {
+  getIndustriesV2,
+  getSectorsV2,
+  watchIndustries,
+  watchSectors
+} from '@/redux/slices/stock-score.slice';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   customStyles?: SerializedStyles;
   onFilter: (values: SentimentFilter) => void;
+  onFilterReady: (values: SentimentFilter) => void;
 };
 
-export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
+export const FinnhubAndLsegNewsFilter = ({
+  customStyles,
+  onFilter,
+  onFilterReady
+}: Props) => {
+  const t = useTranslations();
   const [form] = Form.useForm();
   const router = useRouter();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
+  const isFirstRender = useRef(true);
+  const dispatch = useAppDispatch();
+
+  const industries = useAppSelector(watchIndustries);
+  const sectors = useAppSelector(watchSectors);
+
+  const sectorOptions = useMemo(
+    () => [
+      { value: '', label: t('allSector') },
+      ...(sectors?.map((item) => ({
+        value: item.sector,
+        label: item.sector
+      })) ?? [])
+    ],
+    [t, sectors]
+  );
+
+  const industryOptions = useMemo(
+    () => [
+      { value: '', label: t('searchSelectIndustry') },
+      ...(industries?.map((item) => ({
+        value: item.industry,
+        label: item.industry
+      })) ?? [])
+    ],
+    [industries, t]
+  );
 
   const updateSearchParams = (
     paramsObj: Record<string, string | undefined>
@@ -34,6 +75,8 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
     const v = form.getFieldsValue() as {
       range?: [Dayjs, Dayjs];
       sourceType?: 'finnhub' | 'lseg';
+      sector?: string;
+      industry?: string;
     };
 
     const startDate = v.range?.[0]
@@ -47,18 +90,28 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
       .toISOString();
 
     const sourceType = v.sourceType;
+    const sector = v.sector;
+    const industry = v.industry;
 
     updateSearchParams({
       sourceType,
       startDate,
-      endDate
+      endDate,
+      sector,
+      industry
     });
 
     onFilter({
       startDate,
       endDate,
       sourceType,
-      symbol: symbol || undefined
+      symbol: symbol || undefined,
+      sector: sector || '',
+      industry: industry
+        ? industry.includes(' & ')
+          ? industry.replace(/ & /g, ' @ ')
+          : industry
+        : ''
     });
   };
 
@@ -70,44 +123,82 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
 
     form.setFieldsValue({
       sourceType: 'lseg',
-      range: [start, end]
+      range: [start, end],
+      sector: '',
+      industry: ''
     });
 
     updateSearchParams({
       sourceType: undefined,
       startDate: start.startOf('day').toISOString(),
-      endDate: end.endOf('day').toISOString()
+      endDate: end.endOf('day').toISOString(),
+      sector: undefined,
+      industry: undefined
     });
 
     triggerFilter();
   };
 
   useEffect(() => {
-    const sourceTypeFromUrl = searchParams.get('sourceType') ?? 'lseg';
-    const startDateFromUrl = searchParams.get('startDate');
-    const endDateFromUrl = searchParams.get('endDate');
-
-    form.setFieldValue('sourceType', sourceTypeFromUrl);
-
-    if (startDateFromUrl && endDateFromUrl) {
-      form.setFieldValue('range', [
-        dayjs(startDateFromUrl).tz(TimeZone.NEW_YORK),
-        dayjs(endDateFromUrl).tz(TimeZone.NEW_YORK)
-      ]);
-      return;
-    }
-
-    const end = dayjs().tz(TimeZone.NEW_YORK);
-    const start = end.subtract(2, 'day');
-
-    form.setFieldsValue({
-      range: [start, end]
-    });
-  }, [searchParams, form]);
+    dispatch(getSectorsV2());
+  }, [dispatch]);
 
   useEffect(() => {
-    form.submit();
-  }, [symbol, form]);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      const sourceTypeFromUrl = searchParams.get('sourceType') ?? 'lseg';
+      const startDateFromUrl = searchParams.get('startDate');
+      const endDateFromUrl = searchParams.get('endDate');
+      const sectorFromUrl = searchParams.get('sector');
+      const industryFromUrl = searchParams.get('industry');
+
+      if (sectorFromUrl) {
+        dispatch(getIndustriesV2(sectorFromUrl));
+      }
+
+      const initialValues: Record<string, any> = {
+        sourceType: sourceTypeFromUrl
+      };
+
+      let startDate, endDate;
+
+      if (startDateFromUrl && endDateFromUrl) {
+        startDate = dayjs(startDateFromUrl).tz(TimeZone.NEW_YORK);
+        endDate = dayjs(endDateFromUrl).tz(TimeZone.NEW_YORK);
+        initialValues.range = [startDate, endDate];
+      } else {
+        const end = dayjs().tz(TimeZone.NEW_YORK);
+        const start = end.subtract(2, 'day');
+        startDate = start;
+        endDate = end;
+        initialValues.range = [start, end];
+      }
+
+      if (sectorFromUrl) {
+        initialValues.sector = sectorFromUrl;
+      }
+
+      if (industryFromUrl) {
+        initialValues.industry = industryFromUrl;
+      }
+
+      form.setFieldsValue(initialValues);
+
+      onFilterReady({
+        sourceType: sourceTypeFromUrl,
+        startDate: startDate?.startOf('day').toISOString(),
+        endDate: endDate?.endOf('day').toISOString(),
+        sector: sectorFromUrl || '',
+        industry: industryFromUrl
+          ? industryFromUrl.includes(' & ')
+            ? industryFromUrl.replace(/ & /g, ' @ ')
+            : industryFromUrl
+          : '',
+        symbol: symbol || undefined
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, form, symbol, dispatch]);
 
   return (
     <div css={[rootStyles, customStyles]}>
@@ -158,6 +249,41 @@ export const FinnhubAndLsegNewsFilter = ({ customStyles, onFilter }: Props) => {
           </Col>
 
           <Col>
+            <Form.Item css={formItemStyles} name='sector'>
+              <Select
+                css={selectStyles}
+                allowClear
+                showSearch
+                placeholder={t('allSector')}
+                optionFilterProp='label'
+                options={sectorOptions}
+                onChange={(value) => {
+                  form.setFieldValue('industry', '');
+                  if (value) dispatch(getIndustriesV2(value as string));
+                  triggerFilter();
+                }}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col>
+            <Form.Item css={formItemStyles} name='industry'>
+              <Select
+                css={selectStyles}
+                allowClear
+                showSearch
+                placeholder={t('searchSelectIndustry')}
+                optionFilterProp='label'
+                options={industryOptions}
+                disabled={!form.getFieldValue('sector')}
+                onChange={() => {
+                  triggerFilter();
+                }}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col>
             <Space size='small'>
               <Button
                 htmlType='submit'
@@ -193,4 +319,8 @@ const formItemStyles = css`
 
 const fullWidthStyles = css`
   width: ${isMobile ? '100%' : 'unset'};
+`;
+
+const selectStyles = css`
+  width: ${isMobile ? 'calc(100vw - 5rem)' : '20rem !important'};
 `;
