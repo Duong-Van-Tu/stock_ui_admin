@@ -79,15 +79,8 @@ export const FinnhubAndLsegNewsFilter = ({
       industry?: string;
     };
 
-    const startDate = v.range?.[0]
-      ?.tz(TimeZone.NEW_YORK, true)
-      .startOf('day')
-      .toISOString();
-
-    const endDate = v.range?.[1]
-      ?.tz(TimeZone.NEW_YORK, true)
-      .endOf('day')
-      .toISOString();
+    const startDate = v.range?.[0]?.format('YYYY-MM-DD');
+    const endDate = v.range?.[1]?.format('YYYY-MM-DD');
 
     const sourceType = v.sourceType;
     const sector = v.sector;
@@ -95,8 +88,6 @@ export const FinnhubAndLsegNewsFilter = ({
 
     updateSearchParams({
       sourceType,
-      startDate,
-      endDate,
       sector,
       industry
     });
@@ -130,8 +121,6 @@ export const FinnhubAndLsegNewsFilter = ({
 
     updateSearchParams({
       sourceType: undefined,
-      startDate: start.startOf('day').toISOString(),
-      endDate: end.endOf('day').toISOString(),
       sector: undefined,
       industry: undefined
     });
@@ -147,8 +136,6 @@ export const FinnhubAndLsegNewsFilter = ({
     if (isFirstRender.current) {
       isFirstRender.current = false;
       const sourceTypeFromUrl = searchParams.get('sourceType') ?? 'lseg';
-      const startDateFromUrl = searchParams.get('startDate');
-      const endDateFromUrl = searchParams.get('endDate');
       const sectorFromUrl = searchParams.get('sector');
       const industryFromUrl = searchParams.get('industry');
 
@@ -160,19 +147,11 @@ export const FinnhubAndLsegNewsFilter = ({
         sourceType: sourceTypeFromUrl
       };
 
-      let startDate, endDate;
-
-      if (startDateFromUrl && endDateFromUrl) {
-        startDate = dayjs(startDateFromUrl).tz(TimeZone.NEW_YORK);
-        endDate = dayjs(endDateFromUrl).tz(TimeZone.NEW_YORK);
-        initialValues.range = [startDate, endDate];
-      } else {
-        const end = dayjs().tz(TimeZone.NEW_YORK);
-        const start = end.subtract(2, 'day');
-        startDate = start;
-        endDate = end;
-        initialValues.range = [start, end];
-      }
+      const end = dayjs();
+      const start = end.subtract(2, 'day');
+      const startDate = start;
+      const endDate = end;
+      initialValues.range = [start, end];
 
       if (sectorFromUrl) {
         initialValues.sector = sectorFromUrl;
@@ -186,8 +165,8 @@ export const FinnhubAndLsegNewsFilter = ({
 
       onFilterReady({
         sourceType: sourceTypeFromUrl,
-        startDate: startDate?.startOf('day').toISOString(),
-        endDate: endDate?.endOf('day').toISOString(),
+        startDate: startDate?.format('YYYY-MM-DD'),
+        endDate: endDate?.format('YYYY-MM-DD'),
         sector: sectorFromUrl || '',
         industry: industryFromUrl
           ? industryFromUrl.includes(' & ')
