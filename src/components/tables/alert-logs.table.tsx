@@ -11,7 +11,6 @@ import {
   TableColumnsType,
   Tooltip
 } from 'antd';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   calculatePercentage,
@@ -189,6 +188,8 @@ export const AlertLogsTable = ({
     })
   };
 
+  const [isInitialFetchDone, setIsInitialFetchDone] = useState(false);
+
   const fetchDataAlertLogs = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
@@ -225,15 +226,32 @@ export const AlertLogsTable = ({
         pageSize: pagination.pageSize,
         filter
       });
+      setIsInitialFetchDone(true);
     }
-  }, [
-    isFilterReady,
-    pagination.currentPage,
-    pagination.pageSize,
-    filter,
-    fetchDataAlertLogs,
-    isOption
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFilterReady]);
+
+  useEffect(() => {
+    if (isInitialFetchDone) {
+      fetchDataAlertLogs({
+        page: 1,
+        pageSize: pagination.pageSize,
+        filter
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter, sortField, sortType]);
+
+  useEffect(() => {
+    if (isInitialFetchDone) {
+      fetchDataAlertLogs({
+        page: 1,
+        pageSize: pagination.pageSize,
+        filter
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOption, inTrade]);
 
   useEffect(() => {
     if (!isFilterPage) {
