@@ -89,7 +89,7 @@ export const EstForecastSelectedTable = () => {
         symbol,
         startDate: dayjs(dateRange[0]).add(1, 'day').toISOString(),
         endDate: dayjs(dateRange[1]).add(1, 'day').toISOString(),
-        sortField: 'created_at',
+        sortField: 'earnings_date',
         sortType: 'desc'
       })
     );
@@ -109,7 +109,7 @@ export const EstForecastSelectedTable = () => {
           limit: 100,
           startDate: dateRange[0].toISOString(),
           endDate: dateRange[1].toISOString(),
-          sortField: 'created_at',
+          sortField: 'earnings_date',
           sortType: 'desc'
         })
       );
@@ -132,14 +132,14 @@ export const EstForecastSelectedTable = () => {
   const renderNumber = useCallback(
     (
       value: any,
-      field: keyof EstForecastFilterItem,
+      field: keyof EstForecastFilterItem | string,
       record: EstForecastFilterItem,
       suffix?: string
     ) => {
       if (editingId === record.id) {
         return (
           <InputNumber
-            value={editingRow[field] as number}
+            value={(editingRow as any)[field] as number}
             onChange={(v) => setEditingRow((prev) => ({ ...prev, [field]: v }))}
             style={{ width: '100%' }}
           />
@@ -159,13 +159,13 @@ export const EstForecastSelectedTable = () => {
   const renderText = useCallback(
     (
       value: any,
-      field: keyof EstForecastFilterItem,
+      field: keyof EstForecastFilterItem | string,
       record: EstForecastFilterItem
     ) => {
       if (editingId === record.id) {
         return (
           <Input
-            value={editingRow[field] as string}
+            value={(editingRow as any)[field] as string}
             onChange={(e) =>
               setEditingRow((prev) => ({
                 ...prev,
@@ -183,11 +183,12 @@ export const EstForecastSelectedTable = () => {
   const renderDate = useCallback(
     (
       value: string | undefined,
-      field: keyof EstForecastFilterItem,
+      field: keyof EstForecastFilterItem | string,
       record: EstForecastFilterItem
     ) => {
       if (editingId === record.id) {
-        const currentValue = (editingRow[field] as string | undefined) ?? value;
+        const currentValue =
+          ((editingRow as any)[field] as string | undefined) ?? value;
         return (
           <DatePicker
             value={currentValue ? dayjs(currentValue) : null}
@@ -224,11 +225,11 @@ export const EstForecastSelectedTable = () => {
         )
       },
       {
-        title: 'Created At',
-        dataIndex: 'createdAt',
+        title: 'Earnings Date',
+        dataIndex: 'earningsDate',
         width: 150,
         align: 'center',
-        render: (v, r) => renderDate(v, 'createdAt', r)
+        render: (v, r) => renderDate(v, 'earningsDate', r)
       },
       { title: 'Industry', dataIndex: 'industry', width: 160 },
       {
@@ -309,18 +310,18 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'epsTrendPoint', r)
       },
       {
-        title: 'Beat Freq',
-        dataIndex: 'beatFreq',
-        width: 120,
+        title: 'EPS Beat Freq',
+        dataIndex: 'epsBeatFreq',
+        width: 140,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'beatFreq', r)
+        render: (v, r) => renderNumber(v, 'epsBeatFreq', r, '%')
       },
       {
-        title: 'Beat Freq Point',
-        dataIndex: 'beatFreqPoint',
-        width: 160,
+        title: 'EPS Beat Freq Point',
+        dataIndex: 'epsBeatFreqPoint',
+        width: 180,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'beatFreqPoint', r)
+        render: (v, r) => renderNumber(v, 'epsBeatFreqPoint', r)
       },
       {
         title: 'Avg Surprise',
@@ -328,6 +329,20 @@ export const EstForecastSelectedTable = () => {
         width: 140,
         align: 'center',
         render: (v, r) => renderNumber(v, 'avgSurpriseMagnitude', r)
+      },
+      {
+        title: 'Revenue Beat Freq',
+        dataIndex: 'revenueBeatFreq',
+        width: 160,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'revenueBeatFreq', r, '%')
+      },
+      {
+        title: 'Revenue Beat Freq Point',
+        dataIndex: 'revenueBeatFreqPoint',
+        width: 200,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'revenueBeatFreqPoint', r)
       },
       {
         title: 'Avg Surprise Point',
@@ -449,28 +464,49 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'gptPoint', r)
       },
       {
-        title: 'Reuters 1D',
+        title: 'GPT Rating',
+        dataIndex: 'gptRating',
+        width: 140,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'gptRating', r)
+      },
+      {
+        title: 'GPT Rating Point',
+        dataIndex: 'gptRatingPoint',
+        width: 170,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'gptRatingPoint', r)
+      },
+      {
+        title: 'LSEG News Score (1D)',
         dataIndex: 'lsegNewsScore1d',
         width: 130,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsScore1d', r)
       },
       {
-        title: 'Reuters 1D Point',
+        title: 'LSEG News Score (1D) Point',
         dataIndex: 'lsegNewsScore1dPoint',
         width: 180,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsScore1dPoint', r)
       },
       {
-        title: 'Reuters 3D',
+        title: 'LSEG News Total Score Point',
+        dataIndex: 'lsegNewsTotalScorePoint',
+        width: 200,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'lsegNewsTotalScorePoint', r)
+      },
+      {
+        title: 'LSEG News Score (3D)',
         dataIndex: 'lsegNewsScore3d',
         width: 130,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsScore3d', r)
       },
       {
-        title: 'Reuters 3D Point',
+        title: 'LSEG News Score (3D) Point',
         dataIndex: 'lsegNewsScore3dPoint',
         width: 180,
         align: 'center',
@@ -590,13 +626,6 @@ export const EstForecastSelectedTable = () => {
         width: 200,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychTrustZPoint', r)
-      },
-      {
-        title: 'Result',
-        dataIndex: 'result',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderText(v, 'result', r)
       },
       {
         title: 'Note for Trader',

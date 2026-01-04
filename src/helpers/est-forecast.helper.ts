@@ -19,7 +19,6 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
     beta: toNumber(item.beta),
 
     marketCapEstForecast: item[fieldMapping.marketCapEstForecast],
-    result: item.result,
     noteForTrader: item[fieldMapping.noteForTrader],
 
     epsEstimateESTEarnings: toNumber(item[fieldMapping.epsEstimateESTEarnings]),
@@ -35,33 +34,36 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
     gpt: item.gpt,
     forecast: item.forecast,
 
-    createdAt: item[fieldMapping.createdAt],
+    earningsDate: item[fieldMapping.earningsDate],
 
     revenueForecast: toNumber(item[fieldMapping.revenueForecast]),
     revenueForecastPoint: toNumber(item[fieldMapping.revenueForecastPoint]),
 
     netMargin: toNumber(item[fieldMapping.netMargin]),
     netMarginPoint: toNumber(item[fieldMapping.netMarginPoint]),
-
     epsTrend: toNumber(item[fieldMapping.epsTrend]),
     epsTrendPoint: toNumber(item[fieldMapping.epsTrendPoint]),
-
-    beatFreq: toNumber(item[fieldMapping.beatFreq]),
-    beatFreqPoint: toNumber(item[fieldMapping.beatFreqPoint]),
-
     avgSurpriseMagnitude: toNumber(item[fieldMapping.avgSurpriseMagnitude]),
     avgSurpriseMagnitudePoint: toNumber(
       item[fieldMapping.avgSurpriseMagnitudePoint]
     ),
+    epsBeatFreq: toNumber(item[fieldMapping.epsBeatFreq]),
+    epsBeatFreqPoint: toNumber(item[fieldMapping.epsBeatFreqPoint]),
+    revenueBeatFreq: toNumber(item[fieldMapping.revenueBeatFreq]),
+    revenueBeatFreqPoint: toNumber(item[fieldMapping.revenueBeatFreqPoint]),
 
     postEarningDrift: toNumber(item[fieldMapping.postEarningDrift]),
     postEarningDriftPoint: toNumber(item[fieldMapping.postEarningDriftPoint]),
 
     grokRatingPoint: toNumber(item[fieldMapping.grokRatingPoint]),
+    gptRating: toNumber(item[fieldMapping.gptRating]),
     gptRatingPoint: toNumber(item[fieldMapping.gptRatingPoint]),
 
     lsegNewsScore1d: toNumber(item[fieldMapping.lsegNewsScore1d]),
     lsegNewsScore1dPoint: toNumber(item[fieldMapping.lsegNewsScore1dPoint]),
+    lsegNewsTotalScorePoint: toNumber(
+      item[fieldMapping.lsegNewsTotalScorePoint]
+    ),
 
     lsegNewsScore3d: toNumber(item[fieldMapping.lsegNewsScore3d]),
     lsegNewsScore3dPoint: toNumber(item[fieldMapping.lsegNewsScore3dPoint]),
@@ -111,7 +113,6 @@ export const transformEstForecastFilter = (
     marketCapEstForecast: item[fieldMapping.marketCapEstForecast],
     marketCap: item.market_cap,
 
-    result: item.result,
     noteForTrader: item[fieldMapping.noteForTrader],
     forecast: item.forecast,
 
@@ -129,13 +130,14 @@ export const transformEstForecastFilter = (
     epsTrend: toNumber(item[fieldMapping.epsTrend]),
     epsTrendPoint: toNumber(item[fieldMapping.epsTrendPoint]),
 
-    beatFreq: toNumber(item[fieldMapping.beatFreq]),
-    beatFreqPoint: toNumber(item[fieldMapping.beatFreqPoint]),
-
     avgSurpriseMagnitude: toNumber(item[fieldMapping.avgSurpriseMagnitude]),
     avgSurpriseMagnitudePoint: toNumber(
       item[fieldMapping.avgSurpriseMagnitudePoint]
     ),
+    epsBeatFreq: toNumber(item[fieldMapping.epsBeatFreq]),
+    epsBeatFreqPoint: toNumber(item[fieldMapping.epsBeatFreqPoint]),
+    revenueBeatFreq: toNumber(item[fieldMapping.revenueBeatFreq]),
+    revenueBeatFreqPoint: toNumber(item[fieldMapping.revenueBeatFreqPoint]),
 
     postEarningDrift: toNumber(item[fieldMapping.postEarningDrift]),
     postEarningDriftPoint: toNumber(item[fieldMapping.postEarningDriftPoint]),
@@ -161,9 +163,14 @@ export const transformEstForecastFilter = (
 
     gpt: item.gpt,
     gptPoint: toNumber(item[fieldMapping.gptPoint]),
+    gptRating: toNumber(item[fieldMapping.gptRating]),
+    gptRatingPoint: toNumber(item[fieldMapping.gptRatingPoint]),
 
     lsegNewsScore1d: toNumber(item[fieldMapping.lsegNewsScore1d]),
     lsegNewsScore1dPoint: toNumber(item[fieldMapping.lsegNewsScore1dPoint]),
+    lsegNewsTotalScorePoint: toNumber(
+      item[fieldMapping.lsegNewsTotalScorePoint]
+    ),
 
     lsegNewsScore3d: toNumber(item[fieldMapping.lsegNewsScore3d]),
     lsegNewsScore3dPoint: toNumber(item[fieldMapping.lsegNewsScore3dPoint]),
@@ -212,7 +219,7 @@ export const transformEstForecastFilter = (
     marketpsychTrustZ: toNumber(item[fieldMapping.marketpsychTrustZ]),
     marketpsychTrustZPoint: toNumber(item[fieldMapping.marketpsychTrustZPoint]),
 
-    createdAt: item[fieldMapping.createdAt],
+    earningsDate: item[fieldMapping.earningsDate],
     updatedAt: item[fieldMapping.updatedAt]
   }));
 };

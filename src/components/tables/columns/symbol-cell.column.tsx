@@ -325,8 +325,9 @@ const buttonStyles = css`
 `;
 
 const companyNameStyles = (isColorSymbol: boolean) => css`
-  font-size: 1.4rem;
-  line-height: 1.6rem;
+  font-size: 1.2rem;
+  line-height: 1.4rem;
+  font-weight: 500;
   position: ${isColorSymbol && 'absolute'};
   color: ${isColorSymbol ? 'var(--white-color)' : 'var(--text-color)'};
 `;
