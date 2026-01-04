@@ -88,6 +88,7 @@ type Signal = {
   trend1h: string;
   trend1w: string;
   categoryId?: number;
+  categoryIds?: number[];
   allEntryGood?: boolean;
 };
 

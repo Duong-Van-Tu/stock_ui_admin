@@ -1226,9 +1226,11 @@ export const AlertLogsTable = ({
       width: 170,
       render: (_, record) => {
         const isExit = !!record.exitDate;
+        const isInTrade = record.categoryIds?.includes(1);
+
         return (
           <Space size='small'>
-            {!(record as any).categoryId ? (
+            {!isInTrade ? (
               <Tooltip title={isMobile ? null : t('trade')}>
                 <Button
                   icon={
@@ -1265,7 +1267,7 @@ export const AlertLogsTable = ({
                     dispatch(
                       deleteAlertLogInCategory({
                         alertLogId: record.id,
-                        categoryId: (record as any).categoryId
+                        categoryId: 1
                       })
                     )
                   }

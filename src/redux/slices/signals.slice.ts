@@ -339,7 +339,9 @@ export const signalSlice = createAppSlice({
           const { alertLogId, categoryId } = action.payload;
           state.categoryActionLoading[alertLogId] = false;
           state.alertLogsData = state.alertLogsData.map((s) =>
-            s.id === alertLogId ? { ...s, categoryId } : s
+            s.id === alertLogId
+              ? { ...s, categoryIds: [...(s.categoryIds ?? []), categoryId] }
+              : s
           );
         },
         rejected: (state, action) => {
@@ -363,13 +365,14 @@ export const signalSlice = createAppSlice({
           state.categoryActionLoading[alertLogId] = true;
         },
         fulfilled: (state, action) => {
-          const { alertLogId } = action.payload;
+          const { alertLogId, categoryId } = action.payload;
           state.categoryActionLoading[alertLogId] = false;
           state.alertLogsData = state.alertLogsData.map((s) => {
             if (s.id === alertLogId) {
-              const copy = { ...(s as any) } as any;
-              delete copy.categoryId;
-              return copy as Signal;
+              return {
+                ...s,
+                categoryIds: s.categoryIds?.filter((id) => id !== categoryId)
+              };
             }
             return s;
           });
