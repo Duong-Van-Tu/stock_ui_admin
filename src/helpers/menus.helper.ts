@@ -60,12 +60,12 @@ export const getMenuStructure = (
       iconType: 'alertLogs',
       link: PageURLs.ofAlertLogs()
     },
-    {
-      label: t('alertLogsFilter'),
-      key: 'alert-filter',
-      iconType: 'alertFilter',
-      link: PageURLs.ofAlertLogsFilter()
-    },
+    // {
+    //   label: t('alertLogsFilter'),
+    //   key: 'alert-filter',
+    //   iconType: 'alertFilter',
+    //   link: PageURLs.ofAlertLogsFilter()
+    // },
     // {
     //   label: t('news'),
     //   key: 'news',
