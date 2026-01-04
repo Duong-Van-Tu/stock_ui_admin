@@ -11,7 +11,8 @@ type SentimentFilter = Filter & {
   industry?: string;
   startDate?: string;
   endDate?: string;
-  sourceType?: string;
+  sourceType?: 'finnhub' | 'lseg';
+  isBreakingNews?: boolean;
 };
 
 type CountSentiment = {

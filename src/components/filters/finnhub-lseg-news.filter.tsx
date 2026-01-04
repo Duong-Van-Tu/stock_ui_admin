@@ -77,6 +77,7 @@ export const FinnhubAndLsegNewsFilter = ({
       sourceType?: 'finnhub' | 'lseg';
       sector?: string;
       industry?: string;
+      isBreakingNews?: string;
     };
 
     const startDate = v.range?.[0]?.format('YYYY-MM-DD');
@@ -85,11 +86,13 @@ export const FinnhubAndLsegNewsFilter = ({
     const sourceType = v.sourceType;
     const sector = v.sector;
     const industry = v.industry;
+    const isBreakingNews = v.isBreakingNews;
 
     updateSearchParams({
       sourceType,
       sector,
-      industry
+      industry,
+      isBreakingNews
     });
 
     onFilter({
@@ -102,7 +105,8 @@ export const FinnhubAndLsegNewsFilter = ({
         ? industry.includes(' & ')
           ? industry.replace(/ & /g, ' @ ')
           : industry
-        : ''
+        : '',
+      isBreakingNews: isBreakingNews === 'true' ? true : undefined
     });
   };
 
@@ -116,13 +120,15 @@ export const FinnhubAndLsegNewsFilter = ({
       sourceType: 'lseg',
       range: [start, end],
       sector: '',
-      industry: ''
+      industry: '',
+      isBreakingNews: undefined
     });
 
     updateSearchParams({
       sourceType: undefined,
       sector: undefined,
-      industry: undefined
+      industry: undefined,
+      isBreakingNews: undefined
     });
 
     triggerFilter();
@@ -138,13 +144,15 @@ export const FinnhubAndLsegNewsFilter = ({
       const sourceTypeFromUrl = searchParams.get('sourceType') ?? 'lseg';
       const sectorFromUrl = searchParams.get('sector');
       const industryFromUrl = searchParams.get('industry');
+      const isBreakingNewsFromUrl = searchParams.get('isBreakingNews');
 
       if (sectorFromUrl) {
         dispatch(getIndustriesV2(sectorFromUrl));
       }
 
       const initialValues: Record<string, any> = {
-        sourceType: sourceTypeFromUrl
+        sourceType: sourceTypeFromUrl,
+        isBreakingNews: isBreakingNewsFromUrl
       };
 
       const end = dayjs();
@@ -164,7 +172,7 @@ export const FinnhubAndLsegNewsFilter = ({
       form.setFieldsValue(initialValues);
 
       onFilterReady({
-        sourceType: sourceTypeFromUrl,
+        sourceType: sourceTypeFromUrl as 'finnhub' | 'lseg',
         startDate: startDate?.format('YYYY-MM-DD'),
         endDate: endDate?.format('YYYY-MM-DD'),
         sector: sectorFromUrl || '',
@@ -173,7 +181,13 @@ export const FinnhubAndLsegNewsFilter = ({
             ? industryFromUrl.replace(/ & /g, ' @ ')
             : industryFromUrl
           : '',
-        symbol: symbol || undefined
+        symbol: symbol || undefined,
+        isBreakingNews:
+          isBreakingNewsFromUrl === 'true'
+            ? true
+            : isBreakingNewsFromUrl === 'false'
+            ? false
+            : undefined
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -223,6 +237,20 @@ export const FinnhubAndLsegNewsFilter = ({
                 width={isMobile ? 'calc(100vw - 5rem)' : '14rem'}
                 labelFloating
                 value={form.getFieldValue('sourceType')}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col>
+            <Form.Item css={formItemStyles} name='isBreakingNews'>
+              <Select
+                css={selectStyles}
+                allowClear
+                placeholder={t('breakingNews')}
+                options={[{ value: 'true', label: t('breakingNews') }]}
+                onChange={() => {
+                  triggerFilter();
+                }}
               />
             </Form.Item>
           </Col>
