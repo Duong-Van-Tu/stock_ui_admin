@@ -326,7 +326,7 @@ export const signalSlice = createAppSlice({
       async (params: { alertLogId: number; categoryId: number }) => {
         await defaultApiFetcher.post(
           'tickers/add-alert-log-to-category',
-          convertParamsByMapping(params)
+          params
         );
         return params;
       },
@@ -353,7 +353,7 @@ export const signalSlice = createAppSlice({
       async (params: { alertLogId: number; categoryId: number }) => {
         await defaultApiFetcher.post(
           'tickers/delete-alert-log-in-category',
-          convertParamsByMapping(params)
+          params
         );
         return params;
       },

@@ -154,6 +154,7 @@ export const fieldMapping: Record<string, string> = {
   fromMarketCap: 'frommarketCap',
   toMarketCap: 'tomarketCap',
   categoryId: 'category_id',
+  categoryIds: 'category_ids',
   birthofday: 'dateOfBirth',
   manualRecommendation: 'manual_recommendation',
   strongBuy: 'sbuy',
