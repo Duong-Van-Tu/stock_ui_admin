@@ -1,4 +1,4 @@
-.hl-watchList-symbol{
+.hl-watchList-symbol {
   td {
     background: var(--watching-color) !important;
   }
@@ -7,5 +7,17 @@
 .hl-add-symbol {
   td {
     background: var(--added-portfolio-color) !important;
+  }
+}
+
+.hl-breaking-news-positive {
+  td {
+    background: var(--watching-color) !important;
+  }
+}
+
+.hl-breaking-news-negative {
+  td {
+    background: var(--soft-pink-color) !important;
   }
 }

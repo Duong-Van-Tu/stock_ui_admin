@@ -646,6 +646,15 @@ export const FinnhubAndLsegNewsTable = () => {
           columns={columns}
           dataSource={dataSource}
           loading={loading}
+          rowClassName={(record) => {
+            if (record.breakingNews === 1) {
+              return 'hl-breaking-news-positive';
+            }
+            if (record.breakingNews === -1) {
+              return 'hl-breaking-news-negative';
+            }
+            return '';
+          }}
           scroll={{
             x: 1200,
             y: dataSource.length > 0 ? height - 336 : undefined
