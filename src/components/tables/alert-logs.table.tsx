@@ -84,6 +84,7 @@ import { SetColumn } from './columns/set-column';
 import { VisibleColumnsStorageKey } from '@/constants/column.constant';
 import { useLocalStorage } from '@/hooks/local-storage.hook';
 import { TrendCell } from './columns/trend-cell.column';
+import { MacdCell } from './columns/macd-cell.column';
 
 type AlertLogsTableProps = {
   isFilterPage?: boolean;
@@ -596,6 +597,22 @@ export const AlertLogsTable = ({
             '1H': record.trend1h,
             '1D': record.trend1d,
             '1W': record.trend1w
+          }}
+        />
+      )
+    },
+    {
+      title: 'MACD',
+      key: 'macd',
+      width: 200,
+      align: 'center',
+      render: (_, { macd5m, macd15m, macd1h, macd1d }) => (
+        <MacdCell
+          {...{
+            '5M': macd5m,
+            '15M': macd15m,
+            '1H': macd1h,
+            '1D': macd1d
           }}
         />
       )

@@ -323,5 +323,9 @@ export const fieldMapping: Record<string, string> = {
   trend1w: 'trend_1w',
   allEntryGood: 'all_entry_good',
   earningsDate: 'earnings_date',
-  impactScore: 'impact_score'
+  impactScore: 'impact_score',
+  macd5m: 'macd_5m',
+  macd15m: 'macd_15m',
+  macd1h: 'macd_1h',
+  macd1d: 'macd_1d'
 };
