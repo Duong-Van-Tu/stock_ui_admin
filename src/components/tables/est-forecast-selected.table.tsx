@@ -39,6 +39,7 @@ import { isMobile } from 'react-device-detect';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { TableTitle } from './title.table';
+import { PageURLs } from '@/utils/navigate';
 
 const FORECAST_COLORS = ['#52c41a', '#fadb14', '#fa8c16', '#ff4d4f'];
 
@@ -278,6 +279,7 @@ export const EstForecastSelectedTable = () => {
             symbolColor={record.forecast}
             symbol={record.symbol}
             companyName={isMobile ? undefined : record.company}
+            link={`${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`}
           />
         )
       },

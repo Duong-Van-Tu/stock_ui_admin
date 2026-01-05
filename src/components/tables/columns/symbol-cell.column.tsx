@@ -37,6 +37,7 @@ type SymbolCellProps = {
   symbolColor?: string;
   isPutOptions?: boolean;
   lsegNews?: number;
+  link?: string;
 };
 
 export const SymbolCell = ({
@@ -51,7 +52,8 @@ export const SymbolCell = ({
   isPutOptions = false,
   isSellSignal = false,
   lsegNews,
-  symbolColor
+  symbolColor,
+  link
 }: SymbolCellProps) => {
   const t = useTranslations();
   const router = useRouter();
@@ -172,8 +174,8 @@ export const SymbolCell = ({
                 stockLinkStyles,
                 symbolColor && symbolColorStyles(symbolColor)
               ]}
-              href={PageURLs.ofStockDetail(symbol, signalId)}
-              target={isDesktop ? '_blank' : undefined}
+              href={link ?? PageURLs.ofStockDetail(symbol, signalId)}
+              target={link ? undefined : isDesktop ? '_blank' : undefined}
             >
               <span>{symbol}</span>
             </Link>

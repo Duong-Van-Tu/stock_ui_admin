@@ -23,6 +23,7 @@ import { SymbolCell } from './columns/symbol-cell.column';
 import { PlusOutlined } from '@ant-design/icons';
 import { useModal } from '@/hooks/modal.hook';
 import EllipsisText from '../ellipsis-text';
+import { PageURLs } from '@/utils/navigate';
 
 type EstForecastTableProps = {
   symbol: string;
@@ -81,6 +82,7 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
           <SymbolCell
             symbol={record.symbol}
             companyName={isMobile ? undefined : record.company}
+            link={`${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`}
           />
         )
       },
