@@ -150,19 +150,6 @@ export const FinnhubAndLsegNewsTable = () => {
         render: (value) => <SymbolCell symbol={value} />
       },
       {
-        title: 'Source',
-        dataIndex: 'sourceType',
-        key: 'sourceType',
-        width: 86,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'sourceType' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('sourceType')
-        }),
-        align: 'center'
-      },
-      {
         title: 'Publishing Time',
         dataIndex: 'datetime',
         key: 'datetime',
@@ -253,17 +240,62 @@ export const FinnhubAndLsegNewsTable = () => {
           )
       },
       {
-        title: 'Relevance',
-        dataIndex: 'newsRelevance',
-        key: 'newsRelevance',
-        width: 120,
+        title: 'Source',
+        dataIndex: 'sourceType',
+        key: 'sourceType',
+        width: 86,
         sorter: true,
         showSorterTooltip: false,
-        sortOrder: sortField === 'newsRelevance' ? sortType : null,
+        sortOrder: sortField === 'sourceType' ? sortType : null,
         onHeaderCell: () => ({
-          onClick: () => handleSortOrder('newsRelevance')
+          onClick: () => handleSortOrder('sourceType')
         }),
         align: 'center'
+      },
+      {
+        title: 'News Type',
+        dataIndex: 'newsType',
+        key: 'newsType',
+        width: 140,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'newsType' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('newsType')
+        }),
+        align: 'center',
+        render: (value) =>
+          value ? <EllipsisText text={value} maxLines={2} /> : '-'
+      },
+      {
+        title: 'Sector',
+        dataIndex: 'sector',
+        key: 'sector',
+        width: 200,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'sector' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('sector')
+        }),
+        align: 'center',
+        render: (value) =>
+          value ? <EllipsisText text={value} maxLines={2} /> : '-'
+      },
+      {
+        title: 'Industry',
+        dataIndex: 'industry',
+        key: 'industry',
+        width: 180,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'industry' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('industry')
+        }),
+        align: 'center',
+        render: (value) =>
+          value ? <EllipsisText text={value} maxLines={2} /> : '-'
       },
       {
         title: 'Direction',
@@ -294,19 +326,17 @@ export const FinnhubAndLsegNewsTable = () => {
         render: (value) => value ?? '-'
       },
       {
-        title: 'News Type',
-        dataIndex: 'newsType',
-        key: 'newsType',
-        width: 140,
+        title: 'Relevance',
+        dataIndex: 'newsRelevance',
+        key: 'newsRelevance',
+        width: 120,
         sorter: true,
         showSorterTooltip: false,
-        sortOrder: sortField === 'newsType' ? sortType : null,
+        sortOrder: sortField === 'newsRelevance' ? sortType : null,
         onHeaderCell: () => ({
-          onClick: () => handleSortOrder('newsType')
+          onClick: () => handleSortOrder('newsRelevance')
         }),
-        align: 'center',
-        render: (value) =>
-          value ? <EllipsisText text={value} maxLines={2} /> : '-'
+        align: 'center'
       },
       {
         title: 'Article Score',
@@ -354,27 +384,6 @@ export const FinnhubAndLsegNewsTable = () => {
         render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
       },
       {
-        title: 'URL',
-        dataIndex: 'url',
-        key: 'url',
-        width: 60,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'url' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('url')
-        }),
-        hidden: isLseg,
-        render: (value) =>
-          isUrl(value) ? (
-            <a href={value} target='_blank' rel='noopener noreferrer'>
-              Open
-            </a>
-          ) : (
-            '-'
-          )
-      },
-      {
         title: 'Impact Score',
         dataIndex: 'impactScore',
         key: 'impactScore',
@@ -387,36 +396,6 @@ export const FinnhubAndLsegNewsTable = () => {
         }),
         align: 'center',
         render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
-      },
-      {
-        title: 'Sector',
-        dataIndex: 'sector',
-        key: 'sector',
-        width: 200,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'sector' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('sector')
-        }),
-        align: 'center',
-        render: (value) =>
-          value ? <EllipsisText text={value} maxLines={2} /> : '-'
-      },
-      {
-        title: 'Industry',
-        dataIndex: 'industry',
-        key: 'industry',
-        width: 180,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'industry' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('industry')
-        }),
-        align: 'center',
-        render: (value) =>
-          value ? <EllipsisText text={value} maxLines={2} /> : '-'
       },
       {
         title: 'Grok Rating',
@@ -574,7 +553,28 @@ export const FinnhubAndLsegNewsTable = () => {
         render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
       },
       {
-        title: 'News Score',
+        title: 'URL',
+        dataIndex: 'url',
+        key: 'url',
+        width: 60,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'url' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('url')
+        }),
+        hidden: isLseg,
+        render: (value) =>
+          isUrl(value) ? (
+            <a href={value} target='_blank' rel='noopener noreferrer'>
+              Open
+            </a>
+          ) : (
+            '-'
+          )
+      },
+      {
+        title: 'Sentiment Score',
         dataIndex: 'newsScore',
         key: 'newsScore',
         width: 120,
