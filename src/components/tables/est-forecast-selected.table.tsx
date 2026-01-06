@@ -298,7 +298,12 @@ export const EstForecastSelectedTable = () => {
           editingId === r.id ? (
             renderDate(v, 'earningsDate', r)
           ) : v ? (
-            <DateTimeCell value={v} useUTC />
+            <DateTimeCell
+              value={v}
+              showTime={false}
+              convertTimeZone={false}
+              useUTC
+            />
           ) : (
             '-'
           )
@@ -312,7 +317,12 @@ export const EstForecastSelectedTable = () => {
           editingId === r.id ? (
             renderDate(v, 'tradeDate', r)
           ) : v ? (
-            <DateTimeCell value={v} useUTC />
+            <DateTimeCell
+              value={v}
+              showTime={false}
+              convertTimeZone={false}
+              useUTC
+            />
           ) : (
             '-'
           )
