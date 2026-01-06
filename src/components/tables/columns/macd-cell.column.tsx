@@ -1,22 +1,92 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Space, Typography } from 'antd';
+import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 import { isNumeric, roundToDecimals } from '@/utils/common';
 
-const { Text } = Typography;
-
 type MacdCellProps = {
-  '5M'?: number;
-  '15M'?: number;
-  '1H'?: number;
-  '1D'?: number;
+  '5M'?: string;
+  '15M'?: string;
+  '1H'?: string;
+  '1D'?: string;
 };
 
-const macdItemStyles = (value: number) => css`
-  color: ${value > 0
-    ? 'var(--stock-positive-color)'
-    : 'var(--stock-negative-color)'};
+const macdCellStyles = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 500;
 `;
+
+const macdItemStyles = css`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+const upIconStyles = css`
+  color: var(--positive-color);
+`;
+
+const downIconStyles = css`
+  color: var(--negative-color);
+`;
+
+const emptyStyles = css`
+  color: #9ca3af;
+`;
+
+const renderMacdItem = (label: string, value?: string) => {
+  if (value === 'U') {
+    return (
+      <div css={macdItemStyles}>
+        <span>{label}</span>
+        <ArrowUpOutlined css={upIconStyles} />
+      </div>
+    );
+  }
+
+  if (value === 'D') {
+    return (
+      <div css={macdItemStyles}>
+        <span>{label}</span>
+        <ArrowDownOutlined css={downIconStyles} />
+      </div>
+    );
+  }
+
+  const hasValue = isNumeric(value);
+  if (!hasValue) {
+    return (
+      <div css={macdItemStyles}>
+        <span>{label}</span>
+        <span css={emptyStyles}>-</span>
+      </div>
+    );
+  }
+
+  const val = Number(value);
+  const rounded = roundToDecimals(val);
+
+  return (
+    <div css={macdItemStyles}>
+      <span>{label}</span>
+      {val > 0 ? (
+        <ArrowUpOutlined css={upIconStyles} />
+      ) : val < 0 ? (
+        <ArrowDownOutlined css={downIconStyles} />
+      ) : (
+        <span css={emptyStyles}>-</span>
+      )}
+      <span
+        css={val > 0 ? upIconStyles : val < 0 ? downIconStyles : emptyStyles}
+      >
+        {rounded}
+      </span>
+    </div>
+  );
+};
 
 export const MacdCell = ({
   '5M': m5,
@@ -25,35 +95,11 @@ export const MacdCell = ({
   '1D': d1
 }: MacdCellProps) => {
   return (
-    <Space direction='vertical' size={0}>
-      <Space size='middle'>
-        <Text>
-          5M:{' '}
-          <span css={macdItemStyles(m5 || 0)}>
-            {isNumeric(m5) ? roundToDecimals(m5) : '-'}
-          </span>
-        </Text>
-        <Text>
-          15M:{' '}
-          <span css={macdItemStyles(m15 || 0)}>
-            {isNumeric(m15) ? roundToDecimals(m15) : '-'}
-          </span>
-        </Text>
-      </Space>
-      <Space size='middle'>
-        <Text>
-          1H:{' '}
-          <span css={macdItemStyles(h1 || 0)}>
-            {isNumeric(h1) ? roundToDecimals(h1) : '-'}
-          </span>
-        </Text>
-        <Text>
-          1D:{' '}
-          <span css={macdItemStyles(d1 || 0)}>
-            {isNumeric(d1) ? roundToDecimals(d1) : '-'}
-          </span>
-        </Text>
-      </Space>
-    </Space>
+    <div css={macdCellStyles}>
+      {renderMacdItem('5M', m5)}
+      {renderMacdItem('15M', m15)}
+      {renderMacdItem('1H', h1)}
+      {renderMacdItem('1D', d1)}
+    </div>
   );
 };

@@ -57,11 +57,11 @@ const trendItemStyles = css`
 `;
 
 const upIconStyles = css`
-  color: #16a34a;
+  color: var(--positive-color);
 `;
 
 const downIconStyles = css`
-  color: #dc2626;
+  color: var(--negative-color);
 `;
 
 const emptyStyles = css`

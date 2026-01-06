@@ -604,17 +604,20 @@ export const AlertLogsTable = ({
     {
       title: 'MACD',
       key: 'macd',
-      width: 200,
+      width: 210,
       align: 'center',
       render: (_, { macd5m, macd15m, macd1h, macd1d }) => (
-        <MacdCell
-          {...{
-            '5M': macd5m,
-            '15M': macd15m,
-            '1H': macd1h,
-            '1D': macd1d
-          }}
-        />
+        console.log(macd5m, macd15m, macd1h, macd1d),
+        (
+          <MacdCell
+            {...{
+              '5M': macd5m,
+              '15M': macd15m,
+              '1H': macd1h,
+              '1D': macd1d
+            }}
+          />
+        )
       )
     },
     {

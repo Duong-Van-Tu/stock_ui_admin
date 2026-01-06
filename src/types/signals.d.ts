@@ -87,10 +87,10 @@ type Signal = {
   trend1d: string;
   trend1h: string;
   trend1w: string;
-  macd5m: number;
-  macd15m: number;
-  macd1h: number;
-  macd1d: number;
+  macd5m: string;
+  macd15m: string;
+  macd1h: string;
+  macd1d: string;
   categoryId?: number;
   categoryIds?: number[];
   allEntryGood?: boolean;

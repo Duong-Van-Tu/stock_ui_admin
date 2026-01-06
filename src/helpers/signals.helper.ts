@@ -147,10 +147,10 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       trend1h: stock[fieldMapping.trend1h],
       trend1d: stock[fieldMapping.trend1d],
       trend1w: stock[fieldMapping.trend1w],
-      macd5m: toNumber(stock[fieldMapping.macd_5m]),
-      macd15m: toNumber(stock[fieldMapping.macd_15m]),
-      macd1h: toNumber(stock[fieldMapping.macd_1h]),
-      macd1d: toNumber(stock[fieldMapping.macd_1d])
+      macd5m: stock[fieldMapping.macd5m],
+      macd15m: stock[fieldMapping.macd15m],
+      macd1h: stock[fieldMapping.macd1h],
+      macd1d: stock[fieldMapping.macd1d]
     } as Signal;
   });
 };
