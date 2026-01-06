@@ -92,7 +92,6 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         width: 150,
         align: 'center',
         render: (_, record) => {
-          console.log('Record Symbol:', record.symbol);
           return addedSymbols.has(record.symbol) ? (
             <DateTimeCell
               value={createdDates[record.symbol] || record.earningsDate || ''}

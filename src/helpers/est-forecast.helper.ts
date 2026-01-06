@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { fieldMapping } from './field-mapping.helper';
-import { toNumber } from 'lodash';
+import { toNumber } from '@/utils/common';
 
 export const transformEstForecast = (data: any[]): EstForecast[] => {
   if (!Array.isArray(data) || data.length === 0) {

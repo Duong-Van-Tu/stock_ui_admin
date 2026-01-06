@@ -8,10 +8,31 @@ export function toBoolean(input: any) {
 
 export function toNumber(input: unknown): number | null {
   if (input === null || input === undefined) return null;
-  if (typeof input === 'string' && input.trim() === '') return null;
+  if (typeof input === 'number') {
+    return Number.isFinite(input) ? input : null;
+  }
+  if (typeof input === 'string') {
+    let str = input.trim();
+    if (str === '') return null;
 
-  const val = Number(input);
-  return isNaN(val) ? null : val;
+    const isPercent = str.endsWith('%');
+    if (isPercent) str = str.slice(0, -1).trim();
+
+    const isNegativeInParens = str.startsWith('(') && str.endsWith(')');
+    if (isNegativeInParens) str = str.slice(1, -1);
+
+    str = str.replace(/,/g, (_, offset, full) => {
+      return full.lastIndexOf(',') > offset ? '' : '.';
+    });
+
+    const num = parseFloat(str);
+    if (isNaN(num)) return null;
+
+    const result = isNegativeInParens ? -num : num;
+    return isPercent ? result / 100 : result;
+  }
+  const coerced = Number(input as any);
+  return Number.isFinite(coerced) ? coerced : null;
 }
 
 export function concatClasses(
@@ -166,7 +187,9 @@ export const formatMarketCap = (value: number): string => {
   }
 };
 
-export const formatNumberShort = (value: number): string => {
+export const formatNumberShort = (value?: number | null): string => {
+  if (value == null || !Number.isFinite(value)) return '';
+
   const absValue = Math.abs(value);
 
   if (absValue >= 1_000_000_000_000) {
@@ -181,7 +204,7 @@ export const formatNumberShort = (value: number): string => {
   if (absValue >= 1_000) {
     return (value / 1_000).toFixed(2).replace(/\.00$/, '') + 'K';
   }
-  return value.toString();
+  return String(value);
 };
 
 export const formatPercent = (

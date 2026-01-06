@@ -205,7 +205,12 @@ export const EstForecastSelectedTable = () => {
           />
         );
       }
-      return value ?? '-';
+      if (value == null) return '-';
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        return trimmed === '' ? '-' : trimmed;
+      }
+      return String(value);
     },
     [editingId, editingRow]
   );
@@ -363,7 +368,8 @@ export const EstForecastSelectedTable = () => {
           if (editingId === r.id) {
             return renderNumber(v, 'revenueForecast', r);
           }
-          return formatNumberShort(v);
+          if (!isNumeric(v)) return '-';
+          return formatNumberShort(Number(v));
         }
       },
       {
