@@ -34,6 +34,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { SymbolCell } from './columns/symbol-cell.column';
+import { DateTimeCell } from './columns/date-time-cell.column';
 import { formatMarketCap, formatNumberShort } from '@/utils/common';
 import { isMobile } from 'react-device-detect';
 import { useWindowSize } from '@/hooks/window-size.hook';
@@ -110,7 +111,7 @@ export const EstForecastSelectedTable = () => {
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           ...filteredFilter,
-          symbol: filteredFilter.symbol || symbol || undefined
+          symbol: symbol
         })
       );
     },
@@ -288,7 +289,28 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'earningsDate',
         width: 150,
         align: 'center',
-        render: (v, r) => renderDate(v, 'earningsDate', r)
+        render: (v, r) =>
+          editingId === r.id ? (
+            renderDate(v, 'earningsDate', r)
+          ) : v ? (
+            <DateTimeCell value={v} useUTC />
+          ) : (
+            '-'
+          )
+      },
+      {
+        title: 'Trade Date',
+        dataIndex: 'tradeDate',
+        width: 150,
+        align: 'center',
+        render: (v, r) =>
+          editingId === r.id ? (
+            renderDate(v, 'tradeDate', r)
+          ) : v ? (
+            <DateTimeCell value={v} useUTC />
+          ) : (
+            '-'
+          )
       },
       { title: 'Industry', dataIndex: 'industry', width: 160 },
       {
@@ -316,7 +338,7 @@ export const EstForecastSelectedTable = () => {
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('marketCap')
         }),
-        render: (value) => (value ? formatMarketCap(value) : '-')
+        render: (value) => (value ? formatMarketCap(value / 1000000) : '-')
       },
       {
         title: 'EPS Estimate',

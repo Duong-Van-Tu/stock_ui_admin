@@ -328,9 +328,23 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
+        title: 'MarketPsych EarningsDirection Z Point',
+        dataIndex: 'marketpsychEarningsDirectionZPoint',
+        width: 180,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      },
+      {
         title: 'MarketPsych EarningsForecast Z',
         dataIndex: 'marketpsychEarningsForecastZ',
         width: 160,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      },
+      {
+        title: 'MarketPsych EarningsForecast Z Point',
+        dataIndex: 'marketpsychEarningsForecastZPoint',
+        width: 180,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },

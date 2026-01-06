@@ -42,7 +42,9 @@ type EstForecast = {
   article12h: number;
   article12hPoint: number;
   marketpsychEarningsDirectionZ: number;
+  marketpsychEarningsDirectionZPoint: number;
   marketpsychEarningsForecastZ: number;
+  marketpsychEarningsForecastZPoint: number;
   marketpsychRevenueDirectionZ: number;
   marketpsychRevenueForecastZ: number;
   marketpsychPriceUpZ: number;
@@ -121,6 +123,7 @@ type EstForecastFilterItem = {
   earningsDate: string;
   updatedAt: string;
   noteForTrader: string;
+  tradeDate: string;
 };
 
 type CountByDate = {

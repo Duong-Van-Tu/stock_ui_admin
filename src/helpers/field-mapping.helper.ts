@@ -310,7 +310,7 @@ export const fieldMapping: Record<string, string> = {
   marketpsychPriceUpZPoint: 'marketpsych_price_up_z_point',
   marketpsychOptimismZPoint: 'marketpsych_optimism_z_point',
   marketpsychTrustZPoint: 'marketpsych_trust_z_point',
-  marketpsychEarningsDirectionZPoint: 'marketpsych_earnings_direction_z',
+  marketpsychEarningsDirectionZPoint: 'marketpsych_earnings_direction_z_point',
   finnhubNegativeCount: 'finnhub_negative_count',
   lsegPositiveCount: 'lseg_positive_count',
   lsegNegativeCount: 'lseg_negative_count',
@@ -327,5 +327,6 @@ export const fieldMapping: Record<string, string> = {
   macd5m: 'macd_5m',
   macd15m: 'macd_15m',
   macd1h: 'macd_1h',
-  macd1d: 'macd_1d'
+  macd1d: 'macd_1d',
+  tradeDate: 'trade_date'
 };
