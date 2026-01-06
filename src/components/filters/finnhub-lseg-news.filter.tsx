@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
-import { Form, Row, Col, DatePicker, Space, Button, Select } from 'antd';
+import { Form, Row, Col, DatePicker, Space, Button } from 'antd';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
 import dayjs, { Dayjs } from 'dayjs';
 import { SelectFilter } from './select-filter';
@@ -77,7 +77,7 @@ export const FinnhubAndLsegNewsFilter = ({
       sourceType?: 'finnhub' | 'lseg';
       sector?: string;
       industry?: string;
-      isBreakingNews?: string;
+      breakingNews?: string;
     };
 
     const startDate = v.range?.[0]?.format('YYYY-MM-DD');
@@ -86,13 +86,13 @@ export const FinnhubAndLsegNewsFilter = ({
     const sourceType = v.sourceType;
     const sector = v.sector;
     const industry = v.industry;
-    const isBreakingNews = v.isBreakingNews;
+    const breakingNews = v.breakingNews ? Number(v.breakingNews) : undefined;
 
     updateSearchParams({
       sourceType,
       sector,
       industry,
-      isBreakingNews
+      breakingNews: v.breakingNews
     });
 
     onFilter({
@@ -106,7 +106,7 @@ export const FinnhubAndLsegNewsFilter = ({
           ? industry.replace(/ & /g, ' @ ')
           : industry
         : '',
-      isBreakingNews: isBreakingNews === 'true' ? true : undefined
+      breakingNews
     });
   };
 
@@ -121,14 +121,14 @@ export const FinnhubAndLsegNewsFilter = ({
       range: [start, end],
       sector: '',
       industry: '',
-      isBreakingNews: undefined
+      breakingNews: '2'
     });
 
     updateSearchParams({
       sourceType: undefined,
       sector: undefined,
       industry: undefined,
-      isBreakingNews: undefined
+      breakingNews: '2'
     });
 
     triggerFilter();
@@ -142,9 +142,9 @@ export const FinnhubAndLsegNewsFilter = ({
     if (isFirstRender.current) {
       isFirstRender.current = false;
       const sourceTypeFromUrl = searchParams.get('sourceType') ?? 'lseg';
-      const sectorFromUrl = searchParams.get('sector');
-      const industryFromUrl = searchParams.get('industry');
-      const isBreakingNewsFromUrl = searchParams.get('isBreakingNews');
+      const sectorFromUrl = searchParams.get('sector') ?? '';
+      const industryFromUrl = searchParams.get('industry') ?? '';
+      const breakingNewsFromUrl = searchParams.get('breakingNews') ?? '2';
 
       if (sectorFromUrl) {
         dispatch(getIndustriesV2(sectorFromUrl));
@@ -152,7 +152,9 @@ export const FinnhubAndLsegNewsFilter = ({
 
       const initialValues: Record<string, any> = {
         sourceType: sourceTypeFromUrl,
-        isBreakingNews: isBreakingNewsFromUrl
+        breakingNews: breakingNewsFromUrl,
+        sector: sectorFromUrl,
+        industry: industryFromUrl
       };
 
       const end = dayjs();
@@ -182,11 +184,13 @@ export const FinnhubAndLsegNewsFilter = ({
             : industryFromUrl
           : '',
         symbol: symbol || undefined,
-        isBreakingNews:
-          isBreakingNewsFromUrl === 'true'
-            ? true
-            : isBreakingNewsFromUrl === 'false'
-            ? false
+        breakingNews:
+          breakingNewsFromUrl === 'true'
+            ? 1
+            : breakingNewsFromUrl === 'false'
+            ? -1
+            : breakingNewsFromUrl === '2'
+            ? 2
             : undefined
       });
     }
@@ -200,7 +204,12 @@ export const FinnhubAndLsegNewsFilter = ({
         layout='horizontal'
         css={formStyles}
         onFinish={submit}
-        initialValues={{ sourceType: 'lseg' }}
+        initialValues={{
+          sourceType: 'lseg',
+          breakingNews: '2',
+          sector: '',
+          industry: ''
+        }}
       >
         <Row
           gutter={isDesktop ? [16, 12] : [16, 20]}
@@ -242,50 +251,72 @@ export const FinnhubAndLsegNewsFilter = ({
           </Col>
 
           <Col>
-            <Form.Item css={formItemStyles} name='isBreakingNews'>
-              <Select
-                css={selectStyles}
-                allowClear
-                placeholder={t('breakingNews')}
-                options={[{ value: 'true', label: t('breakingNews') }]}
-                onChange={() => {
+            <Form.Item css={formItemStyles} name='breakingNews'>
+              <SelectFilter
+                name='breakingNews'
+                label={t('breakingNews')}
+                options={[
+                  { value: '2', label: t('all') },
+                  { value: '1', label: t('uptrend') },
+                  { value: '-1', label: t('downtrend') }
+                ]}
+                onSelect={(v) => {
+                  form.setFieldValue('breakingNews', v ?? '2');
                   triggerFilter();
                 }}
+                onClear={() => {
+                  form.setFieldValue('breakingNews', '2');
+                  triggerFilter();
+                }}
+                width={isMobile ? 'calc(100vw - 5rem)' : '12rem'}
+                labelFloating
+                value={form.getFieldValue('breakingNews')}
               />
             </Form.Item>
           </Col>
 
           <Col>
             <Form.Item css={formItemStyles} name='sector'>
-              <Select
-                css={selectStyles}
-                allowClear
-                showSearch
-                placeholder={t('allSector')}
-                optionFilterProp='label'
+              <SelectFilter
+                name='sector'
+                label={t('sector')}
                 options={sectorOptions}
-                onChange={(value) => {
+                onSelect={(value) => {
+                  form.setFieldValue('sector', value ?? '');
                   form.setFieldValue('industry', '');
                   if (value) dispatch(getIndustriesV2(value as string));
                   triggerFilter();
                 }}
+                onClear={() => {
+                  form.setFieldValue('sector', '');
+                  form.setFieldValue('industry', '');
+                  triggerFilter();
+                }}
+                width={isMobile ? 'calc(100vw - 5rem)' : '20rem'}
+                labelFloating
+                value={form.getFieldValue('sector')}
               />
             </Form.Item>
           </Col>
 
           <Col>
             <Form.Item css={formItemStyles} name='industry'>
-              <Select
-                css={selectStyles}
-                allowClear
-                showSearch
-                placeholder={t('searchSelectIndustry')}
-                optionFilterProp='label'
+              <SelectFilter
+                name='industry'
+                label={t('industry')}
                 options={industryOptions}
                 disabled={!form.getFieldValue('sector')}
-                onChange={() => {
+                onSelect={(value) => {
+                  form.setFieldValue('industry', value ?? '');
                   triggerFilter();
                 }}
+                onClear={() => {
+                  form.setFieldValue('industry', '');
+                  triggerFilter();
+                }}
+                width={isMobile ? 'calc(100vw - 5rem)' : '20rem'}
+                labelFloating
+                value={form.getFieldValue('industry')}
               />
             </Form.Item>
           </Col>
@@ -326,8 +357,4 @@ const formItemStyles = css`
 
 const fullWidthStyles = css`
   width: ${isMobile ? '100%' : 'unset'};
-`;
-
-const selectStyles = css`
-  width: ${isMobile ? 'calc(100vw - 5rem)' : '20rem !important'};
 `;

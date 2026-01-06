@@ -549,6 +549,9 @@
   "newsStory": "Bản tin thời sự",
   "story": "Bản tin",
   "breakingNews": "Tin nóng hổi",
+  "uptrend": "Xu hướng tăng",
+  "downtrend": "Xu hướng giảm",
+  "all": "Tất cả",
   "fromDate": "Từ ngày",
   "toDate": "Đến ngày",
   "urgency": "Mức độ",
@@ -562,5 +565,7 @@
   "insightScore": "Điểm tin tức",
   "insightScorePage": "Trang điểm tin tức",
   "inTrade": "Đang giao dịch",
-  "searchToAddEstForecast": "Tìm kiếm để thêm vào Est Forecast"
+  "searchToAddEstForecast": "Tìm kiếm để thêm vào Est Forecast",
+  "uptrend": "Xu hướng tăng",
+  "downtrend": "Xu hướng giảm"
 }

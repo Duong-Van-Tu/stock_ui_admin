@@ -549,6 +549,9 @@
   "newsStory": "News Story",
   "story": "Story",
   "breakingNews": "Breaking news",
+  "uptrend": "Uptrend",
+  "downtrend": "Downtrend",
+  "all": "All",
   "fromDate": "From Date",
   "toDate": "To Date",
   "urgency": "Urgency",
@@ -562,5 +565,7 @@
   "newsScores": "News scores",
   "newsScoresDescription": "News scores Page",
   "inTrade": "In Trade",
-  "searchToAddEstForecast": "Search to add to Est Forecast"
+  "searchToAddEstForecast": "Search to add to Est Forecast",
+  "uptrend": "Uptrend",
+  "downtrend": "Downtrend"
 }
