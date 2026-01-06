@@ -8,7 +8,6 @@ type EstForecast = {
   beta: number;
   marketCapEstForecast: string;
   epsEstimateESTEarnings: number;
-  surprise: number;
   ytdPerformance: number;
   aiRating: number;
   yahooRec: string;

@@ -18,7 +18,6 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
     marketCapEstForecast: item[fieldMapping.marketCapEstForecast],
     noteForTrader: item[fieldMapping.noteForTrader],
     epsEstimateESTEarnings: toNumber(item[fieldMapping.epsEstimateESTEarnings]),
-    surprise: toNumber(item.surprise),
     ytdPerformance: toNumber(item[fieldMapping.ytdPerformance]),
     aiRating: toNumber(item[fieldMapping.aiRating]),
     yahooRec: item[fieldMapping.yahooRec],
