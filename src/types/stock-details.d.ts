@@ -31,6 +31,9 @@ type StockDetails = {
   aiRating: number;
   aiRecommendationSignal: string;
   aiExplain: string;
+  grokRating: number;
+  grokReasoning: string;
+  grokRec: string;
   performanceScore: number;
 };
 

@@ -62,7 +62,10 @@ export const transformStockDetails = (stock: any): StockDetails | null => {
     week52LowDate: stock[fieldMapping.week52LowDate],
     aiRating: stock[fieldMapping.AIRating],
     aiRecommendationSignal: stock[fieldMapping.AIRecommendationSignal],
-    aiExplain: stock[fieldMapping.AIExplain]
+    aiExplain: stock[fieldMapping.AIExplain],
+    grokRating: Number(stock[fieldMapping.grokRating]),
+    grokReasoning: stock[fieldMapping.grokReasoning],
+    grokRec: stock[fieldMapping.grokRec]
   };
 };
 

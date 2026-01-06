@@ -18,6 +18,7 @@ import { Icon } from '../icons';
 import { watchSignal } from '@/redux/slices/signals.slice';
 import { SignalInformation } from '../signal-information';
 import { useSearchParams } from 'next/navigation';
+import { ReactNode } from 'react';
 
 const { Text } = Typography;
 
@@ -45,13 +46,7 @@ const renderValue = (
   );
 };
 
-const StatRow = ({
-  label,
-  value
-}: {
-  label: string;
-  value: React.ReactNode;
-}) => (
+const StatRow = ({ label, value }: { label: string; value: ReactNode }) => (
   <>
     <Col span={12} css={colLeftStyles}>
       <Text type='secondary' strong>
@@ -85,16 +80,12 @@ export const StatisticCard = () => {
     lw,
     week52Low,
     week52High,
-    aiRating: stockAiRating,
-    aiExplain: stockAiExplain
-    // entryDate,
-    // entryPrice,
-    // exitDate,
-    // exitPrice
+    grokRating,
+    grokReasoning
   } = stockDetails || {};
 
-  const aiRating = signal?.AIRating || stockAiRating;
-  const aiExplain = signal?.AIExplain || stockAiExplain;
+  const aiRating = signal?.grokRating || grokRating;
+  const aiExplain = signal?.grokReasoning || grokReasoning;
 
   return (
     <Card title={t('statistic')} bordered size='small' css={cardStyles}>
