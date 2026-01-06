@@ -268,6 +268,57 @@ export const FinnhubAndLsegNewsTable = () => {
           value ? <EllipsisText text={value} maxLines={2} /> : '-'
       },
       {
+        title: 'Article Score',
+        dataIndex: 'articleScore',
+        key: 'articleScore',
+        width: 130,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'articleScore' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('articleScore')
+        }),
+        align: 'center',
+        hidden: isLseg,
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'Impact Score',
+        dataIndex: 'impactScore',
+        key: 'impactScore',
+        width: 130,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'impactScore' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('impactScore')
+        }),
+        align: 'center',
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'Sentiment Score',
+        dataIndex: 'newsScore',
+        key: 'newsScore',
+        width: 150,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'newsScore' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('newsScore')
+        }),
+        align: 'center',
+
+        render: (value) =>
+          isNumeric(value) ? (
+            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+              {roundToDecimals(value)}
+            </PositiveNegativeText>
+          ) : (
+            '-'
+          )
+      },
+      {
         title: 'Sector',
         dataIndex: 'sector',
         key: 'sector',
@@ -278,7 +329,7 @@ export const FinnhubAndLsegNewsTable = () => {
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('sector')
         }),
-        align: 'center',
+        align: 'left',
         render: (value) =>
           value ? <EllipsisText text={value} maxLines={2} /> : '-'
       },
@@ -293,7 +344,7 @@ export const FinnhubAndLsegNewsTable = () => {
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('industry')
         }),
-        align: 'center',
+        align: 'left',
         render: (value) =>
           value ? <EllipsisText text={value} maxLines={2} /> : '-'
       },
@@ -339,21 +390,6 @@ export const FinnhubAndLsegNewsTable = () => {
         align: 'center'
       },
       {
-        title: 'Article Score',
-        dataIndex: 'articleScore',
-        key: 'articleScore',
-        width: 140,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'articleScore' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('articleScore')
-        }),
-        align: 'center',
-        hidden: isLseg,
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
-      },
-      {
         title: 'Time Weight',
         dataIndex: 'timeWeight',
         key: 'timeWeight',
@@ -381,20 +417,6 @@ export const FinnhubAndLsegNewsTable = () => {
         }),
         align: 'center',
         hidden: isLseg,
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
-      },
-      {
-        title: 'Impact Score',
-        dataIndex: 'impactScore',
-        key: 'impactScore',
-        width: 130,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'impactScore' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('impactScore')
-        }),
-        align: 'center',
         render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
       },
       {
@@ -569,29 +591,6 @@ export const FinnhubAndLsegNewsTable = () => {
             <a href={value} target='_blank' rel='noopener noreferrer'>
               Open
             </a>
-          ) : (
-            '-'
-          )
-      },
-      {
-        title: 'Sentiment Score',
-        dataIndex: 'newsScore',
-        key: 'newsScore',
-        width: 120,
-        fixed: !isMobile && 'right',
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'newsScore' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('newsScore')
-        }),
-        align: 'center',
-
-        render: (value) =>
-          isNumeric(value) ? (
-            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
-              {roundToDecimals(value)}
-            </PositiveNegativeText>
           ) : (
             '-'
           )

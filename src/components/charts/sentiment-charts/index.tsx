@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { MovingSentimentScoreChart } from './moving-sentiment-score.chart';
 import { FinnhubScoreChart, LsegScoreChart } from './sentiment-score.chart';
 
 type SentimentChartsProps = {
@@ -16,9 +15,6 @@ export default function SentimentCharts({ symbol }: SentimentChartsProps) {
         </div>
         <div css={chartWrapperStyles}>
           <LsegScoreChart symbol={symbol} />
-        </div>
-        <div css={chartWrapperStyles}>
-          <MovingSentimentScoreChart symbol={symbol} />
         </div>
       </div>
     </div>
