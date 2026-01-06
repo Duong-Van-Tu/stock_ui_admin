@@ -566,6 +566,8 @@
   "insightScorePage": "Trang điểm tin tức",
   "inTrade": "Đang giao dịch",
   "searchToAddEstForecast": "Tìm kiếm để thêm vào Est Forecast",
-  "uptrend": "Xu hướng tăng",
-  "downtrend": "Xu hướng giảm"
+  "upTrend": "Xu hướng tăng",
+  "downTrend": "Xu hướng giảm",
+  "searchByBreakingNews": "Tìm kiếm theo Tin nóng hổi",
+  "allBreakingNews": "Tất cả Tin nóng hổi"
 }

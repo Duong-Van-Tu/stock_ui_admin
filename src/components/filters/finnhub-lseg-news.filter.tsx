@@ -121,14 +121,14 @@ export const FinnhubAndLsegNewsFilter = ({
       range: [start, end],
       sector: '',
       industry: '',
-      breakingNews: '2'
+      breakingNews: ''
     });
 
     updateSearchParams({
       sourceType: undefined,
       sector: undefined,
       industry: undefined,
-      breakingNews: '2'
+      breakingNews: ''
     });
 
     triggerFilter();
@@ -144,7 +144,7 @@ export const FinnhubAndLsegNewsFilter = ({
       const sourceTypeFromUrl = searchParams.get('sourceType') ?? 'lseg';
       const sectorFromUrl = searchParams.get('sector') ?? '';
       const industryFromUrl = searchParams.get('industry') ?? '';
-      const breakingNewsFromUrl = searchParams.get('breakingNews') ?? '2';
+      const breakingNewsFromUrl = searchParams.get('breakingNews') ?? '';
 
       if (sectorFromUrl) {
         dispatch(getIndustriesV2(sectorFromUrl));
@@ -184,14 +184,9 @@ export const FinnhubAndLsegNewsFilter = ({
             : industryFromUrl
           : '',
         symbol: symbol || undefined,
-        breakingNews:
-          breakingNewsFromUrl === 'true'
-            ? 1
-            : breakingNewsFromUrl === 'false'
-            ? -1
-            : breakingNewsFromUrl === '2'
-            ? 2
-            : undefined
+        breakingNews: breakingNewsFromUrl
+          ? Number(breakingNewsFromUrl)
+          : undefined
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -206,7 +201,7 @@ export const FinnhubAndLsegNewsFilter = ({
         onFinish={submit}
         initialValues={{
           sourceType: 'lseg',
-          breakingNews: '2',
+          breakingNews: '',
           sector: '',
           industry: ''
         }}
@@ -256,19 +251,20 @@ export const FinnhubAndLsegNewsFilter = ({
                 name='breakingNews'
                 label={t('breakingNews')}
                 options={[
-                  { value: '2', label: t('all') },
-                  { value: '1', label: t('uptrend') },
-                  { value: '-1', label: t('downtrend') }
+                  { value: '', label: t('searchByBreakingNews') },
+                  { value: '2', label: t('allBreakingNews') },
+                  { value: '1', label: t('upTrend') },
+                  { value: '-1', label: t('downTrend') }
                 ]}
                 onSelect={(v) => {
-                  form.setFieldValue('breakingNews', v ?? '2');
+                  form.setFieldValue('breakingNews', v ?? '');
                   triggerFilter();
                 }}
                 onClear={() => {
-                  form.setFieldValue('breakingNews', '2');
+                  form.setFieldValue('breakingNews', '');
                   triggerFilter();
                 }}
-                width={isMobile ? 'calc(100vw - 5rem)' : '12rem'}
+                width={isMobile ? 'calc(100vw - 5rem)' : '21.6rem'}
                 labelFloating
                 value={form.getFieldValue('breakingNews')}
               />

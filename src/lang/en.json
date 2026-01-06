@@ -566,6 +566,8 @@
   "newsScoresDescription": "News scores Page",
   "inTrade": "In Trade",
   "searchToAddEstForecast": "Search to add to Est Forecast",
-  "uptrend": "Uptrend",
-  "downtrend": "Downtrend"
+  "upTrend": "Uptrend",
+  "downTrend": "Downtrend",
+  "allBreakingNews": "All Breaking News",
+  "searchByBreakingNews": "Search by Breaking News"
 }

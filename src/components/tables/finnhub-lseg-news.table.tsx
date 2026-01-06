@@ -657,7 +657,7 @@ export const FinnhubAndLsegNewsTable = () => {
           }}
           scroll={{
             x: 1200,
-            y: dataSource.length > 0 ? height - 336 : undefined
+            y: dataSource.length > 0 ? height - 340 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
