@@ -373,21 +373,21 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'Avg Surprise Point',
         dataIndex: 'avgSurpriseMagnitudePoint',
-        width: 180,
+        width: 150,
         align: 'center',
         render: (v, r) => renderNumber(v, 'avgSurpriseMagnitudePoint', r)
       },
       {
         title: 'Post Earning Drift',
         dataIndex: 'postEarningDrift',
-        width: 170,
+        width: 140,
         align: 'center',
         render: (v, r) => renderNumber(v, 'postEarningDrift', r)
       },
       {
         title: 'Post Earning Drift Point',
         dataIndex: 'postEarningDriftPoint',
-        width: 210,
+        width: 180,
         align: 'center',
         render: (v, r) => renderNumber(v, 'postEarningDriftPoint', r)
       },
@@ -408,14 +408,14 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'AI Rating',
         dataIndex: 'aiRating',
-        width: 120,
+        width: 100,
         align: 'center',
         render: (v, r) => renderNumber(v, 'aiRating', r)
       },
       {
         title: 'AI Rating Point',
         dataIndex: 'aiRatingPoint',
-        width: 160,
+        width: 128,
         align: 'center',
         render: (v, r) => renderNumber(v, 'aiRatingPoint', r)
       },
@@ -443,21 +443,21 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'Yahoo Rec Point',
         dataIndex: 'yahooRecPoint',
-        width: 170,
+        width: 130,
         align: 'center',
         render: (v, r) => renderNumber(v, 'yahooRecPoint', r)
       },
       {
         title: 'Price Target',
         dataIndex: 'priceTarget',
-        width: 140,
+        width: 110,
         align: 'center',
         render: (v, r) => renderNumber(v, 'priceTarget', r)
       },
       {
         title: 'Price Target Point',
         dataIndex: 'priceTargetPoint',
-        width: 180,
+        width: 150,
         align: 'center',
         render: (v, r) => renderNumber(v, 'priceTargetPoint', r)
       },
@@ -506,35 +506,35 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'LSEG News Score (1D)',
         dataIndex: 'lsegNewsScore1d',
-        width: 130,
+        width: 174,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsScore1d', r)
       },
       {
         title: 'LSEG News Score (1D) Point',
         dataIndex: 'lsegNewsScore1dPoint',
-        width: 180,
+        width: 212,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsScore1dPoint', r)
       },
       {
         title: 'LSEG News Total Score Point',
         dataIndex: 'lsegNewsTotalScorePoint',
-        width: 200,
+        width: 216,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsTotalScorePoint', r)
       },
       {
         title: 'LSEG News Score (3D)',
         dataIndex: 'lsegNewsScore3d',
-        width: 130,
+        width: 180,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsScore3d', r)
       },
       {
         title: 'LSEG News Score (3D) Point',
         dataIndex: 'lsegNewsScore3dPoint',
-        width: 180,
+        width: 216,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsScore3dPoint', r)
       },
@@ -555,14 +555,14 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'MP Earnings Dir',
         dataIndex: 'marketpsychEarningsDirectionZ',
-        width: 208,
+        width: 148,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychEarningsDirectionZ', r)
       },
       {
         title: 'MP Earnings Dir Point',
         dataIndex: 'marketpsychEarningsDirectionZPoint',
-        width: 246,
+        width: 186,
         align: 'center',
         render: (v, r) =>
           renderNumber(v, 'marketpsychEarningsDirectionZPoint', r)
@@ -570,14 +570,14 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'MP Earnings Forecast',
         dataIndex: 'marketpsychEarningsForecastZ',
-        width: 248,
+        width: 188,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychEarningsForecastZ', r)
       },
       {
         title: 'MP Earnings Forecast Point',
         dataIndex: 'marketpsychEarningsForecastZPoint',
-        width: 290,
+        width: 230,
         align: 'center',
         render: (v, r) =>
           renderNumber(v, 'marketpsychEarningsForecastZPoint', r)
@@ -585,14 +585,14 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'MP Revenue Dir',
         dataIndex: 'marketpsychRevenueDirectionZ',
-        width: 210,
+        width: 150,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychRevenueDirectionZ', r)
       },
       {
         title: 'MP Revenue Dir Point',
         dataIndex: 'marketpsychRevenueDirectionZPoint',
-        width: 248,
+        width: 188,
         align: 'center',
         render: (v, r) =>
           renderNumber(v, 'marketpsychRevenueDirectionZPoint', r)
@@ -600,56 +600,56 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'MP Revenue Forecast',
         dataIndex: 'marketpsychRevenueForecastZ',
-        width: 248,
+        width: 188,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychRevenueForecastZ', r)
       },
       {
         title: 'MP Revenue Forecast Point',
         dataIndex: 'marketpsychRevenueForecastZPoint',
-        width: 286,
+        width: 226,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychRevenueForecastZPoint', r)
       },
       {
         title: 'MP Price Up',
         dataIndex: 'marketpsychPriceUpZ',
-        width: 184,
+        width: 124,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychPriceUpZ', r)
       },
       {
         title: 'MP Price Up Point',
         dataIndex: 'marketpsychPriceUpZPoint',
-        width: 240,
+        width: 180,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychPriceUpZPoint', r)
       },
       {
         title: 'MP Optimism',
         dataIndex: 'marketpsychOptimismZ',
-        width: 190,
+        width: 130,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychOptimismZ', r)
       },
       {
         title: 'MP Optimism Point',
         dataIndex: 'marketpsychOptimismZPoint',
-        width: 230,
+        width: 170,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychOptimismZPoint', r)
       },
       {
         title: 'MP Trust',
         dataIndex: 'marketpsychTrustZ',
-        width: 164,
+        width: 104,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychTrustZ', r)
       },
       {
         title: 'MP Trust Point',
         dataIndex: 'marketpsychTrustZPoint',
-        width: 200,
+        width: 140,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychTrustZPoint', r)
       },
