@@ -15,11 +15,13 @@ import { isMobile } from 'react-device-detect';
 type EstForecastFilterProps = {
   customStyles?: SerializedStyles;
   onFilter: (values: { startDate: string; endDate: string }) => void;
+  selectedDate?: string;
 };
 
 export const EstForecastFilter = ({
   customStyles,
-  onFilter
+  onFilter,
+  selectedDate
 }: EstForecastFilterProps) => {
   const t = useTranslations();
   const locale = useLocale() || 'en';
@@ -106,6 +108,27 @@ export const EstForecastFilter = ({
   useEffect(() => {
     fetchEstForecastSummary();
   }, [fetchEstForecastSummary]);
+
+  useEffect(() => {
+    if (selectedDate) {
+      const selectedDay = dayjs(selectedDate);
+      if (
+        selectedDay.isAfter(currentWeek.subtract(1, 'day')) &&
+        selectedDay.isBefore(currentWeek.endOf('isoWeek').add(1, 'day'))
+      ) {
+        const index = weekDays.findIndex((day) =>
+          day.startOf('day').isSame(selectedDay.startOf('day'), 'day')
+        );
+        if (index !== -1) {
+          setSelected(index);
+        }
+      } else {
+        const newWeek = selectedDay.startOf('isoWeek');
+        setCurrentWeek(newWeek);
+        setSelected(0);
+      }
+    }
+  }, [selectedDate, currentWeek, weekDays]);
 
   useEffect(() => {
     setTimeout(() => {

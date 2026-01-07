@@ -12,12 +12,14 @@ import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   deleteEstForecast,
+  getCountEstForecast,
   getEstForecastFilterPaging,
   resetAddEstForecastState,
   updateEstForecast,
   watchEstForecastAddSuccess,
   watchEstForecastFilterList,
   watchEstForecastFilterLoading,
+  watchEstForecastLastAddedEarningsDate,
   watchEstForecastPagination
 } from '@/redux/slices/est-forecast.slice';
 import { useModal } from '@/hooks/modal.hook';
@@ -50,6 +52,9 @@ export const EstForecastSelectedTable = () => {
   const filterList = useAppSelector(watchEstForecastFilterList);
   const pagination = useAppSelector(watchEstForecastPagination);
   const addSuccess = useAppSelector(watchEstForecastAddSuccess);
+  const lastAddedEarningsDate = useAppSelector(
+    watchEstForecastLastAddedEarningsDate
+  );
 
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<{
@@ -103,7 +108,7 @@ export const EstForecastSelectedTable = () => {
         symbol: symbol || undefined
       }
     });
-  }, [filter, searchParams]);
+  }, [filter, searchParams, fetchEstForecast]);
 
   const handleSearch = (value: string) => {
     if (!value) return;
@@ -118,9 +123,22 @@ export const EstForecastSelectedTable = () => {
   useEffect(() => {
     if (addSuccess) {
       fetchEstForecast({ filter });
+      dispatch(
+        getCountEstForecast({
+          fromDate: filter.startDate || dayjs().format('YYYY-MM-DD'),
+          toDate: filter.endDate || dayjs().format('YYYY-MM-DD')
+        })
+      );
+      if (lastAddedEarningsDate) {
+        setFilter({
+          ...filter,
+          startDate: lastAddedEarningsDate,
+          endDate: lastAddedEarningsDate
+        });
+      }
       dispatch(resetAddEstForecastState());
     }
-  }, [addSuccess]);
+  }, [addSuccess, dispatch, fetchEstForecast, filter, lastAddedEarningsDate]);
 
   const startEdit = useCallback(
     (record: EstForecastFilterItem) => {
@@ -141,6 +159,19 @@ export const EstForecastSelectedTable = () => {
       );
     },
     [openModal, closeModal, dispatch]
+  );
+
+  const handleDelete = useCallback(
+    async (id: number) => {
+      await dispatch(deleteEstForecast(id));
+      dispatch(
+        getCountEstForecast({
+          fromDate: filter.startDate || dayjs().format('YYYY-MM-DD'),
+          toDate: filter.endDate || dayjs().format('YYYY-MM-DD')
+        })
+      );
+    },
+    [dispatch, filter.startDate, filter.endDate]
   );
 
   const renderNumber = useCallback(
@@ -197,7 +228,7 @@ export const EstForecastSelectedTable = () => {
           </Button>
           <Popconfirm
             title='Are you sure you want to delete this item?'
-            onConfirm={() => dispatch(deleteEstForecast(record.id))}
+            onConfirm={() => handleDelete(record.id)}
             okText='Yes'
             cancelText='No'
           >
@@ -206,7 +237,7 @@ export const EstForecastSelectedTable = () => {
         </Space>
       );
     },
-    [dispatch, startEdit]
+    [handleDelete, startEdit]
   );
 
   const columns: TableColumnsType<EstForecastFilterItem> = useMemo(
@@ -723,12 +754,15 @@ export const EstForecastSelectedTable = () => {
       }
     ],
 
-    [t, isMobile, renderNumber, renderText, renderDate, dispatch]
+    [t, isMobile, renderNumber, renderText, renderDate, dispatch, renderAction]
   );
 
   return (
     <div css={rootStyles}>
-      <EstForecastFilter onFilter={handleFilter} />
+      <EstForecastFilter
+        onFilter={handleFilter}
+        selectedDate={filter.startDate}
+      />
 
       <div css={tableWrapperStyles}>
         <div css={titleRowStyles}>

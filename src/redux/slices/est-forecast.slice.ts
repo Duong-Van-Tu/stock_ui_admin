@@ -15,6 +15,7 @@ export type EstForecastState = {
   deleting: boolean;
   adding: boolean;
   addSuccess: boolean;
+  lastAddedEarningsDate: string | null;
   list: EstForecast[];
   filterList: EstForecastFilterItem[];
   pagination: Pagination;
@@ -30,6 +31,7 @@ const initialState: EstForecastState = {
   deleting: false,
   adding: false,
   addSuccess: false,
+  lastAddedEarningsDate: null,
   list: [],
   filterList: [],
   pagination: PAGINATION,
@@ -128,9 +130,10 @@ export const estForecastSlice = createAppSlice({
           state.adding = true;
           state.addSuccess = false;
         },
-        fulfilled: (state) => {
+        fulfilled: (state, action) => {
           state.adding = false;
           state.addSuccess = true;
+          state.lastAddedEarningsDate = action.meta.arg.earningsDate;
         },
         rejected: (state) => {
           state.adding = false;
@@ -225,6 +228,7 @@ export const estForecastSlice = createAppSlice({
     resetAddEstForecastState: create.reducer((state) => {
       state.adding = false;
       state.addSuccess = false;
+      state.lastAddedEarningsDate = null;
     }),
 
     resetState: create.reducer((state) => {
@@ -240,6 +244,8 @@ export const estForecastSlice = createAppSlice({
     watchEstForecastDeleting: (state) => state.deleting,
     watchEstForecastAdding: (state) => state.adding,
     watchEstForecastAddSuccess: (state) => state.addSuccess,
+    watchEstForecastLastAddedEarningsDate: (state) =>
+      state.lastAddedEarningsDate,
     watchEstForecastList: (state) => state.list,
     watchEstForecastFilterList: (state) => state.filterList,
     watchEstForecastPagination: (state) => state.pagination,
@@ -256,6 +262,7 @@ export const {
   watchEstForecastDeleting,
   watchEstForecastAdding,
   watchEstForecastAddSuccess,
+  watchEstForecastLastAddedEarningsDate,
   watchEstForecastList,
   watchEstForecastFilterList,
   watchEstForecastPagination,
