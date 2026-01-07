@@ -317,7 +317,22 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='Grok / Point (12)'>
+        <Form.Item label='GPT Rating / Point (13)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='gptRating' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='gptRatingPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='Grok Prediction / Point (14)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='grok' noStyle>
@@ -332,15 +347,15 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='GPT Rating / Point (13)'>
+        <Form.Item label='GPT Prediction / Point (15)'>
           <Row gutter={8}>
             <Col span={12}>
-              <Form.Item name='gptRating' noStyle>
-                <InputNumber style={{ width: '100%' }} />
+              <Form.Item name='gpt' noStyle>
+                <Input style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name='gptRatingPoint' noStyle>
+              <Form.Item name='gptPoint' noStyle>
                 <InputNumber style={{ width: '100%' }} />
               </Form.Item>
             </Col>
@@ -492,7 +507,6 @@ export default function EstForecastForm({
             </Col>
           </Row>
         </Form.Item>
-
         <Form.Item label='Aggregate Score / Point'>
           <Row gutter={8}>
             <Col span={12}>
@@ -507,22 +521,6 @@ export default function EstForecastForm({
             </Col>
           </Row>
         </Form.Item>
-
-        <Form.Item label='GPT / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='gpt' noStyle>
-                <Input style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='gptPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
         <Form.Item name='noteForTrader' label='Note for Trader'>
           <Input.TextArea rows={3} />
         </Form.Item>
