@@ -538,6 +538,10 @@ export default function EstForecastForm({
           <Input.TextArea rows={3} />
         </Form.Item>
 
+        <Form.Item name='forecast_pct' label='Forecast Pct'>
+          <InputNumber style={{ width: '100%' }} addonAfter='%' />
+        </Form.Item>
+
         <Form.Item name='forecast' label='Forecast Color'>
           <Select>
             {FORECAST_COLORS.map((c) => (

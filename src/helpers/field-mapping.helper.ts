@@ -312,6 +312,7 @@ export const fieldMapping: Record<string, string> = {
   marketpsychTrustZPoint: 'marketpsych_trust_z_point',
   marketpsychEarningsDirectionZPoint: 'marketpsych_earnings_direction_z_point',
   finnhubNegativeCount: 'finnhub_negative_count',
+  forecast_pct: 'forecast_pct',
   lsegPositiveCount: 'lseg_positive_count',
   lsegNegativeCount: 'lseg_negative_count',
   marketCapBillion: 'market_cap_billion',

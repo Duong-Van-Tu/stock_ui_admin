@@ -640,6 +640,13 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderText(v, 'noteForTrader', r)
       },
       {
+        title: 'Forecast Pct',
+        dataIndex: 'forecast_pct',
+        width: 130,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'forecast_pct', r, '%')
+      },
+      {
         title: 'Forecast',
         dataIndex: 'forecast',
         width: 120,
@@ -722,7 +729,6 @@ export const EstForecastSelectedTable = () => {
               onChange: handlePageChange
             }}
           />
-          {/* edit modal opened via useModal.openModal in startEdit */}
         </>
       </div>
     </div>
