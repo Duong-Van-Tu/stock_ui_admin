@@ -384,19 +384,8 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='Article 12h / Point (19)'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='article12h' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='article12hPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
+        <Form.Item name='article12h' label='Article 12h (19)'>
+          <InputNumber style={{ width: '100%' }} />
         </Form.Item>
 
         <Form.Item label='MP Earnings Dir / Point (20)'>
@@ -538,7 +527,7 @@ export default function EstForecastForm({
           <Input.TextArea rows={3} />
         </Form.Item>
 
-        <Form.Item name='forecast_pct' label='Forecast Pct'>
+        <Form.Item name='forecastPct' label='Forecast Pct'>
           <InputNumber style={{ width: '100%' }} addonAfter='%' />
         </Form.Item>
 

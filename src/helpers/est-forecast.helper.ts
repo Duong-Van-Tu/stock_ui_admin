@@ -77,7 +77,12 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
     marketpsychTrustZ: toNumber(item[fieldMapping.marketpsychTrustZ]),
     aggregateScore: toNumber(item[fieldMapping.aggregateScore]),
     aggregateScorePoint: toNumber(item[fieldMapping.aggregateScorePoint]),
-    forecast_pct: toNumber(item.forecast_pct)
+    forecastPct: toNumber(item[fieldMapping.forecastPct]),
+    entryDate: item[fieldMapping.entryDate],
+    entryPrice: toNumber(item[fieldMapping.entryPrice]),
+    highestPrice: toNumber(item[fieldMapping.highestPrice]),
+    highest3DaysPrice: toNumber(item[fieldMapping.highestPrice3Days]),
+    lowest3DaysPrice: toNumber(item[fieldMapping.lowestPrice3Days])
   }));
 };
 
@@ -100,7 +105,12 @@ export const transformEstForecastFilter = (
     marketCap: item.market_cap,
     noteForTrader: item[fieldMapping.noteForTrader],
     forecast: item.forecast,
-    forecast_pct: toNumber(item.forecast_pct),
+    forecastPct: toNumber(item[fieldMapping.forecastPct]),
+    entryDate: item[fieldMapping.entryDate],
+    entryPrice: toNumber(item[fieldMapping.entryPrice]),
+    highestPrice: toNumber(item[fieldMapping.highestPrice]),
+    highest3DaysPrice: toNumber(item[fieldMapping.highestPrice3Days]),
+    lowest3DaysPrice: toNumber(item[fieldMapping.lowestPrice3Days]),
     epsEstimateESTEarnings: toNumber(item[fieldMapping.epsEstimateESTEarnings]),
     epsEstimatePoint: toNumber(item[fieldMapping.epsEstimatePoint]),
     prevEstimate: item[fieldMapping.prevEstimate],

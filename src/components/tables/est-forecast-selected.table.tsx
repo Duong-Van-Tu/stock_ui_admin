@@ -228,6 +228,41 @@ export const EstForecastSelectedTable = () => {
         render: (v) => (v ? dayjs(v).format('MM-DD-YYYY') : '-')
       },
       {
+        title: 'Entry Date',
+        dataIndex: 'entryDate',
+        width: 150,
+        align: 'center',
+        render: (v) => (v ? dayjs(v).format('MM-DD-YYYY') : '-')
+      },
+      {
+        title: 'Entry Price',
+        dataIndex: 'entryPrice',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'entryPrice', r)
+      },
+      {
+        title: 'Highest Price',
+        dataIndex: 'highestPrice',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'highestPrice', r)
+      },
+      {
+        title: 'Highest 3 Days Price',
+        dataIndex: 'highest3DaysPrice',
+        width: 180,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'highest3DaysPrice', r)
+      },
+      {
+        title: 'Lowest 3 Days Price',
+        dataIndex: 'lowest3DaysPrice',
+        width: 180,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'lowest3DaysPrice', r)
+      },
+      {
         title: 'Industry',
         dataIndex: 'industry',
         width: 160,
@@ -641,10 +676,10 @@ export const EstForecastSelectedTable = () => {
       },
       {
         title: 'Forecast Pct',
-        dataIndex: 'forecast_pct',
+        dataIndex: 'forecastPct',
         width: 130,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'forecast_pct', r, '%')
+        render: (v, r) => renderNumber(v, 'forecastPct', r, '%')
       },
       {
         title: 'Forecast',
