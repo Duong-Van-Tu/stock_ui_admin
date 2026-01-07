@@ -1,14 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import {
-  Table,
-  TableColumnsType,
-  Button,
-  Space,
-  Input,
-  InputNumber,
-  DatePicker
-} from 'antd';
+import { Table, TableColumnsType, Button, Space, Input } from 'antd';
 import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -34,21 +26,19 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { SymbolCell } from './columns/symbol-cell.column';
-import { DateTimeCell } from './columns/date-time-cell.column';
 import { formatMarketCap, formatNumberShort } from '@/utils/common';
 import { isMobile } from 'react-device-detect';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { TableTitle } from './title.table';
 import { PageURLs } from '@/utils/navigate';
-
-const FORECAST_COLORS = ['#52c41a', '#fadb14', '#fa8c16', '#ff4d4f'];
+import EstForecastForm from '@/components/forms/est-forecast.form';
 
 export const EstForecastSelectedTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
   const { height } = useWindowSize();
   const locale = useLocale() || 'en';
 
@@ -57,10 +47,6 @@ export const EstForecastSelectedTable = () => {
   const pagination = useAppSelector(watchEstForecastPagination);
   const addSuccess = useAppSelector(watchEstForecastAddSuccess);
 
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editingRow, setEditingRow] = useState<Partial<EstForecastFilterItem>>(
-    {}
-  );
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<{
     startDate?: string;
@@ -103,7 +89,6 @@ export const EstForecastSelectedTable = () => {
       const { ...restFilter } = filter || {};
       const filteredFilter = cleanFalsyValues(restFilter);
       const symbol = searchParams.get('symbol') || undefined;
-
       dispatch(
         getEstForecastFilterPaging({
           page,
@@ -115,8 +100,7 @@ export const EstForecastSelectedTable = () => {
         })
       );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dispatch, sortField, sortType]
+    [dispatch, sortField, sortType, searchParams]
   );
 
   useEffect(() => {
@@ -129,7 +113,7 @@ export const EstForecastSelectedTable = () => {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchEstForecast, searchParams]);
+  }, [earningDate, searchParams]);
 
   const handleSearch = (value: string) => {
     if (!value) return;
@@ -149,34 +133,35 @@ export const EstForecastSelectedTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addSuccess]);
 
-  const startEdit = (record: EstForecastFilterItem) => {
-    setEditingId(record.id);
-    setEditingRow(record);
-  };
-
-  const saveEdit = useCallback(() => {
-    if (!editingId) return;
-    dispatch(updateEstForecast({ id: editingId, payload: editingRow as any }));
-    setEditingId(null);
-    setEditingRow({});
-  }, [dispatch, editingId, editingRow]);
+  const startEdit = useCallback(
+    (record: EstForecastFilterItem) => {
+      openModal(
+        <EstForecastForm
+          visible={true}
+          initialValues={record}
+          mode='edit'
+          onCancel={() => closeModal()}
+          onSubmit={(values) => {
+            dispatch(
+              updateEstForecast({ id: record.id, payload: values as any })
+            );
+            closeModal();
+          }}
+        />,
+        { width: 800 }
+      );
+    },
+    [openModal, closeModal, dispatch]
+  );
 
   const renderNumber = useCallback(
     (
       value: any,
-      field: keyof EstForecastFilterItem | string,
-      record: EstForecastFilterItem,
+      _field: keyof EstForecastFilterItem | string,
+      _record: EstForecastFilterItem,
       suffix?: string
     ) => {
-      if (editingId === record.id) {
-        return (
-          <InputNumber
-            value={(editingRow as any)[field] as number}
-            onChange={(v) => setEditingRow((prev) => ({ ...prev, [field]: v }))}
-            style={{ width: '100%' }}
-          />
-        );
-      }
+      // inline editing removed; modal form used instead
       if (!isNumeric(value)) return '-';
       return (
         <div>
@@ -185,26 +170,16 @@ export const EstForecastSelectedTable = () => {
         </div>
       );
     },
-    [editingId, editingRow]
+    []
   );
 
   const renderText = useCallback(
     (
       value: any,
-      field: keyof EstForecastFilterItem | string,
-      record: EstForecastFilterItem
+      _field: keyof EstForecastFilterItem | string,
+      _record: EstForecastFilterItem
     ) => {
-      if (editingId === record.id) {
-        return (
-          <Input
-            value={(editingRow as any)[field]}
-            onChange={(e) =>
-              setEditingRow((prev) => ({ ...prev, [field]: e.target.value }))
-            }
-            style={{ width: '100%' }}
-          />
-        );
-      }
+      // inline editing removed; modal form used instead
       if (value == null) return '-';
       if (typeof value === 'string') {
         const trimmed = value.trim();
@@ -212,65 +187,35 @@ export const EstForecastSelectedTable = () => {
       }
       return String(value);
     },
-    [editingId, editingRow]
+    []
   );
 
   const renderDate = useCallback(
     (
       value: string | undefined,
-      field: keyof EstForecastFilterItem | string,
-      record: EstForecastFilterItem
+      _field: keyof EstForecastFilterItem | string,
+      _record: EstForecastFilterItem
     ) => {
-      if (editingId === record.id) {
-        const currentValue =
-          ((editingRow as any)[field] as string | undefined) ?? value;
-        return (
-          <DatePicker
-            value={currentValue ? dayjs(currentValue) : null}
-            style={{ width: '100%' }}
-            onChange={(d) =>
-              setEditingRow((prev) => ({
-                ...prev,
-                [field]: d
-                  ? dayjs.utc(d.format('YYYY-MM-DD')).toISOString()
-                  : null
-              }))
-            }
-          />
-        );
-      }
+      // inline date editing removed; show formatted date
       return value ? <div>{dayjs(value).utc().format('MM-DD-YYYY')}</div> : '-';
     },
-    [editingId, editingRow]
+    []
   );
 
   const renderAction = useCallback(
     (_: any, record: EstForecastFilterItem) => {
       return (
         <Space>
-          {editingId === record.id ? (
-            <>
-              <Button
-                style={{ background: '#52c41a', borderColor: '#52c41a' }}
-                type='primary'
-                onClick={saveEdit}
-              >
-                Save
-              </Button>
-              <Button onClick={() => setEditingId(null)}>Cancel</Button>
-            </>
-          ) : (
-            <Button type='primary' onClick={() => startEdit(record)}>
-              Edit
-            </Button>
-          )}
+          <Button type='primary' onClick={() => startEdit(record)}>
+            Edit
+          </Button>
           <Button danger onClick={() => dispatch(deleteEstForecast(record.id))}>
             Delete
           </Button>
         </Space>
       );
     },
-    [dispatch, editingId, saveEdit]
+    [dispatch, startEdit]
   );
 
   const columns: TableColumnsType<EstForecastFilterItem> = useMemo(
@@ -294,38 +239,14 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'earningsDate',
         width: 150,
         align: 'center',
-        render: (v, r) =>
-          editingId === r.id ? (
-            renderDate(v, 'earningsDate', r)
-          ) : v ? (
-            <DateTimeCell
-              value={v}
-              showTime={false}
-              convertTimeZone={false}
-              useUTC
-            />
-          ) : (
-            '-'
-          )
+        render: (v) => (v ? dayjs(v).format('MM-DD-YYYY') : '-')
       },
       {
         title: 'Trade Date',
         dataIndex: 'tradeDate',
         width: 150,
         align: 'center',
-        render: (v, r) =>
-          editingId === r.id ? (
-            renderDate(v, 'tradeDate', r)
-          ) : v ? (
-            <DateTimeCell
-              value={v}
-              showTime={false}
-              convertTimeZone={false}
-              useUTC
-            />
-          ) : (
-            '-'
-          )
+        render: (v) => (v ? dayjs(v).format('MM-DD-YYYY') : '-')
       },
       { title: 'Industry', dataIndex: 'industry', width: 160 },
       {
@@ -374,10 +295,7 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'revenueForecast',
         width: 150,
         align: 'center',
-        render: (v, r) => {
-          if (editingId === r.id) {
-            return renderNumber(v, 'revenueForecast', r);
-          }
+        render: (v) => {
           if (!isNumeric(v)) return '-';
           return formatNumberShort(Number(v));
         }
@@ -635,14 +553,14 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'article12hPoint', r)
       },
       {
-        title: 'MarketPsych Earnings Dir Z',
+        title: 'MP Earnings Dir',
         dataIndex: 'marketpsychEarningsDirectionZ',
         width: 208,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychEarningsDirectionZ', r)
       },
       {
-        title: 'MarketPsych Earnings Dir Z Point',
+        title: 'MP Earnings Dir Point',
         dataIndex: 'marketpsychEarningsDirectionZPoint',
         width: 246,
         align: 'center',
@@ -650,14 +568,14 @@ export const EstForecastSelectedTable = () => {
           renderNumber(v, 'marketpsychEarningsDirectionZPoint', r)
       },
       {
-        title: 'MarketPsych Earnings Forecast Z',
+        title: 'MP Earnings Forecast',
         dataIndex: 'marketpsychEarningsForecastZ',
         width: 248,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychEarningsForecastZ', r)
       },
       {
-        title: 'MarketPsych Earnings Forecast Z Point',
+        title: 'MP Earnings Forecast Point',
         dataIndex: 'marketpsychEarningsForecastZPoint',
         width: 290,
         align: 'center',
@@ -665,14 +583,14 @@ export const EstForecastSelectedTable = () => {
           renderNumber(v, 'marketpsychEarningsForecastZPoint', r)
       },
       {
-        title: 'MarketPsych Revenue Dir Z',
+        title: 'MP Revenue Dir',
         dataIndex: 'marketpsychRevenueDirectionZ',
         width: 210,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychRevenueDirectionZ', r)
       },
       {
-        title: 'MarketPsych Revenue Dir Z Point',
+        title: 'MP Revenue Dir Point',
         dataIndex: 'marketpsychRevenueDirectionZPoint',
         width: 248,
         align: 'center',
@@ -680,56 +598,56 @@ export const EstForecastSelectedTable = () => {
           renderNumber(v, 'marketpsychRevenueDirectionZPoint', r)
       },
       {
-        title: 'MarketPsych Revenue Forecast Z',
+        title: 'MP Revenue Forecast',
         dataIndex: 'marketpsychRevenueForecastZ',
         width: 248,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychRevenueForecastZ', r)
       },
       {
-        title: 'MarketPsych Revenue Forecast Z Point',
+        title: 'MP Revenue Forecast Point',
         dataIndex: 'marketpsychRevenueForecastZPoint',
         width: 286,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychRevenueForecastZPoint', r)
       },
       {
-        title: 'MarketPsych Price Up Z',
+        title: 'MP Price Up',
         dataIndex: 'marketpsychPriceUpZ',
         width: 184,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychPriceUpZ', r)
       },
       {
-        title: 'MarketPsych Price Up Z Point',
+        title: 'MP Price Up Point',
         dataIndex: 'marketpsychPriceUpZPoint',
         width: 240,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychPriceUpZPoint', r)
       },
       {
-        title: 'MarketPsych Optimism Z',
+        title: 'MP Optimism',
         dataIndex: 'marketpsychOptimismZ',
         width: 190,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychOptimismZ', r)
       },
       {
-        title: 'MarketPsych Optimism Z Point',
+        title: 'MP Optimism Point',
         dataIndex: 'marketpsychOptimismZPoint',
         width: 230,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychOptimismZPoint', r)
       },
       {
-        title: 'MarketPsych Trust Z',
+        title: 'MP Trust',
         dataIndex: 'marketpsychTrustZ',
         width: 164,
         align: 'center',
         render: (v, r) => renderNumber(v, 'marketpsychTrustZ', r)
       },
       {
-        title: 'MarketPsych Trust Z Point',
+        title: 'MP Trust Point',
         dataIndex: 'marketpsychTrustZPoint',
         width: 200,
         align: 'center',
@@ -747,34 +665,7 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'forecast',
         width: 120,
         align: 'center',
-        render: (v, r) => {
-          if (editingId === r.id) {
-            return (
-              <div
-                style={{ display: 'flex', gap: 6, justifyContent: 'center' }}
-              >
-                {FORECAST_COLORS.map((color) => {
-                  const active = editingRow.forecast === color;
-                  return (
-                    <div
-                      key={color}
-                      onClick={() =>
-                        setEditingRow((prev) => ({ ...prev, forecast: color }))
-                      }
-                      style={{
-                        width: 16,
-                        height: 16,
-                        borderRadius: 4,
-                        backgroundColor: color,
-                        cursor: 'pointer',
-                        border: active ? '1px solid #3d3d3d' : '1px solid #ccc'
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            );
-          }
+        render: (v) => {
           if (!v) return '-';
           return (
             <div
@@ -792,24 +683,14 @@ export const EstForecastSelectedTable = () => {
       },
       {
         title: t('action'),
-        width: editingId ? 260 : 170,
+        width: 170,
         align: 'center',
         fixed: !isMobile && 'right',
         render: renderAction
       }
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      t,
-      isMobile,
-      editingId,
-      editingRow,
-      renderNumber,
-      renderText,
-      renderDate,
-      saveEdit,
-      dispatch
-    ]
+    [t, isMobile, renderNumber, renderText, renderDate, dispatch]
   );
 
   return (
@@ -833,34 +714,37 @@ export const EstForecastSelectedTable = () => {
           />
         </div>
 
-        <Table
-          loading={loading}
-          rowKey={(record) => record.key!}
-          size={isMobile ? 'small' : 'middle'}
-          css={tableStyles}
-          columns={columns}
-          dataSource={filterList}
-          scroll={{
-            x: 1200,
-            y: filterList.length > 0 ? height - 326 : undefined
-          }}
-          locale={{
-            emptyText: (
-              <div css={emptyStyles(height - 400)}>
-                <EmptyDataTable />
-              </div>
-            )
-          }}
-          pagination={{
-            current: pagination.currentPage,
-            pageSize: pagination.pageSize,
-            total: pagination.total,
-            position: ['bottomCenter'],
-            showSizeChanger: true,
-            showQuickJumper: true,
-            onChange: handlePageChange
-          }}
-        />
+        <>
+          <Table
+            loading={loading}
+            rowKey={(record) => record.key!}
+            size={isMobile ? 'small' : 'middle'}
+            css={tableStyles}
+            columns={columns}
+            dataSource={filterList}
+            scroll={{
+              x: 1200,
+              y: filterList.length > 0 ? height - 326 : undefined
+            }}
+            locale={{
+              emptyText: (
+                <div css={emptyStyles(height - 400)}>
+                  <EmptyDataTable />
+                </div>
+              )
+            }}
+            pagination={{
+              current: pagination.currentPage,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+              position: ['bottomCenter'],
+              showSizeChanger: true,
+              showQuickJumper: true,
+              onChange: handlePageChange
+            }}
+          />
+          {/* edit modal opened via useModal.openModal in startEdit */}
+        </>
       </div>
     </div>
   );
