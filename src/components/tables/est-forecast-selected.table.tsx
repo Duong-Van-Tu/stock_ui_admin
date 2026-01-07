@@ -1,6 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Table, TableColumnsType, Button, Space, Input } from 'antd';
+import {
+  Table,
+  TableColumnsType,
+  Button,
+  Space,
+  Input,
+  Popconfirm
+} from 'antd';
 import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -188,9 +195,14 @@ export const EstForecastSelectedTable = () => {
           <Button type='primary' onClick={() => startEdit(record)}>
             Edit
           </Button>
-          <Button danger onClick={() => dispatch(deleteEstForecast(record.id))}>
-            Delete
-          </Button>
+          <Popconfirm
+            title='Are you sure you want to delete this item?'
+            onConfirm={() => dispatch(deleteEstForecast(record.id))}
+            okText='Yes'
+            cancelText='No'
+          >
+            <Button danger>Delete</Button>
+          </Popconfirm>
         </Space>
       );
     },
