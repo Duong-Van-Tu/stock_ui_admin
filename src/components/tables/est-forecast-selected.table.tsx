@@ -19,9 +19,6 @@ import { isNumeric, roundToDecimals } from '@/utils/common';
 import { EstForecastFilter } from '../filters/est-forecast.filter';
 import { cleanFalsyValues } from '@/utils/common';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
-import { fieldMapping } from '@/helpers/field-mapping.helper';
-import { convertSortType } from '@/utils/sort-table';
-import { useSortOrder } from '@/hooks/sort-order.hook';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
@@ -65,15 +62,6 @@ export const EstForecastSelectedTable = () => {
     [filter.startDate]
   );
 
-  const { sortField, sortType, handleSortOrder } = useSortOrder<any>({
-    defaultField: 'earningsDate',
-    defaultOrder: 'descend',
-    currentFilter: filter,
-    onChange: (_field, _order, newFilter) => {
-      fetchEstForecast({ filter: newFilter });
-    }
-  });
-
   const handleFilter = (values: { startDate: string; endDate: string }) => {
     const newFilter = { ...filter, ...values, symbol: searchValue };
     setFilter(newFilter);
@@ -92,14 +80,12 @@ export const EstForecastSelectedTable = () => {
         getEstForecastFilterPaging({
           page,
           limit: pageSize,
-          sortField: fieldMapping[sortField] ?? sortField,
-          sortType: convertSortType(sortType),
           ...filteredFilter,
           symbol: symbol
         })
       );
     },
-    [dispatch, sortField, sortType, searchParams]
+    [dispatch, searchParams]
   );
 
   useEffect(() => {
@@ -110,7 +96,6 @@ export const EstForecastSelectedTable = () => {
         symbol: symbol || undefined
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter, searchParams]);
 
   const handleSearch = (value: string) => {
@@ -128,7 +113,6 @@ export const EstForecastSelectedTable = () => {
       fetchEstForecast({ filter });
       dispatch(resetAddEstForecastState());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addSuccess]);
 
   const startEdit = useCallback(
@@ -159,7 +143,6 @@ export const EstForecastSelectedTable = () => {
       _record: EstForecastFilterItem,
       suffix?: string
     ) => {
-      // inline editing removed; modal form used instead
       if (!isNumeric(value)) return '-';
       return (
         <div>
@@ -177,7 +160,6 @@ export const EstForecastSelectedTable = () => {
       _field: keyof EstForecastFilterItem | string,
       _record: EstForecastFilterItem
     ) => {
-      // inline editing removed; modal form used instead
       if (value == null) return '-';
       if (typeof value === 'string') {
         const trimmed = value.trim();
@@ -194,7 +176,6 @@ export const EstForecastSelectedTable = () => {
       _field: keyof EstForecastFilterItem | string,
       _record: EstForecastFilterItem
     ) => {
-      // inline date editing removed; show formatted date
       return value ? <div>{dayjs(value).utc().format('MM-DD-YYYY')}</div> : '-';
     },
     []
@@ -246,7 +227,12 @@ export const EstForecastSelectedTable = () => {
         align: 'center',
         render: (v) => (v ? dayjs(v).format('MM-DD-YYYY') : '-')
       },
-      { title: 'Industry', dataIndex: 'industry', width: 160 },
+      {
+        title: 'Industry',
+        dataIndex: 'industry',
+        width: 160,
+        render: (v) => v || '-'
+      },
       {
         title: 'Call Time',
         dataIndex: 'callTime',
@@ -259,34 +245,14 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'beta',
         width: 90,
         align: 'center',
-        render: (v) => roundToDecimals(v)
+        render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
       },
       {
         title: 'Market Cap',
         dataIndex: 'marketCapEstForecast',
         width: 130,
         align: 'center',
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'marketCap' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('marketCap')
-        }),
         render: (value) => (value ? formatMarketCap(value / 1000000) : '-')
-      },
-      {
-        title: 'EPS Estimate',
-        dataIndex: 'epsEstimateESTEarnings',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'epsEstimateESTEarnings', r)
-      },
-      {
-        title: 'EPS Point',
-        dataIndex: 'epsEstimatePoint',
-        width: 110,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'epsEstimatePoint', r)
       },
       {
         title: 'Revenue Forecast',
@@ -320,6 +286,20 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'netMarginPoint', r)
       },
       {
+        title: 'EPS Estimate',
+        dataIndex: 'epsEstimateESTEarnings',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'epsEstimateESTEarnings', r)
+      },
+      {
+        title: 'EPS Point',
+        dataIndex: 'epsEstimatePoint',
+        width: 110,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'epsEstimatePoint', r)
+      },
+      {
         title: 'EPS Trend',
         dataIndex: 'epsTrend',
         width: 120,
@@ -348,13 +328,6 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'epsBeatFreqPoint', r)
       },
       {
-        title: 'Avg Surprise',
-        dataIndex: 'avgSurpriseMagnitude',
-        width: 140,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'avgSurpriseMagnitude', r)
-      },
-      {
         title: 'Revenue Beat Freq',
         dataIndex: 'revenueBeatFreq',
         width: 160,
@@ -367,6 +340,13 @@ export const EstForecastSelectedTable = () => {
         width: 200,
         align: 'center',
         render: (v, r) => renderNumber(v, 'revenueBeatFreqPoint', r)
+      },
+      {
+        title: 'Avg Surprise',
+        dataIndex: 'avgSurpriseMagnitude',
+        width: 140,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'avgSurpriseMagnitude', r)
       },
       {
         title: 'Avg Surprise Point',
@@ -404,32 +384,18 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'ytdPerformancePoint', r)
       },
       {
-        title: 'AI Rating',
-        dataIndex: 'aiRating',
-        width: 100,
+        title: 'Price Target',
+        dataIndex: 'priceTarget',
+        width: 110,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'aiRating', r)
+        render: (v, r) => renderNumber(v, 'priceTarget', r)
       },
       {
-        title: 'AI Rating Point',
-        dataIndex: 'aiRatingPoint',
-        width: 128,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'aiRatingPoint', r)
-      },
-      {
-        title: 'Aggregate Score',
-        dataIndex: 'aggregateScore',
+        title: 'Price Target Point',
+        dataIndex: 'priceTargetPoint',
         width: 150,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'aggregateScore', r)
-      },
-      {
-        title: 'Aggregate Score Point',
-        dataIndex: 'aggregateScorePoint',
-        width: 190,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'aggregateScorePoint', r)
+        render: (v, r) => renderNumber(v, 'priceTargetPoint', r)
       },
       {
         title: 'Yahoo Rec',
@@ -446,18 +412,18 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'yahooRecPoint', r)
       },
       {
-        title: 'Price Target',
-        dataIndex: 'priceTarget',
-        width: 110,
+        title: 'AI Rating',
+        dataIndex: 'aiRating',
+        width: 100,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'priceTarget', r)
+        render: (v, r) => renderNumber(v, 'aiRating', r)
       },
       {
-        title: 'Price Target Point',
-        dataIndex: 'priceTargetPoint',
-        width: 150,
+        title: 'AI Rating Point',
+        dataIndex: 'aiRatingPoint',
+        width: 128,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'priceTargetPoint', r)
+        render: (v, r) => renderNumber(v, 'aiRatingPoint', r)
       },
       {
         title: 'Grok',
@@ -474,20 +440,6 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'grokPoint', r)
       },
       {
-        title: 'GPT',
-        dataIndex: 'gpt',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderText(v, 'gpt', r)
-      },
-      {
-        title: 'GPT Point',
-        dataIndex: 'gptPoint',
-        width: 150,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'gptPoint', r)
-      },
-      {
         title: 'GPT Rating',
         dataIndex: 'gptRating',
         width: 140,
@@ -502,6 +454,13 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'gptRatingPoint', r)
       },
       {
+        title: 'LSEG News Total Score Point',
+        dataIndex: 'lsegNewsTotalScorePoint',
+        width: 216,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'lsegNewsTotalScorePoint', r)
+      },
+      {
         title: 'LSEG News Score (1D)',
         dataIndex: 'lsegNewsScore1d',
         width: 174,
@@ -514,13 +473,6 @@ export const EstForecastSelectedTable = () => {
         width: 212,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsScore1dPoint', r)
-      },
-      {
-        title: 'LSEG News Total Score Point',
-        dataIndex: 'lsegNewsTotalScorePoint',
-        width: 216,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'lsegNewsTotalScorePoint', r)
       },
       {
         title: 'LSEG News Score (3D)',
@@ -548,7 +500,8 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'article12hPoint',
         width: 180,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'article12hPoint', r)
+        render: (v, r) => renderNumber(v, 'article12hPoint', r),
+        hidden: true
       },
       {
         title: 'MP Earnings Dir',
@@ -652,6 +605,34 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'marketpsychTrustZPoint', r)
       },
       {
+        title: 'Aggregate Score',
+        dataIndex: 'aggregateScore',
+        width: 150,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'aggregateScore', r)
+      },
+      {
+        title: 'Aggregate Score Point',
+        dataIndex: 'aggregateScorePoint',
+        width: 190,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'aggregateScorePoint', r)
+      },
+      {
+        title: 'GPT',
+        dataIndex: 'gpt',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderText(v, 'gpt', r)
+      },
+      {
+        title: 'GPT Point',
+        dataIndex: 'gptPoint',
+        width: 150,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'gptPoint', r)
+      },
+      {
         title: 'Note for Trader',
         dataIndex: 'noteForTrader',
         width: 130,
@@ -687,7 +668,7 @@ export const EstForecastSelectedTable = () => {
         render: renderAction
       }
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [t, isMobile, renderNumber, renderText, renderDate, dispatch]
   );
 

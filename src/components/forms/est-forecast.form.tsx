@@ -64,8 +64,8 @@ export default function EstForecastForm({
   };
 
   const formItemLayout = {
-    labelCol: { span: 7 },
-    wrapperCol: { span: 17 }
+    labelCol: { span: 8 },
+    wrapperCol: { span: 16 }
   };
 
   const modalTitle =
@@ -137,22 +137,7 @@ export default function EstForecastForm({
           <InputNumber style={{ width: '100%' }} />
         </Form.Item>
 
-        <Form.Item label='EPS Estimate / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='epsEstimateESTEarnings' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='epsEstimatePoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='Revenue Forecast / Point'>
+        <Form.Item label='Revenue Forecast / Point (1)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='revenueForecast' noStyle>
@@ -167,7 +152,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='Net Margin / Point'>
+        <Form.Item label='Net Margin / Point (2)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='netMargin' noStyle>
@@ -182,7 +167,22 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='EPS Trend / Point'>
+        <Form.Item label='EPS Estimate / Point (3)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='epsEstimateESTEarnings' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='epsEstimatePoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='EPS Trend / Point (4)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='epsTrend' noStyle>
@@ -197,7 +197,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='EPS Beat Freq / Point'>
+        <Form.Item label='EPS Beat Freq / Point (5)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='epsBeatFreq' noStyle>
@@ -212,22 +212,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='Avg Surprise / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='avgSurpriseMagnitude' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='avgSurpriseMagnitudePoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='Revenue Beat Freq / Point'>
+        <Form.Item label='Revenue Beat Freq / Point (6)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='revenueBeatFreq' noStyle>
@@ -242,7 +227,22 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='Post Earning Drift / Point'>
+        <Form.Item label='Avg Surprise / Point (7)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='avgSurpriseMagnitude' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='avgSurpriseMagnitudePoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='Post Earning Drift / Point (8)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='postEarningDrift' noStyle>
@@ -257,7 +257,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='YTD Performance / Point'>
+        <Form.Item label='YTD Performance / Point (9)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='ytdPerformance' noStyle>
@@ -272,7 +272,37 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='AI Rating / Point'>
+        <Form.Item label='Price Target / Point (10)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='priceTarget' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='priceTargetPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='Yahoo Rec / Point (11)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='yahooRec' noStyle>
+                <Input style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='yahooRecPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='AI Rating / Point (12)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='aiRating' noStyle>
@@ -281,6 +311,193 @@ export default function EstForecastForm({
             </Col>
             <Col span={12}>
               <Form.Item name='aiRatingPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='Grok / Point (12)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='grok' noStyle>
+                <Input style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='grokPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='GPT Rating / Point (13)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='gptRating' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='gptRatingPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item
+          name='lsegNewsTotalScorePoint'
+          label='LSEG Total Score Point (16)'
+        >
+          <InputNumber style={{ width: '100%' }} />
+        </Form.Item>
+
+        <Form.Item label='LSEG News (1D) / Point (17)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='lsegNewsScore1d' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='lsegNewsScore1dPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='LSEG News (3D) / Point (18)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='lsegNewsScore3d' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='lsegNewsScore3dPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='Article 12h / Point (19)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='article12h' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='article12hPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='MP Earnings Dir / Point (20)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='marketpsychEarningsDirectionZ' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='marketpsychEarningsDirectionZPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='MP Earnings Forecast / Point (21)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='marketpsychEarningsForecastZ' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='marketpsychEarningsForecastZPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='MP Revenue Dir / Point (22)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='marketpsychRevenueDirectionZ' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='marketpsychRevenueDirectionZPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='MP Revenue Forecast / Point (23)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='marketpsychRevenueForecastZ' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='marketpsychRevenueForecastZPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='MP Price Up / Point (24)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='marketpsychPriceUpZ' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='marketpsychPriceUpZPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='MP Optimism / Point (25)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='marketpsychOptimismZ' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='marketpsychOptimismZPoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='MP Trust / Point (26)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='marketpsychTrustZ' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='marketpsychTrustZPoint' noStyle>
                 <InputNumber style={{ width: '100%' }} />
               </Form.Item>
             </Col>
@@ -302,51 +519,6 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='Yahoo Rec / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='yahooRec' noStyle>
-                <Input style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='yahooRecPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='Price Target / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='priceTarget' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='priceTargetPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='Grok / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='grok' noStyle>
-                <Input style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='grokPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
         <Form.Item label='GPT / Point'>
           <Row gutter={8}>
             <Col span={12}>
@@ -356,178 +528,6 @@ export default function EstForecastForm({
             </Col>
             <Col span={12}>
               <Form.Item name='gptPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='GPT Rating / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='gptRating' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='gptRatingPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='LSEG News (1D) / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='lsegNewsScore1d' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='lsegNewsScore1dPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='LSEG News (3D) / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='lsegNewsScore3d' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='lsegNewsScore3dPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item
-          name='lsegNewsTotalScorePoint'
-          label='LSEG Total Score Point'
-        >
-          <InputNumber style={{ width: '100%' }} />
-        </Form.Item>
-
-        <Form.Item label='Article 12h / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='article12h' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='article12hPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='MP Earnings Dir / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='marketpsychEarningsDirectionZ' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='marketpsychEarningsDirectionZPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='MP Earnings Forecast / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='marketpsychEarningsForecastZ' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='marketpsychEarningsForecastZPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='MP Revenue Dir / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='marketpsychRevenueDirectionZ' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='marketpsychRevenueDirectionZPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='MP Revenue Forecast / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='marketpsychRevenueForecastZ' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='marketpsychRevenueForecastZPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='MP Price Up / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='marketpsychPriceUpZ' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='marketpsychPriceUpZPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='MP Optimism / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='marketpsychOptimismZ' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='marketpsychOptimismZPoint' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item label='MP Trust / Point'>
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item name='marketpsychTrustZ' noStyle>
-                <InputNumber style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name='marketpsychTrustZPoint' noStyle>
                 <InputNumber style={{ width: '100%' }} />
               </Form.Item>
             </Col>
