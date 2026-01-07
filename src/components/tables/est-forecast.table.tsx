@@ -120,7 +120,13 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
           );
         }
       },
-      { title: 'Industry', dataIndex: 'industry', width: 180, align: 'center' },
+      {
+        title: 'Industry',
+        dataIndex: 'industry',
+        width: 180,
+        align: 'center',
+        render: (v) => (v ? v : '-')
+      },
       {
         title: 'Market CAP',
         dataIndex: 'marketCapEstForecast',
@@ -143,9 +149,13 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
-        title: 'Revenue Forecast (YoY Growth % / Predicted Surprise %)',
+        title: (
+          <>
+            Revenue Forecast <br /> (YoY Growth % / Predicted Surprise %)
+          </>
+        ),
         dataIndex: 'revenueForecast',
-        width: 260,
+        width: 280,
         align: 'center',
         render: (v) =>
           isNumeric(v) ? (
@@ -159,7 +169,7 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
       {
         title: 'Net Margin / Change Y/Y',
         dataIndex: 'netMargin',
-        width: 200,
+        width: 220,
         align: 'center',
         render: (v) =>
           isNumeric(v) ? (
@@ -180,7 +190,7 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
       {
         title: 'EPS Trend (Current vs 30days)',
         dataIndex: 'epsTrend',
-        width: 180,
+        width: 240,
         align: 'center',
         render: (v) =>
           isNumeric(v) ? (
@@ -194,7 +204,7 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
       {
         title: 'Beat Freq (Prev 6 earnings)',
         dataIndex: 'beatFreq',
-        width: 200,
+        width: 220,
         align: 'center',
         render: (v) => (isNumeric(v) ? `${roundToDecimals(v, 2)}%` : '-')
       },
@@ -213,9 +223,13 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
-        title: 'Avg Surprise Magnitude (Prev 6 earnings)',
+        title: (
+          <>
+            Avg Surprise Magnitude <br /> (Prev 6 earnings)
+          </>
+        ),
         dataIndex: 'avgSurpriseMagnitude',
-        width: 200,
+        width: 280,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
@@ -236,7 +250,7 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
       {
         title: 'Post-earning Drift (1D/1W)',
         dataIndex: 'postEarningDrift',
-        width: 220,
+        width: 240,
         align: 'center',
         render: (v) =>
           isNumeric(v) ? (
@@ -292,91 +306,103 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
-        title: 'LSEG News Score (1D)',
+        title: (
+          <>
+            LSEG News <br /> Score (1D)
+          </>
+        ),
         dataIndex: 'lsegNewsScore1d',
-        width: 140,
+        width: 100,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 3) : '-')
       },
       {
-        title: 'LSEG News Total Score Point',
+        title: (
+          <>
+            LSEG News <br /> Total Score Point
+          </>
+        ),
         dataIndex: 'lsegNewsTotalScorePoint',
-        width: 180,
+        width: 148,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
-        title: 'LSEG News Score (3D)',
+        title: (
+          <>
+            LSEG News <br /> Score (3D)
+          </>
+        ),
         dataIndex: 'lsegNewsScore3d',
-        width: 140,
+        width: 100,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 3) : '-')
       },
       {
         title: 'Any Article in 12h',
         dataIndex: 'article12h',
-        width: 140,
+        width: 160,
         align: 'center',
         render: (v) => (isNumeric(v) ? v : '-')
       },
       {
-        title: 'MarketPsych EarningsDirection Z',
+        title: 'MP EarningsDirection',
         dataIndex: 'marketpsychEarningsDirectionZ',
-        width: 160,
+        width: 170,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
-        title: 'MarketPsych EarningsDirection Z Point',
+        title: 'MP EarningsDirection Point',
         dataIndex: 'marketpsychEarningsDirectionZPoint',
-        width: 180,
+        width: 210,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
-        title: 'MarketPsych EarningsForecast Z',
+        title: 'MP EarningsForecast',
         dataIndex: 'marketpsychEarningsForecastZ',
-        width: 160,
-        align: 'center',
-        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
-      },
-      {
-        title: 'MarketPsych EarningsForecast Z Point',
-        dataIndex: 'marketpsychEarningsForecastZPoint',
         width: 180,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
-        title: 'MarketPsych RevenueDirection Z',
+        title: 'MP EarningsForecast Point',
+        dataIndex: 'marketpsychEarningsForecastZPoint',
+        width: 210,
+        align: 'center',
+        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+      },
+      {
+        title: 'MP RevenueDirection',
         dataIndex: 'marketpsychRevenueDirectionZ',
-        width: 160,
+        width: 200,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
-        title: 'MarketPsych RevenueForecast Z',
+        title: 'MP RevenueForecast',
         dataIndex: 'marketpsychRevenueForecastZ',
-        width: 160,
+        width: 200,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
-        title: 'MarketPsych PriceUp Z',
+        title: 'MP PriceUp',
         dataIndex: 'marketpsychPriceUpZ',
         width: 120,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
-        title: 'MarketPsych Optimism Z',
+        title: 'MP Optimism',
         dataIndex: 'marketpsychOptimismZ',
         width: 128,
         align: 'center',
         render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
       },
       {
-        title: 'MarketPsych Trust Z',
+        title: 'MP Trust',
         dataIndex: 'marketpsychTrustZ',
         width: 120,
         align: 'center',

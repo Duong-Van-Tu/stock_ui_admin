@@ -77,7 +77,6 @@ export const EstForecastSelectedTable = () => {
   const handleFilter = (values: { startDate: string; endDate: string }) => {
     const newFilter = { ...filter, ...values, symbol: searchValue };
     setFilter(newFilter);
-    fetchEstForecast({ filter: newFilter });
   };
 
   const fetchEstForecast = useCallback(
@@ -107,13 +106,12 @@ export const EstForecastSelectedTable = () => {
     const symbol = searchParams.get('symbol');
     fetchEstForecast({
       filter: {
-        startDate: earningDate,
-        endDate: earningDate,
+        ...filter,
         symbol: symbol || undefined
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [earningDate, searchParams]);
+  }, [filter, searchParams]);
 
   const handleSearch = (value: string) => {
     if (!value) return;
