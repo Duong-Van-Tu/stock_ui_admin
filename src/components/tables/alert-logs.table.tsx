@@ -194,7 +194,7 @@ export const AlertLogsTable = ({
   const fetchDataAlertLogs = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
-      pageSize = PAGINATION_PARAMS.limit,
+      pageSize = pagination.pageSize || PAGINATION_PARAMS.limit,
       filter
     }: PageChangeParams = {}) => {
       const params: any = {
