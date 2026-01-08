@@ -290,6 +290,13 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderNumber(v, 'entryPrice', r)
       },
       {
+        title: 'Current Price',
+        dataIndex: 'currentPrice',
+        width: 120,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'currentPrice', r)
+      },
+      {
         title: 'Highest Price',
         dataIndex: 'highestPrice',
         width: 120,

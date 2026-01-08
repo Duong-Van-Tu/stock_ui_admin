@@ -52,6 +52,13 @@ type EstForecast = {
   aggregateScore: number | null;
   aggregateScorePoint: number | null;
   noteForTrader: string;
+  forecastPct: number | null;
+  entryDate: string;
+  entryPrice: number | null;
+  highestPrice: number | null;
+  highest3DaysPrice: number | null;
+  lowest3DaysPrice: number | null;
+  currentPrice: number | null;
 };
 
 type EstForecastFilterItem = {
@@ -120,6 +127,13 @@ type EstForecastFilterItem = {
   marketpsychTrustZ: number | null;
   marketpsychTrustZPoint: number | null;
   tradeDate: string;
+  forecastPct: number | null;
+  entryDate: string;
+  entryPrice: number | null;
+  highestPrice: number | null;
+  highest3DaysPrice: number | null;
+  lowest3DaysPrice: number | null;
+  currentPrice: number | null;
 };
 
 type CountByDate = {

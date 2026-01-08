@@ -82,7 +82,8 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
     entryPrice: toNumber(item[fieldMapping.entryPrice]),
     highestPrice: toNumber(item[fieldMapping.highestPrice]),
     highest3DaysPrice: toNumber(item[fieldMapping.highestPrice3Days]),
-    lowest3DaysPrice: toNumber(item[fieldMapping.lowestPrice3Days])
+    lowest3DaysPrice: toNumber(item[fieldMapping.lowestPrice3Days]),
+    currentPrice: toNumber(item[fieldMapping.currentPrice])
   }));
 };
 
@@ -192,6 +193,7 @@ export const transformEstForecastFilter = (
     marketpsychTrustZPoint: toNumber(item[fieldMapping.marketpsychTrustZPoint]),
     tradeDate: item[fieldMapping.tradeDate],
     earningsDate: item[fieldMapping.earningsDate],
+    currentPrice: toNumber(item[fieldMapping.currentPrice]),
     updatedAt: item[fieldMapping.updatedAt]
   }));
 };
