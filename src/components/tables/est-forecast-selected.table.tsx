@@ -29,7 +29,7 @@ import { EstForecastFilter } from '../filters/est-forecast.filter';
 import { cleanFalsyValues } from '@/utils/common';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { SymbolCell } from './columns/symbol-cell.column';
 import { formatMarketCap, formatNumberShort } from '@/utils/common';
@@ -44,6 +44,8 @@ export const EstForecastSelectedTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const { openModal, closeModal } = useModal();
   const { height } = useWindowSize();
   const locale = useLocale() || 'en';
@@ -57,43 +59,41 @@ export const EstForecastSelectedTable = () => {
   );
 
   const [searchValue, setSearchValue] = useState('');
-  const [filter, setFilter] = useState<{
-    startDate?: string;
-    endDate?: string;
-    symbol?: string;
-  }>({
-    startDate: dayjs().format('YYYY-MM-DD'),
-    endDate: dayjs().format('YYYY-MM-DD')
-  });
 
-  const earningDate = useMemo(
-    () =>
-      filter.startDate
-        ? dayjs(filter.startDate, 'YYYY-MM-DD').format('YYYY-MM-DD')
-        : dayjs().format('YYYY-MM-DD'),
-    [filter.startDate]
-  );
+  const earningDate = useMemo(() => {
+    const date = searchParams.get('earningsDate');
+    return date
+      ? dayjs(date, 'YYYY-MM-DD').format('YYYY-MM-DD')
+      : dayjs().format('YYYY-MM-DD');
+  }, [searchParams]);
 
   const handleFilter = (values: { startDate: string; endDate: string }) => {
-    const newFilter = { ...filter, ...values, symbol: searchValue };
-    setFilter(newFilter);
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    current.set('earningsDate', values.startDate);
+    const search = current.toString();
+    const query = search ? `?${search}` : '';
+    router.push(`${pathname}${query}`);
   };
 
   const fetchEstForecast = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
-      pageSize = PAGINATION_PARAMS.limit,
-      filter
+      pageSize = PAGINATION_PARAMS.limit
     }: PageChangeParams = {}) => {
-      const { ...restFilter } = filter || {};
-      const filteredFilter = cleanFalsyValues(restFilter);
       const symbol = searchParams.get('symbol') || undefined;
+      const earningsDate = searchParams.get('earningsDate') || undefined;
+
+      const filter = cleanFalsyValues({
+        symbol,
+        startDate: earningsDate,
+        endDate: earningsDate
+      });
+
       dispatch(
         getEstForecastFilterPaging({
           page,
           limit: pageSize,
-          ...filteredFilter,
-          symbol: symbol
+          ...filter
         })
       );
     },
@@ -101,14 +101,18 @@ export const EstForecastSelectedTable = () => {
   );
 
   useEffect(() => {
-    const symbol = searchParams.get('symbol');
-    fetchEstForecast({
-      filter: {
-        ...filter,
-        symbol: symbol || undefined
-      }
-    });
-  }, [filter, searchParams, fetchEstForecast]);
+    fetchEstForecast({});
+  }, [searchParams, fetchEstForecast]);
+
+  useEffect(() => {
+    if (!searchParams.get('earningsDate')) {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set('earningsDate', dayjs().format('YYYY-MM-DD'));
+      const search = current.toString();
+      const query = search ? `?${search}` : '';
+      router.replace(`${pathname}${query}`);
+    }
+  }, [searchParams, pathname, router]);
 
   const handleSearch = (value: string) => {
     if (!value) return;
@@ -117,28 +121,38 @@ export const EstForecastSelectedTable = () => {
   };
 
   const handlePageChange = (page: number, pageSize: number) => {
-    fetchEstForecast({ page, pageSize, filter });
+    fetchEstForecast({ page, pageSize });
   };
 
   useEffect(() => {
     if (addSuccess) {
-      fetchEstForecast({ filter });
+      fetchEstForecast({});
+      const earningsDate =
+        searchParams.get('earningsDate') || dayjs().format('YYYY-MM-DD');
       dispatch(
         getCountEstForecast({
-          fromDate: filter.startDate || dayjs().format('YYYY-MM-DD'),
-          toDate: filter.endDate || dayjs().format('YYYY-MM-DD')
+          fromDate: earningsDate,
+          toDate: earningsDate
         })
       );
       if (lastAddedEarningsDate) {
-        setFilter({
-          ...filter,
-          startDate: lastAddedEarningsDate,
-          endDate: lastAddedEarningsDate
-        });
+        const current = new URLSearchParams(Array.from(searchParams.entries()));
+        current.set('earningsDate', lastAddedEarningsDate);
+        const search = current.toString();
+        const query = search ? `?${search}` : '';
+        router.push(`${pathname}${query}`);
       }
       dispatch(resetAddEstForecastState());
     }
-  }, [addSuccess, dispatch, fetchEstForecast, filter, lastAddedEarningsDate]);
+  }, [
+    addSuccess,
+    dispatch,
+    fetchEstForecast,
+    lastAddedEarningsDate,
+    pathname,
+    router,
+    searchParams
+  ]);
 
   const startEdit = useCallback(
     (record: EstForecastFilterItem) => {
@@ -164,14 +178,16 @@ export const EstForecastSelectedTable = () => {
   const handleDelete = useCallback(
     async (id: number) => {
       await dispatch(deleteEstForecast(id));
+      const earningsDate =
+        searchParams.get('earningsDate') || dayjs().format('YYYY-MM-DD');
       dispatch(
         getCountEstForecast({
-          fromDate: filter.startDate || dayjs().format('YYYY-MM-DD'),
-          toDate: filter.endDate || dayjs().format('YYYY-MM-DD')
+          fromDate: earningsDate,
+          toDate: earningsDate
         })
       );
     },
-    [dispatch, filter.startDate, filter.endDate]
+    [dispatch, searchParams]
   );
 
   const renderNumber = useCallback(
@@ -204,17 +220,6 @@ export const EstForecastSelectedTable = () => {
         return trimmed === '' ? '-' : trimmed;
       }
       return String(value);
-    },
-    []
-  );
-
-  const renderDate = useCallback(
-    (
-      value: string | undefined,
-      _field: keyof EstForecastFilterItem | string,
-      _record: EstForecastFilterItem
-    ) => {
-      return value ? <div>{dayjs(value).utc().format('MM-DD-YYYY')}</div> : '-';
     },
     []
   );
@@ -754,14 +759,14 @@ export const EstForecastSelectedTable = () => {
       }
     ],
 
-    [t, isMobile, renderNumber, renderText, renderDate, dispatch, renderAction]
+    [t, renderNumber, renderText, renderAction]
   );
 
   return (
     <div css={rootStyles}>
       <EstForecastFilter
         onFilter={handleFilter}
-        selectedDate={filter.startDate}
+        selectedDate={searchParams.get('earningsDate') || undefined}
       />
 
       <div css={tableWrapperStyles}>
