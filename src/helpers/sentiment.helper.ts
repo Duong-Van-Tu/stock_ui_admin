@@ -155,6 +155,7 @@ export const transformLisNewsSentiment = (listNews: any[]): NewsSentiment[] => {
 export const transformFinnhubAndLsegNews = (
   list: any[] = []
 ): FinnhubAndLsegNewsTableItem[] => {
+  if (!list?.length) return [];
   return list.map((item) => ({
     key: uuid(),
     id: item.id,
@@ -183,6 +184,10 @@ export const transformFinnhubAndLsegNews = (
     grokRec: item[fieldMapping.grokRec],
     grokReasoning: item[fieldMapping.grokReasoning],
     currentPrice: item[fieldMapping.currentPrice],
+    currentPricePct: item[fieldMapping.currentPricePct],
+    highestPricePct: item[fieldMapping.highestPricePct],
+    highest3DaysPricePct: item[fieldMapping.highest3DaysPricePct],
+    lowest3DaysPricePct: item[fieldMapping.lowest3DaysPricePct],
     entryDate: item[fieldMapping.entryDate],
     entryPrice: item[fieldMapping.entryPrice],
     highestPrice: item[fieldMapping.highestPrice],

@@ -125,6 +125,10 @@ type FinnhubAndLsegNewsTableItem = {
   grokRec: string;
   grokReasoning: string;
   currentPrice: number;
+  currentPricePct: number;
+  highestPricePct: number;
+  highest3DaysPricePct: number;
+  lowest3DaysPricePct: number;
   entryDate: string;
   entryPrice: number;
   highestPrice: number;

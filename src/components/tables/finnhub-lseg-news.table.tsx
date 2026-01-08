@@ -34,6 +34,8 @@ import { useTranslations } from 'next-intl';
 import { Icon } from '../icons';
 import { PositiveNegativeText } from '../positive-negative-text';
 import { Recommendation } from '@/constants/common.constant';
+import { ExportExcelFinnhubLsegNews } from '../export-excel-finnhub-lseg-news';
+import { StockChangeCell } from './columns/stock-change-cell.column';
 
 export const FinnhubAndLsegNewsTable = () => {
   const t = useTranslations();
@@ -491,20 +493,6 @@ export const FinnhubAndLsegNewsTable = () => {
           )
       },
       {
-        title: 'Current Price',
-        dataIndex: 'currentPrice',
-        key: 'currentPrice',
-        width: 130,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'currentPrice' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('currentPrice')
-        }),
-        align: 'center',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
-      },
-      {
         title: 'Entry Date',
         dataIndex: 'entryDate',
         key: 'entryDate',
@@ -533,46 +521,86 @@ export const FinnhubAndLsegNewsTable = () => {
         render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
       },
       {
-        title: 'Highest Price',
-        dataIndex: 'highestPrice',
-        key: 'highestPrice',
+        title: 'Current Price',
+        dataIndex: 'currentPricePct',
+        key: 'currentPricePct',
         width: 130,
         sorter: true,
         showSorterTooltip: false,
-        sortOrder: sortField === 'highestPrice' ? sortType : null,
+        sortOrder: sortField === 'currentPricePct' ? sortType : null,
         onHeaderCell: () => ({
-          onClick: () => handleSortOrder('highestPrice')
+          onClick: () => handleSortOrder('currentPricePct')
         }),
         align: 'center',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+        render: (value, record) =>
+          value ? (
+            <StockChangeCell value={record.currentPrice} percentage={value} />
+          ) : (
+            '-'
+          )
+      },
+      {
+        title: 'Highest Price',
+        dataIndex: 'highestPricePct',
+        key: 'highestPricePct',
+        width: 130,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'highestPricePct' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('highestPricePct')
+        }),
+        align: 'center',
+        render: (value, record) =>
+          value ? (
+            <StockChangeCell value={record.highestPrice} percentage={value} />
+          ) : (
+            '-'
+          )
       },
       {
         title: 'Highest 3 Days Price',
-        dataIndex: 'highest3DaysPrice',
-        key: 'highest3DaysPrice',
-        width: 150,
+        dataIndex: 'highest3DaysPricePct',
+        key: 'highest3DaysPricePct',
+        width: 180,
         sorter: true,
         showSorterTooltip: false,
-        sortOrder: sortField === 'highest3DaysPrice' ? sortType : null,
+        sortOrder: sortField === 'highest3DaysPricePct' ? sortType : null,
         onHeaderCell: () => ({
-          onClick: () => handleSortOrder('highest3DaysPrice')
+          onClick: () => handleSortOrder('highest3DaysPricePct')
         }),
         align: 'center',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+        render: (value, record) =>
+          value ? (
+            <StockChangeCell
+              value={record.highest3DaysPrice}
+              percentage={value}
+            />
+          ) : (
+            '-'
+          )
       },
       {
         title: 'Lowest 3 Days Price',
-        dataIndex: 'lowest3DaysPrice',
-        key: 'lowest3DaysPrice',
-        width: 150,
+        dataIndex: 'lowest3DaysPricePct',
+        key: 'lowest3DaysPricePct',
+        width: 180,
         sorter: true,
         showSorterTooltip: false,
-        sortOrder: sortField === 'lowest3DaysPrice' ? sortType : null,
+        sortOrder: sortField === 'lowest3DaysPricePct' ? sortType : null,
         onHeaderCell: () => ({
-          onClick: () => handleSortOrder('lowest3DaysPrice')
+          onClick: () => handleSortOrder('lowest3DaysPricePct')
         }),
         align: 'center',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+        render: (value, record) =>
+          value ? (
+            <StockChangeCell
+              value={record.lowest3DaysPricePct}
+              percentage={value}
+            />
+          ) : (
+            '-'
+          )
       },
       {
         title: 'URL',
@@ -636,7 +664,9 @@ export const FinnhubAndLsegNewsTable = () => {
               />
             </Tooltip>
           </TableTitle>
-          <div css={actionStyles}></div>
+          <div css={actionStyles}>
+            <ExportExcelFinnhubLsegNews filter={filter} />
+          </div>
         </div>
         <Table<any>
           size={isMobile ? 'small' : 'middle'}
