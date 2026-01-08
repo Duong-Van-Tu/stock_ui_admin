@@ -116,7 +116,7 @@ export const EstForecastSelectedTable = () => {
 
   const handleSearch = (value: string) => {
     if (!value) return;
-    setSearchValue(value);
+    setSearchValue('');
     openModal(<EstForecastTable symbol={value} />, { width: 1600 });
   };
 
