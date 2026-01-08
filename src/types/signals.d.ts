@@ -107,6 +107,7 @@ type AlertLogsFilter = Filter & {
   sector?: string;
   industry?: string;
   timeFrame?: string;
+  macd?: string;
 };
 
 type Strategy = {

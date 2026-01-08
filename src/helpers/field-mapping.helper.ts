@@ -8,6 +8,7 @@ export const fieldMapping: Record<string, string> = {
   isAdd: 'isadd',
   isAddWatchList: 'isaddwl',
   isNews: 'isnews',
+  is_have_news: 'is_have_news',
   ytd: 'perf_ytd_value',
   dayChangePercent: 'daychangepercent',
   strategyName: 'strategy_name',

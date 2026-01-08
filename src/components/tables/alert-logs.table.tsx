@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import { Key, useCallback, useEffect, useState } from 'react';
+import { Key, useCallback, useEffect, useState, useRef } from 'react';
 import {
   Badge,
   Button,
@@ -85,6 +85,7 @@ import { VisibleColumnsStorageKey } from '@/constants/column.constant';
 import { useLocalStorage } from '@/hooks/local-storage.hook';
 import { TrendCell } from './columns/trend-cell.column';
 import { MacdCell } from './columns/macd-cell.column';
+import { PageURLs } from '@/utils/navigate';
 
 type AlertLogsTableProps = {
   isFilterPage?: boolean;
@@ -170,6 +171,18 @@ export const AlertLogsTable = ({
       defaultOrder: 'descend',
       currentFilter: filter,
       onChange: (_field, _order, newFilter) => {
+        if (_field === 'macd') {
+          newFilter.macd =
+            _order === 'ascend'
+              ? 'up'
+              : _order === 'descend'
+              ? 'down'
+              : undefined;
+          newFilter.sortField = undefined;
+          newFilter.sortType = undefined;
+        } else {
+          newFilter.macd = undefined;
+        }
         setFilter(newFilter);
       }
     });
@@ -190,6 +203,7 @@ export const AlertLogsTable = ({
   };
 
   const [isInitialFetchDone, setIsInitialFetchDone] = useState(false);
+  const prevParamsRef = useRef<string | null>(null);
 
   const fetchDataAlertLogs = useCallback(
     ({
@@ -211,9 +225,22 @@ export const AlertLogsTable = ({
         params.categoryId = 1;
       }
 
+      const paramsKey = JSON.stringify(params);
+      if (prevParamsRef.current === paramsKey) {
+        return;
+      }
+      prevParamsRef.current = paramsKey;
       dispatch(getAlertLogs(params));
     },
-    [dispatch, isFilterPage, sortField, sortType, isOption, inTrade]
+    [
+      dispatch,
+      isFilterPage,
+      sortField,
+      sortType,
+      isOption,
+      inTrade,
+      pagination.pageSize
+    ]
   );
 
   useEffect(() => {
@@ -371,6 +398,37 @@ export const AlertLogsTable = ({
         ) : (
           '-'
         )
+    },
+    {
+      title: t('newsAlert'),
+      dataIndex: 'is_have_news',
+      key: 'is_have_news',
+      width: 120,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'is_have_news' ? sortType : null,
+      hidden: inTrade !== 1,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('is_have_news')
+      }),
+      render: (value, record) => (
+        <PositiveNegativeText isPositive={value} isNegative={!value}>
+          <span
+            css={css`
+              text-decoration: underline;
+              cursor: pointer;
+            `}
+            onClick={() =>
+              router.push(
+                `${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`
+              )
+            }
+          >
+            {value ? t('yes') : t('no')}
+          </span>
+        </PositiveNegativeText>
+      )
     },
     {
       title: t('strategy'),
@@ -606,18 +664,21 @@ export const AlertLogsTable = ({
       key: 'macd',
       width: 210,
       align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'macd' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('macd')
+      }),
       render: (_, { macd5m, macd15m, macd1h, macd1d }) => (
-        console.log(macd5m, macd15m, macd1h, macd1d),
-        (
-          <MacdCell
-            {...{
-              '5M': macd5m,
-              '15M': macd15m,
-              '1H': macd1h,
-              '1D': macd1d
-            }}
-          />
-        )
+        <MacdCell
+          {...{
+            '5M': macd5m,
+            '15M': macd15m,
+            '1H': macd1h,
+            '1D': macd1d
+          }}
+        />
       )
     },
     {

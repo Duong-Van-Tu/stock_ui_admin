@@ -50,6 +50,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       companyName: stock[fieldMapping.companyName],
       earningDate: stock[fieldMapping.earningDate],
       isNews: stock[fieldMapping.isNews],
+      is_have_news: stock[fieldMapping.is_have_news],
       totalScore: stock[fieldMapping.totalScore],
       fundamentalScore: stock[fieldMapping.fundamentalScore],
       sentimentScore: stock[fieldMapping.sentimentScore],
@@ -157,6 +158,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
 
 export const mobileColumnKeys = [
   'symbol',
+  'is_have_news',
   'avgSentiment',
   'strategyName',
   'timeFrame',
