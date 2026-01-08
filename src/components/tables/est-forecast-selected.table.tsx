@@ -101,18 +101,18 @@ export const EstForecastSelectedTable = () => {
   );
 
   useEffect(() => {
-    fetchEstForecast({});
-  }, [searchParams, fetchEstForecast]);
+    const earningsDateInUrl = searchParams.get('earningsDate');
 
-  useEffect(() => {
-    if (!searchParams.get('earningsDate')) {
+    if (earningsDateInUrl) {
+      fetchEstForecast({});
+    } else {
       const current = new URLSearchParams(Array.from(searchParams.entries()));
       current.set('earningsDate', dayjs().format('YYYY-MM-DD'));
       const search = current.toString();
       const query = search ? `?${search}` : '';
       router.replace(`${pathname}${query}`);
     }
-  }, [searchParams, pathname, router]);
+  }, [searchParams, fetchEstForecast, pathname, router]);
 
   const handleSearch = (value: string) => {
     if (!value) return;
