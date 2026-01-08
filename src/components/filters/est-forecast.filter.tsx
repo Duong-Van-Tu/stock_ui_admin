@@ -111,24 +111,25 @@ export const EstForecastFilter = ({
 
   useEffect(() => {
     if (selectedDate) {
-      const selectedDay = dayjs(selectedDate);
-      if (
-        selectedDay.isAfter(currentWeek.subtract(1, 'day')) &&
-        selectedDay.isBefore(currentWeek.endOf('isoWeek').add(1, 'day'))
-      ) {
-        const index = weekDays.findIndex((day) =>
-          day.startOf('day').isSame(selectedDay.startOf('day'), 'day')
-        );
-        if (index !== -1) {
-          setSelected(index);
-        }
+      const selectedDay = dayjs.utc(selectedDate);
+      const newWeek = selectedDay.startOf('isoWeek');
+      setCurrentWeek(newWeek);
+
+      const newWeekDays = Array.from({ length: 7 }, (_, i) =>
+        newWeek.add(i, 'day')
+      );
+
+      const index = newWeekDays.findIndex((day) =>
+        day.isSame(selectedDay, 'day')
+      );
+
+      if (index !== -1) {
+        setSelected(index);
       } else {
-        const newWeek = selectedDay.startOf('isoWeek');
-        setCurrentWeek(newWeek);
         setSelected(0);
       }
     }
-  }, [selectedDate, currentWeek, weekDays]);
+  }, [selectedDate]);
 
   useEffect(() => {
     setTimeout(() => {
