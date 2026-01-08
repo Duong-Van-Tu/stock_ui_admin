@@ -533,7 +533,7 @@ export const FinnhubAndLsegNewsTable = () => {
         }),
         align: 'center',
         render: (value, record) =>
-          value ? (
+          isNumeric(value) ? (
             <StockChangeCell value={record.currentPrice} percentage={value} />
           ) : (
             '-'
@@ -552,7 +552,7 @@ export const FinnhubAndLsegNewsTable = () => {
         }),
         align: 'center',
         render: (value, record) =>
-          value ? (
+          isNumeric(value) ? (
             <StockChangeCell value={record.highestPrice} percentage={value} />
           ) : (
             '-'
@@ -571,7 +571,7 @@ export const FinnhubAndLsegNewsTable = () => {
         }),
         align: 'center',
         render: (value, record) =>
-          value ? (
+          isNumeric(value) ? (
             <StockChangeCell
               value={record.highest3DaysPrice}
               percentage={value}
@@ -593,7 +593,7 @@ export const FinnhubAndLsegNewsTable = () => {
         }),
         align: 'center',
         render: (value, record) =>
-          value ? (
+          isNumeric(value) ? (
             <StockChangeCell
               value={record.lowest3DaysPricePct}
               percentage={value}
