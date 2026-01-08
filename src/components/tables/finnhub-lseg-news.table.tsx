@@ -281,7 +281,6 @@ export const FinnhubAndLsegNewsTable = () => {
           onClick: () => handleSortOrder('articleScore')
         }),
         align: 'center',
-        hidden: !isLseg,
         render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
       },
       {
