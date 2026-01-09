@@ -573,5 +573,16 @@
   "upTrend": "Uptrend",
   "downTrend": "Downtrend",
   "allBreakingNews": "All Breaking News",
-  "searchByBreakingNews": "Search by Breaking News"
+  "searchByBreakingNews": "Search by Breaking News",
+  "removeFromCategorySuccess": "Successfully removed from {category}",
+  "removeFromCategoryFailed": "Failed to remove from {category}",
+  "addToTradeSuccess": "Successfully added to Trade",
+  "addToTradeFailed": "Failed to add to Trade",
+  "addToWatchlistSuccess": "Successfully added to Watchlist",
+  "addToWatchlistFailed": "Failed to add to Watchlist",
+  "confirmRemoveFromTrade": "Confirm Remove from Trade",
+  "confirmRemoveFromTradeDescription": "Are you sure you want to remove this alert from Trade?",
+  "confirmRemoveFromWatchlist": "Confirm Remove from Watchlist",
+  "confirmRemoveFromWatchlistDescription": "Are you sure you want to remove this alert from Watchlist?",
+  "remove": "Remove"
 }

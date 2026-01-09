@@ -42,8 +42,7 @@ import {
 import {
   getCategories,
   watchCategories,
-  addAlertLogToCategory,
-  deleteAlertLogInCategory
+  addAlertLogToCategory
 } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
@@ -60,11 +59,14 @@ import { useSortOrder } from '@/hooks/sort-order.hook';
 import { ExportExcelLog } from '../export-excel-signals';
 import { Icon } from '../icons';
 import { useModal } from '@/hooks/modal.hook';
+import { ConfirmRemoveCategory } from '../forms/confirm-remove-category.form';
+import { useNotification } from '@/hooks/notification.hook';
+import { AIExplain } from '../ai-explain';
+import { SignalInformation } from '../signal-information';
 import { NotesSignal } from '../forms/note-signal.form';
 import { ExitSignal } from '../forms/exit-signal.form';
 import { TableRowSelection } from 'antd/es/table/interface';
-import { AIExplain } from '../ai-explain';
-import { SignalInformation } from '../signal-information';
+import { isRequestSuccess } from '@/utils/request-status';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { watchSideBarCollapsed } from '@/redux/slices/app.slice';
 import EllipsisText from '../ellipsis-text';
@@ -100,6 +102,7 @@ export const AlertLogsTable = ({
   const searchParams = useSearchParams();
   const { height } = useWindowSize();
   const modal = useModal();
+  const { notifySuccess, notifyError } = useNotification();
   const storageKey = isFilterPage
     ? VisibleColumnsStorageKey.AlertLogsFilter
     : VisibleColumnsStorageKey.AlertLogs;
@@ -208,8 +211,9 @@ export const AlertLogsTable = ({
     ({
       page = PAGINATION_PARAMS.offset,
       pageSize = pagination.pageSize || PAGINATION_PARAMS.limit,
-      filter
-    }: PageChangeParams = {}) => {
+      filter,
+      force = false
+    }: PageChangeParams & { force?: boolean } = {}) => {
       const params: any = {
         isFilterPage,
         page,
@@ -222,7 +226,7 @@ export const AlertLogsTable = ({
       };
 
       const paramsKey = JSON.stringify(params);
-      if (prevParamsRef.current === paramsKey) {
+      if (!force && prevParamsRef.current === paramsKey) {
         return;
       }
       prevParamsRef.current = paramsKey;
@@ -325,7 +329,8 @@ export const AlertLogsTable = ({
     fetchDataAlertLogs({
       page: pagination.currentPage,
       pageSize: pagination.pageSize,
-      filter
+      filter,
+      force: true
     });
   }, [fetchDataAlertLogs, pagination.currentPage, pagination.pageSize, filter]);
 
@@ -408,7 +413,7 @@ export const AlertLogsTable = ({
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'is_have_news' ? sortType : null,
-      hidden: categoryId !== 1,
+      hidden: !categoryId,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('is_have_news')
       }),
@@ -1340,21 +1345,35 @@ export const AlertLogsTable = ({
                         : t('trade')}
                     </span>
                   ),
-                  onClick: () => {
-                    if (record.categoryIds?.includes(1)) {
-                      dispatch(
-                        deleteAlertLogInCategory({
-                          alertLogId: record.id,
-                          categoryId: 1
-                        })
+                  onClick: async () => {
+                    const categoryId = 1;
+                    const categoryName = t('trade');
+                    const isInCategory =
+                      record.categoryIds?.includes(categoryId);
+                    if (isInCategory) {
+                      modal.openModal(
+                        <ConfirmRemoveCategory
+                          alertLogId={record.id}
+                          categoryId={categoryId}
+                          categoryName={categoryName}
+                          title={t('confirmRemoveFromTrade')}
+                          description={t('confirmRemoveFromTradeDescription')}
+                          onSuccess={handleRefresh}
+                        />,
+                        { width: 400 }
                       );
                     } else {
-                      dispatch(
+                      const res = await dispatch(
                         addAlertLogToCategory({
                           alertLogId: record.id,
-                          categoryId: 1
+                          categoryId
                         })
                       );
+                      if (isRequestSuccess(res)) {
+                        notifySuccess(t('addToTradeSuccess'));
+                      } else {
+                        notifyError(t('addToTradeFailed'));
+                      }
                     }
                   }
                 },
@@ -1367,21 +1386,37 @@ export const AlertLogsTable = ({
                         : t('addToWatchlist')}
                     </span>
                   ),
-                  onClick: () => {
-                    if (record.categoryIds?.includes(2)) {
-                      dispatch(
-                        deleteAlertLogInCategory({
-                          alertLogId: record.id,
-                          categoryId: 2
-                        })
+                  onClick: async () => {
+                    const categoryId = 2;
+                    const categoryName = t('watchlist');
+                    const isInCategory =
+                      record.categoryIds?.includes(categoryId);
+                    if (isInCategory) {
+                      modal.openModal(
+                        <ConfirmRemoveCategory
+                          alertLogId={record.id}
+                          categoryId={categoryId}
+                          categoryName={categoryName}
+                          title={t('confirmRemoveFromWatchlist')}
+                          description={t(
+                            'confirmRemoveFromWatchlistDescription'
+                          )}
+                          onSuccess={handleRefresh}
+                        />,
+                        { width: 400 }
                       );
                     } else {
-                      dispatch(
+                      const res = await dispatch(
                         addAlertLogToCategory({
                           alertLogId: record.id,
-                          categoryId: 2
+                          categoryId
                         })
                       );
+                      if (isRequestSuccess(res)) {
+                        notifySuccess(t('addToWatchlistSuccess'));
+                      } else {
+                        notifyError(t('addToWatchlistFailed'));
+                      }
                     }
                   }
                 },
