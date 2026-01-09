@@ -5,6 +5,7 @@ import { Key, useCallback, useEffect, useState, useRef } from 'react';
 import {
   Badge,
   Button,
+  Dropdown,
   Segmented,
   Space,
   Table,
@@ -41,7 +42,6 @@ import {
 import {
   getCategories,
   watchCategories,
-  watchCategoryActionMap,
   addAlertLogToCategory,
   deleteAlertLogInCategory
 } from '@/redux/slices/signals.slice';
@@ -110,9 +110,9 @@ export const AlertLogsTable = ({
     ? Number(searchParams.get('isOption'))
     : 0;
 
-  const inTrade = searchParams.get('inTrade')
-    ? Number(searchParams.get('inTrade'))
-    : 0;
+  const categoryId = searchParams.get('categoryId')
+    ? Number(searchParams.get('categoryId'))
+    : undefined;
 
   const symbol = searchParams.get('symbol');
   const alertLogsData = useAppSelector(watchAlertLogsData);
@@ -120,7 +120,6 @@ export const AlertLogsTable = ({
   const loading = useAppSelector(watchAlertLogsLoading);
   const latestHitOnePercent = useAppSelector(watchLatestHitOnePercent);
   const categories = useAppSelector(watchCategories);
-  const categoryActionMap = useAppSelector(watchCategoryActionMap);
 
   const [filter, setFilter] = useState<AlertLogsFilter>({});
   const [isFilterReady, setIsFilterReady] = useState(false);
@@ -218,12 +217,9 @@ export const AlertLogsTable = ({
         sortField: fieldMapping[sortField] ?? sortField,
         sortType: convertSortType(sortType),
         ...filter,
-        isImport: isOption
+        isImport: isOption,
+        categoryId
       };
-
-      if (inTrade) {
-        params.categoryId = 1;
-      }
 
       const paramsKey = JSON.stringify(params);
       if (prevParamsRef.current === paramsKey) {
@@ -238,7 +234,7 @@ export const AlertLogsTable = ({
       sortField,
       sortType,
       isOption,
-      inTrade,
+      categoryId,
       pagination.pageSize
     ]
   );
@@ -279,12 +275,14 @@ export const AlertLogsTable = ({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOption, inTrade]);
+  }, [isOption, categoryId]);
 
   useEffect(() => {
     if (!isFilterPage) {
       const params = new URLSearchParams(searchParams.toString());
       params.delete('isOption');
+      params.delete('inTrade');
+      params.delete('watchlist');
       router.replace(`${pathname}?${params.toString()}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -308,12 +306,14 @@ export const AlertLogsTable = ({
       const params = new URLSearchParams(searchParams.toString());
 
       params.delete('isOption');
-      params.delete('inTrade');
+      params.delete('categoryId');
 
       if (view === AlertLogsView.OPTIONS) {
         params.set('isOption', '1');
       } else if (view === AlertLogsView.IN_TRADE) {
-        params.set('inTrade', '1');
+        params.set('categoryId', '1');
+      } else if (view === AlertLogsView.WATCHLIST) {
+        params.set('categoryId', '2');
       }
 
       router.replace(`${pathname}?${params.toString()}`);
@@ -408,7 +408,7 @@ export const AlertLogsTable = ({
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'is_have_news' ? sortType : null,
-      hidden: inTrade !== 1,
+      hidden: categoryId !== 1,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('is_have_news')
       }),
@@ -1322,135 +1322,126 @@ export const AlertLogsTable = ({
       key: 'action',
       fixed: isMobile ? undefined : 'right',
       align: 'center',
-      width: 170,
+      width: 80,
       render: (_, record) => {
         const isExit = !!record.exitDate;
-        const isInTrade = record.categoryIds?.includes(1);
 
         return (
-          <Space size='small'>
-            {!isInTrade ? (
-              <Tooltip title={isMobile ? null : t('trade')}>
-                <Button
-                  icon={
-                    <Icon
-                      icon='add'
-                      width={20}
-                      height={20}
-                      fill='var(--positive-color)'
-                    />
-                  }
-                  onClick={() =>
-                    dispatch(
-                      addAlertLogToCategory({
-                        alertLogId: record.id,
-                        categoryId: 1
-                      })
-                    )
-                  }
-                  loading={!!categoryActionMap?.[record.id]}
-                />
-              </Tooltip>
-            ) : (
-              <Tooltip title={isMobile ? null : t('removeFromTrade')}>
-                <Button
-                  icon={
-                    <Icon
-                      icon='trash'
-                      width={22}
-                      height={22}
-                      fill='var(--negative-color)'
-                    />
-                  }
-                  onClick={() =>
-                    dispatch(
-                      deleteAlertLogInCategory({
-                        alertLogId: record.id,
-                        categoryId: 1
-                      })
-                    )
-                  }
-                  loading={!!categoryActionMap?.[record.id]}
-                />
-              </Tooltip>
-            )}
-            <Tooltip title={isMobile ? null : t('notes')}>
-              <Button
-                onClick={() =>
-                  modal.openModal(
-                    <NotesSignal
-                      signalId={record.id}
-                      symbol={record.symbol}
-                      pageName={fieldMapping['stockAlertLogs']}
-                      title={t('noteSignalForSymbol')}
-                    />,
-                    {
-                      width: 500
+          <Dropdown
+            trigger={['click']}
+            menu={{
+              items: [
+                {
+                  key: 'trade',
+                  label: (
+                    <span>
+                      {record.categoryIds?.includes(1)
+                        ? t('removeFromTrade')
+                        : t('trade')}
+                    </span>
+                  ),
+                  onClick: () => {
+                    if (record.categoryIds?.includes(1)) {
+                      dispatch(
+                        deleteAlertLogInCategory({
+                          alertLogId: record.id,
+                          categoryId: 1
+                        })
+                      );
+                    } else {
+                      dispatch(
+                        addAlertLogToCategory({
+                          alertLogId: record.id,
+                          categoryId: 1
+                        })
+                      );
                     }
-                  )
-                }
-                icon={
-                  <Icon
-                    icon='notes'
-                    fill={
-                      record.isNotes
-                        ? 'var(--success-color)'
-                        : 'var(--gray-color)'
+                  }
+                },
+                {
+                  key: 'watchlist',
+                  label: (
+                    <span>
+                      {record.categoryIds?.includes(2)
+                        ? t('removeFromWatchlist')
+                        : t('addToWatchlist')}
+                    </span>
+                  ),
+                  onClick: () => {
+                    if (record.categoryIds?.includes(2)) {
+                      dispatch(
+                        deleteAlertLogInCategory({
+                          alertLogId: record.id,
+                          categoryId: 2
+                        })
+                      );
+                    } else {
+                      dispatch(
+                        addAlertLogToCategory({
+                          alertLogId: record.id,
+                          categoryId: 2
+                        })
+                      );
                     }
-                    width={22}
-                    height={22}
-                  />
-                }
-                css={notesBtnStyles}
-              />
-            </Tooltip>
-            <Tooltip title={isMobile ? null : t('exit')}>
-              <Button
-                disabled={isExit}
-                css={exitBtnStyles}
-                icon={
-                  <Icon
-                    icon='exit'
-                    width={22}
-                    height={22}
-                    fill={
-                      isExit ? 'var(--gray-light-color)' : 'var(--orange-color)'
-                    }
-                  />
-                }
-                onClick={() =>
-                  modal.openModal(
-                    <ExitSignal
-                      ids={[record.hashAlertLogId]}
-                      description={t('confirmExitOne')}
-                      title={
-                        <>
-                          {t('exit')}&nbsp;
-                          {t('signal')}&nbsp;
-                          <span
-                            css={exitTitleStyles}
-                          >{`"${record.symbol}"`}</span>
-                        </>
+                  }
+                },
+                {
+                  key: 'notes',
+                  label: t('notes'),
+                  onClick: () =>
+                    modal.openModal(
+                      <NotesSignal
+                        signalId={record.id}
+                        symbol={record.symbol}
+                        pageName={fieldMapping['stockAlertLogs']}
+                        title={t('noteSignalForSymbol')}
+                      />,
+                      {
+                        width: 500
                       }
-                    />,
-                    {
-                      width: 400
-                    }
-                  )
+                    )
+                },
+                {
+                  key: 'exit',
+                  label: t('exit'),
+                  disabled: isExit,
+                  onClick: () =>
+                    modal.openModal(
+                      <ExitSignal
+                        ids={[record.hashAlertLogId]}
+                        description={t('confirmExitOne')}
+                        title={
+                          <>
+                            {t('exit')}&nbsp;
+                            {t('signal')}&nbsp;
+                            <span
+                              css={exitTitleStyles}
+                            >{`"${record.symbol}"`}</span>
+                          </>
+                        }
+                      />,
+                      {
+                        width: 400
+                      }
+                    )
+                },
+                {
+                  key: 'backtest',
+                  label: 'Backtest',
+                  onClick: () =>
+                    modal.openModal(<SignalInformation signal={record} />, {
+                      width: 1200
+                    })
                 }
-              />
-            </Tooltip>
-            <Tooltip title={isMobile ? null : 'Backtest'}>
-              <Button
-                icon={<Icon icon='tv' width={22} height={22} fill='#1296db' />}
-                onClick={() =>
-                  modal.openModal(<SignalInformation signal={record} />, {
-                    width: 1200
-                  })
-                }
-              />
-            </Tooltip>
-          </Space>
+              ]
+            }}
+          >
+            <Button
+              type='text'
+              icon={<Icon icon='dotsVertical' width={18} height={18} />}
+              shape='circle'
+            />
+          </Dropdown>
         );
       }
     }
@@ -1587,11 +1578,21 @@ export const AlertLogsTable = ({
                     </div>
                   ),
                   value: AlertLogsView.IN_TRADE
+                },
+                {
+                  label: (
+                    <div css={segmentedLabelStyles}>
+                      {t('watchlist').toUpperCase()}
+                    </div>
+                  ),
+                  value: AlertLogsView.WATCHLIST
                 }
               ]}
               defaultValue={
-                inTrade
+                categoryId === 1
                   ? AlertLogsView.IN_TRADE
+                  : categoryId === 2
+                  ? AlertLogsView.WATCHLIST
                   : isOption
                   ? AlertLogsView.OPTIONS
                   : AlertLogsView.STOCKS
@@ -1803,12 +1804,6 @@ const emptyStyles = (height: number) => css`
   display: flex;
   flex-direction: column;
   justify-content: center;
-`;
-
-const notesBtnStyles = css`
-  display: flex;
-  align-items: center;
-  padding: 0 !important;
 `;
 
 const exitBtnStyles = css`
