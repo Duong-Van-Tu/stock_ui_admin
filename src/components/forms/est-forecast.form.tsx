@@ -507,6 +507,9 @@ export default function EstForecastForm({
             </Col>
           </Row>
         </Form.Item>
+        <Form.Item name='noteForTrader' label='Note for Trader'>
+          <Input.TextArea rows={3} />
+        </Form.Item>
         <Form.Item label='Aggregate Score / Point'>
           <Row gutter={8}>
             <Col span={12}>
@@ -521,10 +524,6 @@ export default function EstForecastForm({
             </Col>
           </Row>
         </Form.Item>
-        <Form.Item name='noteForTrader' label='Note for Trader'>
-          <Input.TextArea rows={3} />
-        </Form.Item>
-
         <Form.Item name='forecastPct' label='Forecast Pct'>
           <InputNumber style={{ width: '100%' }} addonAfter='%' />
         </Form.Item>
