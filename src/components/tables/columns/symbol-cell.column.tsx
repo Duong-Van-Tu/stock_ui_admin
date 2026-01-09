@@ -34,7 +34,6 @@ type SymbolCellProps = {
   stockInfo?: StockInfo;
   isOptions?: boolean;
   isSellSignal?: boolean;
-  symbolColor?: string;
   isPutOptions?: boolean;
   lsegNews?: number;
   link?: string;
@@ -52,7 +51,6 @@ export const SymbolCell = ({
   isPutOptions = false,
   isSellSignal = false,
   lsegNews,
-  symbolColor,
   link
 }: SymbolCellProps) => {
   const t = useTranslations();
@@ -170,10 +168,7 @@ export const SymbolCell = ({
             <span css={stockLinkStyles}>{symbol}</span>
           ) : (
             <Link
-              css={[
-                stockLinkStyles,
-                symbolColor && symbolColorStyles(symbolColor)
-              ]}
+              css={stockLinkStyles}
               href={link ?? PageURLs.ofStockDetail(symbol, signalId)}
               target={link ? undefined : isDesktop ? '_blank' : undefined}
             >
@@ -288,7 +283,7 @@ export const SymbolCell = ({
       </div>
 
       {companyName && (
-        <div css={companyNameStyles(!!symbolColor)}>
+        <div css={companyNameStyles()}>
           <EllipsisText text={companyName} maxLines={1} />
         </div>
       )}
@@ -326,12 +321,11 @@ const buttonStyles = css`
   border-radius: 50%;
 `;
 
-const companyNameStyles = (isColorSymbol: boolean) => css`
-  font-size: 1.2rem;
+const companyNameStyles = () => css`
+  font-size: 1.3rem;
   line-height: 1.4rem;
   font-weight: 500;
-  position: ${isColorSymbol && 'absolute'};
-  color: ${isColorSymbol ? 'var(--white-color)' : 'var(--text-color)'};
+  color: var(--text-color);
 `;
 
 const scoreWrapperStyles = css`
@@ -364,25 +358,4 @@ const sellIconStyles = css`
   position: absolute;
   left: -1.7rem;
   top: 0.2rem;
-`;
-
-const symbolColorStyles = (color: string) => css`
-  color: var(--white-color);
-  background: ${color};
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  width: 100%;
-  &:hover {
-    color: var(--white-color);
-    opacity: 0.9;
-  }
-
-  span {
-    position: absolute;
-    top: 0.4rem;
-    left: 1rem;
-  }
 `;

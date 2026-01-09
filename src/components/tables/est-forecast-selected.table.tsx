@@ -31,8 +31,9 @@ import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
+import { EstForecastValuePointCell } from './columns/est-forecast-value-point-cell.column';
 import { SymbolCell } from './columns/symbol-cell.column';
-import { formatMarketCap, formatNumberShort } from '@/utils/common';
+import { formatMarketCap } from '@/utils/common';
 import { isMobile } from 'react-device-detect';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
@@ -250,11 +251,15 @@ export const EstForecastSelectedTable = () => {
       {
         title: t('symbol'),
         dataIndex: 'symbol',
-        width: isMobile ? 110 : 160,
+        width: isMobile ? 110 : 200,
         fixed: 'left',
+        onCell: (record: EstForecastFilterItem | any) => ({
+          style: {
+            backgroundColor: record?.forecast || 'transparent'
+          }
+        }),
         render: (_, record) => (
           <SymbolCell
-            symbolColor={record.forecast}
             symbol={record.symbol}
             companyName={isMobile ? undefined : record.company}
             link={`${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`}
@@ -264,14 +269,14 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'Earnings Date',
         dataIndex: 'earningsDate',
-        width: 150,
+        width: 130,
         align: 'center',
         render: (v) => (v ? dayjs(v).format('MM-DD-YYYY') : '-')
       },
       {
         title: 'Trade Date',
         dataIndex: 'tradeDate',
-        width: 150,
+        width: 130,
         align: 'center',
         render: (v) => (v ? dayjs(v).format('MM-DD-YYYY') : '-')
       },
@@ -345,382 +350,417 @@ export const EstForecastSelectedTable = () => {
         render: (value) => (value ? formatMarketCap(value / 1000000) : '-')
       },
       {
-        title: 'Revenue Forecast',
+        title: (
+          <span>
+            Revenue Forecast
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'revenueForecast',
         width: 150,
         align: 'center',
-        render: (v) => {
-          if (!isNumeric(v)) return '-';
-          return formatNumberShort(Number(v));
-        }
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v} point={r.revenueForecastPoint} />
+        )
       },
       {
-        title: 'Revenue Forecast Point',
-        dataIndex: 'revenueForecastPoint',
-        width: 182,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'revenueForecastPoint', r)
-      },
-      {
-        title: 'Net Margin',
+        title: (
+          <span>
+            Net Margin
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'netMargin',
-        width: 130,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'netMargin', r, '%')
-      },
-      {
-        title: 'Net Margin Point',
-        dataIndex: 'netMarginPoint',
-        width: 160,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'netMarginPoint', r)
-      },
-      {
-        title: 'EPS Estimate',
-        dataIndex: 'epsEstimateESTEarnings',
         width: 120,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'epsEstimateESTEarnings', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell value={`${v}%`} point={r.netMarginPoint} />
+        )
       },
       {
-        title: 'EPS Point',
-        dataIndex: 'epsEstimatePoint',
-        width: 110,
+        title: (
+          <span>
+            EPS Estimate
+            <br />
+            (Point)
+          </span>
+        ),
+        dataIndex: 'epsEstimateESTEarnings',
+        width: 130,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'epsEstimatePoint', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v} point={r.epsEstimatePoint} />
+        )
       },
       {
-        title: 'EPS Trend',
+        title: (
+          <span>
+            EPS Trend
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'epsTrend',
         width: 120,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'epsTrend', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v} point={r.epsTrendPoint} />
+        )
       },
       {
-        title: 'EPS Trend Point',
-        dataIndex: 'epsTrendPoint',
-        width: 160,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'epsTrendPoint', r)
-      },
-      {
-        title: 'EPS Beat Freq',
+        title: (
+          <span>
+            EPS Beat Freq
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'epsBeatFreq',
-        width: 140,
+        width: 130,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'epsBeatFreq', r, '%')
+        render: (v, r) => (
+          <EstForecastValuePointCell
+            value={`${v}%`}
+            point={r.epsBeatFreqPoint}
+          />
+        )
       },
       {
-        title: 'EPS Beat Freq Point',
-        dataIndex: 'epsBeatFreqPoint',
-        width: 180,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'epsBeatFreqPoint', r)
-      },
-      {
-        title: 'Revenue Beat Freq',
+        title: (
+          <span>
+            Revenue Beat Freq
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'revenueBeatFreq',
-        width: 160,
+        width: 156,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'revenueBeatFreq', r, '%')
+        render: (v, r) => (
+          <EstForecastValuePointCell
+            value={`${v}%`}
+            point={r.revenueBeatFreqPoint}
+          />
+        )
       },
       {
-        title: 'Revenue Beat Freq Point',
-        dataIndex: 'revenueBeatFreqPoint',
-        width: 200,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'revenueBeatFreqPoint', r)
-      },
-      {
-        title: 'Avg Surprise',
+        title: (
+          <span>
+            Avg Surprise
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'avgSurpriseMagnitude',
-        width: 140,
+        width: 136,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'avgSurpriseMagnitude', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell
+            value={v}
+            point={r.avgSurpriseMagnitudePoint}
+          />
+        )
       },
       {
-        title: 'Avg Surprise Point',
-        dataIndex: 'avgSurpriseMagnitudePoint',
-        width: 150,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'avgSurpriseMagnitudePoint', r)
-      },
-      {
-        title: 'Post Earning Drift',
+        title: (
+          <span>
+            Post Earning Drift
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'postEarningDrift',
+        width: 146,
+        align: 'center',
+        render: (v, r) => (
+          <EstForecastValuePointCell
+            value={v}
+            point={r.postEarningDriftPoint}
+          />
+        )
+      },
+      {
+        title: (
+          <span>
+            YTD Performance
+            <br />
+            (Point)
+          </span>
+        ),
+        dataIndex: 'ytdPerformance',
+        width: 154,
+        align: 'center',
+        render: (v, r) => (
+          <EstForecastValuePointCell
+            value={`${v}%`}
+            point={r.ytdPerformancePoint}
+          />
+        )
+      },
+      {
+        title: (
+          <span>
+            Price Target
+            <br />
+            (Point)
+          </span>
+        ),
+        dataIndex: 'priceTarget',
         width: 140,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'postEarningDrift', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v} point={r.priceTargetPoint} />
+        )
       },
       {
-        title: 'Post Earning Drift Point',
-        dataIndex: 'postEarningDriftPoint',
-        width: 180,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'postEarningDriftPoint', r)
-      },
-      {
-        title: 'YTD Performance',
-        dataIndex: 'ytdPerformance',
-        width: 150,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'ytdPerformance', r, '%')
-      },
-      {
-        title: 'YTD Performance Point',
-        dataIndex: 'ytdPerformancePoint',
-        width: 180,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'ytdPerformancePoint', r)
-      },
-      {
-        title: 'Price Target',
-        dataIndex: 'priceTarget',
-        width: 110,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'priceTarget', r)
-      },
-      {
-        title: 'Price Target Point',
-        dataIndex: 'priceTargetPoint',
-        width: 150,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'priceTargetPoint', r)
-      },
-      {
-        title: 'Yahoo Rec',
+        title: (
+          <span>
+            Yahoo Rec
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'yahooRec',
         width: 170,
         align: 'center',
-        render: (v, r) => renderText(v, 'yahooRec', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v || '-'} point={r.yahooRecPoint} />
+        )
       },
       {
-        title: 'Yahoo Rec Point',
-        dataIndex: 'yahooRecPoint',
-        width: 130,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'yahooRecPoint', r)
-      },
-      {
-        title: 'AI Rating',
+        title: (
+          <span>
+            AI Rating
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'aiRating',
-        width: 100,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'aiRating', r)
-      },
-      {
-        title: 'AI Rating Point',
-        dataIndex: 'aiRatingPoint',
-        width: 128,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'aiRatingPoint', r)
-      },
-      {
-        title: 'Grok',
-        dataIndex: 'grok',
         width: 120,
         align: 'center',
-        render: (v, r) => renderText(v, 'grok', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v} point={r.aiRatingPoint} />
+        )
       },
       {
-        title: 'Grok Point',
-        dataIndex: 'grokPoint',
-        width: 150,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'grokPoint', r)
-      },
-      {
-        title: 'GPT Rating',
+        title: (
+          <span>
+            GPT Rating
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'gptRating',
-        width: 140,
+        width: 130,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'gptRating', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v} point={r.gptRatingPoint} />
+        )
       },
       {
-        title: 'GPT Rating Point',
-        dataIndex: 'gptRatingPoint',
-        width: 170,
+        title: (
+          <span>
+            Grok
+            <br />
+            (Point)
+          </span>
+        ),
+        dataIndex: 'grok',
+        width: 130,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'gptRatingPoint', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v || '-'} point={r.grokPoint} />
+        )
+      },
+      {
+        title: (
+          <span>
+            GPT
+            <br />
+            (Point)
+          </span>
+        ),
+        dataIndex: 'gpt',
+        width: 120,
+        align: 'center',
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v || '-'} point={r.gptPoint} />
+        )
       },
       {
         title: 'LSEG News Total Score Point',
         dataIndex: 'lsegNewsTotalScorePoint',
-        width: 216,
+        width: 220,
         align: 'center',
         render: (v, r) => renderNumber(v, 'lsegNewsTotalScorePoint', r)
       },
       {
-        title: 'LSEG News Score (1D)',
+        title: (
+          <span>
+            LSEG News Score (1D)
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'lsegNewsScore1d',
-        width: 174,
+        width: 200,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'lsegNewsScore1d', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v} point={r.lsegNewsScore1dPoint} />
+        )
       },
       {
-        title: 'LSEG News Score (1D) Point',
-        dataIndex: 'lsegNewsScore1dPoint',
-        width: 212,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'lsegNewsScore1dPoint', r)
-      },
-      {
-        title: 'LSEG News Score (3D)',
+        title: (
+          <span>
+            LSEG News Score (3D)
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'lsegNewsScore3d',
-        width: 180,
+        width: 200,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'lsegNewsScore3d', r)
-      },
-      {
-        title: 'LSEG News Score (3D) Point',
-        dataIndex: 'lsegNewsScore3dPoint',
-        width: 216,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'lsegNewsScore3dPoint', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v} point={r.lsegNewsScore3dPoint} />
+        )
       },
       {
         title: 'Article 12h',
         dataIndex: 'article12h',
         width: 130,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'article12h', r)
+        render: (v, r) =>
+          isNumeric(v)
+            ? renderNumber(v, 'article12h', r)
+            : renderText(v, 'article12h', r)
       },
       {
-        title: 'Article 12h Point',
-        dataIndex: 'article12hPoint',
+        title: (
+          <span>
+            MP Earnings Dir
+            <br />
+            (Point)
+          </span>
+        ),
+        dataIndex: 'marketpsychEarningsDirectionZ',
+        width: 140,
+        align: 'center',
+        render: (v, r) => (
+          <EstForecastValuePointCell
+            value={v}
+            point={r.marketpsychEarningsDirectionZPoint}
+          />
+        )
+      },
+      {
+        title: (
+          <span>
+            MP Earnings Forecast
+            <br />
+            (Point)
+          </span>
+        ),
+        dataIndex: 'marketpsychEarningsForecastZ',
         width: 180,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'article12hPoint', r),
-        hidden: true
+        render: (v, r) => (
+          <EstForecastValuePointCell
+            value={v}
+            point={r.marketpsychEarningsForecastZPoint}
+          />
+        )
       },
       {
-        title: 'MP Earnings Dir',
-        dataIndex: 'marketpsychEarningsDirectionZ',
-        width: 148,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'marketpsychEarningsDirectionZ', r)
-      },
-      {
-        title: 'MP Earnings Dir Point',
-        dataIndex: 'marketpsychEarningsDirectionZPoint',
-        width: 186,
-        align: 'center',
-        render: (v, r) =>
-          renderNumber(v, 'marketpsychEarningsDirectionZPoint', r)
-      },
-      {
-        title: 'MP Earnings Forecast',
-        dataIndex: 'marketpsychEarningsForecastZ',
-        width: 188,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'marketpsychEarningsForecastZ', r)
-      },
-      {
-        title: 'MP Earnings Forecast Point',
-        dataIndex: 'marketpsychEarningsForecastZPoint',
-        width: 230,
-        align: 'center',
-        render: (v, r) =>
-          renderNumber(v, 'marketpsychEarningsForecastZPoint', r)
-      },
-      {
-        title: 'MP Revenue Dir',
+        title: (
+          <span>
+            MP Revenue Dir
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'marketpsychRevenueDirectionZ',
         width: 150,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'marketpsychRevenueDirectionZ', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell
+            value={v}
+            point={r.marketpsychRevenueDirectionZPoint}
+          />
+        )
       },
       {
-        title: 'MP Revenue Dir Point',
-        dataIndex: 'marketpsychRevenueDirectionZPoint',
-        width: 188,
-        align: 'center',
-        render: (v, r) =>
-          renderNumber(v, 'marketpsychRevenueDirectionZPoint', r)
-      },
-      {
-        title: 'MP Revenue Forecast',
+        title: (
+          <span>
+            MP Revenue Forecast
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'marketpsychRevenueForecastZ',
-        width: 188,
+        width: 170,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'marketpsychRevenueForecastZ', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell
+            value={v}
+            point={r.marketpsychRevenueForecastZPoint}
+          />
+        )
       },
       {
-        title: 'MP Revenue Forecast Point',
-        dataIndex: 'marketpsychRevenueForecastZPoint',
-        width: 226,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'marketpsychRevenueForecastZPoint', r)
-      },
-      {
-        title: 'MP Price Up',
+        title: (
+          <span>
+            MP Price Up
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'marketpsychPriceUpZ',
-        width: 124,
+        width: 130,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'marketpsychPriceUpZ', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell
+            value={v}
+            point={r.marketpsychPriceUpZPoint}
+          />
+        )
       },
       {
-        title: 'MP Price Up Point',
-        dataIndex: 'marketpsychPriceUpZPoint',
-        width: 180,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'marketpsychPriceUpZPoint', r)
-      },
-      {
-        title: 'MP Optimism',
+        title: (
+          <span>
+            MP Optimism
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'marketpsychOptimismZ',
         width: 130,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'marketpsychOptimismZ', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell
+            value={v}
+            point={r.marketpsychOptimismZPoint}
+          />
+        )
       },
       {
-        title: 'MP Optimism Point',
-        dataIndex: 'marketpsychOptimismZPoint',
-        width: 170,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'marketpsychOptimismZPoint', r)
-      },
-      {
-        title: 'MP Trust',
+        title: (
+          <span>
+            MP Trust
+            <br />
+            (Point)
+          </span>
+        ),
         dataIndex: 'marketpsychTrustZ',
-        width: 104,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'marketpsychTrustZ', r)
-      },
-      {
-        title: 'MP Trust Point',
-        dataIndex: 'marketpsychTrustZPoint',
         width: 140,
         align: 'center',
-        render: (v, r) => renderNumber(v, 'marketpsychTrustZPoint', r)
-      },
-      {
-        title: 'Aggregate Score',
-        dataIndex: 'aggregateScore',
-        width: 150,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'aggregateScore', r)
-      },
-      {
-        title: 'Aggregate Score Point',
-        dataIndex: 'aggregateScorePoint',
-        width: 190,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'aggregateScorePoint', r)
-      },
-      {
-        title: 'GPT',
-        dataIndex: 'gpt',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderText(v, 'gpt', r)
-      },
-      {
-        title: 'GPT Point',
-        dataIndex: 'gptPoint',
-        width: 150,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'gptPoint', r)
+        render: (v, r) => (
+          <EstForecastValuePointCell
+            value={v}
+            point={r.marketpsychTrustZPoint}
+          />
+        )
       },
       {
         title: 'Note for Trader',
@@ -728,6 +768,21 @@ export const EstForecastSelectedTable = () => {
         width: 130,
         align: 'center',
         render: (v, r) => renderText(v, 'noteForTrader', r)
+      },
+      {
+        title: (
+          <span>
+            Aggregate Score
+            <br />
+            (Point)
+          </span>
+        ),
+        dataIndex: 'aggregateScore',
+        width: 180,
+        align: 'center',
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v} point={r.aggregateScorePoint} />
+        )
       },
       {
         title: 'Forecast Pct',

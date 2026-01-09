@@ -76,7 +76,7 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         title: 'Symbol',
         dataIndex: 'symbol',
         key: 'symbol',
-        width: isMobile ? 110 : 160,
+        width: isMobile ? 110 : 200,
         fixed: 'left',
         render: (_, record) => (
           <SymbolCell

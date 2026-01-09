@@ -15,11 +15,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
-import {
-  cleanFalsyValues,
-  getTextColorSymbol,
-  isNumeric
-} from '@/utils/common';
+import { cleanFalsyValues, isNumeric } from '@/utils/common';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { SymbolCell } from './columns/symbol-cell.column';
@@ -147,19 +143,11 @@ export const ListNewsTable = () => {
       dataIndex: 'symbols',
       key: 'symbols',
       width: 110,
-      render: (value, record) => (
+      render: (value, _record) => (
         <div css={symbolColumnStyles}>
           <div css={listSymbolStyles}>
             {value.map((symbol: string) => (
-              <SymbolCell
-                key={symbol}
-                symbolColor={
-                  isNumeric(record.sentiment)
-                    ? getTextColorSymbol(record.sentiment)
-                    : undefined
-                }
-                symbol={symbol}
-              />
+              <SymbolCell key={symbol} symbol={symbol} />
             ))}
           </div>
         </div>
@@ -176,9 +164,9 @@ export const ListNewsTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('title')
       }),
-      render: (value, record) => (
+      render: (value, _record) => (
         <div css={titleCellStyles}>
-          {(record.urgency === 1 || record.urgency === 2) && (
+          {(_record.urgency === 1 || _record.urgency === 2) && (
             <Tooltip
               css={fireIconStyles}
               title={isMobile ? null : t('breakingNews')}
