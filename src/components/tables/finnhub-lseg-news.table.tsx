@@ -149,7 +149,15 @@ export const FinnhubAndLsegNewsTable = () => {
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('symbol')
         }),
-        render: (value) => <SymbolCell symbol={value} />
+        render: (value) => <SymbolCell symbol={value} />,
+        onCell: (record) => ({
+          className:
+            record.breakingNews === 1
+              ? 'hl-breaking-news-positive'
+              : record.breakingNews === -1
+              ? 'hl-breaking-news-negative'
+              : ''
+        })
       },
       {
         title: 'Publishing Time',
@@ -258,7 +266,7 @@ export const FinnhubAndLsegNewsTable = () => {
         title: 'News Type',
         dataIndex: 'newsType',
         key: 'newsType',
-        width: 140,
+        width: 180,
         sorter: true,
         showSorterTooltip: false,
         sortOrder: sortField === 'newsType' ? sortType : null,
@@ -674,15 +682,6 @@ export const FinnhubAndLsegNewsTable = () => {
           columns={columns}
           dataSource={dataSource}
           loading={loading}
-          rowClassName={(record) => {
-            if (record.breakingNews === 1) {
-              return 'hl-breaking-news-positive';
-            }
-            if (record.breakingNews === -1) {
-              return 'hl-breaking-news-negative';
-            }
-            return '';
-          }}
           scroll={{
             x: 1200,
             y: dataSource.length > 0 ? height - 340 : undefined
@@ -752,6 +751,14 @@ const filterBarStyles = css`
 const tableStyles = css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
+  }
+  .hl-breaking-news-positive {
+    background-color: var(--watching-color) !important;
+    color: #fff !important;
+  }
+  .hl-breaking-news-negative {
+    background-color: var(--soft-pink-color) !important;
+    color: #fff !important;
   }
 `;
 

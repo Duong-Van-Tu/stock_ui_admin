@@ -253,9 +253,9 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'symbol',
         width: isMobile ? 110 : 200,
         fixed: 'left',
-        onCell: (record: EstForecastFilterItem | any) => ({
+        onCell: (record) => ({
           style: {
-            backgroundColor: record?.forecast || 'transparent'
+            backgroundColor: record.forecast || 'transparent'
           }
         }),
         render: (_, record) => (
