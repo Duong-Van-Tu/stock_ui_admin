@@ -174,9 +174,9 @@ export const AlertLogsTable = ({
         if (_field === 'macd') {
           newFilter.macd =
             _order === 'ascend'
-              ? 'up'
-              : _order === 'descend'
               ? 'down'
+              : _order === 'descend'
+              ? 'up'
               : undefined;
           newFilter.sortField = undefined;
           newFilter.sortType = undefined;
