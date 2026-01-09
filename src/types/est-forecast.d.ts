@@ -38,7 +38,7 @@ type EstForecast = {
   lsegNewsTotalScorePoint: number | null;
   lsegNewsScore3d: number | null;
   lsegNewsScore3dPoint: number | null;
-  article12h: number | null;
+  article12h: string;
   article12hPoint: number | null;
   marketpsychEarningsDirectionZ: number | null;
   marketpsychEarningsDirectionZPoint: number | null;
@@ -110,7 +110,7 @@ type EstForecastFilterItem = {
   lsegNewsScore1dPoint: number | null;
   lsegNewsScore3d: number | null;
   lsegNewsScore3dPoint: number | null;
-  article12h: number | null;
+  article12h: string;
   article12hPoint: number | null;
   marketpsychEarningsDirectionZ: number | null;
   marketpsychEarningsDirectionZPoint: number | null;

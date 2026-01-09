@@ -400,7 +400,7 @@ export default function EstForecastForm({
         </Form.Item>
 
         <Form.Item name='article12h' label='Article 12h (19)'>
-          <InputNumber style={{ width: '100%' }} />
+          <Input style={{ width: '100%' }} />
         </Form.Item>
 
         <Form.Item label='MP Earnings Dir / Point (20)'>

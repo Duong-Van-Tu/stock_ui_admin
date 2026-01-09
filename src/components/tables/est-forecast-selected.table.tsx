@@ -633,10 +633,7 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'article12h',
         width: 130,
         align: 'center',
-        render: (v, r) =>
-          isNumeric(v)
-            ? renderNumber(v, 'article12h', r)
-            : renderText(v, 'article12h', r)
+        render: (v, r) => renderText(v, 'article12h', r)
       },
       {
         title: (
