@@ -222,7 +222,9 @@ export const AlertLogsTable = ({
         sortType: convertSortType(sortType),
         ...filter,
         isImport: isOption,
-        categoryId
+        categoryId,
+        fromEntryDate: !!categoryId ? undefined : filter.fromEntryDate,
+        toEntryDate: !!categoryId ? undefined : filter.toEntryDate
       };
 
       const paramsKey = JSON.stringify(params);
