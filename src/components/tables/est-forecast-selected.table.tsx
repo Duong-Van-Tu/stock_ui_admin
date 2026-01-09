@@ -24,7 +24,7 @@ import {
 } from '@/redux/slices/est-forecast.slice';
 import { useModal } from '@/hooks/modal.hook';
 import { EstForecastTable } from './est-forecast.table';
-import { isNumeric, roundToDecimals } from '@/utils/common';
+import { isNumeric, roundToDecimals, lightenColor } from '@/utils/common';
 import { EstForecastFilter } from '../filters/est-forecast.filter';
 import { cleanFalsyValues } from '@/utils/common';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
@@ -255,7 +255,9 @@ export const EstForecastSelectedTable = () => {
         fixed: 'left',
         onCell: (record) => ({
           style: {
-            backgroundColor: record.forecast || 'transparent'
+            backgroundColor: record.forecast
+              ? lightenColor(record.forecast, 0.5)
+              : 'transparent'
           }
         }),
         render: (_, record) => (

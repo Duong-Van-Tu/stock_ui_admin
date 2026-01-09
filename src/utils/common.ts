@@ -386,3 +386,21 @@ export const isUrl = (text: string): boolean => {
 
 export const scaleScore = (value?: number): number | undefined =>
   isNumeric(value) ? roundToDecimals(value! * 10, 1)! : undefined;
+
+export function lightenColor(hex: string, percent: number) {
+  hex = hex.replace('#', '');
+  if (hex.length === 3) {
+    hex = hex
+      .split('')
+      .map((x) => x + x)
+      .join('');
+  }
+  const num = parseInt(hex, 16);
+  let r = (num >> 16) & 0xff;
+  let g = (num >> 8) & 0xff;
+  let b = num & 0xff;
+  r = Math.round(r + (255 - r) * percent);
+  g = Math.round(g + (255 - g) * percent);
+  b = Math.round(b + (255 - b) * percent);
+  return `rgb(${r},${g},${b})`;
+}
