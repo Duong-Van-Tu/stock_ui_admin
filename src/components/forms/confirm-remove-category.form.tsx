@@ -8,25 +8,27 @@ import { useAppDispatch } from '@/redux/hooks';
 import { deleteAlertLogInCategory } from '@/redux/slices/signals.slice';
 import { isRequestSuccess } from '@/utils/request-status';
 import { useNotification } from '@/hooks/notification.hook';
-import { ReactNode } from 'react';
-import { Icon } from '../icons';
+import { Dispatch, ReactNode, SetStateAction } from 'react';
 
 type ConfirmRemoveCategoryProps = {
-  alertLogId: number;
+  alertLogId?: number;
+  alertLogIds?: number[];
   categoryId: number;
   categoryName: string;
   title: string | ReactNode;
   description?: string;
   onSuccess?: () => void;
+  setSelectedIds?: Dispatch<SetStateAction<Set<string>>>;
 };
 
 export const ConfirmRemoveCategory = ({
   alertLogId,
+  alertLogIds,
   categoryId,
-  categoryName,
   title,
   description,
-  onSuccess
+  onSuccess,
+  setSelectedIds
 }: ConfirmRemoveCategoryProps) => {
   const t = useTranslations();
   const [form] = Form.useForm();
@@ -35,16 +37,18 @@ export const ConfirmRemoveCategory = ({
   const { notifySuccess, notifyError } = useNotification();
 
   const handleFinish = async () => {
+    const ids = alertLogIds || (alertLogId ? [alertLogId] : []);
     const res = await dispatch(
-      deleteAlertLogInCategory({ alertLogId, categoryId })
+      deleteAlertLogInCategory({ alertLogIds: ids, categoryId })
     );
 
     if (isRequestSuccess(res)) {
-      notifySuccess(t('removeFromCategorySuccess', { category: categoryName }));
+      notifySuccess(t('removeFromCategorySuccess'));
       onSuccess?.();
+      setSelectedIds?.(new Set());
       closeModal();
     } else {
-      notifyError(t('removeFromCategoryFailed', { category: categoryName }));
+      notifyError(t('removeFromCategoryFailed'));
     }
   };
 
@@ -62,11 +66,7 @@ export const ConfirmRemoveCategory = ({
         <Form.Item css={formFooterStyles}>
           <div css={buttonGroupStyles}>
             <Button onClick={handleCancel}>{t('cancel')}</Button>
-            <Button
-              icon={<Icon icon='remove' width={18} height={18} />}
-              htmlType='submit'
-              danger
-            >
+            <Button htmlType='submit' danger>
               {t('remove')}
             </Button>
           </div>

@@ -574,8 +574,8 @@
   "downTrend": "Xu hướng giảm",
   "searchByBreakingNews": "Tìm kiếm theo Tin nóng hổi",
   "allBreakingNews": "Tất cả Tin nóng hổi",
-  "removeFromCategorySuccess": "Đã xóa thành công khỏi {category}",
-  "removeFromCategoryFailed": "Không thể xóa khỏi {category}",
+  "removeFromCategorySuccess": "Đã xóa thành công",
+  "removeFromCategoryFailed": "Xóa thất bại",
   "addToTradeSuccess": "Đã thêm thành công vào Giao dịch",
   "addToTradeFailed": "Không thể thêm vào Giao dịch",
   "addToWatchlistSuccess": "Đã thêm thành công vào Danh sách theo dõi",
@@ -584,5 +584,8 @@
   "confirmRemoveFromTradeDescription": "Bạn có chắc chắn muốn xóa cảnh báo này khỏi Giao dịch?",
   "confirmRemoveFromWatchlist": "Xác nhận xóa khỏi Danh sách theo dõi",
   "confirmRemoveFromWatchlistDescription": "Bạn có chắc chắn muốn xóa cảnh báo này khỏi Danh sách theo dõi?",
-  "remove": "Xóa"
+  "remove": "Xóa",
+  "deleteAll": "Xóa đã chọn",
+  "confirmRemoveAllFromCategory": "Xác nhận xóa các mục đã chọn",
+  "confirmRemoveAllFromCategoryDescription": "Bạn có chắc chắn muốn xóa các mục đã chọn không?"
 }

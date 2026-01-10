@@ -352,7 +352,7 @@ export const signalSlice = createAppSlice({
     ),
 
     deleteAlertLogInCategory: create.asyncThunk(
-      async (params: { alertLogId: number; categoryId: number }) => {
+      async (params: { alertLogIds: number[]; categoryId: number }) => {
         await defaultApiFetcher.post(
           'tickers/delete-alert-log-in-category',
           params
@@ -361,25 +361,31 @@ export const signalSlice = createAppSlice({
       },
       {
         pending: (state, action) => {
-          const { alertLogId } = action.meta.arg;
-          state.categoryActionLoading[alertLogId] = true;
+          const { alertLogIds } = action.meta.arg;
+          alertLogIds.forEach((alertLogId) => {
+            state.categoryActionLoading[alertLogId] = true;
+          });
         },
         fulfilled: (state, action) => {
-          const { alertLogId, categoryId } = action.payload;
-          state.categoryActionLoading[alertLogId] = false;
-          state.alertLogsData = state.alertLogsData.map((s) => {
-            if (s.id === alertLogId) {
-              return {
-                ...s,
-                categoryIds: s.categoryIds?.filter((id) => id !== categoryId)
-              };
-            }
-            return s;
+          const { alertLogIds, categoryId } = action.payload;
+          alertLogIds.forEach((alertLogId) => {
+            state.categoryActionLoading[alertLogId] = false;
+            state.alertLogsData = state.alertLogsData.map((s) => {
+              if (s.id === alertLogId) {
+                return {
+                  ...s,
+                  categoryIds: s.categoryIds?.filter((id) => id !== categoryId)
+                };
+              }
+              return s;
+            });
           });
         },
         rejected: (state, action) => {
-          const { alertLogId } = action.meta.arg as { alertLogId: number };
-          state.categoryActionLoading[alertLogId] = false;
+          const { alertLogIds } = action.meta.arg as { alertLogIds: number[] };
+          alertLogIds.forEach((alertLogId) => {
+            state.categoryActionLoading[alertLogId] = false;
+          });
         }
       }
     ),

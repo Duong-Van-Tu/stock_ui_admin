@@ -190,17 +190,17 @@ export const AlertLogsTable = ({
     });
 
   const onSelectChange = (_selectedRowKeys: Key[], selectedRows: Signal[]) => {
-    const alertLogIds = new Set(selectedRows.map((row) => row.hashAlertLogId));
+    const alertLogIds = new Set(selectedRows.map((row) => row.id.toString()));
     setSelectedIds(alertLogIds);
   };
 
   const rowSelection: TableRowSelection<Signal> = {
     selectedRowKeys: alertLogsData
-      .filter(({ hashAlertLogId }) => selectedIds.has(hashAlertLogId))
+      .filter(({ id }) => selectedIds.has(id.toString()))
       .map(({ key }) => key),
     onChange: onSelectChange,
     getCheckboxProps: (record) => ({
-      disabled: !!record.exitDate
+      disabled: categoryId !== 1 && categoryId !== 2 && !!record.exitDate
     })
   };
 
@@ -309,6 +309,7 @@ export const AlertLogsTable = ({
 
   const handleChangeView = useCallback(
     (view: AlertLogsView) => {
+      setSelectedIds(new Set());
       const params = new URLSearchParams(searchParams.toString());
 
       params.delete('isOption');
@@ -1355,7 +1356,7 @@ export const AlertLogsTable = ({
                     if (isInCategory) {
                       modal.openModal(
                         <ConfirmRemoveCategory
-                          alertLogId={record.id}
+                          alertLogIds={[record.id]}
                           categoryId={categoryId}
                           categoryName={categoryName}
                           title={t('confirmRemoveFromTrade')}
@@ -1380,6 +1381,9 @@ export const AlertLogsTable = ({
                   }
                 },
                 {
+                  type: 'divider'
+                },
+                {
                   key: 'watchlist',
                   label: (
                     <span>
@@ -1396,7 +1400,7 @@ export const AlertLogsTable = ({
                     if (isInCategory) {
                       modal.openModal(
                         <ConfirmRemoveCategory
-                          alertLogId={record.id}
+                          alertLogIds={[record.id]}
                           categoryId={categoryId}
                           categoryName={categoryName}
                           title={t('confirmRemoveFromWatchlist')}
@@ -1423,6 +1427,9 @@ export const AlertLogsTable = ({
                   }
                 },
                 {
+                  type: 'divider'
+                },
+                {
                   key: 'notes',
                   label: t('notes'),
                   onClick: () =>
@@ -1437,6 +1444,9 @@ export const AlertLogsTable = ({
                         width: 500
                       }
                     )
+                },
+                {
+                  type: 'divider'
                 },
                 {
                   key: 'exit',
@@ -1461,6 +1471,9 @@ export const AlertLogsTable = ({
                         width: 400
                       }
                     )
+                },
+                {
+                  type: 'divider'
                 },
                 {
                   key: 'backtest',
@@ -1561,39 +1574,72 @@ export const AlertLogsTable = ({
                 </Tooltip>
               </TableTitle>
               <div css={exitBtnContainerStyles}>
-                {selectedIds.size > 0 && (
-                  <Button
-                    onClick={() =>
-                      modal.openModal(
-                        <ExitSignal
-                          ids={Array.from(selectedIds)}
-                          setSelectedIds={setSelectedIds}
-                          title={t('exitSelectedSignals')}
-                          description={t('confirmExitSelected')}
-                        />,
-                        { width: 400 }
-                      )
-                    }
-                    icon={
-                      <Icon
-                        icon='exit'
-                        fill={
-                          selectedIds.size <= 0
-                            ? 'var(--gray-light-color)'
-                            : 'var(--orange-color)'
-                        }
-                        width={18}
-                        height={18}
-                      />
-                    }
-                    css={exitBtnStyles}
-                    disabled={selectedIds.size <= 0}
-                    size={isMobile ? 'small' : 'middle'}
-                    danger
-                  >
-                    {t('exitSelected')}
-                  </Button>
-                )}
+                {selectedIds.size > 0 &&
+                  categoryId !== 1 &&
+                  categoryId !== 2 && (
+                    <Button
+                      onClick={() =>
+                        modal.openModal(
+                          <ExitSignal
+                            ids={Array.from(selectedIds)}
+                            setSelectedIds={setSelectedIds}
+                            title={t('exitSelectedSignals')}
+                            description={t('confirmExitSelected')}
+                          />,
+                          { width: 400 }
+                        )
+                      }
+                      icon={
+                        <Icon
+                          icon='exit'
+                          fill={
+                            selectedIds.size <= 0
+                              ? 'var(--gray-light-color)'
+                              : 'var(--orange-color)'
+                          }
+                          width={18}
+                          height={18}
+                        />
+                      }
+                      css={exitBtnStyles}
+                      disabled={selectedIds.size <= 0}
+                      size={isMobile ? 'small' : 'middle'}
+                      danger
+                    >
+                      {t('exitSelected')}
+                    </Button>
+                  )}
+                {(categoryId === 1 || categoryId === 2) &&
+                  selectedIds.size > 0 && (
+                    <Button
+                      onClick={() =>
+                        modal.openModal(
+                          <ConfirmRemoveCategory
+                            alertLogIds={Array.from(selectedIds).map((id) =>
+                              parseInt(id)
+                            )}
+                            categoryId={categoryId}
+                            categoryName={
+                              categoryId === 1 ? t('trade') : t('watchlist')
+                            }
+                            title={t('confirmRemoveAllFromCategory')}
+                            description={t(
+                              'confirmRemoveAllFromCategoryDescription'
+                            )}
+                            onSuccess={handleRefresh}
+                            setSelectedIds={setSelectedIds}
+                          />,
+                          { width: 400 }
+                        )
+                      }
+                      icon={<Icon icon='trash' width={18} height={18} />}
+                      css={exitBtnStyles}
+                      size={isMobile ? 'small' : 'middle'}
+                      danger
+                    >
+                      {t('deleteAll')}
+                    </Button>
+                  )}
               </div>
             </div>
 
