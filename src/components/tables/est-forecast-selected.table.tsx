@@ -257,7 +257,7 @@ export const EstForecastSelectedTable = () => {
           style: {
             backgroundColor: record.forecast
               ? lightenColor(record.forecast, 0.5)
-              : 'transparent'
+              : 'var(--white-color)'
           }
         }),
         render: (_, record) => (
