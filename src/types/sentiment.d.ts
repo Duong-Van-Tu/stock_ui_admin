@@ -134,6 +134,9 @@ type FinnhubAndLsegNewsTableItem = {
   highestPrice: number;
   highest3DaysPrice: number;
   lowest3DaysPrice: number;
+  highestUpdateAt: string;
+  highest3DaysUpdateAt: string;
+  lowest3DaysUpdateAt: string;
 };
 
 type NewsScore = {

@@ -42,8 +42,6 @@ export const FinnhubAndLsegNewsTable = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const symbol = searchParams.get('symbol');
-  const sourceType = searchParams.get('sourceType');
-  const isLseg = sourceType === 'lseg';
   const { height } = useWindowSize();
   const modal = useModal();
 
@@ -410,7 +408,7 @@ export const FinnhubAndLsegNewsTable = () => {
           onClick: () => handleSortOrder('timeWeight')
         }),
         align: 'center',
-        hidden: isLseg,
+        hidden: filter.sourceType === 'lseg',
         render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
       },
       {
@@ -425,7 +423,7 @@ export const FinnhubAndLsegNewsTable = () => {
           onClick: () => handleSortOrder('weightedScore')
         }),
         align: 'center',
-        hidden: isLseg,
+        hidden: filter.sourceType === 'lseg',
         render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
       },
       {
@@ -566,10 +564,24 @@ export const FinnhubAndLsegNewsTable = () => {
           )
       },
       {
+        title: 'Highest Price Date',
+        dataIndex: 'highestUpdateAt',
+        key: 'highestUpdateAt',
+        width: 168,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'highestUpdateAt' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('highestUpdateAt')
+        }),
+        align: 'center',
+        render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+      },
+      {
         title: 'Highest 3 Days Price',
         dataIndex: 'highest3DaysPricePct',
         key: 'highest3DaysPricePct',
-        width: 180,
+        width: 140,
         sorter: true,
         showSorterTooltip: false,
         sortOrder: sortField === 'highest3DaysPricePct' ? sortType : null,
@@ -588,10 +600,24 @@ export const FinnhubAndLsegNewsTable = () => {
           )
       },
       {
+        title: 'Highest 3 Days Date',
+        dataIndex: 'highest3DaysUpdateAt',
+        key: 'highest3DaysUpdateAt',
+        width: 140,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'highest3DaysUpdateAt' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('highest3DaysUpdateAt')
+        }),
+        align: 'center',
+        render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+      },
+      {
         title: 'Lowest 3 Days Price',
         dataIndex: 'lowest3DaysPricePct',
         key: 'lowest3DaysPricePct',
-        width: 180,
+        width: 140,
         sorter: true,
         showSorterTooltip: false,
         sortOrder: sortField === 'lowest3DaysPricePct' ? sortType : null,
@@ -610,6 +636,20 @@ export const FinnhubAndLsegNewsTable = () => {
           )
       },
       {
+        title: 'Lowest 3 Days Date',
+        dataIndex: 'lowest3DaysUpdateAt',
+        key: 'lowest3DaysUpdateAt',
+        width: 140,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'lowest3DaysUpdateAt' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('lowest3DaysUpdateAt')
+        }),
+        align: 'center',
+        render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+      },
+      {
         title: 'URL',
         dataIndex: 'url',
         key: 'url',
@@ -620,7 +660,7 @@ export const FinnhubAndLsegNewsTable = () => {
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('url')
         }),
-        hidden: isLseg,
+        hidden: filter.sourceType === 'lseg',
         render: (value) =>
           isUrl(value) ? (
             <a href={value} target='_blank' rel='noopener noreferrer'>
@@ -633,7 +673,7 @@ export const FinnhubAndLsegNewsTable = () => {
     ],
     [
       t,
-      isLseg,
+      filter.sourceType,
       pagination.currentPage,
       pagination.pageSize,
       sortField,
