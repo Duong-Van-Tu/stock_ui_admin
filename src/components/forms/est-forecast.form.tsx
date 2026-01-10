@@ -201,7 +201,7 @@ export default function EstForecastForm({
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='epsBeatFreq' noStyle>
-                <InputNumber style={{ width: '100%' }} />
+                <Input style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -216,7 +216,7 @@ export default function EstForecastForm({
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='revenueBeatFreq' noStyle>
-                <InputNumber style={{ width: '100%' }} />
+                <Input style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -231,7 +231,7 @@ export default function EstForecastForm({
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='avgSurpriseMagnitude' noStyle>
-                <InputNumber style={{ width: '100%' }} />
+                <Input style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -246,7 +246,7 @@ export default function EstForecastForm({
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='postEarningDrift' noStyle>
-                <InputNumber style={{ width: '100%' }} />
+                <Input style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -261,7 +261,7 @@ export default function EstForecastForm({
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='ytdPerformance' noStyle>
-                <InputNumber style={{ width: '100%' }} />
+                <Input style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -276,7 +276,7 @@ export default function EstForecastForm({
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='priceTarget' noStyle>
-                <InputNumber style={{ width: '100%' }} />
+                <Input style={{ width: '100%' }} />
               </Form.Item>
             </Col>
             <Col span={12}>

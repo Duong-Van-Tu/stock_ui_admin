@@ -53,13 +53,21 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
       dispatch(
         addEstForecast({
           ...record,
-          epsBeatFreq: Number(record.epsBeatFreq || 0),
-          epsBeatFreqPoint: Number(record.epsBeatFreqPoint || 0),
-          revenueBeatFreq: Number(record.revenueBeatFreq || 0),
-          revenueBeatFreqPoint: Number(record.revenueBeatFreqPoint || 0),
-          gptRating: Number(record.gptRating || 0),
-          gptRatingPoint: Number(record.gptRatingPoint || 0),
-          lsegNewsTotalScorePoint: Number(record.lsegNewsTotalScorePoint || 0),
+          epsBeatFreq: record.epsBeatFreq,
+          epsBeatFreqPoint: record.epsBeatFreqPoint
+            ? Number(record.epsBeatFreqPoint)
+            : null,
+          revenueBeatFreq: record.revenueBeatFreq,
+          revenueBeatFreqPoint: record.revenueBeatFreqPoint
+            ? Number(record.revenueBeatFreqPoint)
+            : null,
+          gptRating: record.gptRating ? Number(record.gptRating) : null,
+          gptRatingPoint: record.gptRatingPoint
+            ? Number(record.gptRatingPoint)
+            : null,
+          lsegNewsTotalScorePoint: record.lsegNewsTotalScorePoint
+            ? Number(record.lsegNewsTotalScorePoint)
+            : null,
           earningsDate: createdDates[record.symbol]
             ? dayjs(createdDates[record.symbol]).format('YYYY-MM-DD')
             : record.earningsDate
@@ -213,7 +221,7 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         dataIndex: 'epsBeatFreq',
         width: 160,
         align: 'center',
-        render: (v) => (isNumeric(v) ? `${roundToDecimals(v, 2)}%` : '-')
+        render: (v) => v || '-'
       },
       {
         title: 'EPS Beat Freq Point',
@@ -231,14 +239,14 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         dataIndex: 'avgSurpriseMagnitude',
         width: 280,
         align: 'center',
-        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+        render: (v) => v || '-'
       },
       {
         title: 'Revenue Beat Freq',
         dataIndex: 'revenueBeatFreq',
         width: 170,
         align: 'center',
-        render: (v) => (isNumeric(v) ? `${roundToDecimals(v, 2)}%` : '-')
+        render: (v) => v || '-'
       },
       {
         title: 'Revenue Beat Freq Point',
@@ -252,35 +260,21 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         dataIndex: 'postEarningDrift',
         width: 240,
         align: 'center',
-        render: (v) =>
-          isNumeric(v) ? (
-            <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
-              {roundToDecimals(v, 2)}
-            </PositiveNegativeText>
-          ) : (
-            '-'
-          )
+        render: (v) => v || '-'
       },
       {
         title: 'Performance (YTD)',
         dataIndex: 'ytdPerformance',
         width: 160,
         align: 'center',
-        render: (v) =>
-          isNumeric(v) ? (
-            <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
-              {roundToDecimals(v, 2)}%
-            </PositiveNegativeText>
-          ) : (
-            '-'
-          )
+        render: (v) => v || '-'
       },
       {
         title: 'Price Target',
         dataIndex: 'priceTarget',
         width: 140,
         align: 'center',
-        render: (v) => (isNumeric(v) ? roundToDecimals(v, 2) : '-')
+        render: (v) => v || '-'
       },
       {
         title: 'AI Rating (Grok)',

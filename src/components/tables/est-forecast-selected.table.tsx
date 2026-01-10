@@ -423,10 +423,7 @@ export const EstForecastSelectedTable = () => {
         width: 130,
         align: 'center',
         render: (v, r) => (
-          <EstForecastValuePointCell
-            value={`${v}%`}
-            point={r.epsBeatFreqPoint}
-          />
+          <EstForecastValuePointCell value={v} point={r.epsBeatFreqPoint} />
         )
       },
       {
@@ -441,10 +438,7 @@ export const EstForecastSelectedTable = () => {
         width: 156,
         align: 'center',
         render: (v, r) => (
-          <EstForecastValuePointCell
-            value={`${v}%`}
-            point={r.revenueBeatFreqPoint}
-          />
+          <EstForecastValuePointCell value={v} point={r.revenueBeatFreqPoint} />
         )
       },
       {
@@ -495,10 +489,7 @@ export const EstForecastSelectedTable = () => {
         width: 154,
         align: 'center',
         render: (v, r) => (
-          <EstForecastValuePointCell
-            value={`${v}%`}
-            point={r.ytdPerformancePoint}
-          />
+          <EstForecastValuePointCell value={v} point={r.ytdPerformancePoint} />
         )
       },
       {
