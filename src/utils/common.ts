@@ -125,9 +125,30 @@ export function undefinedRefine(obj: Record<string, any>) {
   return JSON.parse(JSON.stringify(obj)); //remove key has undefined value
 }
 
-export function formatDateTime(date: string) {
+export const formatDateTime = (date: string) => {
   return dayjs(date).format('DD/MM/YYYY HH:mm:ss');
-}
+};
+
+export const stripTimeFromISOString = (isoString?: string | null): string => {
+  if (!isoString) {
+    return '-';
+  }
+  const tIndex = isoString.indexOf('T');
+  let datePart = isoString;
+  if (tIndex !== -1) {
+    datePart = isoString.substring(0, tIndex);
+  }
+
+  const parts = datePart.split('-');
+  if (parts.length === 3) {
+    const year = parts[0];
+    const month = parts[1];
+    const day = parts[2];
+    return `${month}-${day}-${year}`;
+  }
+
+  return datePart;
+};
 
 export const formatDateToDDMMYYYY = (date: string | Date | number) => {
   if (!date) return '';

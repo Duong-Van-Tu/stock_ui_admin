@@ -24,7 +24,7 @@ import {
 } from '@/redux/slices/est-forecast.slice';
 import { useModal } from '@/hooks/modal.hook';
 import { EstForecastTable } from './est-forecast.table';
-import { isNumeric, roundToDecimals, lightenColor } from '@/utils/common';
+import { isNumeric, roundToDecimals, lightenColor, stripTimeFromISOString } from '@/utils/common';
 import { EstForecastFilter } from '../filters/est-forecast.filter';
 import { cleanFalsyValues } from '@/utils/common';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
@@ -273,21 +273,21 @@ export const EstForecastSelectedTable = () => {
         dataIndex: 'earningsDate',
         width: 130,
         align: 'center',
-        render: (v) => (v ? dayjs(v).format('MM-DD-YYYY') : '-')
+        render: (v) => (v ? stripTimeFromISOString(v) : '-')
       },
       {
         title: 'Trade Date',
         dataIndex: 'tradeDate',
         width: 130,
         align: 'center',
-        render: (v) => (v ? dayjs(v).format('MM-DD-YYYY') : '-')
+        render: (v) => (v ? stripTimeFromISOString(v) : '-')
       },
       {
         title: 'Entry Date',
         dataIndex: 'entryDate',
         width: 150,
         align: 'center',
-        render: (v) => (v ? dayjs(v).format('MM-DD-YYYY') : '-')
+        render: (v) => (v ? stripTimeFromISOString(v) : '-')
       },
       {
         title: 'Entry Price',
