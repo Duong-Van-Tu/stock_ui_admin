@@ -55,3 +55,10 @@ export enum PeriodOptions {
   TenMinutes = '10M',
   FiveMinutes = '5M'
 }
+
+export const MARKET_PSYCH_DATA_TYPES = [
+  { value: 'News', label: 'News' },
+  { value: 'News_Headline', label: 'News Headline' },
+  { value: 'News_Social', label: 'News Social' },
+  { value: 'Social', label: 'Social' }
+];

@@ -6,7 +6,8 @@ import {
   transformListNewsLatest,
   transformListWatcher,
   transformNewsScores,
-  transformNewsScoreBySymbol
+  transformNewsScoreBySymbol,
+  transformMarketPsychLatest
 } from '@/helpers/sentiment.helper';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
@@ -22,6 +23,7 @@ export type SentimentState = {
   loadingListNews: boolean;
   loadingFinnhubAndLsegNews: boolean;
   loadingNewsScores: boolean;
+  loadingMarketPsych: boolean;
   listNews: NewsSentiment[];
   countSentiment: CountSentiment;
   companyNews: CompanyNews[];
@@ -30,12 +32,14 @@ export type SentimentState = {
   newsSentiment: NewsSentiment[];
   finnhubAndLsegNews: any[];
   newsScores: NewsScore[];
+  marketPsych: MarketPsych[];
   pagination: Pagination;
   listWatcherPagination: Pagination;
   newsLatestPagination: Pagination;
   listNewsPagination: Pagination;
   finnhubAndLsegNewsPagination: Pagination;
   newsScoresPagination: Pagination;
+  marketPsychPagination: Pagination; // Thêm pagination cho MarketPsych
   newsScoreBySymbol: NewsScoreBySymbol | null;
   loadingNewsScoreBySymbol: boolean;
 };
@@ -49,6 +53,7 @@ const initialState: SentimentState = {
   loadingListNews: false,
   loadingFinnhubAndLsegNews: false,
   loadingNewsScores: false,
+  loadingMarketPsych: false,
   listNews: [],
   countSentiment: {
     countPositive: 0,
@@ -62,6 +67,7 @@ const initialState: SentimentState = {
   newsSentiment: [],
   finnhubAndLsegNews: [],
   newsScores: [],
+  marketPsych: [],
   newsScoreBySymbol: null,
   loadingNewsScoreBySymbol: false,
   pagination: PAGINATION,
@@ -69,13 +75,49 @@ const initialState: SentimentState = {
   newsLatestPagination: PAGINATION,
   listNewsPagination: PAGINATION,
   finnhubAndLsegNewsPagination: PAGINATION,
-  newsScoresPagination: PAGINATION
+  newsScoresPagination: PAGINATION,
+  marketPsychPagination: PAGINATION // Khởi tạo pagination
 };
 
 export const SentimentSlice = createAppSlice({
   name: 'sentiment',
   initialState,
   reducers: (create) => ({
+    getMarketPsychLatest: create.asyncThunk(
+      async (query: MarketPsychFilter) => {
+        const response = await defaultApiFetcher.get(
+          'news/market-psych-latest',
+          {
+            query: {
+              ...(convertParamsByMapping(query!) || {})
+            }
+          }
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loadingMarketPsych = true;
+        },
+        fulfilled: (state, action) => {
+          state.loadingMarketPsych = false;
+          const result = action.payload.result || [];
+          state.marketPsych = transformMarketPsychLatest(result);
+
+          state.marketPsychPagination = {
+            currentPage: action.payload.currentPage,
+            pageSize: action.payload.limit,
+            total: action.payload.totalResult
+          };
+        },
+        rejected: (state) => {
+          state.loadingMarketPsych = false;
+          state.marketPsych = [];
+          state.marketPsychPagination = PAGINATION;
+        }
+      }
+    ),
+
     getCountSentiment: create.asyncThunk(
       async ({ symbol, query }: SentimentParams) => {
         const response = await defaultApiFetcher.get(
@@ -349,7 +391,10 @@ export const SentimentSlice = createAppSlice({
     watchNewsScoresLoading: (state) => state.loadingNewsScores,
     watchNewsScores: (state) => state.newsScores,
     watchNewsScoreBySymbol: (state) => state.newsScoreBySymbol,
-    watchNewsScoresPagination: (state) => state.newsScoresPagination
+    watchNewsScoresPagination: (state) => state.newsScoresPagination,
+    watchMarketPsych: (state) => state.marketPsych,
+    watchMarketPsychLoading: (state) => state.loadingMarketPsych,
+    watchMarketPsychPagination: (state) => state.marketPsychPagination
   }
 });
 
@@ -375,11 +420,15 @@ export const {
   watchNewsScoresLoading,
   watchNewsScores,
   watchNewsScoreBySymbol,
-  watchNewsScoresPagination
+  watchNewsScoresPagination,
+  watchMarketPsych,
+  watchMarketPsychLoading,
+  watchMarketPsychPagination
 } = SentimentSlice.selectors;
 
 export const {
   getNewsScoreBySymbol,
+  getMarketPsychLatest,
   getCountSentiment,
   getCompanyNews,
   getListWatcher,

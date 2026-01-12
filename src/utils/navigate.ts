@@ -100,4 +100,7 @@ export namespace PageURLs {
   export function ofEstForecastSelected() {
     return withPrefix('/forecast/selected');
   }
+  export function ofMarketPsychology() {
+    return withPrefix('/market-psychology');
+  }
 }

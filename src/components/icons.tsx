@@ -61,6 +61,7 @@ import FinnhubLseg from '@/assets/svg/finhub–lseg-news.svg';
 import InsightScore from '@/assets/svg/insight-score.svg';
 import Forecast from '@/assets/svg/est-forecast.svg';
 import Add from '@/assets/svg/add.svg';
+import marketPsychology from '@/assets/svg/market-psychology.svg';
 
 type IconProps = {
   width?: number | string;
@@ -130,7 +131,8 @@ const svgList = {
   FinnhubLseg,
   InsightScore,
   Forecast,
-  Add
+  Add,
+  marketPsychology
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = Object.entries(

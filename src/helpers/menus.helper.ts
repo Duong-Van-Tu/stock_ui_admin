@@ -60,18 +60,6 @@ export const getMenuStructure = (
       iconType: 'alertLogs',
       link: PageURLs.ofAlertLogs()
     },
-    // {
-    //   label: t('alertLogsFilter'),
-    //   key: 'alert-filter',
-    //   iconType: 'alertFilter',
-    //   link: PageURLs.ofAlertLogsFilter()
-    // },
-    // {
-    //   label: t('news'),
-    //   key: 'news',
-    //   iconType: 'news',
-    //   link: PageURLs.ofNews()
-    // },
     {
       label: t('newsScores'),
       key: 'insight-score',
@@ -85,27 +73,23 @@ export const getMenuStructure = (
       link: PageURLs.ofFinnhubLsegNews()
     },
     {
+      label: t('marketPsychology'),
+      key: 'market-psychology',
+      iconType: 'marketPsychology',
+      link: PageURLs.ofMarketPsychology()
+    },
+    {
       label: t('earnings'),
       key: 'earnings',
       iconType: 'earnings',
       link: PageURLs.ofEarings()
     },
     {
-      label: 'Earnings Strategy',
-      key: 'forecast',
+      label: t('earningsStrategy'),
+      key: 'earnings-strategy',
       iconType: 'forecast',
       link: PageURLs.ofEstForecast()
     },
-    // ...(!isMobile
-    //   ? [
-    //       {
-    //         label: t('listHighActivity'),
-    //         key: 'high-activity',
-    //         iconType: 'listHighActivity',
-    //         link: PageURLs.ofHighActivity()
-    //       }
-    //     ]
-    //   : []),
     {
       label: t('watchlistSwingTrade'),
       key: 'watchlist-swing-trade',
