@@ -218,6 +218,20 @@ export const MarketPsychTable = () => {
         render: (v) => renderScore(v)
       },
       {
+        title: t('loveHateScore'),
+        dataIndex: 'loveHateScore',
+        key: 'loveHateScore',
+        width: 150,
+        align: 'center',
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'loveHateScore' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('loveHateScore')
+        }),
+        render: (v) => renderScore(v)
+      },
+      {
         title: t('emotionVsFact'),
         dataIndex: 'emotionVsFactScore',
         key: 'emotionVsFactScore',
