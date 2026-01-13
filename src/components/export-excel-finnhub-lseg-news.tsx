@@ -10,7 +10,8 @@ import {
   cleanFalsyValues,
   convertParamsByMapping,
   formatPercent,
-  capitalizeAllLetters
+  capitalizeAllLetters,
+  isNumeric
 } from '@/utils/common';
 import { Icon } from './icons';
 import { defaultApiFetcher } from '@/utils/api-instances';
@@ -99,19 +100,19 @@ export const ExportExcelFinnhubLsegNews = ({
           'Highest Price': item.highestPrice
             ? roundToDecimals(item.highestPrice)
             : '-',
-          'Highest Price %': item.highestPricePct
+          'Highest Price %': isNumeric(item.highestPricePct)
             ? formatPercent(item.highestPricePct)
             : '-',
           'Highest 3 Days Price': item.highest3DaysPrice
             ? roundToDecimals(item.highest3DaysPrice)
             : '-',
-          'Highest 3 Days Price %': item.highest3DaysPricePct
+          'Highest 3 Days Price %': isNumeric(item.highest3DaysPricePct)
             ? formatPercent(item.highest3DaysPricePct)
             : '-',
           'Lowest 3 Days Price': item.lowest3DaysPrice
             ? roundToDecimals(item.lowest3DaysPrice)
             : '-',
-          'Lowest 3 Days Price %': item.lowest3DaysPricePct
+          'Lowest 3 Days Price %': isNumeric(item.lowest3DaysPricePct)
             ? formatPercent(item.lowest3DaysPricePct)
             : '-'
         };
