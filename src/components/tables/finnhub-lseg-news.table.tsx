@@ -326,6 +326,19 @@ export const FinnhubAndLsegNewsTable = () => {
           )
       },
       {
+        title: 'Top News',
+        dataIndex: 'topNewsMetadata',
+        key: 'topNewsMetadata',
+        width: 114,
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'topNewsMetadata' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('topNewsMetadata')
+        }),
+        align: 'center'
+      },
+      {
         title: 'Sector',
         dataIndex: 'sector',
         key: 'sector',

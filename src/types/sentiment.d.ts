@@ -146,6 +146,7 @@ type FinnhubAndLsegNewsTableItem = {
   highestUpdateAt: string;
   highest3DaysUpdateAt: string;
   lowest3DaysUpdateAt: string;
+  topNewsMetadata: number;
 };
 
 type NewsScore = {

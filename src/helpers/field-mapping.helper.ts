@@ -424,5 +424,7 @@ export const fieldMapping: Record<string, string> = {
   accountingRestatement: 'accounting_restatement',
   cyberCrime: 'cyber_crime',
   futureVsPast: 'future_vs_past',
-  timeUrgency: 'time_urgency'
+  timeUrgency: 'time_urgency',
+  viewNewsDetailWithAlertLogs: 'view_news_detail_with_alert_logs',
+  topNewsMetadata: 'top_news_metadata'
 };

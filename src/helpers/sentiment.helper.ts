@@ -195,7 +195,8 @@ export const transformFinnhubAndLsegNews = (
     lowest3DaysPrice: item[fieldMapping.lowestPrice3Days],
     highestUpdateAt: item[fieldMapping.highestUpdateAt],
     highest3DaysUpdateAt: item[fieldMapping.highest3DaysUpdateAt],
-    lowest3DaysUpdateAt: item[fieldMapping.lowest3DaysUpdateAt]
+    lowest3DaysUpdateAt: item[fieldMapping.lowest3DaysUpdateAt],
+    topNewsMetadata: item[fieldMapping.topNewsMetadata]
   }));
 };
 
