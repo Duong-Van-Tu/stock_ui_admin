@@ -280,3 +280,25 @@ type MarketPsych = {
   futureVsPast: number;
   timeUrgency: number;
 };
+
+type BreakingNews = {
+  key: string;
+  storyId: string;
+  datetime: string;
+  datetimeNyt: string;
+  symbol: string;
+  title: string;
+  articleScore: number;
+  sentiment: number;
+  relevance: number;
+  direction: number;
+  horizonName: string;
+  typeName: string;
+  impactScore: number;
+  timeWeight: number;
+  breakingNews: number;
+  marketCapBillion: number;
+  sector: string;
+  industry: string;
+  newsCategory: string;
+};

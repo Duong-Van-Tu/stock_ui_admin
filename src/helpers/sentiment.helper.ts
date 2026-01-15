@@ -231,6 +231,31 @@ export const transformNewsScoreBySymbol = (data: any): NewsScoreBySymbol => ({
   lsegScore1w: Number(data.lseg_score_1w)
 });
 
+export const transformBreakingNews = (list: any[] = []): BreakingNews[] => {
+  if (!list?.length) return [];
+  return list.map((item) => ({
+    key: uuid(),
+    storyId: item[fieldMapping.storyId],
+    datetime: item.datetime,
+    datetimeNyt: item[fieldMapping.datetimeNyt],
+    symbol: item.symbol,
+    title: item.title,
+    articleScore: Number(item[fieldMapping.articleScore]),
+    sentiment: Number(item.sentiment),
+    relevance: Number(item[fieldMapping.relevance]),
+    direction: Number(item.direction),
+    horizonName: item[fieldMapping.horizonName],
+    typeName: item[fieldMapping.typeName],
+    impactScore: Number(item[fieldMapping.impactScore]),
+    timeWeight: Number(item[fieldMapping.timeWeight]),
+    breakingNews: Number(item[fieldMapping.breakingNews]),
+    marketCapBillion: Number(item[fieldMapping.marketCapBillion]),
+    sector: item.sector,
+    industry: item.industry,
+    newsCategory: item[fieldMapping.newsCategory]
+  }));
+};
+
 export const transformMarketPsychLatest = (list: any[] = []): MarketPsych[] => {
   if (!list?.length) return [];
 

@@ -7,7 +7,8 @@ import {
   transformListWatcher,
   transformNewsScores,
   transformNewsScoreBySymbol,
-  transformMarketPsychLatest
+  transformMarketPsychLatest,
+  transformBreakingNews
 } from '@/helpers/sentiment.helper';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
@@ -24,6 +25,7 @@ export type SentimentState = {
   loadingFinnhubAndLsegNews: boolean;
   loadingNewsScores: boolean;
   loadingMarketPsych: boolean;
+  loadingBreakingNews: boolean;
   listNews: NewsSentiment[];
   countSentiment: CountSentiment;
   companyNews: CompanyNews[];
@@ -32,12 +34,14 @@ export type SentimentState = {
   newsSentiment: NewsSentiment[];
   finnhubAndLsegNews: any[];
   newsScores: NewsScore[];
+  breakingNews: BreakingNews[];
   marketPsych: MarketPsych[];
   pagination: Pagination;
   listWatcherPagination: Pagination;
   newsLatestPagination: Pagination;
   listNewsPagination: Pagination;
   finnhubAndLsegNewsPagination: Pagination;
+  breakingNewsPagination: Pagination;
   newsScoresPagination: Pagination;
   marketPsychPagination: Pagination; // Thêm pagination cho MarketPsych
   newsScoreBySymbol: NewsScoreBySymbol | null;
@@ -54,6 +58,7 @@ const initialState: SentimentState = {
   loadingFinnhubAndLsegNews: false,
   loadingNewsScores: false,
   loadingMarketPsych: false,
+  loadingBreakingNews: false,
   listNews: [],
   countSentiment: {
     countPositive: 0,
@@ -67,6 +72,7 @@ const initialState: SentimentState = {
   newsSentiment: [],
   finnhubAndLsegNews: [],
   newsScores: [],
+  breakingNews: [],
   marketPsych: [],
   newsScoreBySymbol: null,
   loadingNewsScoreBySymbol: false,
@@ -75,6 +81,7 @@ const initialState: SentimentState = {
   newsLatestPagination: PAGINATION,
   listNewsPagination: PAGINATION,
   finnhubAndLsegNewsPagination: PAGINATION,
+  breakingNewsPagination: PAGINATION,
   newsScoresPagination: PAGINATION,
   marketPsychPagination: PAGINATION // Khởi tạo pagination
 };
@@ -363,6 +370,39 @@ export const SentimentSlice = createAppSlice({
       }
     ),
 
+    getBreakingNews: create.asyncThunk(
+      async (query?: Record<string, any>) => {
+        const response = await defaultApiFetcher.get(
+          'news/get-latest-breaking-news',
+          {
+            query: query ? convertParamsByMapping(query) : {}
+          }
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loadingBreakingNews = true;
+        },
+        fulfilled: (state, action) => {
+          state.loadingBreakingNews = false;
+          state.breakingNews = transformBreakingNews(
+            action.payload.result || []
+          );
+          state.breakingNewsPagination = {
+            currentPage: action.payload.currentPage,
+            pageSize: action.payload.limit,
+            total: action.payload.totalResult
+          };
+        },
+        rejected: (state) => {
+          state.loadingBreakingNews = false;
+          state.breakingNews = [];
+          state.breakingNewsPagination = PAGINATION;
+        }
+      }
+    ),
+
     resetState: create.reducer((state) => {
       Object.assign(state, initialState);
     })
@@ -394,7 +434,10 @@ export const SentimentSlice = createAppSlice({
     watchNewsScoresPagination: (state) => state.newsScoresPagination,
     watchMarketPsych: (state) => state.marketPsych,
     watchMarketPsychLoading: (state) => state.loadingMarketPsych,
-    watchMarketPsychPagination: (state) => state.marketPsychPagination
+    watchMarketPsychPagination: (state) => state.marketPsychPagination,
+    watchBreakingNewsLoading: (state) => state.loadingBreakingNews,
+    watchBreakingNews: (state) => state.breakingNews,
+    watchBreakingNewsPagination: (state) => state.breakingNewsPagination
   }
 });
 
@@ -423,7 +466,10 @@ export const {
   watchNewsScoresPagination,
   watchMarketPsych,
   watchMarketPsychLoading,
-  watchMarketPsychPagination
+  watchMarketPsychPagination,
+  watchBreakingNewsLoading,
+  watchBreakingNews,
+  watchBreakingNewsPagination
 } = SentimentSlice.selectors;
 
 export const {
@@ -437,5 +483,6 @@ export const {
   getListNews,
   getFinnhubAndLsegNews,
   getNewsScores,
+  getBreakingNews,
   resetState
 } = SentimentSlice.actions;

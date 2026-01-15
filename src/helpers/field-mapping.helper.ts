@@ -426,5 +426,10 @@ export const fieldMapping: Record<string, string> = {
   futureVsPast: 'future_vs_past',
   timeUrgency: 'time_urgency',
   viewNewsDetailWithAlertLogs: 'view_news_detail_with_alert_logs',
-  topNewsMetadata: 'top_news_metadata'
+  topNewsMetadata: 'top_news_metadata',
+  storyId: 'story_id',
+  datetimeNyt: 'datetime_nyt',
+  horizonName: 'horizon_name',
+  typeName: 'type_name',
+  newsCategory: 'news_category'
 };
