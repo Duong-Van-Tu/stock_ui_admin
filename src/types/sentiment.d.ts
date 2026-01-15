@@ -13,6 +13,7 @@ type SentimentFilter = Filter & {
   endDate?: string;
   sourceType?: 'finnhub' | 'lseg';
   breakingNews?: number;
+  topNewsMetadata?: number;
 };
 
 type CountSentiment = {
