@@ -332,6 +332,7 @@ export const FinnhubAndLsegNewsTable = () => {
         width: 114,
         sorter: true,
         showSorterTooltip: false,
+        hidden: true,
         sortOrder: sortField === 'topNewsMetadata' ? sortType : null,
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('topNewsMetadata')

@@ -78,6 +78,7 @@ export const FinnhubAndLsegNewsFilter = ({
       sector?: string;
       industry?: string;
       breakingNews?: string;
+      topNewsMetadata?: string;
     };
 
     const startDate = v.range?.[0]?.format('YYYY-MM-DD');
@@ -87,12 +88,16 @@ export const FinnhubAndLsegNewsFilter = ({
     const sector = v.sector;
     const industry = v.industry;
     const breakingNews = v.breakingNews ? Number(v.breakingNews) : undefined;
+    const topNewsMetadata = v.topNewsMetadata
+      ? Number(v.topNewsMetadata)
+      : undefined;
 
     updateSearchParams({
       sourceType,
       sector,
       industry,
-      breakingNews: v.breakingNews
+      breakingNews: v.breakingNews,
+      topNewsMetadata: v.topNewsMetadata
     });
 
     onFilter({
@@ -106,7 +111,8 @@ export const FinnhubAndLsegNewsFilter = ({
           ? industry.replace(/ & /g, ' @ ')
           : industry
         : '',
-      breakingNews
+      breakingNews,
+      topNewsMetadata
     });
   };
 
@@ -121,14 +127,16 @@ export const FinnhubAndLsegNewsFilter = ({
       range: [start, end],
       sector: '',
       industry: '',
-      breakingNews: ''
+      breakingNews: '',
+      topNewsMetadata: ''
     });
 
     updateSearchParams({
       sourceType: undefined,
       sector: undefined,
       industry: undefined,
-      breakingNews: ''
+      breakingNews: '',
+      topNewsMetadata: ''
     });
 
     triggerFilter();
@@ -145,6 +153,7 @@ export const FinnhubAndLsegNewsFilter = ({
       const sectorFromUrl = searchParams.get('sector') ?? '';
       const industryFromUrl = searchParams.get('industry') ?? '';
       const breakingNewsFromUrl = searchParams.get('breakingNews') ?? '';
+      const topNewsMetadataFromUrl = searchParams.get('topNewsMetadata') ?? '';
 
       if (sectorFromUrl) {
         dispatch(getIndustriesV2(sectorFromUrl));
@@ -153,6 +162,7 @@ export const FinnhubAndLsegNewsFilter = ({
       const initialValues: Record<string, any> = {
         sourceType: sourceTypeFromUrl,
         breakingNews: breakingNewsFromUrl,
+        topNewsMetadata: topNewsMetadataFromUrl,
         sector: sectorFromUrl,
         industry: industryFromUrl
       };
@@ -186,6 +196,9 @@ export const FinnhubAndLsegNewsFilter = ({
         symbol: symbol || undefined,
         breakingNews: breakingNewsFromUrl
           ? Number(breakingNewsFromUrl)
+          : undefined,
+        topNewsMetadata: topNewsMetadataFromUrl
+          ? Number(topNewsMetadataFromUrl)
           : undefined
       });
     }
@@ -202,6 +215,7 @@ export const FinnhubAndLsegNewsFilter = ({
         initialValues={{
           sourceType: 'lseg',
           breakingNews: '',
+          topNewsMetadata: '',
           sector: '',
           industry: ''
         }}
@@ -238,7 +252,7 @@ export const FinnhubAndLsegNewsFilter = ({
                   form.setFieldValue('sourceType', 'lseg');
                   triggerFilter();
                 }}
-                width={isMobile ? 'calc(100vw - 5rem)' : '14rem'}
+                width={isMobile ? 'calc(100vw - 5rem)' : '10rem'}
                 labelFloating
                 value={form.getFieldValue('sourceType')}
               />
@@ -267,6 +281,31 @@ export const FinnhubAndLsegNewsFilter = ({
                 width={isMobile ? 'calc(100vw - 5rem)' : '21.6rem'}
                 labelFloating
                 value={form.getFieldValue('breakingNews')}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col>
+            <Form.Item css={formItemStyles} name='topNewsMetadata'>
+              <SelectFilter
+                name='topNewsMetadata'
+                label='Top News'
+                options={[
+                  { value: '', label: t('all') },
+                  { value: '1', label: 'Top News' },
+                  { value: '0', label: 'Normal News' }
+                ]}
+                onSelect={(v) => {
+                  form.setFieldValue('topNewsMetadata', v ?? '');
+                  triggerFilter();
+                }}
+                onClear={() => {
+                  form.setFieldValue('topNewsMetadata', '');
+                  triggerFilter();
+                }}
+                width={isMobile ? 'calc(100vw - 5rem)' : '13rem'}
+                labelFloating
+                value={form.getFieldValue('topNewsMetadata')}
               />
             </Form.Item>
           </Col>
