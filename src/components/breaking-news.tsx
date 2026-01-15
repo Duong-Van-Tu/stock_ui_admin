@@ -18,7 +18,7 @@ export default function BreakingNews() {
 
   const [viewedIds, setViewedIds] = useState<Set<string>>(new Set());
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [selectedNews, setSelectedNews] = useState<any>(null);
+  const [selectedStoryId, setSelectedStoryId] = useState<string | null>(null);
 
   useEffect(() => {
     dispatch(getBreakingNews());
@@ -34,16 +34,21 @@ export default function BreakingNews() {
     if (isInitialLoad && breakingNews.length > 0) {
       const initialIds = new Set(breakingNews.map((news) => news.storyId));
       setViewedIds(initialIds);
-      if (!selectedNews) {
-        setSelectedNews(breakingNews[0]);
-      }
       setIsInitialLoad(false);
     }
-  }, [breakingNews, isInitialLoad, selectedNews]);
+  }, [breakingNews, isInitialLoad]);
 
   const hasNewNews = useMemo(() => {
     return breakingNews.some((news) => !viewedIds.has(news.storyId));
   }, [breakingNews, viewedIds]);
+
+  const displayNews = useMemo(() => {
+    if (breakingNews.length === 0) return null;
+    return (
+      breakingNews.find((news) => news.storyId === selectedStoryId) ||
+      breakingNews[0]
+    );
+  }, [breakingNews, selectedStoryId]);
 
   const handleDropdownVisibleChange = (visible: boolean) => {
     if (visible && hasNewNews) {
@@ -90,11 +95,9 @@ export default function BreakingNews() {
           </a>
         </Link>
       ),
-      onClick: () => setSelectedNews(news)
+      onClick: () => setSelectedStoryId(news.storyId)
     };
   });
-
-  const displayNews = selectedNews || breakingNews[0];
 
   return breakingNews.length > 0 && displayNews ? (
     <Dropdown
