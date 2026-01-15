@@ -17,6 +17,7 @@ import { isMobile, isDesktop } from 'react-device-detect';
 import { setSideBarCollapsed } from '@/redux/slices/app.slice';
 import TimeZoneClock from './time-zone-clock';
 import { regex } from '@/utils/regex';
+import BreakingNews from './breaking-news';
 
 enum UserMenu {
   PROFILE,
@@ -170,35 +171,42 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
           css={searchStyles}
         />
       </div>
+      {isDesktop && <BreakingNews />}
       <div css={rightSectionStyles}>
         {isDesktop && <TimeZoneClock />}
         {isDesktop && (
-          <Dropdown
-            menu={{ items: languages, onClick: handleLanguageChange }}
-            trigger={['click']}
-            arrow
+          <div
+            css={css`
+              display: none;
+            `}
           >
-            <Button
-              icon={
-                <Icon
-                  icon='language'
-                  width={18}
-                  height={18}
-                  fill='var(--primary-color)'
-                />
-              }
+            <Dropdown
+              menu={{ items: languages, onClick: handleLanguageChange }}
+              trigger={['click']}
+              arrow
             >
-              <Space>
-                <span css={languageStyles}>
-                  {(
-                    languages.find(
-                      (lang) => lang?.key === locale
-                    ) as MenuItemType
-                  )?.label || t('languageLabel')}
-                </span>
-              </Space>
-            </Button>
-          </Dropdown>
+              <Button
+                icon={
+                  <Icon
+                    icon='language'
+                    width={18}
+                    height={18}
+                    fill='var(--primary-color)'
+                  />
+                }
+              >
+                <Space>
+                  <span css={languageStyles}>
+                    {(
+                      languages.find(
+                        (lang) => lang?.key === locale
+                      ) as MenuItemType
+                    )?.label || t('languageLabel')}
+                  </span>
+                </Space>
+              </Button>
+            </Dropdown>
+          </div>
         )}
         <Dropdown.Button
           menu={userMenus}

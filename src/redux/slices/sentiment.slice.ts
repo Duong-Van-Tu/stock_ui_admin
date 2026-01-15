@@ -41,9 +41,8 @@ export type SentimentState = {
   newsLatestPagination: Pagination;
   listNewsPagination: Pagination;
   finnhubAndLsegNewsPagination: Pagination;
-  breakingNewsPagination: Pagination;
   newsScoresPagination: Pagination;
-  marketPsychPagination: Pagination; // Thêm pagination cho MarketPsych
+  marketPsychPagination: Pagination;
   newsScoreBySymbol: NewsScoreBySymbol | null;
   loadingNewsScoreBySymbol: boolean;
 };
@@ -81,9 +80,8 @@ const initialState: SentimentState = {
   newsLatestPagination: PAGINATION,
   listNewsPagination: PAGINATION,
   finnhubAndLsegNewsPagination: PAGINATION,
-  breakingNewsPagination: PAGINATION,
   newsScoresPagination: PAGINATION,
-  marketPsychPagination: PAGINATION // Khởi tạo pagination
+  marketPsychPagination: PAGINATION
 };
 
 export const SentimentSlice = createAppSlice({
@@ -386,25 +384,20 @@ export const SentimentSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.loadingBreakingNews = false;
-          state.breakingNews = transformBreakingNews(
-            action.payload.result || []
-          );
-          state.breakingNewsPagination = {
-            currentPage: action.payload.currentPage,
-            pageSize: action.payload.limit,
-            total: action.payload.totalResult
-          };
+          state.breakingNews = transformBreakingNews(action.payload || []);
         },
         rejected: (state) => {
           state.loadingBreakingNews = false;
           state.breakingNews = [];
-          state.breakingNewsPagination = PAGINATION;
         }
       }
     ),
 
     resetState: create.reducer((state) => {
+      const { breakingNews, loadingBreakingNews } = state;
       Object.assign(state, initialState);
+      state.breakingNews = breakingNews;
+      state.loadingBreakingNews = loadingBreakingNews;
     })
   }),
 
@@ -436,8 +429,7 @@ export const SentimentSlice = createAppSlice({
     watchMarketPsychLoading: (state) => state.loadingMarketPsych,
     watchMarketPsychPagination: (state) => state.marketPsychPagination,
     watchBreakingNewsLoading: (state) => state.loadingBreakingNews,
-    watchBreakingNews: (state) => state.breakingNews,
-    watchBreakingNewsPagination: (state) => state.breakingNewsPagination
+    watchBreakingNews: (state) => state.breakingNews
   }
 });
 
@@ -468,8 +460,7 @@ export const {
   watchMarketPsychLoading,
   watchMarketPsychPagination,
   watchBreakingNewsLoading,
-  watchBreakingNews,
-  watchBreakingNewsPagination
+  watchBreakingNews
 } = SentimentSlice.selectors;
 
 export const {
