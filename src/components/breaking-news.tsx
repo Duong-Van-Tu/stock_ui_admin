@@ -103,7 +103,7 @@ export default function BreakingNews() {
       onOpenChange={handleDropdownVisibleChange}
     >
       <a onClick={(e) => e.preventDefault()} style={{ cursor: 'pointer' }}>
-        <Space style={{ width: '100%', overflow: 'hidden' }}>
+        <Space style={{ width: '100%' }}>
           {(displayNews.breakingNews === 1 ||
             displayNews.breakingNews === -1) && (
             <Icon
@@ -133,9 +133,11 @@ export default function BreakingNews() {
             </Text>
           </PositiveNegativeText>
 
-          <Badge dot={hasNewNews} color='#1890ff' offset={[2, 0]}>
-            <Icon icon='arrowDown' width={14} height={14} />
-          </Badge>
+          <span style={{ flexShrink: 0, display: 'flex' }}>
+            <Badge dot={hasNewNews} color='#1890ff' offset={[2, 0]}>
+              <Icon icon='arrowDown' width={14} height={14} />
+            </Badge>
+          </span>
         </Space>
       </a>
     </Dropdown>
