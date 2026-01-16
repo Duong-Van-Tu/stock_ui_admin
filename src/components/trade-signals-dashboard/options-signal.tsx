@@ -18,8 +18,8 @@ import { SocketContext } from '@/providers/socket.provider';
 import { getCurrentPrice } from '@/helpers/socket.helper';
 import {
   getAlertLogs,
-  watchAlertLogsLoading,
-  watchAlertLogsPagination,
+  watchOptionAlertLogsPagination,
+  watchOptionLoading,
   watchSignalOptions
 } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from '../tables/columns/date-time-cell.column';
@@ -38,8 +38,8 @@ export const OptionSignal = () => {
   const { setWatchList, resFromWS } = useContext(SocketContext);
 
   const strategyData = useAppSelector(watchSignalOptions);
-  const loading = useAppSelector(watchAlertLogsLoading);
-  const pagination = useAppSelector(watchAlertLogsPagination);
+  const loading = useAppSelector(watchOptionLoading);
+  const pagination = useAppSelector(watchOptionAlertLogsPagination);
 
   const [filter, setFilter] = useState<Filter>({});
 

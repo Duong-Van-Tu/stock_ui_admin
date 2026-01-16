@@ -13,10 +13,12 @@ import { AppThunk } from '../store';
 export type SignalsState = {
   loading: boolean;
   alertLogsLoading: boolean;
+  optionLoading: boolean;
   signalStrategyLoading: Record<number, boolean>;
   exitLoading: boolean;
   categoryActionLoading: Record<number, boolean>;
   pagination: Pagination;
+  optionPagination: Pagination;
   paginationByStrategyId: Record<number, Pagination>;
   signal: Signal | null;
   alertLogsData: Signal[];
@@ -34,6 +36,7 @@ export type SignalsState = {
 const initialState: SignalsState = {
   loading: false,
   alertLogsLoading: false,
+  optionLoading: false,
   exitLoading: false,
   signalStrategyLoading: {},
   categoryActionLoading: {},
@@ -42,6 +45,7 @@ const initialState: SignalsState = {
   signalOptions: [],
   signalByStrategyId: {},
   pagination: PAGINATION,
+  optionPagination: PAGINATION,
   paginationByStrategyId: {},
   signal: null,
   latestEntryDate: null,
@@ -102,29 +106,40 @@ export const signalSlice = createAppSlice({
         return { data: response.data, isOptions };
       },
       {
-        pending: (state) => {
-          state.alertLogsLoading = true;
+        pending: (state, action) => {
+          if (action.meta.arg.isOptions) {
+            state.optionLoading = true;
+          } else {
+            state.alertLogsLoading = true;
+          }
         },
         fulfilled: (state, action) => {
           const { data, isOptions } = action.payload;
-          state.alertLogsLoading = false;
-          state.alertLogsData = isOptions
-            ? []
-            : transformSignalsData(data.result);
-          state.signalOptions = isOptions
-            ? transformSignalsData(data.result)
-            : [];
-          state.pagination = {
-            currentPage: data.offset,
-            pageSize: data.limit,
-            total: Number(data.total)
-          };
+          if (isOptions) {
+            state.optionLoading = false;
+            state.signalOptions = transformSignalsData(data.result);
+            state.optionPagination = {
+              currentPage: data.offset,
+              pageSize: data.limit,
+              total: Number(data.total)
+            };
+          } else {
+            state.alertLogsLoading = false;
+            state.alertLogsData = transformSignalsData(data.result);
+            state.pagination = {
+              currentPage: data.offset,
+              pageSize: data.limit,
+              total: Number(data.total)
+            };
+          }
         },
         rejected: (state) => {
           state.alertLogsLoading = false;
+          state.optionLoading = false;
           state.alertLogsData = [];
           state.signalOptions = [];
           state.pagination = PAGINATION;
+          state.optionPagination = PAGINATION;
         }
       }
     ),
@@ -401,9 +416,11 @@ export const signalSlice = createAppSlice({
     watchSignalStrategyLoading: (state) => (strategyId: number) =>
       state.signalStrategyLoading[strategyId] || false,
     watchAlertLogsLoading: (state) => state.alertLogsLoading,
+    watchOptionLoading: (state) => state.optionLoading,
     watchAlertLogsData: (state) => state.alertLogsData,
     watchSignalOptions: (state) => state.signalOptions,
     watchAlertLogsPagination: (state) => state.pagination,
+    watchOptionAlertLogsPagination: (state) => state.optionPagination,
     watchSignalByStrategyId: (state) => state.signalByStrategyId,
     watchSignalPaginationByStrategyId: (state) => (strategyId: number) =>
       state.paginationByStrategyId[strategyId] || PAGINATION,
@@ -426,9 +443,11 @@ export const {
   watchStrategyLoading,
   watchStrategies,
   watchAlertLogsLoading,
+  watchOptionLoading,
   watchAlertLogsData,
   watchSignalByStrategyId,
   watchAlertLogsPagination,
+  watchOptionAlertLogsPagination,
   watchSignalStrategyLoading,
   watchSignalPaginationByStrategyId,
   watchSignalOptions,
