@@ -13,7 +13,7 @@ export default function AlertLogs() {
 
     const timer = setTimeout(() => {
       setIsReady(true);
-    }, 500);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [t]);
