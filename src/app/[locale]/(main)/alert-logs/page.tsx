@@ -1,15 +1,22 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { AlertLogsTable } from '@/components/tables/alert-logs.table';
 import { useTranslations } from 'next-intl';
 
 export default function AlertLogs() {
   const t = useTranslations();
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     document.title = t('alertLogs');
+
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, [t]);
 
-  return <AlertLogsTable />;
+  return isReady ? <AlertLogsTable /> : null;
 }
