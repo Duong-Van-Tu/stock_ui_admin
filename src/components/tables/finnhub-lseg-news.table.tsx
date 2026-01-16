@@ -22,7 +22,7 @@ import {
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { TableTitle } from './title.table';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { isMobile } from 'react-device-detect';
 import { FinnhubAndLsegNewsFilter } from '../filters/finnhub-lseg-news.filter';
@@ -41,7 +41,10 @@ export const FinnhubAndLsegNewsTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const symbol = searchParams.get('symbol');
+  const storyId = searchParams.get('storyId');
   const { height } = useWindowSize();
   const modal = useModal();
 
@@ -75,20 +78,36 @@ export const FinnhubAndLsegNewsTable = () => {
           sortField: fieldMapping[sortField] ?? sortField,
           sortType: convertSortType(sortType),
           symbol: symbol ?? undefined,
+          storyId: storyId ?? undefined,
           ...filteredFilter
         })
       );
     },
-    [symbol, dispatch, sortField, sortType]
+    [symbol, storyId, dispatch, sortField, sortType]
   );
 
   const handleRefresh = useCallback(() => {
-    fetchListNews({
-      page: pagination.currentPage,
-      pageSize: pagination.pageSize,
-      filter
-    });
-  }, [fetchListNews, pagination.currentPage, pagination.pageSize, filter]);
+    if (storyId) {
+      const newSearchParams = new URLSearchParams(searchParams.toString());
+      newSearchParams.delete('storyId');
+      router.push(`${pathname}?${newSearchParams.toString()}`);
+    } else {
+      fetchListNews({
+        page: pagination.currentPage,
+        pageSize: pagination.pageSize,
+        filter
+      });
+    }
+  }, [
+    storyId,
+    searchParams,
+    router,
+    pathname,
+    fetchListNews,
+    pagination.currentPage,
+    pagination.pageSize,
+    filter
+  ]);
 
   useEffect(() => {
     return () => {
@@ -97,8 +116,12 @@ export const FinnhubAndLsegNewsTable = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    setFilter((prev) => ({ ...prev, symbol: symbol ?? undefined }));
-  }, [symbol]);
+    setFilter((prev) => ({
+      ...prev,
+      symbol: symbol ?? undefined,
+      storyId: storyId ?? undefined
+    }));
+  }, [symbol, storyId]);
 
   useEffect(() => {
     if (isFilterReady) {

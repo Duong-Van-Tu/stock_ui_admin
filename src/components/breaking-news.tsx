@@ -59,9 +59,7 @@ export default function BreakingNews() {
 
   const menuItems = breakingNews.map((news) => {
     const isNew = !viewedIds.has(news.storyId) && !isInitialLoad;
-    const newsLink = `${PageURLs.ofFinnhubLsegNews()}?symbol=${
-      news.symbol
-    }&sourceType=lseg`;
+    const newsLink = `${PageURLs.ofFinnhubLsegNews()}?storyId=${news.storyId}`;
 
     return {
       key: news.storyId || news.key,
