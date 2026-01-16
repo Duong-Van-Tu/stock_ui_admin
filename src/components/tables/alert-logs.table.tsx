@@ -204,7 +204,6 @@ export const AlertLogsTable = ({
     })
   };
 
-  const [isInitialFetchDone, setIsInitialFetchDone] = useState(false);
   const prevParamsRef = useRef<string | null>(null);
 
   const fetchDataAlertLogs = useCallback(
@@ -252,28 +251,16 @@ export const AlertLogsTable = ({
   useEffect(() => {
     if (isFilterReady) {
       fetchDataAlertLogs({
-        page: pagination.currentPage,
-        pageSize: pagination.pageSize,
-        filter
-      });
-      setIsInitialFetchDone(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFilterReady]);
-
-  useEffect(() => {
-    if (isInitialFetchDone) {
-      fetchDataAlertLogs({
         page: 1,
         pageSize: pagination.pageSize,
         filter
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, sortField, sortType]);
+  }, [filter, sortField, sortType, isFilterReady]);
 
   useEffect(() => {
-    if (isInitialFetchDone) {
+    if (isFilterReady) {
       fetchDataAlertLogs({
         page: 1,
         pageSize: pagination.pageSize,
