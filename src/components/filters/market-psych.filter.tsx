@@ -59,7 +59,7 @@ export const MarketPsychFilter = ({
       dataType: v.dataType || undefined,
       symbol: symbol || undefined
     });
-  }, [symbol]);
+  }, [symbol, form, onFilterReady]);
 
   return (
     <div css={[rootStyles, customStyles]}>
