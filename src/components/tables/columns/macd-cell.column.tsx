@@ -8,6 +8,7 @@ type MacdCellProps = {
   '15M'?: string;
   '1H'?: string;
   '1D'?: string;
+  '1W'?: string;
 };
 
 const macdCellStyles = css`
@@ -92,7 +93,8 @@ export const MacdCell = ({
   '5M': m5,
   '15M': m15,
   '1H': h1,
-  '1D': d1
+  '1D': d1,
+  '1W': w1
 }: MacdCellProps) => {
   return (
     <div css={macdCellStyles}>
@@ -100,6 +102,7 @@ export const MacdCell = ({
       {renderMacdItem('15M', m15)}
       {renderMacdItem('1H', h1)}
       {renderMacdItem('1D', d1)}
+      {renderMacdItem('1W', w1)}
     </div>
   );
 };

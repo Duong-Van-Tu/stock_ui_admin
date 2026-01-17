@@ -91,6 +91,7 @@ type Signal = {
   macd15m: string;
   macd1h: string;
   macd1d: string;
+  macd1w: string;
   categoryId?: number;
   categoryIds?: number[];
   allEntryGood?: boolean;

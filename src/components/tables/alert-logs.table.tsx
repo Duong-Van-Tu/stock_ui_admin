@@ -657,7 +657,7 @@ export const AlertLogsTable = ({
     {
       title: 'MACD',
       key: 'macd',
-      width: 210,
+      width: 240,
       align: 'center',
       sorter: true,
       showSorterTooltip: false,
@@ -665,13 +665,14 @@ export const AlertLogsTable = ({
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('macd')
       }),
-      render: (_, { macd5m, macd15m, macd1h, macd1d }) => (
+      render: (_, { macd5m, macd15m, macd1h, macd1d, macd1w }) => (
         <MacdCell
           {...{
             '5M': macd5m,
             '15M': macd15m,
             '1H': macd1h,
-            '1D': macd1d
+            '1D': macd1d,
+            '1W': macd1w
           }}
         />
       )

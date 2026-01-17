@@ -334,6 +334,7 @@ export const fieldMapping: Record<string, string> = {
   macd15m: 'macd_15m',
   macd1h: 'macd_1h',
   macd1d: 'macd_1d',
+  macd1w: 'macd_1w',
   tradeDate: 'trade_date',
   assetCode: 'asset_code',
   windowTimestamp: 'window_timestamp',

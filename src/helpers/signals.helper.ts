@@ -151,7 +151,8 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       macd5m: stock[fieldMapping.macd5m],
       macd15m: stock[fieldMapping.macd15m],
       macd1h: stock[fieldMapping.macd1h],
-      macd1d: stock[fieldMapping.macd1d]
+      macd1d: stock[fieldMapping.macd1d],
+      macd1w: stock[fieldMapping.macd1w]
     } as Signal;
   });
 };
