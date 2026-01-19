@@ -194,6 +194,7 @@ export const transformEstForecastFilter = (
     tradeDate: item[fieldMapping.tradeDate],
     earningsDate: item[fieldMapping.earningsDate],
     currentPrice: toNumber(item[fieldMapping.currentPrice]),
+    type: item.type,
     updatedAt: item[fieldMapping.updatedAt]
   }));
 };

@@ -7,7 +7,8 @@ import {
   DatePicker,
   Select,
   Row,
-  Col
+  Col,
+  Radio
 } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
@@ -105,8 +106,11 @@ export default function EstForecastForm({
         }}
         style={{ maxHeight: '70vh', overflowY: 'auto', paddingRight: '16px' }}
       >
-        <Form.Item name='symbol' label='Symbol'>
-          <Input disabled />
+        <Form.Item name='type' label='Type'>
+          <Radio.Group>
+            <Radio value='call'>Call</Radio>
+            <Radio value='put'>Put</Radio>
+          </Radio.Group>
         </Form.Item>
 
         <Form.Item name='company' label='Company name'>

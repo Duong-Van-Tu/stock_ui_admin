@@ -59,6 +59,7 @@ type EstForecast = {
   highest3DaysPrice: number | null;
   lowest3DaysPrice: number | null;
   currentPrice: number | null;
+  type?: string | null;
 };
 
 type EstForecastFilterItem = {
@@ -134,6 +135,7 @@ type EstForecastFilterItem = {
   highest3DaysPrice: number | null;
   lowest3DaysPrice: number | null;
   currentPrice: number | null;
+  type?: string | null;
 };
 
 type CountByDate = {

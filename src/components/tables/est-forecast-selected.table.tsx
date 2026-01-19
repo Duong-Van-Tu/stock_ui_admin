@@ -6,7 +6,8 @@ import {
   Button,
   Space,
   Input,
-  Popconfirm
+  Popconfirm,
+  Segmented
 } from 'antd';
 import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -24,7 +25,12 @@ import {
 } from '@/redux/slices/est-forecast.slice';
 import { useModal } from '@/hooks/modal.hook';
 import { EstForecastTable } from './est-forecast.table';
-import { isNumeric, roundToDecimals, lightenColor, stripTimeFromISOString } from '@/utils/common';
+import {
+  isNumeric,
+  roundToDecimals,
+  lightenColor,
+  stripTimeFromISOString
+} from '@/utils/common';
 import { EstForecastFilter } from '../filters/est-forecast.filter';
 import { cleanFalsyValues } from '@/utils/common';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
@@ -41,6 +47,11 @@ import { TableTitle } from './title.table';
 import { PageURLs } from '@/utils/navigate';
 import EstForecastForm from '@/components/forms/est-forecast.form';
 
+enum EstForecastView {
+  CALL = 'call',
+  PUT = 'put'
+}
+
 export const EstForecastSelectedTable = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
@@ -50,6 +61,9 @@ export const EstForecastSelectedTable = () => {
   const { openModal, closeModal } = useModal();
   const { height } = useWindowSize();
   const locale = useLocale() || 'en';
+
+  const type = searchParams.get('type') || 'call';
+  const view = type === 'put' ? EstForecastView.PUT : EstForecastView.CALL;
 
   const loading = useAppSelector(watchEstForecastFilterLoading);
   const filterList = useAppSelector(watchEstForecastFilterList);
@@ -76,6 +90,15 @@ export const EstForecastSelectedTable = () => {
     router.push(`${pathname}${query}`);
   };
 
+  const handleChangeView = useCallback(
+    (value: EstForecastView) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('type', value);
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, searchParams, router]
+  );
+
   const fetchEstForecast = useCallback(
     ({
       page = PAGINATION_PARAMS.offset,
@@ -87,7 +110,8 @@ export const EstForecastSelectedTable = () => {
       const filter = cleanFalsyValues({
         symbol,
         startDate: earningsDate,
-        endDate: earningsDate
+        endDate: earningsDate,
+        type
       });
 
       dispatch(
@@ -98,7 +122,7 @@ export const EstForecastSelectedTable = () => {
         })
       );
     },
-    [dispatch, searchParams]
+    [dispatch, searchParams, type]
   );
 
   useEffect(() => {
@@ -827,6 +851,15 @@ export const EstForecastSelectedTable = () => {
             {t('earningTitle')}{' '}
             {dayjs(earningDate).locale(locale).format('ddd, MMM DD')}
           </TableTitle>
+          <Segmented
+            value={view}
+            onChange={handleChangeView}
+            options={[
+              { label: 'Call'.toUpperCase(), value: EstForecastView.CALL },
+              { label: 'Put'.toUpperCase(), value: EstForecastView.PUT }
+            ]}
+            css={segmentedStyles(type)}
+          />
           <Input.Search
             placeholder={t('searchToAddEstForecast')}
             enterButton={t('search')}
@@ -898,6 +931,21 @@ const tableStyles = css`
   .ant-pagination {
     margin: 1.2rem 0 !important;
     gap: 0.4rem;
+  }
+`;
+
+const segmentedStyles = (type: string) => css`
+  padding: 0;
+  .ant-segmented-item-selected {
+    color: var(--white-color);
+    background: ${type === 'call'
+      ? 'var(--positive-color)'
+      : 'var(--negative-color)'};
+  }
+
+  .ant-segmented-item-label {
+    width: 8rem;
+    font-weight: 600;
   }
 `;
 

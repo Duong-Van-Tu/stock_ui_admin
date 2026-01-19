@@ -70,7 +70,8 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
             : null,
           earningsDate: createdDates[record.symbol]
             ? dayjs(createdDates[record.symbol]).format('YYYY-MM-DD')
-            : record.earningsDate
+            : record.earningsDate,
+          type: 'call'
         })
       );
       closeModal();
@@ -110,8 +111,8 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
                 createdDates[record.symbol]
                   ? dayjs(createdDates[record.symbol])
                   : record.earningsDate
-                  ? dayjs(record.earningsDate)
-                  : null
+                    ? dayjs(record.earningsDate)
+                    : null
               }
               onChange={(d) => {
                 const formattedDate = d ? d.format('YYYY-MM-DD HH:mm:ss') : '';
