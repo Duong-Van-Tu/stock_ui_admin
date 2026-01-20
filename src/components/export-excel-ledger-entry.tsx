@@ -14,6 +14,7 @@ import {
 import {
   formatDateTime,
   formatDateToDDMMYYYY,
+  isNumeric,
   roundToDecimals
 } from '@/utils/common';
 import { Icon } from './icons';
@@ -71,27 +72,28 @@ export const ExportExcelLedgerEntry = ({
         } = item;
 
         const winOrLoss =
-          investmentCashIn &&
-          investmentCashOut &&
-          investmentCashIn - investmentCashOut - commission;
+          isNumeric(investmentCashIn) && isNumeric(investmentCashOut)
+            ? investmentCashIn - investmentCashOut - commission
+            : null;
 
         const plAmount =
-          investmentCashIn &&
-          investmentCashOut &&
-          investmentCashIn - investmentCashOut - commission;
+          isNumeric(investmentCashIn) && isNumeric(investmentCashOut)
+            ? investmentCashIn - investmentCashOut - commission
+            : null;
 
-        const plPercent = plAmount && (plAmount / investmentCashOut) * 100;
+        const plPercent =
+          plAmount !== null ? (plAmount / investmentCashOut) * 100 : null;
 
         const cumulative = cumulativeMap[item.id];
         const cumulativePercent =
-          cumulative && (cumulative / initialBalance) * 100;
+          cumulative != null ? (cumulative / initialBalance) * 100 : null;
 
         const balance = balanceMap[item.id];
 
         const stockPLPercent =
-          entryPrice &&
-          exitPrice &&
-          ((exitPrice - entryPrice) / entryPrice) * 100;
+          entryPrice != null && exitPrice != null && entryPrice !== 0
+            ? ((exitPrice - entryPrice) / entryPrice) * 100
+            : null;
 
         const holdingDays = calculateDIM(entryDate, exitDate);
 
@@ -111,9 +113,15 @@ export const ExportExcelLedgerEntry = ({
           'Premium Paid': formatCurrency(item.premiumPaid),
           'Premium Received': formatCurrency(item.premiumReceive),
           'No. of Contracts': item.contracts ?? '-',
-          'Investment Cash Out': formatCurrency(item.investmentCashOut),
-          'Investment Cash In': formatCurrency(item.investmentCashIn),
-          Commission: formatCurrency(item.commission),
+          'Investment Cash Out': isNumeric(investmentCashOut)
+            ? investmentCashOut
+            : '-',
+          'Investment Cash In': isNumeric(investmentCashIn)
+            ? investmentCashIn
+            : '-',
+          Commission: isNumeric(item.commission)
+            ? formatCurrency(item.commission)
+            : '-',
           'P/L Amount': formatCurrency(plAmount),
           'P/L (%)': formatPercent(plPercent),
           'Cumulative Gain/Loss': formatCurrency(cumulative),

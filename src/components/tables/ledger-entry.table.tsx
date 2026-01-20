@@ -39,6 +39,7 @@ import { StockChangeCell } from './columns/stock-change-cell.column';
 import {
   calculatePercentage,
   formatPercent,
+  isNumeric,
   roundToDecimals
 } from '@/utils/common';
 import { Icon } from '../icons';
@@ -290,7 +291,8 @@ export const LedgerEntryTable = () => {
           investmentCashOut = 0,
           commission = 0
         } = record;
-        const hasValidData = investmentCashIn && investmentCashOut;
+        const hasValidData =
+          isNumeric(investmentCashIn) && isNumeric(investmentCashOut);
 
         if (!hasValidData) return '-';
 
@@ -376,8 +378,9 @@ export const LedgerEntryTable = () => {
       align: 'center',
       render: (_, record) => (
         <>
-          {record.investmentCashOut ?? '-'} <br />
-          {record.investmentCashIn ?? '-'}
+          {isNumeric(record.investmentCashOut) ? record.investmentCashOut : '-'}{' '}
+          <br />
+          {isNumeric(record.investmentCashIn) ? record.investmentCashIn : '-'}
         </>
       )
     },
@@ -401,7 +404,8 @@ export const LedgerEntryTable = () => {
           investmentCashIn = 0,
           commission = 0
         } = record;
-        if (!(investmentCashOut && investmentCashIn)) return '-';
+        if (!(isNumeric(investmentCashOut) && isNumeric(investmentCashIn)))
+          return '-';
         const plAmount = investmentCashIn - investmentCashOut - commission;
         const plAmountPercent = (plAmount / investmentCashOut) * 100;
 
