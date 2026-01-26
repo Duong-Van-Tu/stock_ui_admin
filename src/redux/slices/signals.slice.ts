@@ -4,7 +4,8 @@ import { defaultApiFetcher } from '@/utils/api-instances';
 import {
   transformLatestHitOnePercentData,
   transformSignalsData,
-  transformStrategyData
+  transformStrategyData,
+  transformLatestExitInTradeData
 } from '@/helpers/signals.helper';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { convertParamsByMapping } from '@/utils/common';
@@ -31,6 +32,8 @@ export type SignalsState = {
   latestHitOnePercentLoading: boolean;
   categories: Array<{ id: number; category_name: string }>;
   categoriesLoading: boolean;
+  latestExitInTrade: LatestExitInTrade[];
+  latestExitInTradeLoading: boolean;
 };
 
 const initialState: SignalsState = {
@@ -53,7 +56,9 @@ const initialState: SignalsState = {
   latestHitOnePercent: [],
   latestHitOnePercentLoading: false,
   categories: [],
-  categoriesLoading: false
+  categoriesLoading: false,
+  latestExitInTrade: [],
+  latestExitInTradeLoading: false
 };
 
 export const signalSlice = createAppSlice({
@@ -94,8 +99,8 @@ export const signalSlice = createAppSlice({
           isSymbolSpecific
             ? 'tickers/get-stock-alert-log-fix'
             : isFilterPage
-            ? 'tickers/get-stock-alert-log-filter'
-            : 'tickers/get-stock-alert-log',
+              ? 'tickers/get-stock-alert-log-filter'
+              : 'tickers/get-stock-alert-log',
           {
             query: {
               isImport: isOptions === undefined ? undefined : isOptions ? 1 : 0,
@@ -314,6 +319,30 @@ export const signalSlice = createAppSlice({
         }
       }
     ),
+    getLatestExitInTrade: create.asyncThunk(
+      async (query?: Record<string, any>) => {
+        const response = await defaultApiFetcher.get(
+          'tickers/latest-exit-in-trade',
+          { query }
+        );
+        return response.data ?? [];
+      },
+      {
+        pending: (state) => {
+          state.latestExitInTradeLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.latestExitInTradeLoading = false;
+          state.latestExitInTrade = transformLatestExitInTradeData(
+            action.payload
+          );
+        },
+        rejected: (state) => {
+          state.latestExitInTradeLoading = false;
+          state.latestExitInTrade = [];
+        }
+      }
+    ),
 
     getCategories: create.asyncThunk(
       async () => {
@@ -431,6 +460,8 @@ export const signalSlice = createAppSlice({
     watchLatestHitOnePercentLoading: (state) =>
       state.latestHitOnePercentLoading,
     watchLatestHitOnePercent: (state) => state.latestHitOnePercent,
+    watchLatestExitInTradeLoading: (state) => state.latestExitInTradeLoading,
+    watchLatestExitInTrade: (state) => state.latestExitInTrade,
     watchCategories: (state) => state.categories,
     watchCategoriesLoading: (state) => state.categoriesLoading,
     watchCategoryActionLoading: (state) => (alertLogId: number) =>
@@ -457,6 +488,8 @@ export const {
   watchLatestEntryDateLoading,
   watchLatestHitOnePercentLoading,
   watchLatestHitOnePercent,
+  watchLatestExitInTradeLoading,
+  watchLatestExitInTrade,
   watchCategories,
   watchCategoriesLoading,
   watchCategoryActionLoading,
@@ -474,6 +507,7 @@ export const {
   getSignalById,
   getLatestEntryDate,
   getLatestHitOnePercent,
+  getLatestExitInTrade,
   getCategories,
   addAlertLogToCategory,
   deleteAlertLogInCategory

@@ -95,6 +95,10 @@ type Signal = {
   categoryId?: number;
   categoryIds?: number[];
   allEntryGood?: boolean;
+  highest3DaysPricePct: number;
+  lowest3DaysPricePct: number;
+  lowest7DaysPricePct: number;
+  highest7DaysPricePct: number;
 };
 
 type AlertLogsFilter = Filter & {
@@ -132,3 +136,15 @@ type LatestHitOnePercent = {
 };
 
 type LatestHitOnePercents = LatestHitOnePercent[];
+
+type LatestExitInTrade = {
+  id: string;
+  tickerName: string;
+  companyName: string;
+  entryPrice: number;
+  entryDate: string;
+  exitDate: string;
+  exitPrice: number;
+};
+
+type LatestExitInTrades = LatestExitInTrade[];

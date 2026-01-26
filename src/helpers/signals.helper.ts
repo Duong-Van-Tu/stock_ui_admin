@@ -152,7 +152,11 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       macd15m: stock[fieldMapping.macd15m],
       macd1h: stock[fieldMapping.macd1h],
       macd1d: stock[fieldMapping.macd1d],
-      macd1w: stock[fieldMapping.macd1w]
+      macd1w: stock[fieldMapping.macd1w],
+      highest3DaysPricePct: stock[fieldMapping.highest3DaysPricePct],
+      lowest3DaysPricePct: stock[fieldMapping.lowest3DaysPricePct],
+      lowest7DaysPricePct: stock[fieldMapping.lowest7DaysPricePct],
+      highest7DaysPricePct: stock[fieldMapping.highest7DaysPricePct]
     } as Signal;
   });
 };
@@ -177,6 +181,22 @@ export const mobileColumnKeys = [
   'currentPrice',
   'action'
 ];
+
+export const transformLatestExitInTradeData = (
+  data: any[]
+): LatestExitInTrade[] => {
+  if (!Array.isArray(data)) return [];
+
+  return data.map((item) => ({
+    id: item.id,
+    tickerName: item[fieldMapping.tickerName],
+    companyName: item[fieldMapping.companyName],
+    entryPrice: item[fieldMapping.entryPrice],
+    entryDate: item[fieldMapping.entryDate],
+    exitDate: item[fieldMapping.exitDate],
+    exitPrice: Number(item[fieldMapping.exitPrice])
+  }));
+};
 
 export const detailColumnKeys = [
   'index',

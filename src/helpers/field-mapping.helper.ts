@@ -432,5 +432,7 @@ export const fieldMapping: Record<string, string> = {
   datetimeNyt: 'datetime_nyt',
   horizonName: 'horizon_name',
   typeName: 'type_name',
-  newsCategory: 'news_category'
+  newsCategory: 'news_category',
+  lowest7DaysPricePct: 'lowest_7_days_price_pct',
+  highest7DaysPricePct: 'highest_7_days_price_pct'
 };

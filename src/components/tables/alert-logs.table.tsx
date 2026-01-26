@@ -178,8 +178,8 @@ export const AlertLogsTable = ({
             _order === 'ascend'
               ? 'down'
               : _order === 'descend'
-              ? 'up'
-              : undefined;
+                ? 'up'
+                : undefined;
           newFilter.sortField = undefined;
           newFilter.sortType = undefined;
         } else {
@@ -934,15 +934,17 @@ export const AlertLogsTable = ({
       width: 136,
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'highestPrice3Days' ? sortType : null,
+      sortOrder: sortField === 'highest3DaysPricePct' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('highestPrice3Days')
+        onClick: () => handleSortOrder('highest3DaysPricePct')
       }),
       align: 'center',
       render: (value, record) => {
-        const percentage = calculatePercentage(record.entryPrice, value);
         return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
+          <StockChangeCell
+            value={value}
+            percentage={record.highest3DaysPricePct}
+          />
         ) : (
           '-'
         );
@@ -969,17 +971,19 @@ export const AlertLogsTable = ({
       width: 136,
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'highestPrice7Days' ? sortType : null,
+      sortOrder: sortField === 'highest7DaysPricePct' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('highestPrice7Days')
+        onClick: () => handleSortOrder('highest7DaysPricePct')
       }),
       align: 'center',
       render: (value, record) => {
-        const percentage = calculatePercentage(record.entryPrice, value);
         return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
+          <StockChangeCell
+            value={value}
+            percentage={record.highest7DaysPricePct}
+          />
         ) : (
-          '-     '
+          '-'
         );
       }
     },
@@ -1039,15 +1043,17 @@ export const AlertLogsTable = ({
       width: 130,
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'lowestPrice3Days' ? sortType : null,
+      sortOrder: sortField === 'lowest3DaysPricePct' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('lowestPrice3Days')
+        onClick: () => handleSortOrder('lowest3DaysPricePct')
       }),
       align: 'center',
       render: (value, record) => {
-        const percentage = calculatePercentage(record.entryPrice, value);
         return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
+          <StockChangeCell
+            value={value}
+            percentage={record.lowest3DaysPricePct}
+          />
         ) : (
           '-'
         );
@@ -1074,15 +1080,17 @@ export const AlertLogsTable = ({
       width: 130,
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'lowestPrice7Days' ? sortType : null,
+      sortOrder: sortField === 'lowest7DaysPricePct' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('lowestPrice7Days')
+        onClick: () => handleSortOrder('lowest7DaysPricePct')
       }),
       align: 'center',
       render: (value, record) => {
-        const percentage = calculatePercentage(record.entryPrice, value);
         return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
+          <StockChangeCell
+            value={value}
+            percentage={record.lowest7DaysPricePct}
+          />
         ) : (
           '-'
         );
@@ -1663,10 +1671,10 @@ export const AlertLogsTable = ({
                 categoryId === 1
                   ? AlertLogsView.IN_TRADE
                   : categoryId === 2
-                  ? AlertLogsView.WATCHLIST
-                  : isOption
-                  ? AlertLogsView.OPTIONS
-                  : AlertLogsView.STOCKS
+                    ? AlertLogsView.WATCHLIST
+                    : isOption
+                      ? AlertLogsView.OPTIONS
+                      : AlertLogsView.STOCKS
               }
               onChange={(value) => handleChangeView(value)}
             />
