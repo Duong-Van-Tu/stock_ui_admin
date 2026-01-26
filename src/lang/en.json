@@ -319,6 +319,7 @@
   "aiRating": "AI Rating",
   "aiRecommendation": "AI Recommendation",
   "aiExplain": "AI Finding",
+  "grokExplain": "Grok Finding",
   "grokRating": "Grok Rating",
   "grokReasoning": "Grok Reasoning",
   "grokRec": "Grok Recommendation",

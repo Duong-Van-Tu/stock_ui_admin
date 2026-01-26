@@ -89,7 +89,7 @@ const chartWrapperStyles = css`
 `;
 
 const statisticCardWrapperStyles = css`
-  width: 38rem;
+  width: 50rem;
 `;
 
 const tabWrapperStyles = css`

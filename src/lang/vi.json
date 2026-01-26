@@ -319,6 +319,7 @@
   "aiRating": "Xếp hạng AI",
   "aiRecommendation": "Khuyến nghị AI",
   "aiExplain": "Giải thích AI",
+  "grokExplain": "Giải thích Grok",
   "grokRating": "Đánh giá Grok",
   "grokReasoning": "Giải thích Grok",
   "grokRec": "Khuyến nghị Grok",

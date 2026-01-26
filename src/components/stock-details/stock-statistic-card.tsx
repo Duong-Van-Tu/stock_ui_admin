@@ -81,52 +81,88 @@ export const StatisticCard = () => {
     week52Low,
     week52High,
     grokRating,
-    grokReasoning
+    grokReasoning,
+    aiRating,
+    aiExplain
   } = stockDetails || {};
-
-  const aiRating = signal?.grokRating || grokRating;
-  const aiExplain = signal?.grokReasoning || grokReasoning;
 
   return (
     <Card title={t('statistic')} bordered size='small' css={cardStyles}>
       <Row gutter={[8, 8]}>
-        {aiRating && aiExplain && (
-          <div css={chartContainer}>
-            <Col span={24}>
-              <Typography.Title css={aiRatingStyles}>
-                {t('aiRating')}{' '}
-                <Icon
-                  icon='aiStar'
-                  fill={'var(--orange-color)'}
-                  width={26}
-                  height={26}
-                />
-              </Typography.Title>
-            </Col>
-            <AIRatingChart rating={aiRating} />
-            <Col span={24}>
-              <Button
-                css={signalBtnStyles}
-                onClick={() =>
-                  signalId
-                    ? modal.openModal(<SignalInformation signal={signal!} />, {
-                        width: 1200
-                      })
-                    : modal.openModal(
-                        <AIExplain symbol={ticker!} text={aiExplain} />
-                      )
-                }
-                type='link'
-                block
-              >
-                {signalId ? t('viewDetails') : t('aiExplain')}
-              </Button>
-            </Col>
-            <Col span={24}>
-              <Divider css={dividerStyles} />
-            </Col>
-          </div>
-        )}
+        <Col span={12}>
+          {aiRating && aiExplain && (
+            <div css={chartContainer}>
+              <Col span={24}>
+                <Typography.Title css={aiRatingStyles}>
+                  {t('aiRating')}{' '}
+                  <Icon
+                    icon='aiStar'
+                    fill={'var(--orange-color)'}
+                    width={26}
+                    height={26}
+                  />
+                </Typography.Title>
+              </Col>
+              <AIRatingChart rating={aiRating} />
+              <Col span={24}>
+                <Button
+                  css={signalBtnStyles}
+                  onClick={() =>
+                    modal.openModal(
+                      <AIExplain symbol={ticker!} text={aiExplain} />
+                    )
+                  }
+                  type='link'
+                  block
+                >
+                  {t('aiExplain')}
+                </Button>
+              </Col>
+            </div>
+          )}
+        </Col>
+        <Col span={12}>
+          {grokRating && grokReasoning && (
+            <div css={chartContainer}>
+              <Col span={24}>
+                <Typography.Title css={grokRatingStyles}>
+                  {t('grokRating')}{' '}
+                  <Icon
+                    icon='aiStar'
+                    fill={'var(--orange-color)'}
+                    width={26}
+                    height={26}
+                  />
+                </Typography.Title>
+              </Col>
+              <AIRatingChart rating={grokRating} />
+              <Col span={24}>
+                <Button
+                  css={signalBtnStyles}
+                  onClick={() =>
+                    signalId
+                      ? modal.openModal(
+                          <SignalInformation signal={signal!} />,
+                          {
+                            width: 1200
+                          }
+                        )
+                      : modal.openModal(
+                          <AIExplain symbol={ticker!} text={grokReasoning} />
+                        )
+                  }
+                  type='link'
+                  block
+                >
+                  {signalId ? t('viewDetails') : t('grokExplain')}
+                </Button>
+              </Col>
+            </div>
+          )}
+        </Col>
+      </Row>
+      <Divider css={dividerStyles} />
+      <Row gutter={[8, 8]}>
         <StatRow
           label={t('marketCapIntraday')}
           value={
@@ -213,10 +249,23 @@ const signalBtnStyles = css`
   padding: 0;
   height: unset;
   position: absolute;
-  bottom: 4rem;
+  bottom: 2.2rem;
 `;
 
 const aiRatingStyles = css`
+  margin-bottom: 0 !important;
+  text-align: center;
+  position: relative;
+  margin-top: 1rem;
+  color: var(--orange-color) !important;
+  font-size: 1.8rem !important;
+  svg {
+    top: -0.5rem;
+    position: absolute;
+  }
+`;
+
+const grokRatingStyles = css`
   margin-bottom: 0 !important;
   text-align: center;
   position: relative;

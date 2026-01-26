@@ -49,9 +49,9 @@ export default function AIRatingChart({ rating }: AIRatingProps) {
       return {
         radius: '90%',
         center: ['50%', '60%'],
-        detailFontSize: isSmallScreen ? 24 : 30,
+        detailFontSize: isSmallScreen ? 20 : 26,
         axisLabelFontSize: isSmallScreen ? 10 : 12,
-        titleFontSize: isSmallScreen ? 18 : 20,
+        titleFontSize: isSmallScreen ? 16 : 18,
         pointerLength: isSmallScreen ? '10%' : '12%'
       };
     };
@@ -117,7 +117,7 @@ export default function AIRatingChart({ rating }: AIRatingProps) {
             axisLabel: {
               color: '#464646',
               fontSize: layout.axisLabelFontSize,
-              distance: -40,
+              distance: -32,
               rotate: 'tangential',
               formatter: function (value: number) {
                 return value % 10 === 0 ? value : '';
@@ -174,8 +174,8 @@ export default function AIRatingChart({ rating }: AIRatingProps) {
       ref={chartRef}
       style={{
         width: '100%',
-        height: '260px',
-        minWidth: '280px',
+        height: '200px',
+        minWidth: '220px',
         margin: '0 auto',
         padding: 0
       }}
