@@ -9,6 +9,7 @@ import { Dropdown, Space, Badge, Typography } from 'antd';
 import { Icon } from './icons';
 import { PositiveNegativeText } from './positive-negative-text';
 import { PageURLs } from '@/utils/navigate';
+import { roundToDecimals } from '@/utils/common';
 
 const { Text } = Typography;
 
@@ -72,19 +73,31 @@ export default function BreakingNews() {
               textDecoration: 'none'
             }}
           >
-            <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+            <Space
+              style={{
+                width: '100%',
+                justifyContent: 'space-between',
+                padding: '1.4rem 0 0 2.4rem'
+              }}
+            >
               <Space>
                 {(news.breakingNews === 1 || news.breakingNews === -1) && (
-                  <Icon
-                    icon='fire'
-                    width={18}
-                    height={18}
-                    fill={
-                      news.breakingNews === 1
-                        ? 'var(--positive-color)'
-                        : 'var(--negative-color)'
-                    }
-                  />
+                  <Badge
+                    count={roundToDecimals(news.articleScore * 10)}
+                    color='gold'
+                    offset={[-30, -6]}
+                  >
+                    <Icon
+                      icon='fire'
+                      width={18}
+                      height={18}
+                      fill={
+                        news.breakingNews === 1
+                          ? 'var(--positive-color)'
+                          : 'var(--negative-color)'
+                      }
+                    />
+                  </Badge>
                 )}
                 <span>{news.title}</span>
               </Space>
@@ -103,10 +116,14 @@ export default function BreakingNews() {
       trigger={['click']}
       onOpenChange={handleDropdownVisibleChange}
     >
-      <a onClick={(e) => e.preventDefault()} style={{ cursor: 'pointer' }}>
-        <Space style={{ width: '100%' }}>
-          {(displayNews.breakingNews === 1 ||
-            displayNews.breakingNews === -1) && (
+      <Space style={{ width: '100%', paddingLeft: '2rem' }}>
+        {(displayNews.breakingNews === 1 ||
+          displayNews.breakingNews === -1) && (
+          <Badge
+            count={roundToDecimals(displayNews.articleScore * 10)}
+            color='gold'
+            offset={[-28, -4]}
+          >
             <Icon
               icon='fire'
               width={18}
@@ -117,30 +134,30 @@ export default function BreakingNews() {
                   : 'var(--negative-color)'
               }
             />
-          )}
-          <PositiveNegativeText
-            isPositive={displayNews.breakingNews === 1}
-            isNegative={displayNews.breakingNews === -1}
+          </Badge>
+        )}
+        <PositiveNegativeText
+          isPositive={displayNews.breakingNews === 1}
+          isNegative={displayNews.breakingNews === -1}
+        >
+          <Text
+            style={{
+              maxWidth: '60rem',
+              color: 'inherit',
+              verticalAlign: 'middle'
+            }}
+            ellipsis={{ tooltip: displayNews.title }}
           >
-            <Text
-              style={{
-                maxWidth: '600px',
-                color: 'inherit',
-                verticalAlign: 'middle'
-              }}
-              ellipsis={{ tooltip: displayNews.title }}
-            >
-              {displayNews.title}
-            </Text>
-          </PositiveNegativeText>
+            {displayNews.title}
+          </Text>
+        </PositiveNegativeText>
 
-          <span style={{ flexShrink: 0, display: 'flex' }}>
-            <Badge dot={hasNewNews} color='#1890ff' offset={[2, 0]}>
-              <Icon icon='arrowDown' width={14} height={14} />
-            </Badge>
-          </span>
-        </Space>
-      </a>
+        <span style={{ flexShrink: 0, display: 'flex' }}>
+          <Badge dot={hasNewNews} color='#1890ff' offset={[2, 0]}>
+            <Icon icon='arrowDown' width={14} height={14} />
+          </Badge>
+        </span>
+      </Space>
     </Dropdown>
   ) : null;
 }
