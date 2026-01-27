@@ -128,7 +128,7 @@ type FinnhubAndLsegNewsTableItem = {
   horizon: string;
   newsType: string;
   breakingNews: number;
-  impactScore: number;
+  impactScore?: number;
   sector: string;
   industry: string;
   grokRating: number;

@@ -1,6 +1,11 @@
 import { v4 as uuid } from 'uuid';
 import { fieldMapping } from './field-mapping.helper';
-import { parseConsoleObject, parseToUTC, tidyTime } from '@/utils/common';
+import {
+  parseConsoleObject,
+  parseToUTC,
+  scaleScore,
+  tidyTime
+} from '@/utils/common';
 import { toNumber } from 'lodash';
 
 const UNUSED_IDS = [4, 7, 8];
@@ -158,9 +163,9 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       lowest7DaysPricePct: stock[fieldMapping.lowest7DaysPricePct],
       highest7DaysPricePct: stock[fieldMapping.highest7DaysPricePct],
       newsType: stock[fieldMapping.newsType],
-      articleScore: Number(stock[fieldMapping.articleScore]),
-      newsScore: Number(stock[fieldMapping.newsScore]),
-      impactScore: Number(stock[fieldMapping.impactScore])
+      newsScore: scaleScore(stock[fieldMapping.newsScore]),
+      articleScore: scaleScore(stock[fieldMapping.articleScore]),
+      impactScore: scaleScore(stock[fieldMapping.impactScore])
     } as Signal;
   });
 };
