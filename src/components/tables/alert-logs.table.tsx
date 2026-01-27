@@ -450,7 +450,6 @@ export const AlertLogsTable = ({
         onClick: () => handleSortOrder('newsType')
       }),
       align: 'center',
-      hidden: filter.strategyId !== 25,
       render: (value) =>
         value ? <EllipsisText text={value} maxLines={2} /> : '-'
     },
@@ -466,7 +465,6 @@ export const AlertLogsTable = ({
         onClick: () => handleSortOrder('articleScore')
       }),
       align: 'center',
-      hidden: filter.strategyId !== 25,
       render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
     },
     {
@@ -481,7 +479,6 @@ export const AlertLogsTable = ({
         onClick: () => handleSortOrder('impactScore')
       }),
       align: 'center',
-      hidden: filter.strategyId !== 25,
       render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
     },
     {
@@ -496,7 +493,6 @@ export const AlertLogsTable = ({
         onClick: () => handleSortOrder('newsScore')
       }),
       align: 'center',
-      hidden: filter.strategyId !== 25,
       render: (value) =>
         isNumeric(value) ? (
           <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
