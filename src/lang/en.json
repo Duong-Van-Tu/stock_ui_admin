@@ -614,5 +614,7 @@
   "revenueDirection": "Revenue Direction",
   "accountingSentiment": "Accounting Sentiment",
   "dividendsScore": "Dividends Score",
-  "analystRating": "Analyst Rating"
+  "analystRating": "Analyst Rating",
+  "sortOrder": "Sort Order",
+  "enterSortOrder": "Enter sort order"
 }

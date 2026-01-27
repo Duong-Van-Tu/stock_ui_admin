@@ -5,7 +5,9 @@ import {
   watchEstForecastListLoading,
   watchEstForecastList,
   getEstForecastFilter,
-  addEstForecast
+  addEstForecast,
+  watchEstForecastAdding,
+  watchEstForecastAddSuccess
 } from '@/redux/slices/est-forecast.slice';
 import { Table, TableColumnsType, Button, DatePicker } from 'antd';
 import dayjs from 'dayjs';
@@ -35,9 +37,17 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
 
   const loading = useAppSelector(watchEstForecastListLoading);
   const list = useAppSelector(watchEstForecastList);
+  const adding = useAppSelector(watchEstForecastAdding);
+  const addSuccess = useAppSelector(watchEstForecastAddSuccess);
 
   const [addedSymbols, setAddedSymbols] = useState<Set<string>>(new Set());
   const [createdDates, setCreatedDates] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (addSuccess) {
+      closeModal();
+    }
+  }, [addSuccess, closeModal]);
 
   useEffect(() => {
     setAddedSymbols(new Set());
@@ -74,9 +84,9 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
           type: 'call'
         })
       );
-      closeModal();
+      // Don't close modal immediately - let useEffect handle it
     },
-    [closeModal, dispatch, createdDates]
+    [dispatch, createdDates]
   );
 
   const columns: TableColumnsType<EstForecast> = useMemo(
@@ -435,13 +445,14 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
               type='primary'
               icon={<PlusOutlined />}
               onClick={() => handleAdd(record)}
+              loading={adding}
             >
               Add
             </Button>
           )
       }
     ],
-    [handleAdd, addedSymbols, createdDates]
+    [handleAdd, addedSymbols, createdDates, adding]
   );
 
   return (

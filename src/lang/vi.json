@@ -614,5 +614,7 @@
   "revenueDirection": "Xu hướng doanh thu",
   "accountingSentiment": "Tâm lý kế toán",
   "dividendsScore": "Chỉ số cổ tức",
-  "analystRating": "Đánh giá chuyên gia"
+  "analystRating": "Đánh giá chuyên gia",
+  "sortOrder": "Thứ tự sắp xếp",
+  "enterSortOrder": "Nhập thứ tự sắp xếp"
 }

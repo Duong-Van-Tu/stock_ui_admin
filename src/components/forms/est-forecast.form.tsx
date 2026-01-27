@@ -12,6 +12,9 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+import { useAppSelector } from '@/redux/hooks';
+import { watchEstForecastSubmitting } from '@/redux/slices/est-forecast.slice';
 
 type Props = {
   visible: boolean;
@@ -33,6 +36,9 @@ export default function EstForecastForm({
   onSubmit
 }: Props) {
   const [form] = Form.useForm();
+  const t = useTranslations();
+  const submitting = useAppSelector(watchEstForecastSubmitting);
+  console.log({ submitting });
 
   useEffect(() => {
     if (visible) {
@@ -89,6 +95,7 @@ export default function EstForecastForm({
       onOk={() => form.submit()}
       width={800}
       destroyOnClose
+      okButtonProps={{ loading: submitting }}
     >
       <Form
         form={form}
@@ -106,6 +113,13 @@ export default function EstForecastForm({
         }}
         style={{ maxHeight: '70vh', overflowY: 'auto', paddingRight: '16px' }}
       >
+        <Form.Item name='sortOrder' label={t('sortOrder')}>
+          <InputNumber
+            style={{ width: '100%' }}
+            placeholder={t('enterSortOrder')}
+          />
+        </Form.Item>
+
         <Form.Item name='type' label='Type'>
           <Radio.Group>
             <Radio value='call'>Call</Radio>

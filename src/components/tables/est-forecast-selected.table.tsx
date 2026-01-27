@@ -7,7 +7,8 @@ import {
   Space,
   Input,
   Popconfirm,
-  Segmented
+  Segmented,
+  Tooltip
 } from 'antd';
 import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -21,7 +22,8 @@ import {
   watchEstForecastFilterList,
   watchEstForecastFilterLoading,
   watchEstForecastLastAddedEarningsDate,
-  watchEstForecastPagination
+  watchEstForecastPagination,
+  watchEstForecastSubmitting
 } from '@/redux/slices/est-forecast.slice';
 import { useModal } from '@/hooks/modal.hook';
 import { EstForecastTable } from './est-forecast.table';
@@ -46,6 +48,7 @@ import { EmptyDataTable } from './empty.table';
 import { TableTitle } from './title.table';
 import { PageURLs } from '@/utils/navigate';
 import EstForecastForm from '@/components/forms/est-forecast.form';
+import { Icon } from '../icons';
 
 enum EstForecastView {
   CALL = 'call',
@@ -72,6 +75,8 @@ export const EstForecastSelectedTable = () => {
   const lastAddedEarningsDate = useAppSelector(
     watchEstForecastLastAddedEarningsDate
   );
+  const submitting = useAppSelector(watchEstForecastSubmitting);
+  console.log({ submitting });
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -124,6 +129,13 @@ export const EstForecastSelectedTable = () => {
     },
     [dispatch, searchParams, type]
   );
+
+  const handleRefresh = useCallback(() => {
+    fetchEstForecast({
+      page: pagination.currentPage,
+      pageSize: pagination.pageSize
+    });
+  }, [fetchEstForecast, pagination.currentPage, pagination.pageSize]);
 
   useEffect(() => {
     const earningsDateInUrl = searchParams.get('earningsDate');
@@ -179,8 +191,18 @@ export const EstForecastSelectedTable = () => {
     searchParams
   ]);
 
+  const [justSubmitted, setJustSubmitted] = useState(false);
+  useEffect(() => {
+    if (justSubmitted && !submitting) {
+      setJustSubmitted(false);
+      closeModal();
+      handleRefresh();
+    }
+  }, [justSubmitted, submitting, closeModal, handleRefresh]);
+
   const startEdit = useCallback(
     (record: EstForecastFilterItem) => {
+      setJustSubmitted(false);
       openModal(
         <EstForecastForm
           visible={true}
@@ -188,10 +210,10 @@ export const EstForecastSelectedTable = () => {
           mode='edit'
           onCancel={() => closeModal()}
           onSubmit={(values) => {
+            setJustSubmitted(true);
             dispatch(
               updateEstForecast({ id: record.id, payload: values as any })
             );
-            closeModal();
           }}
         />,
         { width: 800 }
@@ -847,9 +869,18 @@ export const EstForecastSelectedTable = () => {
 
       <div css={tableWrapperStyles}>
         <div css={titleRowStyles}>
-          <TableTitle>
-            {t('earningTitle')}{' '}
-            {dayjs(earningDate).locale(locale).format('ddd, MMM DD')}
+          <TableTitle customStyles={titleStyles}>
+            <span>
+              {t('earningTitle')}
+              {dayjs(earningDate).locale(locale).format('ddd, MMM DD')}
+            </span>
+            <Tooltip title={!isMobile && t('refresh')}>
+              <Button
+                onClick={handleRefresh}
+                type='text'
+                icon={<Icon icon='refresh' width={22} height={22} />}
+              />
+            </Tooltip>
           </TableTitle>
           <Segmented
             value={view}
@@ -954,4 +985,11 @@ const emptyStyles = (height: number) => css`
   display: flex;
   flex-direction: column;
   justify-content: center;
+`;
+
+const titleStyles = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
 `;
