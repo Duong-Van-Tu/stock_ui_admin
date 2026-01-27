@@ -156,7 +156,11 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       highest3DaysPricePct: stock[fieldMapping.highest3DaysPricePct],
       lowest3DaysPricePct: stock[fieldMapping.lowest3DaysPricePct],
       lowest7DaysPricePct: stock[fieldMapping.lowest7DaysPricePct],
-      highest7DaysPricePct: stock[fieldMapping.highest7DaysPricePct]
+      highest7DaysPricePct: stock[fieldMapping.highest7DaysPricePct],
+      newsType: stock[fieldMapping.newsType],
+      articleScore: Number(stock[fieldMapping.articleScore]),
+      newsScore: Number(stock[fieldMapping.newsScore]),
+      impactScore: Number(stock[fieldMapping.impactScore])
     } as Signal;
   });
 };

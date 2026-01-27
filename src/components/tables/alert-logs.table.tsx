@@ -439,6 +439,74 @@ export const AlertLogsTable = ({
         value ? <EllipsisText text={value} maxLines={2} /> : '-'
     },
     {
+      title: 'News Type',
+      dataIndex: 'newsType',
+      key: 'newsType',
+      width: 180,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'newsType' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('newsType')
+      }),
+      align: 'center',
+      hidden: filter.strategyId !== 25,
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
+    },
+    {
+      title: 'Article Score',
+      dataIndex: 'articleScore',
+      key: 'articleScore',
+      width: 130,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'articleScore' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('articleScore')
+      }),
+      align: 'center',
+      hidden: filter.strategyId !== 25,
+      render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+    },
+    {
+      title: 'Impact Score',
+      dataIndex: 'impactScore',
+      key: 'impactScore',
+      width: 130,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'impactScore' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('impactScore')
+      }),
+      align: 'center',
+      hidden: filter.strategyId !== 25,
+      render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+    },
+    {
+      title: 'Sentiment Score',
+      dataIndex: 'newsScore',
+      key: 'newsScore',
+      width: 150,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'newsScore' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('newsScore')
+      }),
+      align: 'center',
+      hidden: filter.strategyId !== 25,
+      render: (value) =>
+        isNumeric(value) ? (
+          <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+            {roundToDecimals(value)}
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
+    },
+    {
       title: t('period'),
       dataIndex: 'timeFrame',
       key: 'timeFrame',

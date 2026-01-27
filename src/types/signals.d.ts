@@ -99,6 +99,10 @@ type Signal = {
   lowest3DaysPricePct: number;
   lowest7DaysPricePct: number;
   highest7DaysPricePct: number;
+  newsType: string;
+  articleScore: number;
+  newsScore: number;
+  impactScore: number;
 };
 
 type AlertLogsFilter = Filter & {
