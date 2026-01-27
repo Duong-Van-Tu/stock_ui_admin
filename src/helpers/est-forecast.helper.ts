@@ -196,6 +196,8 @@ export const transformEstForecastFilter = (
     currentPrice: toNumber(item[fieldMapping.currentPrice]),
     type: item.type,
     sortOrder: toNumber(item[fieldMapping.sortOrder]),
+    startmine: item.startmine,
+    startminePoint: toNumber(item[fieldMapping.startminePoint]),
     updatedAt: item[fieldMapping.updatedAt]
   }));
 };

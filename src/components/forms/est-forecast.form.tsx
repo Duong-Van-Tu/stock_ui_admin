@@ -215,7 +215,22 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='EPS Beat Freq / Point (5)'>
+        <Form.Item label='Startmine / Point (5)'>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item name='startmine' noStyle>
+                <Input style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name='startminePoint' noStyle>
+                <InputNumber style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
+
+        <Form.Item label='EPS Beat Freq / Point (6)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='epsBeatFreq' noStyle>
@@ -230,7 +245,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='Revenue Beat Freq / Point (6)'>
+        <Form.Item label='Revenue Beat Freq / Point (7)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='revenueBeatFreq' noStyle>
@@ -245,7 +260,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='Avg Surprise / Point (7)'>
+        <Form.Item label='Avg Surprise / Point (8)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='avgSurpriseMagnitude' noStyle>
@@ -260,7 +275,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='Post Earning Drift / Point (8)'>
+        <Form.Item label='Post Earning Drift / Point (9)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='postEarningDrift' noStyle>
@@ -275,7 +290,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='YTD Performance / Point (9)'>
+        <Form.Item label='YTD Performance / Point (10)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='ytdPerformance' noStyle>
@@ -290,7 +305,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='Price Target / Point (10)'>
+        <Form.Item label='Price Target / Point (11)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='priceTarget' noStyle>
@@ -305,7 +320,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='Yahoo Rec / Point (11)'>
+        <Form.Item label='Yahoo Rec / Point (12)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='yahooRec' noStyle>
@@ -320,7 +335,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='AI Rating / Point (12)'>
+        <Form.Item label='AI Rating / Point (13)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='aiRating' noStyle>
@@ -335,7 +350,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='GPT Rating / Point (13)'>
+        <Form.Item label='GPT Rating / Point (14)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='gptRating' noStyle>
@@ -350,7 +365,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='Grok Prediction / Point (14)'>
+        <Form.Item label='Grok Prediction / Point (15)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='grok' noStyle>
@@ -365,7 +380,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='GPT Prediction / Point (15)'>
+        <Form.Item label='GPT Prediction / Point (16)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='gpt' noStyle>
@@ -382,12 +397,12 @@ export default function EstForecastForm({
 
         <Form.Item
           name='lsegNewsTotalScorePoint'
-          label='LSEG Total Score Point (16)'
+          label='LSEG Total Score Point (17)'
         >
           <InputNumber style={{ width: '100%' }} />
         </Form.Item>
 
-        <Form.Item label='LSEG News (1D) / Point (17)'>
+        <Form.Item label='LSEG News (1D) / Point (18)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='lsegNewsScore1d' noStyle>
@@ -402,7 +417,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='LSEG News (3D) / Point (18)'>
+        <Form.Item label='LSEG News (3D) / Point (19)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='lsegNewsScore3d' noStyle>
@@ -417,11 +432,11 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item name='article12h' label='Article 12h (19)'>
+        <Form.Item name='article12h' label='Article 12h (20)'>
           <Input style={{ width: '100%' }} />
         </Form.Item>
 
-        <Form.Item label='MP Earnings Dir / Point (20)'>
+        <Form.Item label='MP Earnings Dir / Point (21)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='marketpsychEarningsDirectionZ' noStyle>
@@ -436,7 +451,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='MP Earnings Forecast / Point (21)'>
+        <Form.Item label='MP Earnings Forecast / Point (22)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='marketpsychEarningsForecastZ' noStyle>
@@ -451,7 +466,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='MP Revenue Dir / Point (22)'>
+        <Form.Item label='MP Revenue Dir / Point (23)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='marketpsychRevenueDirectionZ' noStyle>
@@ -466,7 +481,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='MP Revenue Forecast / Point (23)'>
+        <Form.Item label='MP Revenue Forecast / Point (24)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='marketpsychRevenueForecastZ' noStyle>
@@ -481,7 +496,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='MP Price Up / Point (24)'>
+        <Form.Item label='MP Price Up / Point (25)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='marketpsychPriceUpZ' noStyle>
@@ -496,7 +511,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='MP Optimism / Point (25)'>
+        <Form.Item label='MP Optimism / Point (26)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='marketpsychOptimismZ' noStyle>
@@ -511,7 +526,7 @@ export default function EstForecastForm({
           </Row>
         </Form.Item>
 
-        <Form.Item label='MP Trust / Point (26)'>
+        <Form.Item label='MP Trust / Point (27)'>
           <Row gutter={8}>
             <Col span={12}>
               <Form.Item name='marketpsychTrustZ' noStyle>

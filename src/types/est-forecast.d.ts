@@ -137,6 +137,8 @@ type EstForecastFilterItem = {
   currentPrice: number | null;
   type?: string | null;
   sortOrder?: number | null;
+  startmine: string | null;
+  startminePoint: number | null;
 };
 
 type CountByDate = {

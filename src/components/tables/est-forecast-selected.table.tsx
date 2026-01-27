@@ -460,6 +460,21 @@ export const EstForecastSelectedTable = () => {
       {
         title: (
           <span>
+            Startmine
+            <br />
+            (Point)
+          </span>
+        ),
+        dataIndex: 'startmine',
+        width: 120,
+        align: 'center',
+        render: (v, r) => (
+          <EstForecastValuePointCell value={v} point={r.startminePoint} />
+        )
+      },
+      {
+        title: (
+          <span>
             EPS Beat Freq
             <br />
             (Point)
