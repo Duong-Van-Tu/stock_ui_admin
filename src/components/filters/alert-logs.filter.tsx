@@ -59,9 +59,9 @@ function getEntryRangeByOption(
       const today = ny().startOf('day');
       if (
         latestEntryDate &&
-        !dayjs(latestEntryDate).tz(NY_TZ).isSame(today, 'day')
+        !dayjs.tz(latestEntryDate, NY_TZ).isSame(today, 'day')
       ) {
-        const d = dayjs(latestEntryDate).tz(NY_TZ);
+        const d = dayjs.tz(latestEntryDate, NY_TZ);
         return [d.startOf('day'), d.endOf('day')];
       }
       const d = ny().subtract(1, 'day');
@@ -122,7 +122,7 @@ export const AlertLogsFilter = ({
 
   const defaultQuickRange: QuickRange = useMemo(() => {
     if (!latestEntryDate) return 'today';
-    const latestNY = dayjs(latestEntryDate).tz(NY_TZ);
+    const latestNY = dayjs.tz(latestEntryDate, NY_TZ);
     const todayNY = ny();
     return latestNY.isSame(todayNY, 'day') ? 'today' : 'lastDay';
   }, [latestEntryDate]);
