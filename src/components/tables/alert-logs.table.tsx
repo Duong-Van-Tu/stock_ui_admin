@@ -352,6 +352,12 @@ export const AlertLogsTable = ({
       key: 'symbol',
       width: isMobile ? 120 : 170,
       fixed: 'left',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'tickerName' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('tickerName')
+      }),
       render: (_, record) => (
         <SymbolCell
           symbol={record.symbol}
