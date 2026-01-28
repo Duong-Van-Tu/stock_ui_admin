@@ -163,7 +163,7 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       lowest7DaysPricePct: stock[fieldMapping.lowest7DaysPricePct],
       highest7DaysPricePct: stock[fieldMapping.highest7DaysPricePct],
       newsType: stock[fieldMapping.newsType],
-      newsScore: scaleScore(stock[fieldMapping.newsScore]),
+      sentiment: scaleScore(stock.sentiment),
       articleScore: scaleScore(stock[fieldMapping.articleScore]),
       impactScore: scaleScore(stock[fieldMapping.impactScore])
     } as Signal;

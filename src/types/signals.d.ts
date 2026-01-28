@@ -101,7 +101,7 @@ type Signal = {
   highest7DaysPricePct: number;
   newsType: string;
   articleScore: number;
-  newsScore: number;
+  sentiment: number;
   impactScore: number;
 };
 

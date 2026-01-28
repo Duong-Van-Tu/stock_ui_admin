@@ -489,14 +489,14 @@ export const AlertLogsTable = ({
     },
     {
       title: 'Sentiment Score',
-      dataIndex: 'newsScore',
-      key: 'newsScore',
+      dataIndex: 'sentiment',
+      key: 'sentiment',
       width: 150,
       sorter: true,
       showSorterTooltip: false,
-      sortOrder: sortField === 'newsScore' ? sortType : null,
+      sortOrder: sortField === 'sentiment' ? sortType : null,
       onHeaderCell: () => ({
-        onClick: () => handleSortOrder('newsScore')
+        onClick: () => handleSortOrder('sentiment')
       }),
       align: 'center',
       render: (value) =>
