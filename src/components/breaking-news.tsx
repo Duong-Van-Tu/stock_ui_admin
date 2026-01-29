@@ -77,7 +77,7 @@ export default function BreakingNews() {
               style={{
                 width: '100%',
                 justifyContent: 'space-between',
-                padding: '1.4rem 0 0 2.4rem'
+                paddingTop: '1.4rem'
               }}
             >
               <Space>
@@ -85,7 +85,7 @@ export default function BreakingNews() {
                   <Badge
                     count={roundToDecimals(news.articleScore * 10)}
                     color='gold'
-                    offset={[-30, -6]}
+                    offset={[10, -8]}
                   >
                     <Icon
                       icon='fire'
@@ -116,13 +116,13 @@ export default function BreakingNews() {
       trigger={['click']}
       onOpenChange={handleDropdownVisibleChange}
     >
-      <Space style={{ width: '100%', paddingLeft: '2rem' }}>
+      <Space>
         {(displayNews.breakingNews === 1 ||
           displayNews.breakingNews === -1) && (
           <Badge
             count={roundToDecimals(displayNews.articleScore * 10)}
             color='gold'
-            offset={[-28, -4]}
+            offset={[10, -6]}
           >
             <Icon
               icon='fire'
@@ -142,7 +142,7 @@ export default function BreakingNews() {
         >
           <Text
             style={{
-              maxWidth: '60rem',
+              maxWidth: '50rem',
               color: 'inherit',
               verticalAlign: 'middle'
             }}
