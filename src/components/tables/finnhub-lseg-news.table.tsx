@@ -8,7 +8,7 @@ import {
   watchFinnhubAndLsegNewsPagination,
   getFinnhubAndLsegNews
 } from '@/redux/slices/sentiment.slice';
-import { Button, Table, TableColumnsType, Tooltip } from 'antd';
+import { Button, Table, TableColumnsType, Tooltip, Badge } from 'antd';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
@@ -36,6 +36,8 @@ import { PositiveNegativeText } from '../positive-negative-text';
 import { Recommendation } from '@/constants/common.constant';
 import { ExportExcelFinnhubLsegNews } from '../export-excel-finnhub-lseg-news';
 import { StockChangeCell } from './columns/stock-change-cell.column';
+import { defaultApiFetcher } from '@/utils/api-instances';
+import { transformFinnhubAndLsegNews } from '@/helpers/sentiment.helper';
 
 export const FinnhubAndLsegNewsTable = () => {
   const t = useTranslations();
@@ -54,6 +56,11 @@ export const FinnhubAndLsegNewsTable = () => {
 
   const [filter, setFilter] = useState<SentimentFilter>({});
   const [isFilterReady, setIsFilterReady] = useState(false);
+
+  const [expandedNews, setExpandedNews] = useState<
+    Record<string, FinnhubAndLsegNewsTableItem[]>
+  >({});
+  const [expandedLoading, setExpandedLoading] = useState<string[]>([]);
 
   const { sortField, sortType, handleSortOrder } = useSortOrder({
     defaultField: 'datetime',
@@ -85,6 +92,36 @@ export const FinnhubAndLsegNewsTable = () => {
     },
     [symbol, storyId, dispatch, sortField, sortType]
   );
+
+  const handleExpandRow = async (expanded: boolean, record: any) => {
+    if (expanded) {
+      const compositeKey = `${record.symbol}_${record.id}`;
+      setExpandedLoading((prev) => [...prev, compositeKey]);
+
+      try {
+        const detail = await defaultApiFetcher.get('news/list', {
+          query: {
+            page: 1,
+            limit: PAGINATION_PARAMS.unLimit,
+            symbol: record.symbol,
+            isNews24h: true,
+            source_type: filter.sourceType ?? undefined
+          }
+        });
+
+        setExpandedNews((prev) => ({
+          ...prev,
+          [compositeKey]: transformFinnhubAndLsegNews(detail.data.result)
+        }));
+      } catch (error) {
+        console.error('Failed to fetch expanded news:', error);
+      } finally {
+        setExpandedLoading((prev) =>
+          prev.filter((key) => key !== compositeKey)
+        );
+      }
+    }
+  };
 
   const handleRefresh = useCallback(() => {
     if (storyId) {
@@ -170,15 +207,15 @@ export const FinnhubAndLsegNewsTable = () => {
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('symbol')
         }),
-        render: (value) => <SymbolCell symbol={value} />,
         onCell: (record) => ({
           className:
             record.breakingNews === 1
               ? 'hl-breaking-news-positive'
               : record.breakingNews === -1
-              ? 'hl-breaking-news-negative'
-              : ''
-        })
+                ? 'hl-breaking-news-negative'
+                : ''
+        }),
+        render: (value) => <SymbolCell symbol={value} />
       },
       {
         title: 'Publishing Time',
@@ -188,10 +225,19 @@ export const FinnhubAndLsegNewsTable = () => {
         sorter: true,
         showSorterTooltip: false,
         sortOrder: sortField === 'datetime' ? sortType : null,
+        fixed: !isMobile && 'left',
         onHeaderCell: () => ({
           onClick: () => handleSortOrder('datetime')
         }),
         align: 'center',
+        onCell: (record) => ({
+          className:
+            record.breakingNews === 1
+              ? 'hl-breaking-news-positive'
+              : record.breakingNews === -1
+                ? 'hl-breaking-news-negative'
+                : ''
+        }),
         render: (value) => (value ? <DateTimeCell value={value} /> : '-')
       },
       {
@@ -220,8 +266,8 @@ export const FinnhubAndLsegNewsTable = () => {
                         record.breakingNews === 1
                           ? 'var(--positive-color)'
                           : record.breakingNews === -1
-                          ? 'var(--negative-color)'
-                          : ''
+                            ? 'var(--negative-color)'
+                            : ''
                       }
                       icon='fire'
                       width={18}
@@ -720,6 +766,14 @@ export const FinnhubAndLsegNewsTable = () => {
     ]
   );
 
+  const detailColumns: TableColumnsType<FinnhubAndLsegNewsTableItem> = columns
+    .filter((col) => col.key !== 'symbol')
+    .map((col) => ({
+      ...col,
+      sorter: undefined,
+      onHeaderCell: undefined
+    }));
+
   return (
     <div css={rootStyles}>
       <div css={filterBarStyles}>
@@ -771,6 +825,45 @@ export const FinnhubAndLsegNewsTable = () => {
               </div>
             )
           }}
+          expandable={{
+            expandIcon: ({ expanded, onExpand, record }) => {
+              const count = record.totalNews24H;
+              return expanded ? (
+                <Badge count={count} color='gold'>
+                  <Button
+                    css={expandIconBtnStyles}
+                    onClick={(e) => onExpand(record, e)}
+                    icon={<Icon icon='arrowDown' width={16} height={16} />}
+                  />
+                </Badge>
+              ) : count > 0 ? (
+                <Badge count={count} color='gold'>
+                  <Button
+                    css={expandIconBtnStyles}
+                    onClick={(e) => onExpand(record, e)}
+                    icon={<Icon icon='right' width={18} height={18} />}
+                  />
+                </Badge>
+              ) : null;
+            },
+            expandedRowRender: (row) => {
+              const compositeKey = `${row.symbol}_${row.id}`;
+              return (
+                <Table
+                  css={detailTableStyles}
+                  dataSource={expandedNews[compositeKey] || []}
+                  columns={detailColumns}
+                  rowKey={(record) => record.key}
+                  size='small'
+                  pagination={false}
+                  loading={expandedLoading.includes(compositeKey)}
+                  scroll={{ x: 'max-content' }}
+                />
+              );
+            },
+            rowExpandable: (record) => record.totalNews24H > 0,
+            onExpand: handleExpandRow
+          }}
           pagination={{
             position: ['bottomCenter'],
             pageSizeOptions: [
@@ -802,6 +895,9 @@ const rootStyles = css`
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
+  .ant-badge-multiple-words {
+    padding: 0;
+  }
 `;
 
 const tableTopStyles = css`
@@ -822,7 +918,7 @@ const actionStyles = css`
 const filterBarStyles = css`
   border: 1px solid var(--border-table-color);
   border-radius: 0.6rem;
-  padding: 1.6rem 1.4rem 1.2rem;
+  padding: 1.6rem 1.6rem 1.2rem;
 `;
 
 const tableStyles = css`
@@ -831,11 +927,12 @@ const tableStyles = css`
   }
   .hl-breaking-news-positive {
     background-color: var(--watching-color) !important;
-    color: #fff !important;
   }
   .hl-breaking-news-negative {
     background-color: var(--soft-pink-color) !important;
-    color: #fff !important;
+  }
+  .ant-table-expanded-row-fixed {
+    padding: 0;
   }
 `;
 
@@ -882,10 +979,34 @@ const titleCellStyles = css`
 
 const fireIconStyles = css`
   position: absolute;
-  left: -1.8rem;
+  left: -1.4rem;
   top: -1.4rem;
 `;
 
 const iconStyles = css`
   margin-top: 0.2rem;
+`;
+
+const detailTableStyles = css`
+  padding: 1.6rem 1rem;
+  .ant-table {
+    margin-inline: 0 !important;
+  }
+
+  .ant-table-thead {
+    .ant-table-cell {
+      background: var(--table-header-bg-color);
+    }
+  }
+
+  .ant-table-row {
+    .ant-table-cell {
+      background: var(--table-row-bg-color);
+    }
+  }
+`;
+
+const expandIconBtnStyles = css`
+  width: 2.4rem !important;
+  height: 2.4rem;
 `;

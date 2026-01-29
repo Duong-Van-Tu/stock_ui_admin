@@ -14,6 +14,7 @@ type SentimentFilter = Filter & {
   sourceType?: 'finnhub' | 'lseg';
   breakingNews?: number;
   topNewsMetadata?: number;
+  isNews24h?: boolean;
 };
 
 type CountSentiment = {
@@ -148,6 +149,7 @@ type FinnhubAndLsegNewsTableItem = {
   highest3DaysUpdateAt: string;
   lowest3DaysUpdateAt: string;
   topNewsMetadata: number;
+  totalNews24H: number;
 };
 
 type NewsScore = {

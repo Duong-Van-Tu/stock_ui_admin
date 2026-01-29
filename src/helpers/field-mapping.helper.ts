@@ -436,5 +436,6 @@ export const fieldMapping: Record<string, string> = {
   lowest7DaysPricePct: 'lowest_7_days_price_pct',
   highest7DaysPricePct: 'highest_7_days_price_pct',
   sortOrder: 'sort_order',
-  startminePoint: 'startmine_point'
+  startminePoint: 'startmine_point',
+  totalNews24H: 'total_news_24h'
 };

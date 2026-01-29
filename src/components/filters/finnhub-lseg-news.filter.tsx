@@ -384,6 +384,12 @@ const formStyles = css`
   display: flex;
   justify-content: flex-end;
   width: 100%;
+  .ant-row {
+    gap: 1.2rem;
+  }
+  .ant-col {
+    padding: 0 !important;
+  }
 `;
 
 const formItemStyles = css`

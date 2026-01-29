@@ -196,7 +196,8 @@ export const transformFinnhubAndLsegNews = (
     highestUpdateAt: item[fieldMapping.highestUpdateAt],
     highest3DaysUpdateAt: item[fieldMapping.highest3DaysUpdateAt],
     lowest3DaysUpdateAt: item[fieldMapping.lowest3DaysUpdateAt],
-    topNewsMetadata: item[fieldMapping.topNewsMetadata]
+    topNewsMetadata: item[fieldMapping.topNewsMetadata],
+    totalNews24H: item[fieldMapping.totalNews24H]
   }));
 };
 
