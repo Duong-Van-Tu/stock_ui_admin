@@ -315,6 +315,13 @@ export const EstForecastSelectedTable = () => {
         )
       },
       {
+        title: 'Note for Trader',
+        dataIndex: 'noteForTrader',
+        width: 130,
+        align: 'center',
+        render: (v, r) => renderText(v, 'noteForTrader', r)
+      },
+      {
         title: 'Earnings Date',
         dataIndex: 'earningsDate',
         width: 130,
@@ -812,13 +819,6 @@ export const EstForecastSelectedTable = () => {
             point={r.marketpsychTrustZPoint}
           />
         )
-      },
-      {
-        title: 'Note for Trader',
-        dataIndex: 'noteForTrader',
-        width: 130,
-        align: 'center',
-        render: (v, r) => renderText(v, 'noteForTrader', r)
       },
       {
         title: (
