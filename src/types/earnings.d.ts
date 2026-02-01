@@ -33,3 +33,14 @@ type Earning = {
   highestPrice: number;
   intradayStockChart: IntradayStockChart;
 };
+
+type EconomicCalendar = {
+  id: string;
+  start: string;
+  name: string;
+  impact: string;
+  description: string;
+  source: string;
+  volatility: string;
+  periodType: string;
+};

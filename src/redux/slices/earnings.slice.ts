@@ -1,6 +1,7 @@
 import {
   transformEarnings,
-  transformEarningsSummary
+  transformEarningsSummary,
+  transformEconomicCalendar
 } from '@/helpers/earnings.helper';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
@@ -13,6 +14,8 @@ export type EarningsState = {
   earnings: Earning[];
   earningsFilter: Earning[];
   pagination: Pagination;
+  economicCalendar: EconomicCalendar[];
+  loadingEconomic: boolean;
 };
 
 const initialState: EarningsState = {
@@ -21,7 +24,9 @@ const initialState: EarningsState = {
   earningsSummary: [],
   earnings: [],
   earningsFilter: [],
-  pagination: PAGINATION
+  pagination: PAGINATION,
+  economicCalendar: [],
+  loadingEconomic: false
 };
 
 export const earningsSlice = createAppSlice({
@@ -102,6 +107,29 @@ export const earningsSlice = createAppSlice({
         }
       }
     ),
+    getEconomicCalendar: create.asyncThunk(
+      async (query?: Record<string, any>) => {
+        const response = await defaultApiFetcher.get('economic-calendar/list', {
+          query
+        });
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loadingEconomic = true;
+        },
+        fulfilled: (state, action) => {
+          state.loadingEconomic = false;
+          state.economicCalendar = transformEconomicCalendar(
+            action.payload.result
+          );
+        },
+        rejected: (state) => {
+          state.loadingEconomic = false;
+          state.economicCalendar = [];
+        }
+      }
+    ),
     resetState: create.reducer((state) => {
       // Preserve the current earningsSummary before resetting
       const { earningsSummary } = state;
@@ -120,7 +148,9 @@ export const earningsSlice = createAppSlice({
     watchEarningsSummary: (state) => state.earningsSummary,
     watchEarnings: (state) => state.earnings,
     watchEarningsFilter: (state) => state.earningsFilter,
-    watchEarningPagination: (state) => state.pagination
+    watchEarningPagination: (state) => state.pagination,
+    watchEconomicCalendar: (state) => state.economicCalendar,
+    watchEconomicLoading: (state) => state.loadingEconomic
   }
 });
 
@@ -130,12 +160,15 @@ export const {
   watchEarningsSummary,
   watchEarnings,
   watchEarningPagination,
-  watchEarningsFilter
+  watchEarningsFilter,
+  watchEconomicCalendar,
+  watchEconomicLoading
 } = earningsSlice.selectors;
 
 export const {
   getCountEarningsCalendar,
   getEarnings,
   getEarningsFilter,
+  getEconomicCalendar,
   resetState
 } = earningsSlice.actions;

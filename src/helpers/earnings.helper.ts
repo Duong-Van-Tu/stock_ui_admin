@@ -54,3 +54,19 @@ export const transformEarnings = (earnings: any[]): Earning[] => {
     }
   }));
 };
+
+export const transformEconomicCalendar = (data: any[]): EconomicCalendar[] => {
+  if (!data || data.length <= 0) {
+    return [];
+  }
+  return data.map((item) => ({
+    id: item.id,
+    start: item.start,
+    name: item.name,
+    impact: item.impact,
+    description: item.description,
+    source: item.source,
+    volatility: item.volatility,
+    periodType: item[fieldMapping.periodType]
+  }));
+};

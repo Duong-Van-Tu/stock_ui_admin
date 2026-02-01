@@ -18,6 +18,7 @@ import { setSideBarCollapsed } from '@/redux/slices/app.slice';
 import TimeZoneClock from './time-zone-clock';
 import { regex } from '@/utils/regex';
 import BreakingNews from './breaking-news';
+import { EconomicCalendarList } from './economic-calendar-list';
 
 enum UserMenu {
   PROFILE,
@@ -173,6 +174,7 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
       </div>
       {isDesktop && <BreakingNews />}
       <div css={rightSectionStyles}>
+        <EconomicCalendarList />
         {isDesktop && <TimeZoneClock />}
         {isDesktop && (
           <div
@@ -241,8 +243,8 @@ const rootStyles = (background: string, collapsed: boolean) => css`
       ? '0'
       : 'var(--mobile-expanded-sidebar-width)'
     : collapsed
-    ? 'var(--collapsed-sidebar-width)'
-    : 'var(--expanded-sidebar-width)'};
+      ? 'var(--collapsed-sidebar-width)'
+      : 'var(--expanded-sidebar-width)'};
   transition: left 0.25s ease;
   border-bottom: 0.1rem solid var(--border-color);
   padding-right: 2rem;
