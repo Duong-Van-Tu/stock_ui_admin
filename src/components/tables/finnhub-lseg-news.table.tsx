@@ -1034,6 +1034,7 @@ const checkboxStyles = css`
   user-select: none;
   .ant-checkbox + span {
     padding-left: 8px;
-    font-weight: 500;
+    font-weight: 600;
+    color: var(--blue-500);
   }
 `;

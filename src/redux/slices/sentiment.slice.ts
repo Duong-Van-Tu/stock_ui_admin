@@ -295,7 +295,7 @@ export const SentimentSlice = createAppSlice({
           ? convertParamsByMapping(restQuery)
           : {};
         const queryParams = isTopLseg
-          ? { ...filteredQuery, minArticleScore: 8 }
+          ? { ...filteredQuery, minArticleScore: 0.8 }
           : filteredQuery;
 
         const response = await defaultApiFetcher.get('news/list', {
