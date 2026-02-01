@@ -317,7 +317,7 @@ export const EstForecastSelectedTable = () => {
       {
         title: 'Note for Trader',
         dataIndex: 'noteForTrader',
-        width: 130,
+        width: 300,
         align: 'center',
         render: (v, r) => renderText(v, 'noteForTrader', r)
       },
