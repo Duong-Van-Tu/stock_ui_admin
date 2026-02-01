@@ -103,47 +103,53 @@ export const FinnhubAndLsegNewsTable = () => {
     [symbol, storyId, dispatch, sortField, sortType, isTopLseg]
   );
 
-  const handleExpandRowKeys = (record: FinnhubAndLsegNewsTableItem) => {
-    const rowKey = record.key;
-    setExpandedRowKeys((prev) =>
-      prev.includes(rowKey)
-        ? prev.filter((k) => k !== rowKey)
-        : [...prev, rowKey]
-    );
-    if (!expandedRowKeys.includes(rowKey)) {
-      handleExpandRow(true, record);
-    }
-  };
+  const handleExpandRow = useCallback(
+    async (expanded: boolean, record: any) => {
+      if (expanded) {
+        const compositeKey = `${record.symbol}_${record.id}`;
+        setExpandedLoading((prev) => [...prev, compositeKey]);
 
-  const handleExpandRow = async (expanded: boolean, record: any) => {
-    if (expanded) {
-      const compositeKey = `${record.symbol}_${record.id}`;
-      setExpandedLoading((prev) => [...prev, compositeKey]);
+        try {
+          const detail = await defaultApiFetcher.get('news/list', {
+            query: {
+              page: 1,
+              limit: PAGINATION_PARAMS.unLimit,
+              symbol: record.symbol,
+              isNews24h: true,
+              source_type: filter.sourceType ?? undefined
+            }
+          });
 
-      try {
-        const detail = await defaultApiFetcher.get('news/list', {
-          query: {
-            page: 1,
-            limit: PAGINATION_PARAMS.unLimit,
-            symbol: record.symbol,
-            isNews24h: true,
-            source_type: filter.sourceType ?? undefined
-          }
-        });
-
-        setExpandedNews((prev) => ({
-          ...prev,
-          [compositeKey]: transformFinnhubAndLsegNews(detail.data.result)
-        }));
-      } catch (error) {
-        console.error('Failed to fetch expanded news:', error);
-      } finally {
-        setExpandedLoading((prev) =>
-          prev.filter((key) => key !== compositeKey)
-        );
+          setExpandedNews((prev) => ({
+            ...prev,
+            [compositeKey]: transformFinnhubAndLsegNews(detail.data.result)
+          }));
+        } catch (error) {
+          console.error('Failed to fetch expanded news:', error);
+        } finally {
+          setExpandedLoading((prev) =>
+            prev.filter((key) => key !== compositeKey)
+          );
+        }
       }
-    }
-  };
+    },
+    [filter.sourceType]
+  );
+
+  const handleExpandRowKeys = useCallback(
+    (record: FinnhubAndLsegNewsTableItem) => {
+      const rowKey = record.key;
+      setExpandedRowKeys((prev) =>
+        prev.includes(rowKey)
+          ? prev.filter((k) => k !== rowKey)
+          : [...prev, rowKey]
+      );
+      if (!expandedRowKeys.includes(rowKey)) {
+        handleExpandRow(true, record);
+      }
+    },
+    [expandedRowKeys, handleExpandRow]
+  );
 
   const handleRefresh = useCallback(() => {
     if (storyId) {
@@ -820,7 +826,8 @@ export const FinnhubAndLsegNewsTable = () => {
       sortType,
       handleSortOrder,
       modal,
-      expandedRowKeys
+      expandedRowKeys,
+      handleExpandRowKeys
     ]
   );
 
