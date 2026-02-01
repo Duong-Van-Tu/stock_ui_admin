@@ -131,6 +131,19 @@ export const AlertLogsTable = ({
     Record<string, Signal[]>
   >({});
   const [expandedLoading, setExpandedLoading] = useState<string[]>([]);
+  const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
+
+  const handleExpandRowKeys = (record: Signal) => {
+    const rowKey = record.key;
+    setExpandedRowKeys((prev) =>
+      prev.includes(rowKey)
+        ? prev.filter((k) => k !== rowKey)
+        : [...prev, rowKey]
+    );
+    if (!expandedRowKeys.includes(rowKey)) {
+      handleExpandRow(true, record);
+    }
+  };
 
   const handleExpandRow = async (expanded: boolean, record: Signal) => {
     if (expanded) {
@@ -345,6 +358,42 @@ export const AlertLogsTable = ({
       fixed: 'left',
       render: (_, __, index) =>
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
+    },
+    {
+      title: t('count'),
+      dataIndex: 'countSignal',
+      key: 'countSignal',
+      width: 76,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'countSignal' ? sortType : null,
+      fixed: 'left',
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('countSignal')
+      }),
+      render: (value, record) => {
+        const badgeColor = record.allEntryGood ? '#52c41a' : '#faad14';
+        const isExpanded = expandedRowKeys.includes(record.key);
+        if (value > 1) {
+          return (
+            <Badge count={value} color={badgeColor}>
+              <Button
+                css={expandIconBtnStyles}
+                onClick={() => handleExpandRowKeys(record)}
+                icon={
+                  isExpanded ? (
+                    <Icon icon='arrowDown' width={16} height={16} />
+                  ) : (
+                    <Icon icon='right' width={18} height={18} />
+                  )
+                }
+              />
+            </Badge>
+          );
+        }
+        return '-';
+      }
     },
     {
       title: t('symbol'),
@@ -1787,26 +1836,6 @@ export const AlertLogsTable = ({
               )
             }}
             expandable={{
-              expandIcon: ({ expanded, onExpand, record }) => {
-                const badgeColor = record.allEntryGood ? '#52c41a' : '#faad14';
-                return expanded ? (
-                  <Badge count={record.countSignal} color={badgeColor}>
-                    <Button
-                      css={expandIconBtnStyles}
-                      onClick={(e) => onExpand(record, e)}
-                      icon={<Icon icon='arrowDown' width={16} height={16} />}
-                    />
-                  </Badge>
-                ) : record.countSignal > 1 ? (
-                  <Badge count={record.countSignal} color={badgeColor}>
-                    <Button
-                      css={expandIconBtnStyles}
-                      onClick={(e) => onExpand(record, e)}
-                      icon={<Icon icon='right' width={18} height={18} />}
-                    />
-                  </Badge>
-                ) : null;
-              },
               expandedRowRender: (row) => {
                 const compositeKey = `${row.symbol}_${row.id}`;
                 return (
@@ -1823,7 +1852,10 @@ export const AlertLogsTable = ({
                 );
               },
               rowExpandable: (record) => record.countSignal > 1,
-              onExpand: handleExpandRow
+              expandedRowKeys,
+              onExpand: handleExpandRow,
+              expandIcon: () => null,
+              showExpandColumn: false
             }}
             pagination={{
               position: ['bottomCenter'],
@@ -2001,6 +2033,6 @@ const detailTableStyles = css`
 `;
 
 const expandIconBtnStyles = css`
-  width: 2.8rem !important;
-  height: 2.8rem;
+  width: 2.6rem !important;
+  height: 2.6rem;
 `;

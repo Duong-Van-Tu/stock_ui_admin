@@ -16,7 +16,7 @@ import {
   Badge,
   Checkbox
 } from 'antd';
-import { useCallback, useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo, Key } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
@@ -69,6 +69,7 @@ export const FinnhubAndLsegNewsTable = () => {
     Record<string, FinnhubAndLsegNewsTableItem[]>
   >({});
   const [expandedLoading, setExpandedLoading] = useState<string[]>([]);
+  const [expandedRowKeys, setExpandedRowKeys] = useState<Key[]>([]);
 
   const { sortField, sortType, handleSortOrder } = useSortOrder({
     defaultField: 'datetime',
@@ -101,6 +102,18 @@ export const FinnhubAndLsegNewsTable = () => {
     },
     [symbol, storyId, dispatch, sortField, sortType, isTopLseg]
   );
+
+  const handleExpandRowKeys = (record: FinnhubAndLsegNewsTableItem) => {
+    const rowKey = record.key;
+    setExpandedRowKeys((prev) =>
+      prev.includes(rowKey)
+        ? prev.filter((k) => k !== rowKey)
+        : [...prev, rowKey]
+    );
+    if (!expandedRowKeys.includes(rowKey)) {
+      handleExpandRow(true, record);
+    }
+  };
 
   const handleExpandRow = async (expanded: boolean, record: any) => {
     if (expanded) {
@@ -203,6 +216,41 @@ export const FinnhubAndLsegNewsTable = () => {
         fixed: !isMobile && 'left',
         render: (_v, _r, index) =>
           index + 1 + (pagination.currentPage - 1) * pagination.pageSize
+      },
+      {
+        title: t('count'),
+        dataIndex: 'totalNews24H',
+        key: 'totalNews24H',
+        width: 76,
+        align: 'center',
+        fixed: !isMobile && 'left',
+        sorter: true,
+        showSorterTooltip: false,
+        sortOrder: sortField === 'totalNews24H' ? sortType : null,
+        onHeaderCell: () => ({
+          onClick: () => handleSortOrder('totalNews24H')
+        }),
+        render: (value, record) => {
+          const isExpanded = expandedRowKeys.includes(record.key);
+          if (value > 0) {
+            return (
+              <Badge count={value} color='gold'>
+                <Button
+                  css={expandIconBtnStyles}
+                  onClick={() => handleExpandRowKeys(record)}
+                  icon={
+                    isExpanded ? (
+                      <Icon icon='arrowDown' width={16} height={16} />
+                    ) : (
+                      <Icon icon='right' width={18} height={18} />
+                    )
+                  }
+                />
+              </Badge>
+            );
+          }
+          return '-';
+        }
       },
       {
         title: 'Symbol',
@@ -771,12 +819,13 @@ export const FinnhubAndLsegNewsTable = () => {
       sortField,
       sortType,
       handleSortOrder,
-      modal
+      modal,
+      expandedRowKeys
     ]
   );
 
   const detailColumns: TableColumnsType<FinnhubAndLsegNewsTableItem> = columns
-    .filter((col) => col.key !== 'symbol')
+    .filter((col) => col.key !== 'symbol' && col.key !== 'totalNews24H')
     .map((col) => ({
       ...col,
       sorter: undefined,
@@ -842,26 +891,6 @@ export const FinnhubAndLsegNewsTable = () => {
             )
           }}
           expandable={{
-            expandIcon: ({ expanded, onExpand, record }) => {
-              const count = record.totalNews24H;
-              return expanded ? (
-                <Badge count={count} color='gold'>
-                  <Button
-                    css={expandIconBtnStyles}
-                    onClick={(e) => onExpand(record, e)}
-                    icon={<Icon icon='arrowDown' width={16} height={16} />}
-                  />
-                </Badge>
-              ) : count > 0 ? (
-                <Badge count={count} color='gold'>
-                  <Button
-                    css={expandIconBtnStyles}
-                    onClick={(e) => onExpand(record, e)}
-                    icon={<Icon icon='right' width={18} height={18} />}
-                  />
-                </Badge>
-              ) : null;
-            },
             expandedRowRender: (row) => {
               const compositeKey = `${row.symbol}_${row.id}`;
               return (
@@ -878,7 +907,10 @@ export const FinnhubAndLsegNewsTable = () => {
               );
             },
             rowExpandable: (record) => record.totalNews24H > 0,
-            onExpand: handleExpandRow
+            onExpand: handleExpandRow,
+            expandedRowKeys,
+            expandIcon: () => null,
+            showExpandColumn: false
           }}
           pagination={{
             position: ['bottomCenter'],
