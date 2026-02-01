@@ -289,8 +289,17 @@ export const SentimentSlice = createAppSlice({
 
     getFinnhubAndLsegNews: create.asyncThunk(
       async (query?: Record<string, any>) => {
+        const { isTopLseg, ...restQuery } = query || {};
+
+        const filteredQuery = restQuery
+          ? convertParamsByMapping(restQuery)
+          : {};
+        const queryParams = isTopLseg
+          ? { ...filteredQuery, minArticleScore: 8 }
+          : filteredQuery;
+
         const response = await defaultApiFetcher.get('news/list', {
-          query: query ? convertParamsByMapping(query) : {}
+          query: queryParams
         });
         return response.data;
       },

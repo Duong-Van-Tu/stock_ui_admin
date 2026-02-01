@@ -8,7 +8,14 @@ import {
   watchFinnhubAndLsegNewsPagination,
   getFinnhubAndLsegNews
 } from '@/redux/slices/sentiment.slice';
-import { Button, Table, TableColumnsType, Tooltip, Badge } from 'antd';
+import {
+  Button,
+  Table,
+  TableColumnsType,
+  Tooltip,
+  Badge,
+  Checkbox
+} from 'antd';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
@@ -56,6 +63,7 @@ export const FinnhubAndLsegNewsTable = () => {
 
   const [filter, setFilter] = useState<SentimentFilter>({});
   const [isFilterReady, setIsFilterReady] = useState(false);
+  const [isTopLseg, setIsTopLseg] = useState(false);
 
   const [expandedNews, setExpandedNews] = useState<
     Record<string, FinnhubAndLsegNewsTableItem[]>
@@ -86,11 +94,12 @@ export const FinnhubAndLsegNewsTable = () => {
           sortType: convertSortType(sortType),
           symbol: symbol ?? undefined,
           storyId: storyId ?? undefined,
+          isTopLseg,
           ...filteredFilter
         })
       );
     },
-    [symbol, storyId, dispatch, sortField, sortType]
+    [symbol, storyId, dispatch, sortField, sortType, isTopLseg]
   );
 
   const handleExpandRow = async (expanded: boolean, record: any) => {
@@ -169,7 +178,7 @@ export const FinnhubAndLsegNewsTable = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFilterReady, filter, sortField, sortType]);
+  }, [isFilterReady, filter, sortField, sortType, isTopLseg]);
 
   const handleFilter = (values: SentimentFilter) => {
     const newFilter = { ...filter, ...values };
@@ -803,6 +812,13 @@ export const FinnhubAndLsegNewsTable = () => {
             </Tooltip>
           </TableTitle>
           <div css={actionStyles}>
+            <Checkbox
+              checked={isTopLseg}
+              onChange={(e) => setIsTopLseg(e.target.checked)}
+              css={checkboxStyles}
+            >
+              Article Score {'>'} 8
+            </Checkbox>
             <ExportExcelFinnhubLsegNews filter={filter} />
           </div>
         </div>
@@ -913,6 +929,7 @@ const actionStyles = css`
   display: flex;
   justify-content: flex-end;
   gap: 1.2rem;
+  align-items: center;
 `;
 
 const filterBarStyles = css`
@@ -1009,4 +1026,14 @@ const detailTableStyles = css`
 const expandIconBtnStyles = css`
   width: 2.4rem !important;
   height: 2.4rem;
+`;
+
+const checkboxStyles = css`
+  display: flex;
+  align-items: center;
+  user-select: none;
+  .ant-checkbox + span {
+    padding-left: 8px;
+    font-weight: 500;
+  }
 `;
