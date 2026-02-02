@@ -16,7 +16,7 @@ import {
   Badge,
   Checkbox
 } from 'antd';
-import { useCallback, useEffect, useState, useMemo, Key } from 'react';
+import { useCallback, useEffect, useState, Key } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
@@ -71,14 +71,15 @@ export const FinnhubAndLsegNewsTable = () => {
   const [expandedLoading, setExpandedLoading] = useState<string[]>([]);
   const [expandedRowKeys, setExpandedRowKeys] = useState<Key[]>([]);
 
-  const { sortField, sortType, handleSortOrder } = useSortOrder({
-    defaultField: 'datetime',
-    defaultOrder: 'descend',
-    currentFilter: filter,
-    onChange: (_field, _order, newFilter) => {
-      setFilter(newFilter);
-    }
-  });
+  const { sortField, sortType, handleSortOrder } =
+    useSortOrder<SentimentFilter>({
+      defaultField: 'datetime',
+      defaultOrder: 'descend',
+      currentFilter: filter,
+      onChange: (_field, _order, newFilter) => {
+        setFilter(newFilter);
+      }
+    });
 
   const fetchListNews = useCallback(
     ({
@@ -211,625 +212,611 @@ export const FinnhubAndLsegNewsTable = () => {
 
   const dataSource = Array.isArray(listNews) ? listNews : [];
 
-  const columns: TableColumnsType<FinnhubAndLsegNewsTableItem> = useMemo(
-    () => [
-      {
-        title: t('stt'),
-        dataIndex: 'index',
-        key: 'index',
-        width: 70,
-        align: 'center',
-        fixed: !isMobile && 'left',
-        render: (_v, _r, index) =>
-          index + 1 + (pagination.currentPage - 1) * pagination.pageSize
-      },
-      {
-        title: t('count'),
-        dataIndex: 'totalNews24H',
-        key: 'totalNews24H',
-        width: 76,
-        align: 'center',
-        fixed: !isMobile && 'left',
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'totalNews24H' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('totalNews24H')
-        }),
-        render: (value, record) => {
-          const isExpanded = expandedRowKeys.includes(record.key);
-          if (value > 0) {
-            return (
-              <Badge count={value} color='gold'>
-                <Button
-                  css={expandIconBtnStyles}
-                  onClick={() => handleExpandRowKeys(record)}
-                  icon={
-                    isExpanded ? (
-                      <Icon icon='arrowDown' width={16} height={16} />
-                    ) : (
-                      <Icon icon='right' width={18} height={18} />
-                    )
-                  }
-                />
-              </Badge>
-            );
-          }
-          return '-';
+  const columns: TableColumnsType<FinnhubAndLsegNewsTableItem> = [
+    {
+      title: t('stt'),
+      dataIndex: 'index',
+      key: 'index',
+      width: 70,
+      align: 'center',
+      fixed: !isMobile && 'left',
+      render: (_v, _r, index) =>
+        index + 1 + (pagination.currentPage - 1) * pagination.pageSize
+    },
+    {
+      title: t('count'),
+      dataIndex: 'totalNews24H',
+      key: 'totalNews24H',
+      width: 76,
+      align: 'center',
+      fixed: !isMobile && 'left',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'totalNews24H' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('totalNews24H')
+      }),
+      render: (value, record) => {
+        const isExpanded = expandedRowKeys.includes(record.key);
+        if (value > 0) {
+          return (
+            <Badge count={value} color='gold'>
+              <Button
+                css={expandIconBtnStyles}
+                onClick={() => handleExpandRowKeys(record)}
+                icon={
+                  isExpanded ? (
+                    <Icon icon='arrowDown' width={16} height={16} />
+                  ) : (
+                    <Icon icon='right' width={18} height={18} />
+                  )
+                }
+              />
+            </Badge>
+          );
         }
-      },
-      {
-        title: 'Symbol',
-        dataIndex: 'symbol',
-        key: 'symbol',
-        width: 90,
-        fixed: !isMobile && 'left',
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'symbol' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('symbol')
-        }),
-        onCell: (record) => ({
-          className:
-            record.breakingNews === 1
-              ? 'hl-breaking-news-positive'
-              : record.breakingNews === -1
-                ? 'hl-breaking-news-negative'
-                : ''
-        }),
-        render: (value) => <SymbolCell symbol={value} />
-      },
-      {
-        title: 'Publishing Time',
-        dataIndex: 'datetime',
-        key: 'datetime',
-        width: 150,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'datetime' ? sortType : null,
-        fixed: !isMobile && 'left',
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('datetime')
-        }),
-        align: 'center',
-        onCell: (record) => ({
-          className:
-            record.breakingNews === 1
-              ? 'hl-breaking-news-positive'
-              : record.breakingNews === -1
-                ? 'hl-breaking-news-negative'
-                : ''
-        }),
-        render: (value) => (value ? <DateTimeCell value={value} /> : '-')
-      },
-      {
-        title: 'Headline',
-        dataIndex: 'headline',
-        key: 'headline',
-        width: 180,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'headline' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('headline')
-        }),
-        render: (value, record) => (
-          <div css={titleCellStyles}>
-            {!!record.breakingNews && (
-              <Tooltip
-                css={fireIconStyles}
-                title={isMobile ? null : t('breakingNews')}
-              >
-                <Button
-                  type='text'
-                  icon={
-                    <Icon
-                      fill={
-                        record.breakingNews === 1
-                          ? 'var(--positive-color)'
-                          : record.breakingNews === -1
-                            ? 'var(--negative-color)'
-                            : ''
-                      }
-                      icon='fire'
-                      width={18}
-                      height={18}
-                    />
-                  }
-                  shape='circle'
-                />
-              </Tooltip>
-            )}
-            <EllipsisText text={value} maxLines={2} />
-          </div>
-        )
-      },
-      {
-        title: 'Story',
-        dataIndex: 'summary',
-        key: 'summary',
-        width: 68,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'summary' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('summary')
-        }),
-        align: 'center',
-        render: (value, record) =>
-          value ? (
-            <Button
-              onClick={() =>
-                modal.openModal(
-                  <div css={storyStyles}>
-                    <h2>{`News Story (${record.symbol})`}</h2>
-                    <h3>{record.headline}</h3>
-                    <p dangerouslySetInnerHTML={{ __html: value }} />
-                  </div>,
-                  { width: 1000 }
-                )
-              }
-              type='link'
-              block
-            >
-              Story
-            </Button>
-          ) : (
-            '-'
-          )
-      },
-      {
-        title: 'Source',
-        dataIndex: 'sourceType',
-        key: 'sourceType',
-        width: 86,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'sourceType' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('sourceType')
-        }),
-        align: 'center'
-      },
-      {
-        title: 'News Type',
-        dataIndex: 'newsType',
-        key: 'newsType',
-        width: 180,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'newsType' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('newsType')
-        }),
-        align: 'center',
-        render: (value) =>
-          value ? <EllipsisText text={value} maxLines={2} /> : '-'
-      },
-      {
-        title: 'Article Score',
-        dataIndex: 'articleScore',
-        key: 'articleScore',
-        width: 130,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'articleScore' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('articleScore')
-        }),
-        align: 'center',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
-      },
-      {
-        title: 'Impact Score',
-        dataIndex: 'impactScore',
-        key: 'impactScore',
-        width: 130,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'impactScore' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('impactScore')
-        }),
-        align: 'center',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
-      },
-      {
-        title: 'Sentiment Score',
-        dataIndex: 'newsScore',
-        key: 'newsScore',
-        width: 150,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'newsScore' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('newsScore')
-        }),
-        align: 'center',
-
-        render: (value) =>
-          isNumeric(value) ? (
-            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
-              {roundToDecimals(value)}
-            </PositiveNegativeText>
-          ) : (
-            '-'
-          )
-      },
-      {
-        title: 'Top News',
-        dataIndex: 'topNewsMetadata',
-        key: 'topNewsMetadata',
-        width: 114,
-        sorter: true,
-        showSorterTooltip: false,
-        hidden: true,
-        sortOrder: sortField === 'topNewsMetadata' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('topNewsMetadata')
-        }),
-        align: 'center'
-      },
-      {
-        title: 'Sector',
-        dataIndex: 'sector',
-        key: 'sector',
-        width: 200,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'sector' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('sector')
-        }),
-        align: 'left',
-        render: (value) =>
-          value ? <EllipsisText text={value} maxLines={2} /> : '-'
-      },
-      {
-        title: 'Industry',
-        dataIndex: 'industry',
-        key: 'industry',
-        width: 180,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'industry' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('industry')
-        }),
-        align: 'left',
-        render: (value) =>
-          value ? <EllipsisText text={value} maxLines={2} /> : '-'
-      },
-      {
-        title: 'Direction',
-        dataIndex: 'direction',
-        key: 'direction',
-        width: 90,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'direction' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('direction')
-        }),
-        align: 'center',
-        render: (value) => (value ? value : '-')
-      },
-      {
-        title: 'Horizon',
-        dataIndex: 'horizon',
-        key: 'horizon',
-        width: 100,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'horizon' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('horizon')
-        }),
-        align: 'center',
-        render: (value) => value ?? '-'
-      },
-      {
-        title: 'Relevance',
-        dataIndex: 'newsRelevance',
-        key: 'newsRelevance',
-        width: 120,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'newsRelevance' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('newsRelevance')
-        }),
-        align: 'center'
-      },
-      {
-        title: 'Time Weight',
-        dataIndex: 'timeWeight',
-        key: 'timeWeight',
-        width: 130,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'timeWeight' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('timeWeight')
-        }),
-        align: 'center',
-        hidden: filter.sourceType === 'lseg',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
-      },
-      {
-        title: 'Weighted Score',
-        dataIndex: 'weightedScore',
-        key: 'weightedScore',
-        width: 150,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'weightedScore' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('weightedScore')
-        }),
-        align: 'center',
-        hidden: filter.sourceType === 'lseg',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
-      },
-      {
-        title: 'Grok Rating',
-        dataIndex: 'grokRating',
-        key: 'grokRating',
-        width: 120,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'grokRating' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('grokRating')
-        }),
-        align: 'center',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
-      },
-      {
-        title: 'Grok Recommendation',
-        dataIndex: 'grokRec',
-        key: 'grokRec',
-        width: 180,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'grokRec' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('grokRec')
-        }),
-        align: 'center',
-        render: (value) =>
-          value ? (
-            <PositiveNegativeText
-              isPositive={value === Recommendation.BUY}
-              isNegative={value === Recommendation.SELL}
-            >
-              <span>{`${value}`.toLocaleUpperCase()}</span>
-            </PositiveNegativeText>
-          ) : (
-            <span>-</span>
-          )
-      },
-      {
-        title: 'Grok Reasoning',
-        dataIndex: 'grokReasoning',
-        key: 'grokReasoning',
-        width: 146,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'grokReasoning' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('grokReasoning')
-        }),
-        align: 'center',
-        render: (value, record) =>
-          value ? (
-            <Button
-              onClick={() =>
-                modal.openModal(
-                  <div css={storyStyles}>
-                    <h2>{`Grok Reasoning (${record.symbol})`}</h2>
-                    <p>{value}</p>
-                  </div>,
-                  { width: 1000 }
-                )
-              }
-              type='link'
-              block
-            >
-              View Details
-            </Button>
-          ) : (
-            '-'
-          )
-      },
-      {
-        title: 'Entry Date',
-        dataIndex: 'entryDate',
-        key: 'entryDate',
-        width: 150,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'entryDate' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('entryDate')
-        }),
-        align: 'center',
-        render: (value) => (value ? <DateTimeCell value={value} /> : '-')
-      },
-      {
-        title: 'Entry Price',
-        dataIndex: 'entryPrice',
-        key: 'entryPrice',
-        width: 120,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'entryPrice' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('entryPrice')
-        }),
-        align: 'center',
-        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
-      },
-      {
-        title: 'Current Price',
-        dataIndex: 'currentPricePct',
-        key: 'currentPricePct',
-        width: 130,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'currentPricePct' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('currentPricePct')
-        }),
-        align: 'center',
-        render: (value, record) =>
-          isNumeric(value) ? (
-            <StockChangeCell value={record.currentPrice} percentage={value} />
-          ) : (
-            '-'
-          )
-      },
-      {
-        title: 'Highest Price',
-        dataIndex: 'highestPricePct',
-        key: 'highestPricePct',
-        width: 130,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'highestPricePct' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('highestPricePct')
-        }),
-        align: 'center',
-        render: (value, record) =>
-          isNumeric(value) ? (
-            <StockChangeCell value={record.highestPrice} percentage={value} />
-          ) : (
-            '-'
-          )
-      },
-      {
-        title: 'Highest Price Date',
-        dataIndex: 'highestUpdateAt',
-        key: 'highestUpdateAt',
-        width: 168,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'highestUpdateAt' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('highestUpdateAt')
-        }),
-        align: 'center',
-        render: (value) => (value ? <DateTimeCell value={value} /> : '-')
-      },
-      {
-        title: 'Highest 3 Days Price',
-        dataIndex: 'highest3DaysPricePct',
-        key: 'highest3DaysPricePct',
-        width: 140,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'highest3DaysPricePct' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('highest3DaysPricePct')
-        }),
-        align: 'center',
-        render: (value, record) =>
-          isNumeric(value) ? (
-            <StockChangeCell
-              value={record.highest3DaysPrice}
-              percentage={value}
-            />
-          ) : (
-            '-'
-          )
-      },
-      {
-        title: 'Highest 3 Days Date',
-        dataIndex: 'highest3DaysUpdateAt',
-        key: 'highest3DaysUpdateAt',
-        width: 140,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'highest3DaysUpdateAt' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('highest3DaysUpdateAt')
-        }),
-        align: 'center',
-        render: (value) => (value ? <DateTimeCell value={value} /> : '-')
-      },
-      {
-        title: 'Lowest 3 Days Price',
-        dataIndex: 'lowest3DaysPricePct',
-        key: 'lowest3DaysPricePct',
-        width: 140,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'lowest3DaysPricePct' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('lowest3DaysPricePct')
-        }),
-        align: 'center',
-        render: (value, record) =>
-          isNumeric(value) ? (
-            <StockChangeCell
-              value={record.lowest3DaysPricePct}
-              percentage={value}
-            />
-          ) : (
-            '-'
-          )
-      },
-      {
-        title: 'Lowest 3 Days Date',
-        dataIndex: 'lowest3DaysUpdateAt',
-        key: 'lowest3DaysUpdateAt',
-        width: 140,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'lowest3DaysUpdateAt' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('lowest3DaysUpdateAt')
-        }),
-        align: 'center',
-        render: (value) => (value ? <DateTimeCell value={value} /> : '-')
-      },
-      {
-        title: 'URL',
-        dataIndex: 'url',
-        key: 'url',
-        width: 60,
-        sorter: true,
-        showSorterTooltip: false,
-        sortOrder: sortField === 'url' ? sortType : null,
-        onHeaderCell: () => ({
-          onClick: () => handleSortOrder('url')
-        }),
-        hidden: filter.sourceType === 'lseg',
-        render: (value) =>
-          isUrl(value) ? (
-            <a href={value} target='_blank' rel='noopener noreferrer'>
-              Open
-            </a>
-          ) : (
-            '-'
-          )
+        return '-';
       }
-    ],
-    [
-      t,
-      filter.sourceType,
-      pagination.currentPage,
-      pagination.pageSize,
-      sortField,
-      sortType,
-      handleSortOrder,
-      modal,
-      expandedRowKeys,
-      handleExpandRowKeys
-    ]
-  );
+    },
+    {
+      title: 'Symbol',
+      dataIndex: 'symbol',
+      key: 'symbol',
+      width: 90,
+      fixed: !isMobile && 'left',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'symbol' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('symbol')
+      }),
+      onCell: (record) => ({
+        className:
+          record.breakingNews === 1
+            ? 'hl-breaking-news-positive'
+            : record.breakingNews === -1
+              ? 'hl-breaking-news-negative'
+              : ''
+      }),
+      render: (value) => <SymbolCell symbol={value} />
+    },
+    {
+      title: 'Publishing Time',
+      dataIndex: 'datetime',
+      key: 'datetime',
+      width: 150,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'datetime' ? sortType : null,
+      fixed: !isMobile && 'left',
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('datetime')
+      }),
+      align: 'center',
+      onCell: (record) => ({
+        className:
+          record.breakingNews === 1
+            ? 'hl-breaking-news-positive'
+            : record.breakingNews === -1
+              ? 'hl-breaking-news-negative'
+              : ''
+      }),
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
+      title: 'Headline',
+      dataIndex: 'headline',
+      key: 'headline',
+      width: 180,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'headline' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('headline')
+      }),
+      render: (value, record) => (
+        <div css={titleCellStyles}>
+          {!!record.breakingNews && (
+            <Tooltip
+              css={fireIconStyles}
+              title={isMobile ? null : t('breakingNews')}
+            >
+              <Button
+                type='text'
+                icon={
+                  <Icon
+                    fill={
+                      record.breakingNews === 1
+                        ? 'var(--positive-color)'
+                        : record.breakingNews === -1
+                          ? 'var(--negative-color)'
+                          : ''
+                    }
+                    icon='fire'
+                    width={18}
+                    height={18}
+                  />
+                }
+                shape='circle'
+              />
+            </Tooltip>
+          )}
+          <EllipsisText text={value} maxLines={2} />
+        </div>
+      )
+    },
+    {
+      title: 'Story',
+      dataIndex: 'summary',
+      key: 'summary',
+      width: 68,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'summary' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('summary')
+      }),
+      align: 'center',
+      render: (value, record) =>
+        value ? (
+          <Button
+            onClick={() =>
+              modal.openModal(
+                <div css={storyStyles}>
+                  <h2>{`News Story (${record.symbol})`}</h2>
+                  <h3>{record.headline}</h3>
+                  <p dangerouslySetInnerHTML={{ __html: value }} />
+                </div>,
+                { width: 1000 }
+              )
+            }
+            type='link'
+            block
+          >
+            Story
+          </Button>
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: 'Source',
+      dataIndex: 'sourceType',
+      key: 'sourceType',
+      width: 86,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'sourceType' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('sourceType')
+      }),
+      align: 'center'
+    },
+    {
+      title: 'News Type',
+      dataIndex: 'newsType',
+      key: 'newsType',
+      width: 180,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'newsType' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('newsType')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
+    },
+    {
+      title: 'Article Score',
+      dataIndex: 'articleScore',
+      key: 'articleScore',
+      width: 130,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'articleScore' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('articleScore')
+      }),
+      align: 'center',
+      render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+    },
+    {
+      title: 'Impact Score',
+      dataIndex: 'impactScore',
+      key: 'impactScore',
+      width: 130,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'impactScore' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('impactScore')
+      }),
+      align: 'center',
+      render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+    },
+    {
+      title: 'Sentiment Score',
+      dataIndex: 'newsScore',
+      key: 'newsScore',
+      width: 150,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'newsScore' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('newsScore')
+      }),
+      align: 'center',
+
+      render: (value) =>
+        isNumeric(value) ? (
+          <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+            {roundToDecimals(value)}
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: 'Top News',
+      dataIndex: 'topNewsMetadata',
+      key: 'topNewsMetadata',
+      width: 114,
+      sorter: true,
+      showSorterTooltip: false,
+      hidden: true,
+      sortOrder: sortField === 'topNewsMetadata' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('topNewsMetadata')
+      }),
+      align: 'center'
+    },
+    {
+      title: 'Sector',
+      dataIndex: 'sector',
+      key: 'sector',
+      width: 200,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'sector' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('sector')
+      }),
+      align: 'left',
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
+    },
+    {
+      title: 'Industry',
+      dataIndex: 'industry',
+      key: 'industry',
+      width: 180,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'industry' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('industry')
+      }),
+      align: 'left',
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
+    },
+    {
+      title: 'Direction',
+      dataIndex: 'direction',
+      key: 'direction',
+      width: 90,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'direction' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('direction')
+      }),
+      align: 'center',
+      render: (value) => (value ? value : '-')
+    },
+    {
+      title: 'Horizon',
+      dataIndex: 'horizon',
+      key: 'horizon',
+      width: 100,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'horizon' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('horizon')
+      }),
+      align: 'center',
+      render: (value) => value ?? '-'
+    },
+    {
+      title: 'Relevance',
+      dataIndex: 'newsRelevance',
+      key: 'newsRelevance',
+      width: 120,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'newsRelevance' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('newsRelevance')
+      }),
+      align: 'center'
+    },
+    {
+      title: 'Time Weight',
+      dataIndex: 'timeWeight',
+      key: 'timeWeight',
+      width: 130,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'timeWeight' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('timeWeight')
+      }),
+      align: 'center',
+      hidden: filter.sourceType === 'lseg',
+      render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+    },
+    {
+      title: 'Weighted Score',
+      dataIndex: 'weightedScore',
+      key: 'weightedScore',
+      width: 150,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'weightedScore' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('weightedScore')
+      }),
+      align: 'center',
+      hidden: filter.sourceType === 'lseg',
+      render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+    },
+    {
+      title: 'Grok Rating',
+      dataIndex: 'grokRating',
+      key: 'grokRating',
+      width: 120,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'grokRating' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('grokRating')
+      }),
+      align: 'center',
+      render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+    },
+    {
+      title: 'Grok Recommendation',
+      dataIndex: 'grokRec',
+      key: 'grokRec',
+      width: 180,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'grokRec' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('grokRec')
+      }),
+      align: 'center',
+      render: (value) =>
+        value ? (
+          <PositiveNegativeText
+            isPositive={value === Recommendation.BUY}
+            isNegative={value === Recommendation.SELL}
+          >
+            <span>{`${value}`.toLocaleUpperCase()}</span>
+          </PositiveNegativeText>
+        ) : (
+          <span>-</span>
+        )
+    },
+    {
+      title: 'Grok Reasoning',
+      dataIndex: 'grokReasoning',
+      key: 'grokReasoning',
+      width: 146,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'grokReasoning' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('grokReasoning')
+      }),
+      align: 'center',
+      render: (value, record) =>
+        value ? (
+          <Button
+            onClick={() =>
+              modal.openModal(
+                <div css={storyStyles}>
+                  <h2>{`Grok Reasoning (${record.symbol})`}</h2>
+                  <p>{value}</p>
+                </div>,
+                { width: 1000 }
+              )
+            }
+            type='link'
+            block
+          >
+            View Details
+          </Button>
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: 'Entry Date',
+      dataIndex: 'entryDate',
+      key: 'entryDate',
+      width: 150,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'entryDate' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('entryDate')
+      }),
+      align: 'center',
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
+      title: 'Entry Price',
+      dataIndex: 'entryPrice',
+      key: 'entryPrice',
+      width: 120,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'entryPrice' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('entryPrice')
+      }),
+      align: 'center',
+      render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+    },
+    {
+      title: 'Current Price',
+      dataIndex: 'currentPricePct',
+      key: 'currentPricePct',
+      width: 130,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'currentPricePct' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('currentPricePct')
+      }),
+      align: 'center',
+      render: (value, record) =>
+        isNumeric(value) ? (
+          <StockChangeCell value={record.currentPrice} percentage={value} />
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: 'Highest Price',
+      dataIndex: 'highestPricePct',
+      key: 'highestPricePct',
+      width: 130,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highestPricePct' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highestPricePct')
+      }),
+      align: 'center',
+      render: (value, record) =>
+        isNumeric(value) ? (
+          <StockChangeCell value={record.highestPrice} percentage={value} />
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: 'Highest Price Date',
+      dataIndex: 'highestUpdateAt',
+      key: 'highestUpdateAt',
+      width: 168,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highestUpdateAt' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highestUpdateAt')
+      }),
+      align: 'center',
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
+      title: 'Highest 3 Days Price',
+      dataIndex: 'highest3DaysPricePct',
+      key: 'highest3DaysPricePct',
+      width: 140,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highest3DaysPricePct' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highest3DaysPricePct')
+      }),
+      align: 'center',
+      render: (value, record) =>
+        isNumeric(value) ? (
+          <StockChangeCell
+            value={record.highest3DaysPrice}
+            percentage={value}
+          />
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: 'Highest 3 Days Date',
+      dataIndex: 'highest3DaysUpdateAt',
+      key: 'highest3DaysUpdateAt',
+      width: 140,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'highest3DaysUpdateAt' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('highest3DaysUpdateAt')
+      }),
+      align: 'center',
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
+      title: 'Lowest 3 Days Price',
+      dataIndex: 'lowest3DaysPricePct',
+      key: 'lowest3DaysPricePct',
+      width: 140,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'lowest3DaysPricePct' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('lowest3DaysPricePct')
+      }),
+      align: 'center',
+      render: (value, record) =>
+        isNumeric(value) ? (
+          <StockChangeCell
+            value={record.lowest3DaysPricePct}
+            percentage={value}
+          />
+        ) : (
+          '-'
+        )
+    },
+    {
+      title: 'Lowest 3 Days Date',
+      dataIndex: 'lowest3DaysUpdateAt',
+      key: 'lowest3DaysUpdateAt',
+      width: 140,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'lowest3DaysUpdateAt' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('lowest3DaysUpdateAt')
+      }),
+      align: 'center',
+      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
+    },
+    {
+      title: 'URL',
+      dataIndex: 'url',
+      key: 'url',
+      width: 60,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'url' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('url')
+      }),
+      hidden: filter.sourceType === 'lseg',
+      render: (value) =>
+        isUrl(value) ? (
+          <a href={value} target='_blank' rel='noopener noreferrer'>
+            Open
+          </a>
+        ) : (
+          '-'
+        )
+    }
+  ];
 
   const detailColumns: TableColumnsType<FinnhubAndLsegNewsTableItem> = columns
     .filter((col) => col.key !== 'symbol' && col.key !== 'totalNews24H')
@@ -878,7 +865,7 @@ export const FinnhubAndLsegNewsTable = () => {
             <ExportExcelFinnhubLsegNews filter={filter} />
           </div>
         </div>
-        <Table<any>
+        <Table<FinnhubAndLsegNewsTableItem>
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey={(record) => record.key}
