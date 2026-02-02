@@ -31,14 +31,18 @@ export const Recommendation = {
   HOLD: 'hold',
   BUY: 'buy',
   STRONG_BUY: fieldMapping['strongBuy'],
-  SELL: 'sell'
+  SELL: 'sell',
+  sBuyE: 'sBuyE',
+  sBuyBS: 'sBuyBS'
 };
 
 export const RecommendationText: Record<string, string> = {
   [Recommendation.HOLD]: 'Hold',
   [Recommendation.BUY]: 'Buy',
   [Recommendation.STRONG_BUY]: 'Strong Buy',
-  [Recommendation.SELL]: 'Sell'
+  [Recommendation.SELL]: 'Sell',
+  [Recommendation.sBuyE]: 'Strong Buy (Earning)',
+  [Recommendation.sBuyBS]: 'Strong Buy (Breakout + Spike)'
 };
 
 export enum GapDirection {
