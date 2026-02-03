@@ -658,7 +658,9 @@ export const AlertLogsTable = ({
           <PositiveNegativeText
             isPositive={
               value === Recommendation.BUY ||
-              value === Recommendation.STRONG_BUY
+              value === Recommendation.STRONG_BUY ||
+              value === Recommendation.sBuyE ||
+              value === Recommendation.sBuyBS
             }
             isNegative={value === Recommendation.SELL}
           >

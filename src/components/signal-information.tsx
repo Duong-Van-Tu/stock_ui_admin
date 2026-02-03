@@ -235,7 +235,9 @@ export const SignalInformation = ({ signal }: BacktestSpikeVolumeProps) => {
                 <PositiveNegativeText
                   isPositive={
                     signal.manualRecommendation === Recommendation.BUY ||
-                    signal.manualRecommendation === Recommendation.STRONG_BUY
+                    signal.manualRecommendation === Recommendation.STRONG_BUY ||
+                    signal.manualRecommendation === Recommendation.sBuyE ||
+                    signal.manualRecommendation === Recommendation.sBuyBS
                   }
                   isNegative={
                     signal.manualRecommendation === Recommendation.SELL

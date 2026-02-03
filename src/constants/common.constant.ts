@@ -32,8 +32,8 @@ export const Recommendation = {
   BUY: 'buy',
   STRONG_BUY: fieldMapping['strongBuy'],
   SELL: 'sell',
-  sBuyE: 'sBuyE',
-  sBuyBS: 'sBuyBS'
+  sBuyE: 'sbuye',
+  sBuyBS: 'sbuybs'
 };
 
 export const RecommendationText: Record<string, string> = {

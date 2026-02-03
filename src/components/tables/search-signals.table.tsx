@@ -256,7 +256,9 @@ export const SearchSignalTable = ({
           <PositiveNegativeText
             isPositive={
               value === Recommendation.BUY ||
-              value === Recommendation.STRONG_BUY
+              value === Recommendation.STRONG_BUY ||
+              value === Recommendation.sBuyE ||
+              value === Recommendation.sBuyBS
             }
             isNegative={value === Recommendation.SELL}
           >
