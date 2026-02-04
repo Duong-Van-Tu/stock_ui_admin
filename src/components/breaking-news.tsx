@@ -5,7 +5,7 @@ import {
   getBreakingNews,
   watchBreakingNews
 } from '@/redux/slices/sentiment.slice';
-import { Dropdown, Space, Badge, Typography } from 'antd';
+import { Dropdown, Space, Badge, Typography, Tag } from 'antd';
 import { Icon } from './icons';
 import { PositiveNegativeText } from './positive-negative-text';
 import { PageURLs } from '@/utils/navigate';
@@ -99,7 +99,19 @@ export default function BreakingNews() {
                     />
                   </Badge>
                 )}
-                <span>{news.title}</span>
+                <span>
+                  {news.title}{' '}
+                  <Tag
+                    color='blue'
+                    style={{
+                      marginLeft: '0.4rem',
+                      fontWeight: 600,
+                      fontSize: '1.3rem'
+                    }}
+                  >
+                    {news.symbol}
+                  </Tag>
+                </span>
               </Space>
               {isNew && <Badge color='#1890ff' status='processing' />}
             </Space>
@@ -146,9 +158,20 @@ export default function BreakingNews() {
               color: 'inherit',
               verticalAlign: 'middle'
             }}
-            ellipsis={{ tooltip: displayNews.title }}
+            ellipsis={{
+              tooltip: `${displayNews.title} (${displayNews.symbol})`
+            }}
           >
-            {displayNews.title}
+            {displayNews.title}{' '}
+            <Tag
+              style={{
+                marginLeft: '0.4rem',
+                fontWeight: 600,
+                fontSize: '1.3rem'
+              }}
+            >
+              {displayNews.symbol}
+            </Tag>
           </Text>
         </PositiveNegativeText>
 
