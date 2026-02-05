@@ -272,11 +272,14 @@ export const FinnhubAndLsegNewsTable = () => {
       }),
       onCell: (record) => ({
         className:
-          record.breakingNews === 1
-            ? 'hl-breaking-news-positive'
+          (record.breakingNews === 1
+            ? 'hl-breaking-news-positive '
             : record.breakingNews === -1
-              ? 'hl-breaking-news-negative'
-              : ''
+              ? 'hl-breaking-news-negative '
+              : '') +
+          (record.articleScore && record.articleScore > 5
+            ? 'hl-high-score-symbol'
+            : '')
       }),
       render: (value) => <SymbolCell symbol={value} />
     },

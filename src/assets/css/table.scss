@@ -21,3 +21,11 @@
     background: var(--soft-pink-color) !important;
   }
 }
+
+.hl-high-score-symbol {
+  color: var(--orange-color) !important;
+  font-weight: bold;
+  a {
+    color: var(--orange-color) !important;
+  }
+}
