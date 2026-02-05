@@ -315,6 +315,13 @@ export const EstForecastSelectedTable = () => {
         )
       },
       {
+        title: 'Forecast Pct',
+        dataIndex: 'forecastPct',
+        width: 130,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'forecastPct', r, '%')
+      },
+      {
         title: 'Note for Trader',
         dataIndex: 'noteForTrader',
         width: 300,
@@ -834,13 +841,6 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => (
           <EstForecastValuePointCell value={v} point={r.aggregateScorePoint} />
         )
-      },
-      {
-        title: 'Forecast Pct',
-        dataIndex: 'forecastPct',
-        width: 130,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'forecastPct', r, '%')
       },
       {
         title: 'Forecast',
