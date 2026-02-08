@@ -1,5 +1,6 @@
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import dayjs from 'dayjs';
+import { TimeZone } from '@/constants/timezone.constant';
 
 export function toBoolean(input: any) {
   if (input === '0' || input === 'false') return false;
@@ -408,3 +409,27 @@ export function lightenColor(hex: string, percent: number) {
   b = Math.round(b + (255 - b) * percent);
   return `rgb(${r},${g},${b})`;
 }
+
+export const formatTimeAgo = (dateTime: string | undefined) => {
+  if (!dateTime) return '';
+  const date = dayjs(dateTime).tz(TimeZone.NEW_YORK);
+  const now = dayjs().tz(TimeZone.NEW_YORK);
+  const diffInSeconds = now.diff(date, 'second');
+  const diffInMinutes = now.diff(date, 'minute');
+  const diffInHours = now.diff(date, 'hour');
+  const diffInDays = now.diff(date, 'day');
+
+  if (diffInDays > 0) {
+    const formatString =
+      now.year() === date.year() ? 'MMM DD - HH:mm' : 'MMM DD, YYYY - HH:mm';
+    return date.format(formatString);
+  } else if (diffInHours > 0) {
+    return `${diffInHours} ${diffInHours === 1 ? 'hour' : 'hours'} ago`;
+  } else if (diffInMinutes > 0) {
+    return `${diffInMinutes} ${diffInMinutes === 1 ? 'minute' : 'minutes'} ago`;
+  } else if (diffInSeconds >= 30) {
+    return `${diffInSeconds} seconds ago`;
+  } else {
+    return 'Just now';
+  }
+};

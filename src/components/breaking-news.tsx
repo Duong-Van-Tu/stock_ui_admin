@@ -9,7 +9,7 @@ import { Dropdown, Space, Badge, Typography, Tag } from 'antd';
 import { Icon } from './icons';
 import { PositiveNegativeText } from './positive-negative-text';
 import { PageURLs } from '@/utils/navigate';
-import { roundToDecimals } from '@/utils/common';
+import { roundToDecimals, formatTimeAgo } from '@/utils/common';
 
 const { Text } = Typography;
 
@@ -81,25 +81,41 @@ export default function BreakingNews() {
               }}
             >
               <Space>
-                {(news.breakingNews === 1 || news.breakingNews === -1) && (
-                  <Badge
-                    count={roundToDecimals(news.articleScore * 10)}
-                    color='gold'
-                    offset={[10, -8]}
-                  >
-                    <Icon
-                      icon='fire'
-                      width={18}
-                      height={18}
-                      fill={
-                        news.breakingNews === 1
-                          ? 'var(--positive-color)'
-                          : 'var(--negative-color)'
-                      }
-                    />
-                  </Badge>
-                )}
                 <span>
+                  <Text
+                    type='secondary'
+                    style={{ fontSize: '1.2rem', marginRight: '0.5rem' }}
+                  >
+                    {formatTimeAgo(news.datetime)}
+                  </Text>
+                  {(news.breakingNews === 1 || news.breakingNews === -1) && (
+                    <Tag
+                      color={news.articleScore > 0 ? 'green' : 'red'}
+                      style={{ marginRight: '0.5rem' }}
+                    >
+                      Article: {roundToDecimals(news.articleScore * 10)}
+                    </Tag>
+                  )}
+                  {(news.breakingNews === 1 || news.breakingNews === -1) && (
+                    <span
+                      style={{
+                        marginRight: '0.5rem',
+                        display: 'inline-flex',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <Icon
+                        icon='fire'
+                        width={18}
+                        height={18}
+                        fill={
+                          news.breakingNews === 1
+                            ? 'var(--positive-color)'
+                            : 'var(--negative-color)'
+                        }
+                      />
+                    </span>
+                  )}
                   {news.title}{' '}
                   <Tag
                     color='blue'
@@ -113,7 +129,9 @@ export default function BreakingNews() {
                   </Tag>
                 </span>
               </Space>
-              {isNew && <Badge color='#1890ff' status='processing' />}
+              <Space>
+                {isNew && <Badge color='#1890ff' status='processing' />}
+              </Space>
             </Space>
           </a>
         </Link>
@@ -124,7 +142,10 @@ export default function BreakingNews() {
 
   return breakingNews.length > 0 && displayNews ? (
     <Dropdown
-      menu={{ items: menuItems }}
+      menu={{
+        items: menuItems,
+        style: { maxHeight: '400px', overflowY: 'auto', maxWidth: '600px' }
+      }}
       trigger={['click']}
       onOpenChange={handleDropdownVisibleChange}
     >
@@ -164,6 +185,7 @@ export default function BreakingNews() {
           >
             {displayNews.title}{' '}
             <Tag
+              color='blue'
               style={{
                 marginLeft: '0.4rem',
                 fontWeight: 600,
