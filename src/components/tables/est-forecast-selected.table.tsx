@@ -7,7 +7,6 @@ import {
   Space,
   Input,
   Popconfirm,
-  Segmented,
   Tooltip
 } from 'antd';
 import dayjs from 'dayjs';
@@ -43,17 +42,11 @@ import { EstForecastValuePointCell } from './columns/est-forecast-value-point-ce
 import { SymbolCell } from './columns/symbol-cell.column';
 import { formatMarketCap } from '@/utils/common';
 import { isMobile } from 'react-device-detect';
-import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { TableTitle } from './title.table';
 import { PageURLs } from '@/utils/navigate';
 import EstForecastForm from '@/components/forms/est-forecast.form';
 import { Icon } from '../icons';
-
-enum EstForecastView {
-  CALL = 'call',
-  PUT = 'put'
-}
 
 export const EstForecastSelectedTable = () => {
   const t = useTranslations();
@@ -62,11 +55,7 @@ export const EstForecastSelectedTable = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { openModal, closeModal } = useModal();
-  const { height } = useWindowSize();
   const locale = useLocale() || 'en';
-
-  const type = searchParams.get('type') || 'call';
-  const view = type === 'put' ? EstForecastView.PUT : EstForecastView.CALL;
 
   const loading = useAppSelector(watchEstForecastFilterLoading);
   const filterList = useAppSelector(watchEstForecastFilterList);
@@ -76,7 +65,6 @@ export const EstForecastSelectedTable = () => {
     watchEstForecastLastAddedEarningsDate
   );
   const submitting = useAppSelector(watchEstForecastSubmitting);
-  console.log({ submitting });
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -87,6 +75,15 @@ export const EstForecastSelectedTable = () => {
       : dayjs().format('YYYY-MM-DD');
   }, [searchParams]);
 
+  const callData = useMemo(
+    () => filterList.filter((item) => item.type === 'call'),
+    [filterList]
+  );
+  const putData = useMemo(
+    () => filterList.filter((item) => item.type === 'put'),
+    [filterList]
+  );
+
   const handleFilter = (values: { startDate: string; endDate: string }) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     current.set('earningsDate', values.startDate);
@@ -94,15 +91,6 @@ export const EstForecastSelectedTable = () => {
     const query = search ? `?${search}` : '';
     router.push(`${pathname}${query}`);
   };
-
-  const handleChangeView = useCallback(
-    (value: EstForecastView) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('type', value);
-      router.replace(`${pathname}?${params.toString()}`);
-    },
-    [pathname, searchParams, router]
-  );
 
   const fetchEstForecast = useCallback(
     ({
@@ -115,8 +103,7 @@ export const EstForecastSelectedTable = () => {
       const filter = cleanFalsyValues({
         symbol,
         startDate: earningsDate,
-        endDate: earningsDate,
-        type
+        endDate: earningsDate
       });
 
       dispatch(
@@ -127,7 +114,7 @@ export const EstForecastSelectedTable = () => {
         })
       );
     },
-    [dispatch, searchParams, type]
+    [dispatch, searchParams]
   );
 
   const handleRefresh = useCallback(() => {
@@ -897,15 +884,6 @@ export const EstForecastSelectedTable = () => {
               />
             </Tooltip>
           </TableTitle>
-          <Segmented
-            value={view}
-            onChange={handleChangeView}
-            options={[
-              { label: 'Call'.toUpperCase(), value: EstForecastView.CALL },
-              { label: 'Put'.toUpperCase(), value: EstForecastView.PUT }
-            ]}
-            css={segmentedStyles(type)}
-          />
           <Input.Search
             placeholder={t('searchToAddEstForecast')}
             enterButton={t('search')}
@@ -917,25 +895,53 @@ export const EstForecastSelectedTable = () => {
           />
         </div>
 
-        <>
+        <div css={tablesContainerStyles}>
+          <div css={tableSectionStyles}>
+            <div css={typeHeaderStyles('call')}>CALL</div>
+            <Table
+              loading={loading}
+              rowKey={(record) => record.key!}
+              size={isMobile ? 'small' : 'middle'}
+              css={tableStyles}
+              columns={columns}
+              dataSource={callData}
+              scroll={{ x: 1200 }}
+              pagination={false}
+              locale={{
+                emptyText: (
+                  <div css={emptyStyles(200)}>
+                    <EmptyDataTable />
+                  </div>
+                )
+              }}
+            />
+          </div>
+
+          <div css={tableSectionStyles}>
+            <div css={typeHeaderStyles('put')}>PUT</div>
+            <Table
+              loading={loading}
+              rowKey={(record) => record.key!}
+              size={isMobile ? 'small' : 'middle'}
+              css={tableStyles}
+              columns={columns}
+              dataSource={putData}
+              scroll={{ x: 1200 }}
+              pagination={false}
+              locale={{
+                emptyText: (
+                  <div css={emptyStyles(200)}>
+                    <EmptyDataTable />
+                  </div>
+                )
+              }}
+            />
+          </div>
+        </div>
+
+        <div css={paginationWrapperStyles}>
           <Table
-            loading={loading}
-            rowKey={(record) => record.key!}
-            size={isMobile ? 'small' : 'middle'}
-            css={tableStyles}
-            columns={columns}
-            dataSource={filterList}
-            scroll={{
-              x: 1200,
-              y: filterList.length > 0 ? height - 326 : undefined
-            }}
-            locale={{
-              emptyText: (
-                <div css={emptyStyles(height - 400)}>
-                  <EmptyDataTable />
-                </div>
-              )
-            }}
+            dataSource={[]}
             pagination={{
               current: pagination.currentPage,
               pageSize: pagination.pageSize,
@@ -946,7 +952,7 @@ export const EstForecastSelectedTable = () => {
               onChange: handlePageChange
             }}
           />
-        </>
+        </div>
       </div>
     </div>
   );
@@ -961,6 +967,7 @@ const rootStyles = css`
 const tableWrapperStyles = css`
   border: 1px solid var(--border-table-color);
   border-radius: 0.8rem;
+  background: var(--white-color);
 `;
 
 const titleRowStyles = css`
@@ -968,30 +975,48 @@ const titleRowStyles = css`
   align-items: center;
   justify-content: space-between;
   padding: 1.2rem 1.6rem;
+  border-bottom: 1px solid var(--border-table-color);
+`;
+
+const tablesContainerStyles = css`
+  display: flex;
+  flex-direction: column;
+`;
+
+const tableSectionStyles = css`
+  display: flex;
+  flex-direction: column;
+`;
+
+const typeHeaderStyles = (type: 'call' | 'put') => css`
+  background: ${type === 'call'
+    ? 'var(--positive-color)'
+    : 'var(--negative-color)'};
+  color: white;
+  padding: 0.6rem 1.6rem;
+  font-weight: bold;
+  font-size: 1.6rem;
+  text-align: center;
 `;
 
 const tableStyles = css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
-  .ant-pagination {
-    margin: 1.2rem 0 !important;
-    gap: 0.4rem;
+  .ant-table-thead > tr > th {
+    background: #fafafa;
   }
 `;
 
-const segmentedStyles = (type: string) => css`
-  padding: 0;
-  .ant-segmented-item-selected {
-    color: var(--white-color);
-    background: ${type === 'call'
-      ? 'var(--positive-color)'
-      : 'var(--negative-color)'};
+const paginationWrapperStyles = css`
+  padding: 1.2rem;
+  .ant-table {
+    display: none;
   }
-
-  .ant-segmented-item-label {
-    width: 8rem;
-    font-weight: 600;
+  .ant-pagination {
+    display: flex;
+    justify-content: center;
+    margin: 0 !important;
   }
 `;
 
