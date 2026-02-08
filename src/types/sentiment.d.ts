@@ -304,4 +304,5 @@ type BreakingNews = {
   sector: string;
   industry: string;
   newsCategory: string;
+  isHighlight: number;
 };

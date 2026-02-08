@@ -438,5 +438,6 @@ export const fieldMapping: Record<string, string> = {
   sortOrder: 'sort_order',
   startminePoint: 'startmine_point',
   totalNews24H: 'total_news_24h',
-  periodType: 'period_type'
+  periodType: 'period_type',
+  isHighlight: 'is_highlight'
 };

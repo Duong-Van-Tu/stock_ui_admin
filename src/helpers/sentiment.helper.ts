@@ -253,7 +253,8 @@ export const transformBreakingNews = (list: any[] = []): BreakingNews[] => {
     marketCapBillion: Number(item[fieldMapping.marketCapBillion]),
     sector: item.sector,
     industry: item.industry,
-    newsCategory: item[fieldMapping.newsCategory]
+    newsCategory: item[fieldMapping.newsCategory],
+    isHighlight: Number(item[fieldMapping.isHighlight])
   }));
 };
 

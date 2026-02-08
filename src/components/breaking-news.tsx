@@ -136,7 +136,13 @@ export default function BreakingNews() {
           </a>
         </Link>
       ),
-      onClick: () => setSelectedStoryId(news.storyId)
+      onClick: () => setSelectedStoryId(news.storyId),
+      style:
+        news.isHighlight === 1
+          ? {
+              backgroundColor: news.breakingNews === 1 ? '#f6ffed' : '#fff1f0'
+            }
+          : undefined
     };
   });
 
