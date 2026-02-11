@@ -17,6 +17,9 @@ type OptionChange = {
   theta: number;
   vega: number;
   ivRank: number;
+  impVol: number;
+  iv: number;
+  ivPctChg: number;
   itmProb: number;
   otmProb: number;
   volume: number;
