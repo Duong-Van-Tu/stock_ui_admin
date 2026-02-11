@@ -181,6 +181,18 @@ export const OptionChangesTable = ({ optionType }: OptionChangesTableProps) => {
       render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
     },
     {
+      title: 'IV Rank',
+      dataIndex: 'ivRank',
+      key: 'ivRank',
+      width: 90,
+      align: 'center',
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'ivRank' ? sortType : null,
+      onHeaderCell: () => ({ onClick: () => handleSortOrder('ivRank') }),
+      render: (v) => (isNumeric(v) ? roundToDecimals(v, 4) : '-')
+    },
+    {
       title: 'Ask',
       dataIndex: 'ask',
       key: 'ask',
