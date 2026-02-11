@@ -190,7 +190,7 @@ export const OptionChangesTable = ({ optionType }: OptionChangesTableProps) => {
       showSorterTooltip: false,
       sortOrder: sortField === 'ivRank' ? sortType : null,
       onHeaderCell: () => ({ onClick: () => handleSortOrder('ivRank') }),
-      render: (v) => (isNumeric(v) ? roundToDecimals(v, 4) : '-')
+      render: (v) => (isNumeric(v) ? `${roundToDecimals(v * 100, 4)}%` : '-')
     },
     {
       title: 'Ask',
