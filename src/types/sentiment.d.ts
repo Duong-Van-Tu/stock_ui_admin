@@ -12,6 +12,7 @@ type SentimentFilter = Filter & {
   startDate?: string;
   endDate?: string;
   sourceType?: 'finnhub' | 'lseg';
+  textSearch?: string;
   breakingNews?: number;
   topNewsMetadata?: number;
   isNews24h?: boolean;

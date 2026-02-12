@@ -14,7 +14,8 @@ import {
   TableColumnsType,
   Tooltip,
   Badge,
-  Checkbox
+  Checkbox,
+  Input
 } from 'antd';
 import { useCallback, useEffect, useState, Key } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
@@ -62,6 +63,7 @@ export const FinnhubAndLsegNewsTable = () => {
   const pagination = useAppSelector(watchFinnhubAndLsegNewsPagination);
 
   const [filter, setFilter] = useState<SentimentFilter>({});
+  const [textSearch, setTextSearch] = useState('');
   const [isFilterReady, setIsFilterReady] = useState(false);
   const [isTopLseg, setIsTopLseg] = useState(false);
 
@@ -208,6 +210,14 @@ export const FinnhubAndLsegNewsTable = () => {
   const handleFilterReady = (values: SentimentFilter) => {
     setFilter(values);
     setIsFilterReady(true);
+  };
+
+  const handleSearchByText = (value: string) => {
+    const keyword = value.trim();
+    setFilter((prev) => ({
+      ...prev,
+      textSearch: keyword || undefined
+    }));
   };
 
   const dataSource = Array.isArray(listNews) ? listNews : [];
@@ -866,6 +876,21 @@ export const FinnhubAndLsegNewsTable = () => {
               Article Score {'>'} 8
             </Checkbox>
             <ExportExcelFinnhubLsegNews filter={filter} />
+            <Input.Search
+              allowClear
+              value={textSearch}
+              placeholder='Search by symbol, headline, news type, story'
+              enterButton={t('search')}
+              onChange={(e) => {
+                const value = e.target.value;
+                setTextSearch(value);
+                if (!value.trim()) {
+                  handleSearchByText('');
+                }
+              }}
+              onSearch={handleSearchByText}
+              css={textSearchStyles}
+            />
           </div>
         </div>
         <Table<FinnhubAndLsegNewsTableItem>
@@ -959,6 +984,12 @@ const actionStyles = css`
   justify-content: flex-end;
   gap: 1.2rem;
   align-items: center;
+  flex-wrap: wrap;
+`;
+
+const textSearchStyles = css`
+  width: ${isMobile ? '100%' : '32rem'};
+  min-width: 20rem;
 `;
 
 const filterBarStyles = css`
