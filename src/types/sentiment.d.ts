@@ -12,6 +12,7 @@ type SentimentFilter = Filter & {
   startDate?: string;
   endDate?: string;
   sourceType?: 'finnhub' | 'lseg';
+  newsType?: string;
   textSearch?: string;
   breakingNews?: number;
   topNewsMetadata?: number;
@@ -306,4 +307,38 @@ type BreakingNews = {
   industry: string;
   newsCategory: string;
   isHighlight: number;
+};
+
+type BreakingNewsAnalytics = {
+  key: string;
+  sector: string;
+  industry: string;
+  newsType: string;
+  totalNews: number;
+  hitCount1Pct30m: number;
+  winRate1Pct30m: number;
+  hitCount2Pct30m: number;
+  winRate2Pct30m: number;
+  hitCount1Pct60m: number;
+  winRate1Pct60m: number;
+  hitCount2Pct60m: number;
+  winRate2Pct60m: number;
+  hitCount1Pct90m: number;
+  winRate1Pct90m: number;
+  hitCount2Pct90m: number;
+  winRate2Pct90m: number;
+  articleMin: number;
+  articleAvg: number;
+  articleMax: number;
+  sentimentMin: number;
+  sentimentAvg: number;
+  sentimentMax: number;
+  updatedAt: string;
+  totalCount: number;
+};
+
+type BreakingNewsType = {
+  id: number;
+  typeName: string;
+  category: string;
 };

@@ -73,6 +73,12 @@ export const getMenuStructure = (
       link: PageURLs.ofFinnhubLsegNews()
     },
     {
+      label: t('breakingNewsAnalytics'),
+      key: 'breaking-news-analytics',
+      iconType: 'breakingNewsAnalytics',
+      link: PageURLs.ofBreakingNewsAnalytics()
+    },
+    {
       label: t('marketPsychology'),
       key: 'market-psychology',
       iconType: 'marketPsychology',

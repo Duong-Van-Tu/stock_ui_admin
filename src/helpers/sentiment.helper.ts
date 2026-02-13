@@ -258,6 +258,52 @@ export const transformBreakingNews = (list: any[] = []): BreakingNews[] => {
   }));
 };
 
+export const transformBreakingNewsAnalytics = (
+  list: any[] = []
+): BreakingNewsAnalytics[] => {
+  if (!list?.length) return [];
+
+  return list.map((item) => ({
+    key: uuid(),
+    sector: item.sector,
+    industry: item.industry,
+    newsType: item[fieldMapping.newsType],
+    totalNews: Number(item[fieldMapping.totalNews]),
+    hitCount1Pct30m: Number(item[fieldMapping.hitCount1Pct30m]),
+    winRate1Pct30m: Number(item[fieldMapping.winRate1Pct30m]),
+    hitCount2Pct30m: Number(item[fieldMapping.hitCount2Pct30m]),
+    winRate2Pct30m: Number(item[fieldMapping.winRate2Pct30m]),
+    hitCount1Pct60m: Number(item[fieldMapping.hitCount1Pct60m]),
+    winRate1Pct60m: Number(item[fieldMapping.winRate1Pct60m]),
+    hitCount2Pct60m: Number(item[fieldMapping.hitCount2Pct60m]),
+    winRate2Pct60m: Number(item[fieldMapping.winRate2Pct60m]),
+    hitCount1Pct90m: Number(item[fieldMapping.hitCount1Pct90m]),
+    winRate1Pct90m: Number(item[fieldMapping.winRate1Pct90m]),
+    hitCount2Pct90m: Number(item[fieldMapping.hitCount2Pct90m]),
+    winRate2Pct90m: Number(item[fieldMapping.winRate2Pct90m]),
+    articleMin: Number(item[fieldMapping.articleMin]),
+    articleAvg: Number(item[fieldMapping.articleAvg]),
+    articleMax: Number(item[fieldMapping.articleMax]),
+    sentimentMin: Number(item[fieldMapping.sentimentMin]),
+    sentimentAvg: Number(item[fieldMapping.sentimentAvg]),
+    sentimentMax: Number(item[fieldMapping.sentimentMax]),
+    updatedAt: item[fieldMapping.updatedAt],
+    totalCount: Number(item[fieldMapping.totalCount])
+  }));
+};
+
+export const transformBreakingNewsTypes = (
+  list: any[] = []
+): BreakingNewsType[] => {
+  if (!list?.length) return [];
+
+  return list.map((item) => ({
+    id: Number(item.id),
+    typeName: item[fieldMapping.typeName],
+    category: item.category
+  }));
+};
+
 export const transformMarketPsychLatest = (list: any[] = []): MarketPsych[] => {
   if (!list?.length) return [];
 

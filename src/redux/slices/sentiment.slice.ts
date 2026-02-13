@@ -8,7 +8,9 @@ import {
   transformNewsScores,
   transformNewsScoreBySymbol,
   transformMarketPsychLatest,
-  transformBreakingNews
+  transformBreakingNews,
+  transformBreakingNewsAnalytics,
+  transformBreakingNewsTypes
 } from '@/helpers/sentiment.helper';
 import { createAppSlice } from '../createAppSlice';
 import { defaultApiFetcher } from '@/utils/api-instances';
@@ -23,6 +25,8 @@ export type SentimentState = {
   loadingNewsSentiment: boolean;
   loadingListNews: boolean;
   loadingFinnhubAndLsegNews: boolean;
+  loadingBreakingNewsAnalytics: boolean;
+  loadingBreakingNewsTypes: boolean;
   loadingNewsScores: boolean;
   loadingMarketPsych: boolean;
   loadingBreakingNews: boolean;
@@ -33,6 +37,8 @@ export type SentimentState = {
   newLatest: NewsLatest[];
   newsSentiment: NewsSentiment[];
   finnhubAndLsegNews: any[];
+  breakingNewsAnalytics: BreakingNewsAnalytics[];
+  breakingNewsTypes: BreakingNewsType[];
   newsScores: NewsScore[];
   breakingNews: BreakingNews[];
   marketPsych: MarketPsych[];
@@ -41,6 +47,7 @@ export type SentimentState = {
   newsLatestPagination: Pagination;
   listNewsPagination: Pagination;
   finnhubAndLsegNewsPagination: Pagination;
+  breakingNewsAnalyticsPagination: Pagination;
   newsScoresPagination: Pagination;
   marketPsychPagination: Pagination;
   newsScoreBySymbol: NewsScoreBySymbol | null;
@@ -55,6 +62,8 @@ const initialState: SentimentState = {
   loadingNewsSentiment: false,
   loadingListNews: false,
   loadingFinnhubAndLsegNews: false,
+  loadingBreakingNewsAnalytics: false,
+  loadingBreakingNewsTypes: false,
   loadingNewsScores: false,
   loadingMarketPsych: false,
   loadingBreakingNews: false,
@@ -70,6 +79,8 @@ const initialState: SentimentState = {
   newLatest: [],
   newsSentiment: [],
   finnhubAndLsegNews: [],
+  breakingNewsAnalytics: [],
+  breakingNewsTypes: [],
   newsScores: [],
   breakingNews: [],
   marketPsych: [],
@@ -80,6 +91,7 @@ const initialState: SentimentState = {
   newsLatestPagination: PAGINATION,
   listNewsPagination: PAGINATION,
   finnhubAndLsegNewsPagination: PAGINATION,
+  breakingNewsAnalyticsPagination: PAGINATION,
   newsScoresPagination: PAGINATION,
   marketPsychPagination: PAGINATION
 };
@@ -325,6 +337,61 @@ export const SentimentSlice = createAppSlice({
       }
     ),
 
+    getBreakingNewsAnalytics: create.asyncThunk(
+      async (query?: Record<string, any>) => {
+        const queryParams = query ? convertParamsByMapping(query) : {};
+        const response = await defaultApiFetcher.get(
+          'news/breaking-news-analytics',
+          {
+            query: queryParams
+          }
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loadingBreakingNewsAnalytics = true;
+        },
+        fulfilled: (state, action) => {
+          state.loadingBreakingNewsAnalytics = false;
+          const result = action.payload.result ?? [];
+          state.breakingNewsAnalytics = transformBreakingNewsAnalytics(result);
+          state.breakingNewsAnalyticsPagination = {
+            currentPage: action.payload.offset,
+            pageSize: action.payload.limit,
+            total: action.payload.total
+          };
+        },
+        rejected: (state) => {
+          state.loadingBreakingNewsAnalytics = false;
+          state.breakingNewsAnalytics = [];
+          state.breakingNewsAnalyticsPagination = PAGINATION;
+        }
+      }
+    ),
+
+    getBreakingNewsTypes: create.asyncThunk(
+      async () => {
+        const response = await defaultApiFetcher.get('news/news-type');
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.loadingBreakingNewsTypes = true;
+        },
+        fulfilled: (state, action) => {
+          state.loadingBreakingNewsTypes = false;
+          state.breakingNewsTypes = transformBreakingNewsTypes(
+            action.payload || []
+          );
+        },
+        rejected: (state) => {
+          state.loadingBreakingNewsTypes = false;
+          state.breakingNewsTypes = [];
+        }
+      }
+    ),
+
     getNewsScores: create.asyncThunk(
       async (query?: Record<string, any>) => {
         const response = await defaultApiFetcher.get('news/news-scores', {
@@ -430,6 +497,13 @@ export const SentimentSlice = createAppSlice({
     watchFinnhubAndLsegNews: (state) => state.finnhubAndLsegNews,
     watchFinnhubAndLsegNewsPagination: (state) =>
       state.finnhubAndLsegNewsPagination,
+    watchBreakingNewsAnalyticsLoading: (state) =>
+      state.loadingBreakingNewsAnalytics,
+    watchBreakingNewsAnalytics: (state) => state.breakingNewsAnalytics,
+    watchBreakingNewsTypesLoading: (state) => state.loadingBreakingNewsTypes,
+    watchBreakingNewsTypes: (state) => state.breakingNewsTypes,
+    watchBreakingNewsAnalyticsPagination: (state) =>
+      state.breakingNewsAnalyticsPagination,
     watchNewsScoresLoading: (state) => state.loadingNewsScores,
     watchNewsScores: (state) => state.newsScores,
     watchNewsScoreBySymbol: (state) => state.newsScoreBySymbol,
@@ -461,6 +535,11 @@ export const {
   watchFinnhubAndLsegNewsLoading,
   watchFinnhubAndLsegNews,
   watchFinnhubAndLsegNewsPagination,
+  watchBreakingNewsAnalyticsLoading,
+  watchBreakingNewsAnalytics,
+  watchBreakingNewsTypesLoading,
+  watchBreakingNewsTypes,
+  watchBreakingNewsAnalyticsPagination,
   watchNewsScoresLoading,
   watchNewsScores,
   watchNewsScoreBySymbol,
@@ -482,6 +561,8 @@ export const {
   getTickerNewsSentiment,
   getListNews,
   getFinnhubAndLsegNews,
+  getBreakingNewsAnalytics,
+  getBreakingNewsTypes,
   getNewsScores,
   getBreakingNews,
   resetState

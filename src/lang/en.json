@@ -568,6 +568,8 @@
   "sendOnlyToMyApp": "Send only to My App",
   "finnhubLsegNews": "Finnhub & LSEG News",
   "finnhubLsegNewsDescription": "Finnhub & LSEG News Page",
+  "breakingNewsAnalytics": "Breaking News Analytics",
+  "breakingNewsAnalyticsDescription": "Breaking News Analytics Page",
   "newsScores": "News scores",
   "newsScoresDescription": "News scores Page",
   "inTrade": "In Trade",

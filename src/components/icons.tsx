@@ -62,6 +62,7 @@ import InsightScore from '@/assets/svg/insight-score.svg';
 import Forecast from '@/assets/svg/est-forecast.svg';
 import Add from '@/assets/svg/add.svg';
 import marketPsychology from '@/assets/svg/market-psychology.svg';
+import breakingNewsAnalytics from '@/assets/svg/breaking-news-analytics.svg';
 
 type IconProps = {
   width?: number | string;
@@ -132,15 +133,19 @@ const svgList = {
   InsightScore,
   Forecast,
   Add,
-  marketPsychology
+  marketPsychology,
+  breakingNewsAnalytics
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = Object.entries(
   svgList
-).reduce((acc, [name, component]) => {
-  acc[camelCase(name)] = component;
-  return acc;
-}, {} as Record<string, React.ComponentType<any>>);
+).reduce(
+  (acc, [name, component]) => {
+    acc[camelCase(name)] = component;
+    return acc;
+  },
+  {} as Record<string, React.ComponentType<any>>
+);
 
 export const Icon = ({
   icon,
