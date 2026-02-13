@@ -328,6 +328,10 @@ export const BreakingNewsAnalyticsTable = () => {
 
   return (
     <div css={rootStyles}>
+      <div css={noteStyles}>
+        * Only breaking news released during US market hours (09:30 - 15:00 ET)
+        with a minimum article score of 0.5.
+      </div>
       <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
           <div css={tableTopRightStyles}>
@@ -397,7 +401,7 @@ export const BreakingNewsAnalyticsTable = () => {
           loading={loading}
           scroll={{
             x: 2600,
-            y: list.length > 0 ? height - 266 : undefined
+            y: list.length > 0 ? height - 292 : undefined
           }}
           locale={{
             emptyText: (
@@ -427,6 +431,14 @@ export const BreakingNewsAnalyticsTable = () => {
 const rootStyles = css`
   display: flex;
   flex-direction: column;
+  gap: 0.8rem;
+`;
+
+const noteStyles = css`
+  color: var(--negative-color);
+  font-size: 1.4rem;
+  line-height: 2rem;
+  font-weight: 500;
 `;
 
 const tableWrapperStyles = css`
