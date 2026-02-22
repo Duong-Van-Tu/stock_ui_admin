@@ -82,6 +82,45 @@ export default function OptionChangesDrawer({
       render: (v) => (isNumeric(v) ? roundToDecimals(v) : '-')
     },
     {
+      title: 'IV Rank',
+      dataIndex: 'ivRank',
+      key: 'ivRank',
+      width: 90,
+      align: 'center',
+      render: (v) => (isNumeric(v) ? `${roundToDecimals(v * 100, 4)}%` : '-')
+    },
+    {
+      title: 'Imp Vol',
+      dataIndex: 'impVol',
+      key: 'impVol',
+      width: 100,
+      align: 'center',
+      render: (v) => (isNumeric(v) ? `${roundToDecimals(v * 100, 4)}%` : '-')
+    },
+    {
+      title: 'IV',
+      dataIndex: 'iv',
+      key: 'iv',
+      width: 90,
+      align: 'center',
+      render: (v) => (isNumeric(v) ? `${roundToDecimals(v * 100, 4)}%` : '-')
+    },
+    {
+      title: 'IV % Chg',
+      dataIndex: 'ivPctChg',
+      key: 'ivPctChg',
+      width: 110,
+      align: 'center',
+      render: (v) =>
+        isNumeric(v) ? (
+          <PositiveNegativeText isPositive={v > 0} isNegative={v < 0}>
+            <span>{formatPercent(v * 100)}</span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
+    },
+    {
       title: 'Ask',
       dataIndex: 'ask',
       key: 'ask',
