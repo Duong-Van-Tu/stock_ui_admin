@@ -52,6 +52,8 @@ type EstForecast = {
   aggregateScore: number | null;
   aggregateScorePoint: number | null;
   noteForTrader: string;
+  daysToEarning: number | null;
+  noteForEarning: string;
   forecastPct: number | null;
   entryDate: string;
   entryPrice: number | null;
@@ -127,6 +129,9 @@ type EstForecastFilterItem = {
   marketpsychOptimismZPoint: number | null;
   marketpsychTrustZ: number | null;
   marketpsychTrustZPoint: number | null;
+  noteForTrader: string;
+  daysToEarning: number | null;
+  noteForEarning: string;
   tradeDate: string;
   forecastPct: number | null;
   entryDate: string;

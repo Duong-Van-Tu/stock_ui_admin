@@ -316,6 +316,20 @@ export const EstForecastSelectedTable = () => {
         render: (v, r) => renderText(v, 'noteForTrader', r)
       },
       {
+        title: 'Days to Earning',
+        dataIndex: 'daysToEarning',
+        width: 140,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'daysToEarning', r)
+      },
+      {
+        title: 'Note for Earning',
+        dataIndex: 'noteForEarning',
+        width: 300,
+        align: 'center',
+        render: (v, r) => renderText(v, 'noteForEarning', r)
+      },
+      {
         title: 'Earnings Date',
         dataIndex: 'earningsDate',
         width: 130,
