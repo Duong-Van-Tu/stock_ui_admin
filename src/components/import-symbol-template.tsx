@@ -10,11 +10,19 @@ import { Icon } from './icons';
 type ImportSymbolButtonProps = {
   url: string;
   onSuccess?: () => void | Promise<void>;
+  appendFormData?: (formData: FormData, file: File) => void;
+  buttonText?: string;
+  size?: 'large' | 'middle' | 'small';
+  hideIcon?: boolean;
 };
 
 export const ImportSymbolButton = ({
   url,
-  onSuccess
+  onSuccess,
+  appendFormData,
+  buttonText,
+  size = 'middle',
+  hideIcon = false
 }: ImportSymbolButtonProps) => {
   const t = useTranslations();
   const { notifySuccess, notifyError } = useNotification();
@@ -27,6 +35,7 @@ export const ImportSymbolButton = ({
     const file = event.target.files[0];
     const formData = new FormData();
     formData.append('file', file);
+    appendFormData?.(formData, file);
 
     try {
       const response = await defaultApiFetcher.post(url, formData, {
@@ -50,13 +59,21 @@ export const ImportSymbolButton = ({
     <Button
       type='primary'
       css={importUserBtnStyles}
+      size={size}
       loading={importing}
       icon={
-        <Icon fill='var(--white-color)' icon='upload' width={18} height={18} />
+        hideIcon ? undefined : (
+          <Icon
+            fill='var(--white-color)'
+            icon='upload'
+            width={18}
+            height={18}
+          />
+        )
       }
       onClick={() => inputImportRef.current?.click()}
     >
-      {t('importExcel')}
+      {buttonText || t('importExcel')}
       <input
         ref={inputImportRef}
         type='file'

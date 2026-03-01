@@ -299,6 +299,23 @@ export const EstForecastSelectedTable = ({
 
   const renderAction = useCallback(
     (_: any, record: EstForecastFilterItem) => {
+      if (mode === 'active') {
+        const query = new URLSearchParams({
+          est_id: String(record.id),
+          symbol: record.symbol
+        }).toString();
+
+        return (
+          <ImportSymbolButton
+            url={`est-forecast-attachment/upload?${query}`}
+            onSuccess={handleRefresh}
+            buttonText='Import'
+            size='middle'
+            hideIcon
+          />
+        );
+      }
+
       return (
         <Space>
           <Button type='primary' onClick={() => startEdit(record)}>
@@ -315,7 +332,7 @@ export const EstForecastSelectedTable = ({
         </Space>
       );
     },
-    [handleDelete, startEdit]
+    [handleDelete, handleRefresh, mode, startEdit]
   );
 
   const columns: TableColumnsType<EstForecastFilterItem> = useMemo(
@@ -919,14 +936,14 @@ export const EstForecastSelectedTable = ({
       },
       {
         title: t('action'),
-        width: 170,
+        width: mode === 'active' ? 100 : 170,
         align: 'center',
         fixed: !isMobile && 'right',
         render: renderAction
       }
     ],
 
-    [t, renderNumber, renderText, renderAction]
+    [mode, t, renderNumber, renderText, renderAction]
   );
 
   return (
@@ -966,12 +983,6 @@ export const EstForecastSelectedTable = ({
               allowClear
               style={{ width: 320 }}
             />
-            {mode === 'active' ? (
-              <ImportSymbolButton
-                url='est-forecast-attachment/upload'
-                onSuccess={handleRefresh}
-              />
-            ) : null}
           </div>
         </div>
 

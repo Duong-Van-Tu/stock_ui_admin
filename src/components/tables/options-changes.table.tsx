@@ -569,7 +569,17 @@ export const OptionChangesTable = ({ optionType }: OptionChangesTableProps) => {
               )}
             </div>
           </div>
-          <ImportSymbolButton url='option-changes/import' />
+          <ImportSymbolButton
+            url='option-changes/import'
+            onSuccess={() =>
+              fetchData({
+                page: pagination.currentPage,
+                pageSize: pagination.pageSize,
+                filter,
+                silent: false
+              })
+            }
+          />
         </div>
 
         <Table<OptionChange>
