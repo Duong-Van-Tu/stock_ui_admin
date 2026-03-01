@@ -92,7 +92,7 @@ export const getMenuStructure = (
     },
     {
       label: t('earningsStrategy'),
-      key: 'earnings-strategy',
+      key: 'forecast',
       iconType: 'forecast',
       link: PageURLs.ofEstForecast()
     },
