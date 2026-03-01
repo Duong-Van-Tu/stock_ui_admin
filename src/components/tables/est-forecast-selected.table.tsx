@@ -973,15 +973,17 @@ export const EstForecastSelectedTable = ({
             </Tooltip>
           </TableTitle>
           <div css={actionGroupStyles}>
-            <Input.Search
-              placeholder={t('searchToAddEstForecast')}
-              enterButton={t('search')}
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
-              onSearch={handleSearch}
-              allowClear
-              style={{ width: 320 }}
-            />
+            {mode !== 'active' ? (
+              <Input.Search
+                placeholder={t('searchToAddEstForecast')}
+                enterButton={t('search')}
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
+                onSearch={handleSearch}
+                allowClear
+                style={{ width: 320 }}
+              />
+            ) : null}
           </div>
         </div>
 
