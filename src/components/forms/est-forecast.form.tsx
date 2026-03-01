@@ -546,9 +546,6 @@ export default function EstForecastForm({
         <Form.Item name='daysToEarning' label='Days to Earning'>
           <InputNumber style={{ width: '100%' }} />
         </Form.Item>
-        <Form.Item name='noteForEarning' label='Note for Earning'>
-          <Input.TextArea rows={3} />
-        </Form.Item>
         <Form.Item label='Aggregate Score / Point'>
           <Row gutter={8}>
             <Col span={12}>
