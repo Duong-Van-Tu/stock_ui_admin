@@ -64,6 +64,7 @@ type EstForecast = {
   lowest3DaysPrice: number | null;
   currentPrice: number | null;
   type?: string | null;
+  urlFile?: string | null;
 };
 
 type EstForecastFilterItem = {
@@ -146,6 +147,7 @@ type EstForecastFilterItem = {
   sortOrder?: number | null;
   startmine: string | null;
   startminePoint: number | null;
+  urlFile?: string | null;
 };
 
 type CountByDate = {

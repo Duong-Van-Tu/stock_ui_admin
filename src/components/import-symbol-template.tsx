@@ -14,6 +14,8 @@ type ImportSymbolButtonProps = {
   buttonText?: string;
   size?: 'large' | 'middle' | 'small';
   hideIcon?: boolean;
+  width?: number | string;
+  buttonType?: 'primary' | 'default';
 };
 
 export const ImportSymbolButton = ({
@@ -22,7 +24,9 @@ export const ImportSymbolButton = ({
   appendFormData,
   buttonText,
   size = 'middle',
-  hideIcon = false
+  hideIcon = false,
+  width,
+  buttonType = 'primary'
 }: ImportSymbolButtonProps) => {
   const t = useTranslations();
   const { notifySuccess, notifyError } = useNotification();
@@ -57,14 +61,21 @@ export const ImportSymbolButton = ({
 
   return (
     <Button
-      type='primary'
-      css={importUserBtnStyles}
+      type={buttonType}
+      css={
+        buttonType === 'primary' ? importUserBtnStyles : importOutlineBtnStyles
+      }
       size={size}
+      style={width ? { width } : undefined}
       loading={importing}
       icon={
         hideIcon ? undefined : (
           <Icon
-            fill='var(--white-color)'
+            fill={
+              buttonType === 'primary'
+                ? 'var(--white-color)'
+                : 'var(--electric-indigo-color)'
+            }
             icon='upload'
             width={18}
             height={18}
@@ -90,5 +101,16 @@ const importUserBtnStyles = css`
   &:hover {
     background: var(--electric-indigo-color) !important;
     opacity: 0.9;
+  }
+`;
+
+const importOutlineBtnStyles = css`
+  color: var(--electric-indigo-color);
+  border-color: var(--electric-indigo-color);
+  &:hover,
+  &:focus {
+    color: var(--electric-indigo-color) !important;
+    border-color: var(--electric-indigo-color) !important;
+    background: rgba(93, 56, 245, 0.04) !important;
   }
 `;

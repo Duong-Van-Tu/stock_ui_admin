@@ -307,9 +307,11 @@ export const EstForecastSelectedTable = ({
 
         return (
           <ImportSymbolButton
+            width={112}
             url={`est-forecast-attachment/upload?${query}`}
             onSuccess={handleRefresh}
-            buttonText='Upload'
+            buttonText={record.urlFile ? 'Uploaded' : 'Upload'}
+            buttonType={record.urlFile ? 'primary' : 'default'}
             size='middle'
           />
         );
@@ -935,7 +937,7 @@ export const EstForecastSelectedTable = ({
       },
       {
         title: t('action'),
-        width: mode === 'active' ? 130 : 170,
+        width: mode === 'active' ? 142 : 170,
         align: 'center',
         fixed: !isMobile && 'right',
         render: renderAction
