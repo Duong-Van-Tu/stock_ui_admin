@@ -117,6 +117,39 @@ export const estForecastSlice = createAppSlice({
       }
     ),
 
+    getEstForecastActiveFilterPaging: create.asyncThunk(
+      async (query?: Record<string, any>) => {
+        const response = await defaultApiFetcher.get(
+          'est-forecast/active-filter',
+          {
+            query: convertParamsByMapping(query || {})
+          }
+        );
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.filterLoading = true;
+        },
+        fulfilled: (state, action) => {
+          state.filterLoading = false;
+          state.filterList = transformEstForecastFilter(
+            action.payload.result || []
+          ) as EstForecastFilterItem[];
+          state.pagination = {
+            currentPage: action.payload.currentPage,
+            pageSize: action.payload.limit,
+            total: Number(action.payload.totalResult)
+          };
+        },
+        rejected: (state) => {
+          state.filterLoading = false;
+          state.filterList = [];
+          state.pagination = PAGINATION;
+        }
+      }
+    ),
+
     addEstForecast: create.asyncThunk(
       async (payload: EstForecast) => {
         const response = await defaultApiFetcher.post(
@@ -274,6 +307,7 @@ export const {
   getEstForecastFilter,
   getCountEstForecast,
   getEstForecastFilterPaging,
+  getEstForecastActiveFilterPaging,
   addEstForecast,
   getEstForecastDetail,
   updateEstForecast,

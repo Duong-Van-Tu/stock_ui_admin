@@ -9,9 +9,13 @@ import { Icon } from './icons';
 
 type ImportSymbolButtonProps = {
   url: string;
+  onSuccess?: () => void | Promise<void>;
 };
 
-export const ImportSymbolButton = ({ url }: ImportSymbolButtonProps) => {
+export const ImportSymbolButton = ({
+  url,
+  onSuccess
+}: ImportSymbolButtonProps) => {
   const t = useTranslations();
   const { notifySuccess, notifyError } = useNotification();
   const inputImportRef = useRef<HTMLInputElement>(null);
@@ -30,6 +34,7 @@ export const ImportSymbolButton = ({ url }: ImportSymbolButtonProps) => {
       });
       if (response) {
         notifySuccess(t('importSuccess'));
+        await onSuccess?.();
       } else {
         notifyError(t('importError'));
       }

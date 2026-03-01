@@ -60,6 +60,7 @@ import ColumnSetting from '@/assets/svg/column-setting.svg';
 import FinnhubLseg from '@/assets/svg/finhub–lseg-news.svg';
 import InsightScore from '@/assets/svg/insight-score.svg';
 import Forecast from '@/assets/svg/est-forecast.svg';
+import EarningSelection from '@/assets/svg/earning-selection.svg';
 import Add from '@/assets/svg/add.svg';
 import marketPsychology from '@/assets/svg/market-psychology.svg';
 import breakingNewsAnalytics from '@/assets/svg/breaking-news-analytics.svg';
@@ -132,6 +133,7 @@ const svgList = {
   FinnhubLseg,
   InsightScore,
   Forecast,
+  EarningSelection,
   Add,
   marketPsychology,
   breakingNewsAnalytics

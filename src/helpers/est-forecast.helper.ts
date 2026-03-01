@@ -107,6 +107,8 @@ export const transformEstForecastFilter = (
     marketCapEstForecast: item[fieldMapping.marketCapEstForecast],
     marketCap: item.market_cap,
     noteForTrader: item[fieldMapping.noteForTrader],
+    diffDays: toNumber(item[fieldMapping.diffDays]),
+    aiRecommend: item[fieldMapping.aiRecommend],
     daysToEarning: toNumber(item[fieldMapping.daysToEarning]),
     noteForEarning: item[fieldMapping.noteForEarning],
     forecast: item.forecast,

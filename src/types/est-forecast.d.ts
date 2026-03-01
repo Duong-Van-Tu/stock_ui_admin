@@ -52,6 +52,8 @@ type EstForecast = {
   aggregateScore: number | null;
   aggregateScorePoint: number | null;
   noteForTrader: string;
+  diffDays?: number | null;
+  aiRecommend?: string | null;
   daysToEarning: number | null;
   noteForEarning: string;
   forecastPct: number | null;

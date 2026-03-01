@@ -310,6 +310,8 @@ export const fieldMapping: Record<string, string> = {
   aggregateScore: 'aggregate_score',
   aggregateScorePoint: 'aggregate_score_point',
   noteForTrader: 'note_for_trader',
+  diffDays: 'diff_days',
+  aiRecommend: 'ai_recommend',
   daysToEarning: 'days_to_earning',
   noteForEarning: 'note_for_earning',
   breakingNews: 'breaking_news',

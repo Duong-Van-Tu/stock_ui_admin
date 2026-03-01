@@ -104,6 +104,9 @@ export namespace PageURLs {
   export function ofEstForecastSelected() {
     return withPrefix('/forecast/selected');
   }
+  export function ofEarningSelection() {
+    return withPrefix('/earning-selection');
+  }
   export function ofMarketPsychology() {
     return withPrefix('/market-psychology');
   }

@@ -13,6 +13,7 @@ import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   deleteEstForecast,
+  getEstForecastActiveFilterPaging,
   getCountEstForecast,
   getEstForecastFilterPaging,
   resetAddEstForecastState,
@@ -47,8 +48,15 @@ import { TableTitle } from './title.table';
 import { PageURLs } from '@/utils/navigate';
 import EstForecastForm from '@/components/forms/est-forecast.form';
 import { Icon } from '../icons';
+import { ImportSymbolButton } from '../import-symbol-template';
 
-export const EstForecastSelectedTable = () => {
+type EstForecastSelectedTableProps = {
+  mode?: 'date' | 'active';
+};
+
+export const EstForecastSelectedTable = ({
+  mode = 'date'
+}: EstForecastSelectedTableProps) => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
@@ -69,11 +77,13 @@ export const EstForecastSelectedTable = () => {
   const [searchValue, setSearchValue] = useState('');
 
   const earningDate = useMemo(() => {
+    if (mode !== 'date') return dayjs().format('YYYY-MM-DD');
+
     const date = searchParams.get('earningsDate');
     return date
       ? dayjs(date, 'YYYY-MM-DD').format('YYYY-MM-DD')
       : dayjs().format('YYYY-MM-DD');
-  }, [searchParams]);
+  }, [mode, searchParams]);
 
   const callData = useMemo(
     () => filterList.filter((item) => item.type === 'call'),
@@ -85,6 +95,8 @@ export const EstForecastSelectedTable = () => {
   );
 
   const handleFilter = (values: { startDate: string; endDate: string }) => {
+    if (mode !== 'date') return;
+
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     current.set('earningsDate', values.startDate);
     const search = current.toString();
@@ -98,8 +110,21 @@ export const EstForecastSelectedTable = () => {
       pageSize = PAGINATION_PARAMS.limit
     }: PageChangeParams = {}) => {
       const symbol = searchParams.get('symbol') || undefined;
-      const earningsDate = searchParams.get('earningsDate') || undefined;
 
+      if (mode === 'active') {
+        const filter = cleanFalsyValues({ symbol });
+
+        dispatch(
+          getEstForecastActiveFilterPaging({
+            page,
+            limit: pageSize,
+            ...filter
+          })
+        );
+        return;
+      }
+
+      const earningsDate = searchParams.get('earningsDate') || undefined;
       const filter = cleanFalsyValues({
         symbol,
         startDate: earningsDate,
@@ -114,7 +139,7 @@ export const EstForecastSelectedTable = () => {
         })
       );
     },
-    [dispatch, searchParams]
+    [dispatch, mode, searchParams]
   );
 
   const handleRefresh = useCallback(() => {
@@ -125,6 +150,11 @@ export const EstForecastSelectedTable = () => {
   }, [fetchEstForecast, pagination.currentPage, pagination.pageSize]);
 
   useEffect(() => {
+    if (mode !== 'date') {
+      fetchEstForecast({});
+      return;
+    }
+
     const earningsDateInUrl = searchParams.get('earningsDate');
 
     if (earningsDateInUrl) {
@@ -136,7 +166,7 @@ export const EstForecastSelectedTable = () => {
       const query = search ? `?${search}` : '';
       router.replace(`${pathname}${query}`);
     }
-  }, [searchParams, fetchEstForecast, pathname, router]);
+  }, [mode, searchParams, fetchEstForecast, pathname, router]);
 
   const handleSearch = (value: string) => {
     if (!value) return;
@@ -151,21 +181,27 @@ export const EstForecastSelectedTable = () => {
   useEffect(() => {
     if (addSuccess) {
       fetchEstForecast({});
-      const earningsDate =
-        searchParams.get('earningsDate') || dayjs().format('YYYY-MM-DD');
-      dispatch(
-        getCountEstForecast({
-          fromDate: earningsDate,
-          toDate: earningsDate
-        })
-      );
-      if (lastAddedEarningsDate) {
-        const current = new URLSearchParams(Array.from(searchParams.entries()));
-        current.set('earningsDate', lastAddedEarningsDate);
-        const search = current.toString();
-        const query = search ? `?${search}` : '';
-        router.push(`${pathname}${query}`);
+
+      if (mode === 'date') {
+        const earningsDate =
+          searchParams.get('earningsDate') || dayjs().format('YYYY-MM-DD');
+        dispatch(
+          getCountEstForecast({
+            fromDate: earningsDate,
+            toDate: earningsDate
+          })
+        );
+        if (lastAddedEarningsDate) {
+          const current = new URLSearchParams(
+            Array.from(searchParams.entries())
+          );
+          current.set('earningsDate', lastAddedEarningsDate);
+          const search = current.toString();
+          const query = search ? `?${search}` : '';
+          router.push(`${pathname}${query}`);
+        }
       }
+
       dispatch(resetAddEstForecastState());
     }
   }, [
@@ -173,6 +209,7 @@ export const EstForecastSelectedTable = () => {
     dispatch,
     fetchEstForecast,
     lastAddedEarningsDate,
+    mode,
     pathname,
     router,
     searchParams
@@ -212,16 +249,18 @@ export const EstForecastSelectedTable = () => {
   const handleDelete = useCallback(
     async (id: number) => {
       await dispatch(deleteEstForecast(id));
-      const earningsDate =
-        searchParams.get('earningsDate') || dayjs().format('YYYY-MM-DD');
-      dispatch(
-        getCountEstForecast({
-          fromDate: earningsDate,
-          toDate: earningsDate
-        })
-      );
+      if (mode === 'date') {
+        const earningsDate =
+          searchParams.get('earningsDate') || dayjs().format('YYYY-MM-DD');
+        dispatch(
+          getCountEstForecast({
+            fromDate: earningsDate,
+            toDate: earningsDate
+          })
+        );
+      }
     },
-    [dispatch, searchParams]
+    [dispatch, mode, searchParams]
   );
 
   const renderNumber = useCallback(
@@ -314,6 +353,20 @@ export const EstForecastSelectedTable = () => {
         width: 300,
         align: 'center',
         render: (v, r) => renderText(v, 'noteForTrader', r)
+      },
+      {
+        title: 'Diff Days',
+        dataIndex: 'diffDays',
+        width: 110,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'diffDays', r)
+      },
+      {
+        title: 'AI Recommend',
+        dataIndex: 'aiRecommend',
+        width: 130,
+        align: 'center',
+        render: (v, r) => renderText(v, 'aiRecommend', r)
       },
       {
         title: 'Days to Earning',
@@ -878,17 +931,22 @@ export const EstForecastSelectedTable = () => {
 
   return (
     <div css={rootStyles}>
-      <EstForecastFilter
-        onFilter={handleFilter}
-        selectedDate={searchParams.get('earningsDate') || undefined}
-      />
+      {mode === 'date' ? (
+        <EstForecastFilter
+          onFilter={handleFilter}
+          selectedDate={searchParams.get('earningsDate') || undefined}
+        />
+      ) : null}
 
       <div css={tableWrapperStyles}>
         <div css={titleRowStyles}>
           <TableTitle customStyles={titleStyles}>
             <span>
-              {t('earningTitle')}
-              {dayjs(earningDate).locale(locale).format('ddd, MMM DD')}
+              {mode === 'date'
+                ? `${t('earningTitle')}${dayjs(earningDate)
+                    .locale(locale)
+                    .format('ddd, MMM DD')}`
+                : t('earningSelection')}
             </span>
             <Tooltip title={!isMobile && t('refresh')}>
               <Button
@@ -898,15 +956,23 @@ export const EstForecastSelectedTable = () => {
               />
             </Tooltip>
           </TableTitle>
-          <Input.Search
-            placeholder={t('searchToAddEstForecast')}
-            enterButton={t('search')}
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
-            onSearch={handleSearch}
-            allowClear
-            style={{ width: 320 }}
-          />
+          <div css={actionGroupStyles}>
+            <Input.Search
+              placeholder={t('searchToAddEstForecast')}
+              enterButton={t('search')}
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
+              onSearch={handleSearch}
+              allowClear
+              style={{ width: 320 }}
+            />
+            {mode === 'active' ? (
+              <ImportSymbolButton
+                url='est-forecast-attachment/upload'
+                onSuccess={handleRefresh}
+              />
+            ) : null}
+          </div>
         </div>
 
         <div css={tablesContainerStyles}>
@@ -988,8 +1054,17 @@ const titleRowStyles = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1.2rem;
+  flex-wrap: wrap;
   padding: 1.2rem 1.6rem;
   border-bottom: 1px solid var(--border-table-color);
+`;
+
+const actionGroupStyles = css`
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
 `;
 
 const tablesContainerStyles = css`

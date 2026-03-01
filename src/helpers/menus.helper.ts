@@ -97,6 +97,12 @@ export const getMenuStructure = (
       link: PageURLs.ofEstForecast()
     },
     {
+      label: t('earningSelection'),
+      key: 'earning-selection',
+      iconType: 'earningSelection',
+      link: PageURLs.ofEarningSelection()
+    },
+    {
       label: t('watchlistSwingTrade'),
       key: 'watchlist-swing-trade',
       iconType: 'watchlistSwingTrade',
