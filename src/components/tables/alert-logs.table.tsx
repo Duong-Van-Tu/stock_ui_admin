@@ -581,7 +581,14 @@ export const AlertLogsTable = ({
         onClick: () => handleSortOrder('articleScore')
       }),
       align: 'center',
-      render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      render: (value) =>
+        isNumeric(value) ? (
+          <PositiveNegativeText isPositive={value > 0} isNegative={value < 0}>
+            {roundToDecimals(value)}
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
     },
     {
       title: 'Impact Score',
