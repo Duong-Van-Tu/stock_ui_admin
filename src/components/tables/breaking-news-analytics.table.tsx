@@ -1,7 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Select, Table, TableColumnsType, Tooltip } from 'antd';
+import {
+  Button,
+  Segmented,
+  Select,
+  Table,
+  TableColumnsType,
+  Tooltip
+} from 'antd';
 import { useTranslations } from 'next-intl';
 import { isMobile } from 'react-device-detect';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -33,6 +40,7 @@ const formatRatioPercent = (value: number | null | undefined) => {
 
 const DEFAULT_SORT_FIELD = 'totalNews';
 const DEFAULT_SORT_ORDER: SortOrder = 'descend';
+type MarketMode = 'during' | 'off';
 
 export const BreakingNewsAnalyticsTable = () => {
   const t = useTranslations();
@@ -45,6 +53,7 @@ export const BreakingNewsAnalyticsTable = () => {
   const breakingNewsTypes = useAppSelector(watchBreakingNewsTypes);
 
   const [filter, setFilter] = useState<Record<string, any>>({});
+  const [marketMode, setMarketMode] = useState<MarketMode>('off');
 
   const { sortField, sortType, handleSortOrder } = useSortOrder<
     Record<string, any>
@@ -78,32 +87,50 @@ export const BreakingNewsAnalyticsTable = () => {
       page = PAGINATION_PARAMS.offset,
       pageSize = PAGINATION_PARAMS.limit,
       filter
-    }: PageChangeParams & { filter?: { newsType?: string } } = {}) => {
+    }: PageChangeParams &
+      { filter?: { newsType?: string; sortField?: string; sortType?: string } } = {}) => {
       const filtered = cleanFalsyValues(filter);
+      const hasSortOverride =
+        !!filter &&
+        (Object.prototype.hasOwnProperty.call(filter, 'sortField') ||
+          Object.prototype.hasOwnProperty.call(filter, 'sortType'));
+
+      const requestSortField = hasSortOverride
+        ? filter?.sortField
+        : sortType
+          ? fieldMapping[sortField] ?? sortField
+          : undefined;
+
+      const requestSortType = hasSortOverride
+        ? filter?.sortType
+        : convertSortType(sortType);
+
       dispatch(
         getBreakingNewsAnalytics({
           page,
           limit: pageSize,
-          sortField: fieldMapping[sortField] ?? sortField,
-          sortType: convertSortType(sortType),
+          marketMode,
+          sortField: requestSortField,
+          sortType: requestSortType,
           ...filtered
         })
       );
     },
-    [dispatch, sortField, sortType]
+    [dispatch, marketMode, sortField, sortType]
   );
 
   useEffect(() => {
-    dispatch(
-      getBreakingNewsAnalytics({
-        page: PAGINATION_PARAMS.offset,
-        limit: PAGINATION_PARAMS.limit,
-        sortField: fieldMapping[DEFAULT_SORT_FIELD] ?? DEFAULT_SORT_FIELD,
-        sortType: convertSortType(DEFAULT_SORT_ORDER)
-      })
-    );
     dispatch(getBreakingNewsTypes());
   }, [dispatch]);
+
+  useEffect(() => {
+    fetchData({
+      page: PAGINATION_PARAMS.offset,
+      pageSize: PAGINATION_PARAMS.limit,
+      filter
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [marketMode]);
 
   useEffect(() => {
     return () => {
@@ -329,8 +356,9 @@ export const BreakingNewsAnalyticsTable = () => {
   return (
     <div css={rootStyles}>
       <div css={noteStyles}>
-        * Only breaking news released during US market hours (09:30 - 15:00 ET)
-        with a minimum article score of 0.5.
+        {marketMode === 'during'
+          ? '* Only breaking news released during US market hours (09:30 - 15:00 ET) with a minimum article score of 0.5.'
+          : '* Only breaking news released outside US market hours (before 09:30 or after 15:00 ET) with a minimum article score of 0.5.'}
       </div>
       <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
@@ -372,7 +400,23 @@ export const BreakingNewsAnalyticsTable = () => {
               )}
             </div>
           </div>
-          <div css={newsTypeFilterStyles}>
+          <div css={rightControlStyles}>
+            <Segmented
+              css={segmentedStyles}
+              value={marketMode}
+              options={[
+                {
+                  label: <div css={segmentedLabelStyles}>during market</div>,
+                  value: 'during'
+                },
+                {
+                  label: <div css={segmentedLabelStyles}>off market</div>,
+                  value: 'off'
+                }
+              ]}
+              onChange={(value) => setMarketMode(value as MarketMode)}
+            />
+            <div css={newsTypeFilterStyles}>
             <span css={filterLabelStyles}>News Type</span>
             <Select
               allowClear
@@ -389,6 +433,7 @@ export const BreakingNewsAnalyticsTable = () => {
               onChange={(value) => handleFilterNewsType(value)}
               style={{ width: isMobile ? 220 : 320 }}
             />
+            </div>
           </div>
         </div>
 
@@ -447,10 +492,16 @@ const tableWrapperStyles = css`
 `;
 
 const tableTopStyles = css`
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
   padding: 1.2rem 1.6rem;
+  @media (max-width: 1450px) {
+    align-items: flex-start;
+  }
 `;
 
 const titleStyles = css`
@@ -478,12 +529,61 @@ const tableTopRightStyles = css`
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  min-width: 320px;
+`;
+
+const rightControlStyles = css`
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-left: auto;
+  @media (max-width: 1450px) {
+    width: 100%;
+    margin-left: 0;
+    justify-content: space-between;
+  }
+  @media (max-width: 992px) {
+    justify-content: flex-start;
+  }
+`;
+
+const segmentedStyles = css`
+  padding: 0;
+  .ant-segmented-item-selected {
+    background: var(--primary-color);
+    color: var(--white-color);
+  }
+  .ant-segmented-item-label {
+    text-transform: uppercase;
+  }
+  @media (min-width: 992px) {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  @media (max-width: 1450px) {
+    position: static;
+    left: auto;
+    transform: none;
+  }
+`;
+
+const segmentedLabelStyles = css`
+  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
+  font-weight: 500;
+  text-transform: uppercase;
 `;
 
 const newsTypeFilterStyles = css`
   display: flex;
   align-items: center;
   gap: 0.8rem;
+  @media (max-width: 640px) {
+    width: 100%;
+    flex-wrap: wrap;
+  }
 `;
 
 const filterLabelStyles = css`

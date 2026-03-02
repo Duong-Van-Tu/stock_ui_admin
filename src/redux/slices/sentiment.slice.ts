@@ -339,9 +339,14 @@ export const SentimentSlice = createAppSlice({
 
     getBreakingNewsAnalytics: create.asyncThunk(
       async (query?: Record<string, any>) => {
-        const queryParams = query ? convertParamsByMapping(query) : {};
+        const { marketMode = 'during', ...restQuery } = query || {};
+        const queryParams = restQuery ? convertParamsByMapping(restQuery) : {};
+        const endpoint =
+          marketMode === 'off'
+            ? 'news/breaking-news-off-market'
+            : 'news/breaking-news-analytics';
         const response = await defaultApiFetcher.get(
-          'news/breaking-news-analytics',
+          endpoint,
           {
             query: queryParams
           }
