@@ -7,7 +7,8 @@ import {
   Space,
   Input,
   Popconfirm,
-  Tooltip
+  Tooltip,
+  Modal
 } from 'antd';
 import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -49,6 +50,10 @@ import { PageURLs } from '@/utils/navigate';
 import EstForecastForm from '@/components/forms/est-forecast.form';
 import { Icon } from '../icons';
 import { ImportSymbolButton } from '../import-symbol-template';
+import { defaultApiFetcher } from '@/utils/api-instances';
+import { transformEstForecastOptionRecommendations } from '@/helpers/est-forecast.helper';
+import { DateTimeCell } from './columns/date-time-cell.column';
+import EllipsisText from '../ellipsis-text';
 
 type EstForecastSelectedTableProps = {
   mode?: 'date' | 'active';
@@ -75,6 +80,9 @@ export const EstForecastSelectedTable = ({
   const submitting = useAppSelector(watchEstForecastSubmitting);
 
   const [searchValue, setSearchValue] = useState('');
+  const [optionResultLoadingMap, setOptionResultLoadingMap] = useState<
+    Record<number, boolean>
+  >({});
 
   const earningDate = useMemo(() => {
     if (mode !== 'date') return dayjs().format('YYYY-MM-DD');
@@ -297,6 +305,146 @@ export const EstForecastSelectedTable = ({
     []
   );
 
+  const openReasoningModal = useCallback(
+    (reasoning: string, symbol: string) => {
+      Modal.info({
+        title: `Reasoning (${symbol})`,
+        width: 900,
+        content: <div css={reasoningModalStyles}>{reasoning || '-'}</div>
+      });
+    },
+    []
+  );
+
+  const handleViewOptionResults = useCallback(
+    async (record: EstForecastFilterItem) => {
+      if (!record.id) return;
+
+      setOptionResultLoadingMap((prev) => ({ ...prev, [record.id]: true }));
+      try {
+        const response = await defaultApiFetcher.get(
+          `est-forecast/${record.id}/option-recommendations`
+        );
+
+        const payload = response?.data;
+        const list = transformEstForecastOptionRecommendations(payload ?? []);
+
+        const modalColumns: TableColumnsType<EstForecastOptionRecommendation> =
+          [
+            {
+              title: 'AI Updated At',
+              dataIndex: 'aiUpdatedAt',
+              width: 130,
+              align: 'center',
+              render: (value) =>
+                value ? <DateTimeCell value={value} convertTimeZone /> : '-'
+            },
+            {
+              title: 'Reasoning',
+              dataIndex: 'reasoning',
+              width: 120,
+              align: 'center',
+              render: (value, row) =>
+                value ? (
+                  <Button
+                    type='link'
+                    block
+                    onClick={() => openReasoningModal(value, row.symbol)}
+                  >
+                    Reasoning
+                  </Button>
+                ) : (
+                  '-'
+                )
+            },
+            {
+              title: 'Strategy Name',
+              dataIndex: 'strategyName',
+              width: 320,
+              render: (value) => <EllipsisText text={value} maxLines={2} />
+            },
+
+            {
+              title: 'Expiration Date',
+              dataIndex: 'expirationDate',
+              width: 150,
+              align: 'center',
+              render: (value) => (value ? stripTimeFromISOString(value) : '-')
+            },
+            { title: 'DTE', dataIndex: 'dte', width: 80, align: 'center' },
+            {
+              title: 'Strike Price',
+              dataIndex: 'strikePrice',
+              width: 120,
+              align: 'center',
+              render: (value) =>
+                isNumeric(value) ? roundToDecimals(Number(value), 2) : '-'
+            },
+            {
+              title: 'Option Type',
+              dataIndex: 'optionType',
+              width: 110,
+              align: 'center'
+            },
+            {
+              title: 'Delta',
+              dataIndex: 'delta',
+              width: 100,
+              align: 'center',
+              render: (value) =>
+                isNumeric(value) ? roundToDecimals(Number(value), 4) : '-'
+            },
+            {
+              title: 'Implied Volatility',
+              dataIndex: 'impliedVolatility',
+              width: 160,
+              align: 'center',
+              render: (value) =>
+                isNumeric(value) ? roundToDecimals(Number(value), 4) : '-'
+            },
+            {
+              title: 'Vega Desc',
+              dataIndex: 'vegaDesc',
+              width: 110,
+              align: 'center'
+            },
+            {
+              title: 'Theta Desc',
+              dataIndex: 'thetaDesc',
+              width: 120,
+              align: 'center'
+            },
+            {
+              title: 'ITM Prob (%)',
+              dataIndex: 'itmProbPercent',
+              width: 130,
+              align: 'center',
+              render: (value) =>
+                isNumeric(value) ? roundToDecimals(Number(value), 2) : '-'
+            }
+          ];
+
+        openModal(
+          <div css={optionResultsModalStyles}>
+            <h2>{`Option Recommendations (${record.symbol})`}</h2>
+            <Table<EstForecastOptionRecommendation>
+              size='small'
+              rowKey={(row) => row.key}
+              columns={modalColumns}
+              dataSource={list}
+              pagination={false}
+              scroll={{ x: 1700, y: 520 }}
+            />
+          </div>,
+          { width: 1600 }
+        );
+      } finally {
+        setOptionResultLoadingMap((prev) => ({ ...prev, [record.id]: false }));
+      }
+    },
+    [openModal, openReasoningModal]
+  );
+
   const renderAction = useCallback(
     (_: any, record: EstForecastFilterItem) => {
       if (mode === 'active') {
@@ -384,7 +532,20 @@ export const EstForecastSelectedTable = ({
         dataIndex: 'aiRecommend',
         width: 130,
         align: 'center',
-        render: (v, r) => renderText(v, 'aiRecommend', r)
+        render: (v, r) => {
+          if (`${v}`.toLowerCase() === 'success') {
+            return (
+              <Button
+                type='link'
+                loading={!!optionResultLoadingMap[r.id]}
+                onClick={() => handleViewOptionResults(r)}
+              >
+                View result
+              </Button>
+            );
+          }
+          return renderText(v, 'aiRecommend', r);
+        }
       },
       {
         title: 'Days to Earning',
@@ -937,7 +1098,15 @@ export const EstForecastSelectedTable = ({
       }
     ],
 
-    [mode, t, renderNumber, renderText, renderAction]
+    [
+      mode,
+      t,
+      renderNumber,
+      renderText,
+      renderAction,
+      optionResultLoadingMap,
+      handleViewOptionResults
+    ]
   );
 
   return (
@@ -1128,4 +1297,17 @@ const titleStyles = css`
   justify-content: center;
   align-items: center;
   gap: 0.2rem;
+`;
+
+const optionResultsModalStyles = css`
+  h2 {
+    text-align: center;
+    margin-bottom: 0.8rem;
+  }
+`;
+
+const reasoningModalStyles = css`
+  white-space: pre-wrap;
+  margin-bottom: 0;
+  line-height: 1.5;
 `;

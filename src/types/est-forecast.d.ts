@@ -154,3 +154,22 @@ type CountByDate = {
   date: string;
   total: number;
 };
+
+type EstForecastOptionRecommendation = {
+  id: number;
+  key: string;
+  symbol: string;
+  strategyName: string;
+  expirationDate: string;
+  dte: number | null;
+  strikePrice: number | null;
+  optionType: string;
+  delta: number | null;
+  impliedVolatility: number | null;
+  vegaDesc: string;
+  thetaDesc: string;
+  itmProbPercent: number | null;
+  reasoning: string;
+  aiUpdatedAt: string;
+  estId: number | null;
+};

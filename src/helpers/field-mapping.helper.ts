@@ -465,5 +465,13 @@ export const fieldMapping: Record<string, string> = {
   articleMax: 'article_max',
   sentimentMin: 'sentiment_min',
   sentimentAvg: 'sentiment_avg',
-  sentimentMax: 'sentiment_max'
+  sentimentMax: 'sentiment_max',
+  expirationDate: 'expiration_date',
+  strikePrice: 'strike_price',
+  impliedVolatility: 'implied_volatility',
+  vegaDesc: 'vega_desc',
+  thetaDesc: 'theta_desc',
+  itmProbPercent: 'itm_prob_percent',
+  aiUpdatedAt: 'ai_updated_at',
+  estId: 'est_id'
 };

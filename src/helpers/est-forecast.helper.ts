@@ -209,3 +209,30 @@ export const transformEstForecastFilter = (
     urlFile: item[fieldMapping.urlFile]
   }));
 };
+
+export const transformEstForecastOptionRecommendations = (
+  data: any[]
+): EstForecastOptionRecommendation[] => {
+  if (!Array.isArray(data) || data.length === 0) {
+    return [];
+  }
+
+  return data.map((item) => ({
+    id: Number(item.id),
+    key: uuid(),
+    symbol: item.symbol,
+    strategyName: item[fieldMapping.strategyName],
+    expirationDate: item[fieldMapping.expirationDate],
+    dte: toNumber(item.dte),
+    strikePrice: toNumber(item[fieldMapping.strikePrice]),
+    optionType: item[fieldMapping.optionType],
+    delta: toNumber(item.delta),
+    impliedVolatility: toNumber(item[fieldMapping.impliedVolatility]),
+    vegaDesc: item[fieldMapping.vegaDesc],
+    thetaDesc: item[fieldMapping.thetaDesc],
+    itmProbPercent: toNumber(item[fieldMapping.itmProbPercent]),
+    reasoning: item.reasoning,
+    aiUpdatedAt: item[fieldMapping.aiUpdatedAt],
+    estId: toNumber(item[fieldMapping.estId])
+  }));
+};
