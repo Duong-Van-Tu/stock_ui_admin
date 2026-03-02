@@ -103,6 +103,7 @@ type Signal = {
   articleScore: number;
   sentiment: number;
   impactScore: number;
+  storyId?: string;
 };
 
 type AlertLogsFilter = Filter & {

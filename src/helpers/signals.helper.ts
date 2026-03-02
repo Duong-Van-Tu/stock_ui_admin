@@ -165,7 +165,8 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       newsType: stock[fieldMapping.newsType],
       sentiment: scaleScore(stock.sentiment),
       articleScore: scaleScore(stock[fieldMapping.articleScore]),
-      impactScore: scaleScore(stock[fieldMapping.impactScore])
+      impactScore: scaleScore(stock[fieldMapping.impactScore]),
+      storyId: co?.newsId
     } as Signal;
   });
 };

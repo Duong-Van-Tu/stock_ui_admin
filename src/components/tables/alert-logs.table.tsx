@@ -132,6 +132,9 @@ export const AlertLogsTable = ({
   >({});
   const [expandedLoading, setExpandedLoading] = useState<string[]>([]);
   const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
+  const [storyLoadingMap, setStoryLoadingMap] = useState<
+    Record<string, boolean>
+  >({});
 
   const handleExpandRowKeys = (record: Signal) => {
     const rowKey = record.key;
@@ -258,6 +261,43 @@ export const AlertLogsTable = ({
   useEffect(() => {
     setFilter((prev) => ({ ...prev, symbol: symbol ?? undefined }));
   }, [symbol]);
+
+  const handleOpenStoryModal = useCallback(
+    async (record: Signal) => {
+      const storyId = record.storyId;
+      if (!storyId) return;
+
+      setStoryLoadingMap((prev) => ({ ...prev, [storyId]: true }));
+
+      try {
+        const response = await defaultApiFetcher.get(
+          'news/breaking-news-by-story-id',
+          {
+            query: { story_id: storyId }
+          }
+        );
+
+        const payload = response?.data ?? response;
+        const item = payload?.data?.[0] ?? payload?.result?.[0] ?? payload?.[0];
+
+        modal.openModal(
+          <div css={storyModalStyles}>
+            <h2>{`News Story (${item?.symbol || record.symbol})`}</h2>
+            <h3>{item?.title || '-'}</h3>
+            {item?.summary ? (
+              <p dangerouslySetInnerHTML={{ __html: item.summary }} />
+            ) : (
+              <p>-</p>
+            )}
+          </div>,
+          { width: 1000 }
+        );
+      } finally {
+        setStoryLoadingMap((prev) => ({ ...prev, [storyId]: false }));
+      }
+    },
+    [modal]
+  );
 
   useEffect(() => {
     if (isFilterReady) {
@@ -507,6 +547,27 @@ export const AlertLogsTable = ({
       align: 'center',
       render: (value) =>
         value ? <EllipsisText text={value} maxLines={2} /> : '-'
+    },
+    {
+      title: 'Story',
+      dataIndex: 'storyId',
+      key: 'storyId',
+      width: 90,
+      align: 'center',
+      render: (value: string | undefined, record) => {
+        if (!value) return '-';
+
+        return (
+          <Button
+            type='link'
+            block
+            loading={!!storyLoadingMap[value]}
+            onClick={() => handleOpenStoryModal(record)}
+          >
+            Story
+          </Button>
+        );
+      }
     },
     {
       title: 'Article Score',
@@ -1998,6 +2059,20 @@ const exitTitleStyles = css`
 
 const recommendationStyles = css`
   text-transform: uppercase;
+`;
+
+const storyModalStyles = css`
+  h2 {
+    text-align: center;
+  }
+  h3 {
+    font-size: 2rem;
+    line-height: 2.4rem;
+    margin-bottom: 0.4rem;
+  }
+  p {
+    margin-bottom: 0;
+  }
 `;
 
 const titleContainerStyles = css`
