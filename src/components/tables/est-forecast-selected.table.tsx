@@ -520,33 +520,37 @@ export const EstForecastSelectedTable = ({
         align: 'center',
         render: (v, r) => renderText(v, 'noteForTrader', r)
       },
-      {
-        title: 'Diff Days',
-        dataIndex: 'diffDays',
-        width: 110,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'diffDays', r)
-      },
-      {
-        title: 'AI Recommend',
-        dataIndex: 'aiRecommend',
-        width: 130,
-        align: 'center',
-        render: (v, r) => {
-          if (`${v}`.toLowerCase() === 'success') {
-            return (
-              <Button
-                type='link'
-                loading={!!optionResultLoadingMap[r.id]}
-                onClick={() => handleViewOptionResults(r)}
-              >
-                View result
-              </Button>
-            );
-          }
-          return renderText(v, 'aiRecommend', r);
-        }
-      },
+      ...((mode === 'active'
+        ? [
+            {
+              title: 'Diff Days',
+              dataIndex: 'diffDays',
+              width: 110,
+              align: 'center',
+              render: (v, r) => renderNumber(v, 'diffDays', r)
+            },
+            {
+              title: 'AI Recommend',
+              dataIndex: 'aiRecommend',
+              width: 130,
+              align: 'center',
+              render: (v, r) => {
+                if (`${v}`.toLowerCase() === 'success') {
+                  return (
+                    <Button
+                      type='link'
+                      loading={!!optionResultLoadingMap[r.id]}
+                      onClick={() => handleViewOptionResults(r)}
+                    >
+                      View result
+                    </Button>
+                  );
+                }
+                return '-';
+              }
+            }
+          ]
+        : []) as TableColumnsType<EstForecastFilterItem>),
       {
         title: 'Days to Earning',
         dataIndex: 'daysToEarning',

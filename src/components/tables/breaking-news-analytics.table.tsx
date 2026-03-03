@@ -53,7 +53,7 @@ export const BreakingNewsAnalyticsTable = () => {
   const breakingNewsTypes = useAppSelector(watchBreakingNewsTypes);
 
   const [filter, setFilter] = useState<Record<string, any>>({});
-  const [marketMode, setMarketMode] = useState<MarketMode>('off');
+  const [marketMode, setMarketMode] = useState<MarketMode>('during');
 
   const { sortField, sortType, handleSortOrder } = useSortOrder<
     Record<string, any>
@@ -87,8 +87,9 @@ export const BreakingNewsAnalyticsTable = () => {
       page = PAGINATION_PARAMS.offset,
       pageSize = PAGINATION_PARAMS.limit,
       filter
-    }: PageChangeParams &
-      { filter?: { newsType?: string; sortField?: string; sortType?: string } } = {}) => {
+    }: PageChangeParams & {
+      filter?: { newsType?: string; sortField?: string; sortType?: string };
+    } = {}) => {
       const filtered = cleanFalsyValues(filter);
       const hasSortOverride =
         !!filter &&
@@ -98,7 +99,7 @@ export const BreakingNewsAnalyticsTable = () => {
       const requestSortField = hasSortOverride
         ? filter?.sortField
         : sortType
-          ? fieldMapping[sortField] ?? sortField
+          ? (fieldMapping[sortField] ?? sortField)
           : undefined;
 
       const requestSortType = hasSortOverride
@@ -417,22 +418,22 @@ export const BreakingNewsAnalyticsTable = () => {
               onChange={(value) => setMarketMode(value as MarketMode)}
             />
             <div css={newsTypeFilterStyles}>
-            <span css={filterLabelStyles}>News Type</span>
-            <Select
-              allowClear
-              showSearch
-              optionFilterProp='label'
-              filterOption={(input, option) =>
-                String(option?.label || '')
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-              options={newsTypeOptions}
-              value={filter.newsType}
-              placeholder='Select news type'
-              onChange={(value) => handleFilterNewsType(value)}
-              style={{ width: isMobile ? 220 : 320 }}
-            />
+              <span css={filterLabelStyles}>News Type</span>
+              <Select
+                allowClear
+                showSearch
+                optionFilterProp='label'
+                filterOption={(input, option) =>
+                  String(option?.label || '')
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={newsTypeOptions}
+                value={filter.newsType}
+                placeholder='Select news type'
+                onChange={(value) => handleFilterNewsType(value)}
+                style={{ width: isMobile ? 220 : 320 }}
+              />
             </div>
           </div>
         </div>
