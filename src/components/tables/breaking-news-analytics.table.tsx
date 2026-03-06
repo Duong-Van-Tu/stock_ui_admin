@@ -26,7 +26,12 @@ import { EmptyDataTable } from './empty.table';
 import { TableTitle } from './title.table';
 import { Icon } from '../icons';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
-import { cleanFalsyValues, isNumeric, roundToDecimals } from '@/utils/common';
+import {
+  cleanFalsyValues,
+  isNumeric,
+  roundToDecimals,
+  scaleScore
+} from '@/utils/common';
 import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
 import { useSortOrder } from '@/hooks/sort-order.hook';
@@ -305,7 +310,7 @@ export const BreakingNewsAnalyticsTable = () => {
       width: 128,
       align: 'center',
       ...getSortableColumnProps('articleMin'),
-      render: (value) => (isNumeric(value) ? roundToDecimals(value, 4) : '-')
+      render: (value) => scaleScore(value) ?? '-'
     },
     {
       title: 'Article Avg',
@@ -314,7 +319,7 @@ export const BreakingNewsAnalyticsTable = () => {
       width: 128,
       align: 'center',
       ...getSortableColumnProps('articleAvg'),
-      render: (value) => (isNumeric(value) ? roundToDecimals(value, 4) : '-')
+      render: (value) => scaleScore(value) ?? '-'
     },
     {
       title: 'Article Max',
@@ -323,7 +328,7 @@ export const BreakingNewsAnalyticsTable = () => {
       width: 128,
       align: 'center',
       ...getSortableColumnProps('articleMax'),
-      render: (value) => (isNumeric(value) ? roundToDecimals(value, 4) : '-')
+      render: (value) => scaleScore(value) ?? '-'
     },
     {
       title: 'Sentiment Min',
@@ -332,7 +337,7 @@ export const BreakingNewsAnalyticsTable = () => {
       width: 138,
       align: 'center',
       ...getSortableColumnProps('sentimentMin'),
-      render: (value) => (isNumeric(value) ? roundToDecimals(value, 4) : '-')
+      render: (value) => scaleScore(value) ?? '-'
     },
     {
       title: 'Sentiment Avg',
@@ -341,7 +346,7 @@ export const BreakingNewsAnalyticsTable = () => {
       width: 138,
       align: 'center',
       ...getSortableColumnProps('sentimentAvg'),
-      render: (value) => (isNumeric(value) ? roundToDecimals(value, 4) : '-')
+      render: (value) => scaleScore(value) ?? '-'
     },
     {
       title: 'Sentiment Max',
@@ -350,7 +355,7 @@ export const BreakingNewsAnalyticsTable = () => {
       width: 148,
       align: 'center',
       ...getSortableColumnProps('sentimentMax'),
-      render: (value) => (isNumeric(value) ? roundToDecimals(value, 4) : '-')
+      render: (value) => scaleScore(value) ?? '-'
     }
   ];
 
@@ -358,8 +363,8 @@ export const BreakingNewsAnalyticsTable = () => {
     <div css={rootStyles}>
       <div css={noteStyles}>
         {marketMode === 'during'
-          ? '* Only breaking news released during US market hours (09:30 - 15:00 ET) with a minimum article score of 0.5.'
-          : '* Only breaking news released outside US market hours (before 09:30 or after 15:00 ET) with a minimum article score of 0.5.'}
+          ? '* Only breaking news released during US market hours (09:30 - 15:00 ET) with a minimum article score of 5.'
+          : '* Only breaking news released outside US market hours (before 09:30 or after 15:00 ET) with a minimum article score of 5.'}
       </div>
       <div css={tableWrapperStyles}>
         <div css={tableTopStyles}>
