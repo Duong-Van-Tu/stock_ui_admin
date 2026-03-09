@@ -13,12 +13,12 @@ import { logoutUser, watchUser } from '@/redux/slices/auth.slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { PageURLs } from '@/utils/navigate';
 import { getPathnameSegment } from '@/utils/common';
-import { isMobile, isDesktop } from 'react-device-detect';
 import { setSideBarCollapsed } from '@/redux/slices/app.slice';
 import TimeZoneClock from './time-zone-clock';
 import { regex } from '@/utils/regex';
 import BreakingNews from './breaking-news';
 import { EconomicCalendarList } from './economic-calendar-list';
+import { useWindowSize } from '@/hooks/window-size.hook';
 
 enum UserMenu {
   PROFILE,
@@ -44,6 +44,10 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
   const locale = getPathnameSegment(pathname, 0) || 'en';
   const user = useAppSelector(watchUser);
   const searchParams = useSearchParams();
+  const { width, isMobile, isDesktop } = useWindowSize();
+  const showBreakingNews = width >= 1280;
+  const showTimeZoneClock = width >= 1160;
+  const showUserFullName = width >= 1080;
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -142,8 +146,8 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
   }, [pathname, dispatch]);
 
   return (
-    <Layout.Header css={rootStyles(colorBgContainer, collapsed)}>
-      <div css={leftSectionStyles}>
+    <Layout.Header css={rootStyles(colorBgContainer, collapsed, isMobile)}>
+      <div css={leftSectionStyles(isMobile)}>
         {isMobile && (
           <Icon
             customStyles={menuIconStyles}
@@ -169,13 +173,17 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
           onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
           onSearch={handleSearch}
           onClear={handleClear}
-          css={searchStyles}
+          css={searchStyles(isDesktop)}
         />
       </div>
-      {isDesktop && <BreakingNews />}
-      <div css={rightSectionStyles}>
+      {showBreakingNews && (
+        <div css={breakingNewsStyles}>
+          <BreakingNews />
+        </div>
+      )}
+      <div css={rightSectionStyles(isMobile)}>
         <EconomicCalendarList />
-        {isDesktop && <TimeZoneClock />}
+        {showTimeZoneClock && <TimeZoneClock />}
         {isDesktop && (
           <div
             css={css`
@@ -224,21 +232,25 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
           arrow
           css={isMobile && userDropdownBtnStyles}
         >
-          {isDesktop && <span>{user?.fullname}</span>}
+          {showUserFullName && <span>{user?.fullname}</span>}
         </Dropdown.Button>
       </div>
     </Layout.Header>
   );
 }
 
-const rootStyles = (background: string, collapsed: boolean) => css`
+const rootStyles = (
+  background: string,
+  collapsed: boolean,
+  isMobileView: boolean
+) => css`
   background: ${background};
   padding: 0;
   height: var(--header-height);
   position: fixed;
   right: 0;
   z-index: 99;
-  left: ${isMobile
+  left: ${isMobileView
     ? collapsed
       ? '0'
       : 'var(--mobile-expanded-sidebar-width)'
@@ -251,28 +263,42 @@ const rootStyles = (background: string, collapsed: boolean) => css`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: ${isMobile ? '0 1rem' : '0 2rem'};
-  gap: ${isMobile ? '1.2rem' : '2rem'};
+  padding: ${isMobileView ? '0 1rem' : '0 2rem'};
+  gap: ${isMobileView ? '1.2rem' : '2rem'};
 `;
 
-const leftSectionStyles = css`
+const leftSectionStyles = (isMobileView: boolean) => css`
   display: flex;
   align-items: center;
   gap: 1rem;
-  width: ${isMobile ? '100%' : 'unset'};
+  width: ${isMobileView ? '100%' : 'unset'};
+  flex: 1;
+  min-width: 0;
 `;
 
-const searchStyles = css`
+const searchStyles = (isDesktopView: boolean) => css`
   max-width: 32rem;
-  min-width: ${isDesktop ? '32rem' : 'unset'};
+  min-width: ${isDesktopView ? '24rem' : 'unset'};
   width: 100%;
+  flex: 1;
+  .ant-input-affix-wrapper {
+    min-width: 0;
+  }
 `;
 
-const rightSectionStyles = css`
+const breakingNewsStyles = css`
+  flex: 1;
+  min-width: 0;
   display: flex;
-  gap: 1rem;
+  justify-content: flex-start;
+`;
+
+const rightSectionStyles = (isMobileView: boolean) => css`
+  display: flex;
+  gap: ${isMobileView ? '0.6rem' : '1rem'};
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 `;
 
 const languageStyles = css`

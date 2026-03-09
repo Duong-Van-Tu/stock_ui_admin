@@ -7,7 +7,6 @@ import {
 } from '@/redux/slices/sentiment.slice';
 import { Dropdown, Space, Badge, Typography, Tag } from 'antd';
 import { Icon } from './icons';
-import { PositiveNegativeText } from './positive-negative-text';
 import { PageURLs } from '@/utils/navigate';
 import { roundToDecimals, formatTimeAgo } from '@/utils/common';
 
@@ -150,65 +149,106 @@ export default function BreakingNews() {
     <Dropdown
       menu={{
         items: menuItems,
-        style: { maxHeight: '400px', overflowY: 'auto', maxWidth: '600px' }
+        style: {
+          maxHeight: '400px',
+          overflowY: 'auto',
+          maxWidth: 'min(60rem, calc(100vw - 3.2rem))'
+        }
       }}
       trigger={['click']}
       onOpenChange={handleDropdownVisibleChange}
     >
-      <Space>
-        {(displayNews.breakingNews === 1 ||
-          displayNews.breakingNews === -1) && (
-          <Badge
-            count={roundToDecimals(displayNews.articleScore * 10)}
-            color='gold'
-            offset={[10, -6]}
-          >
-            <Icon
-              icon='fire'
-              width={18}
-              height={18}
-              fill={
-                displayNews.breakingNews === 1
-                  ? 'var(--positive-color)'
-                  : 'var(--negative-color)'
-              }
-            />
-          </Badge>
-        )}
-        <PositiveNegativeText
-          isPositive={displayNews.breakingNews === 1}
-          isNegative={displayNews.breakingNews === -1}
+      <div
+        style={{
+          width: '100%',
+          minWidth: 0,
+          maxWidth: '56rem'
+        }}
+      >
+        <div
+          style={{
+            width: '100%',
+            minWidth: 0,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.8rem'
+          }}
         >
-          <Text
+          {(displayNews.breakingNews === 1 ||
+            displayNews.breakingNews === -1) && (
+            <Badge
+              count={roundToDecimals(displayNews.articleScore * 10)}
+              color='gold'
+              offset={[10, -6]}
+            >
+              <Icon
+                icon='fire'
+                width={18}
+                height={18}
+                fill={
+                  displayNews.breakingNews === 1
+                    ? 'var(--positive-color)'
+                    : 'var(--negative-color)'
+                }
+              />
+            </Badge>
+          )}
+          <div
             style={{
-              maxWidth: '50rem',
-              color: 'inherit',
-              verticalAlign: 'middle'
-            }}
-            ellipsis={{
-              tooltip: `${displayNews.title} (${displayNews.symbol})`
+              flex: 1,
+              minWidth: 0,
+              overflow: 'hidden'
             }}
           >
-            {displayNews.title}{' '}
-            <Tag
-              color='blue'
+            <div
               style={{
-                marginLeft: '0.4rem',
-                fontWeight: 600,
-                fontSize: '1.3rem'
+                width: '100%',
+                minWidth: 0,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem'
               }}
             >
-              {displayNews.symbol}
-            </Tag>
-          </Text>
-        </PositiveNegativeText>
+              <Text
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  color:
+                    displayNews.breakingNews === 1
+                      ? 'var(--positive-color)'
+                      : displayNews.breakingNews === -1
+                        ? 'var(--negative-color)'
+                        : 'var(--yellow-color)',
+                  verticalAlign: 'middle',
+                  display: 'block'
+                }}
+                ellipsis={{
+                  tooltip: `${displayNews.title} (${displayNews.symbol})`
+                }}
+              >
+                {displayNews.title}
+              </Text>
+              <Tag
+                color='blue'
+                style={{
+                  marginLeft: '0.4rem',
+                  fontWeight: 600,
+                  fontSize: '1.3rem',
+                  flexShrink: 0
+                }}
+              >
+                {displayNews.symbol}
+              </Tag>
+            </div>
+          </div>
 
-        <span style={{ flexShrink: 0, display: 'flex' }}>
-          <Badge dot={hasNewNews} color='#1890ff' offset={[2, 0]}>
-            <Icon icon='arrowDown' width={14} height={14} />
-          </Badge>
-        </span>
-      </Space>
+          <span style={{ flexShrink: 0, display: 'flex' }}>
+            <Badge dot={hasNewNews} color='#1890ff' offset={[2, 0]}>
+              <Icon icon='arrowDown' width={14} height={14} />
+            </Badge>
+          </span>
+        </div>
+      </div>
     </Dropdown>
   ) : null;
 }
