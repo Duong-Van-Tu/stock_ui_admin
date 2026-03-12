@@ -29,9 +29,15 @@ import { PageURLs } from '@/utils/navigate';
 
 type EstForecastTableProps = {
   symbol: string;
+  defaultEarningsDate?: string;
 };
 
-export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
+const FALLBACK_ROW_KEY_PREFIX = 'fallback-symbol-';
+
+export const EstForecastTable = ({
+  symbol,
+  defaultEarningsDate
+}: EstForecastTableProps) => {
   const dispatch = useAppDispatch();
   const { closeModal } = useModal();
 
@@ -42,6 +48,12 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
 
   const [addedSymbols, setAddedSymbols] = useState<Set<string>>(new Set());
   const [createdDates, setCreatedDates] = useState<Record<string, string>>({});
+
+  const normalizedSymbol = useMemo(() => symbol.trim().toUpperCase(), [symbol]);
+  const initialEarningsDate = useMemo(
+    () => defaultEarningsDate || dayjs().format('YYYY-MM-DD'),
+    [defaultEarningsDate]
+  );
 
   useEffect(() => {
     if (addSuccess) {
@@ -56,6 +68,40 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
       dispatch(getEstForecastFilter({ symbol }));
     }
   }, [dispatch, symbol]);
+
+  const handleAddBySymbol = useCallback(
+    (symbolToAdd: string) => {
+      const normalizedSymbolToAdd = symbolToAdd.trim().toUpperCase();
+      if (!normalizedSymbolToAdd) return;
+
+      setAddedSymbols((prev) => new Set(prev).add(normalizedSymbolToAdd));
+      dispatch(
+        addEstForecast({
+          symbol: normalizedSymbolToAdd,
+          earningsDate: createdDates[normalizedSymbolToAdd]
+            ? dayjs(createdDates[normalizedSymbolToAdd]).format('YYYY-MM-DD')
+            : initialEarningsDate,
+          type: 'call'
+        } as EstForecast)
+      );
+    },
+    [dispatch, createdDates, initialEarningsDate]
+  );
+
+  const dataSource = useMemo<EstForecast[]>(() => {
+    if (list.length > 0) return list;
+    if (!normalizedSymbol) return [];
+
+    return [
+      {
+        key: `${FALLBACK_ROW_KEY_PREFIX}${normalizedSymbol}`,
+        symbol: normalizedSymbol,
+        company: '',
+        earningsDate: initialEarningsDate,
+        type: 'call'
+      } as EstForecast
+    ];
+  }, [list, normalizedSymbol, initialEarningsDate]);
 
   const handleAdd = useCallback(
     (record: EstForecast) => {
@@ -439,20 +485,29 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
         width: 100,
         align: 'center',
         fixed: !isMobile && 'right',
-        render: (_, record) =>
-          addedSymbols.has(record.symbol) ? null : (
+        render: (_, record) => {
+          const isFallbackRow = String(record.key || '').startsWith(
+            FALLBACK_ROW_KEY_PREFIX
+          );
+
+          return addedSymbols.has(record.symbol) ? null : (
             <Button
               type='primary'
               icon={<PlusOutlined />}
-              onClick={() => handleAdd(record)}
+              onClick={() =>
+                isFallbackRow
+                  ? handleAddBySymbol(record.symbol)
+                  : handleAdd(record)
+              }
               loading={adding}
             >
               Add
             </Button>
-          )
+          );
+        }
       }
     ],
-    [handleAdd, addedSymbols, createdDates, adding]
+    [handleAdd, handleAddBySymbol, addedSymbols, createdDates, adding]
   );
 
   return (
@@ -461,9 +516,9 @@ export const EstForecastTable = ({ symbol }: EstForecastTableProps) => {
       <Table
         size={isMobile ? 'small' : 'middle'}
         css={tableStyles}
-        rowKey={(record) => record.key!}
+        rowKey={(record) => record.key || record.symbol}
         columns={columns}
-        dataSource={list}
+        dataSource={dataSource}
         loading={loading}
         scroll={{ x: 1200 }}
         pagination={false}

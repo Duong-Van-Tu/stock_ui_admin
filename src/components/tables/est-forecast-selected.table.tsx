@@ -179,7 +179,10 @@ export const EstForecastSelectedTable = ({
   const handleSearch = (value: string) => {
     if (!value) return;
     setSearchValue('');
-    openModal(<EstForecastTable symbol={value} />, { width: 1600 });
+    openModal(
+      <EstForecastTable symbol={value} defaultEarningsDate={earningDate} />,
+      { width: 1600 }
+    );
   };
 
   const handlePageChange = (page: number, pageSize: number) => {
