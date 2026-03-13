@@ -64,6 +64,7 @@ export const ExportExcelLog = ({
 
       const headers = [
         'Symbol',
+        'Count',
         'Strategy',
         'STOCK/OPTIONS',
         'Period',
@@ -110,6 +111,7 @@ export const ExportExcelLog = ({
         'Fundamental score',
         'Earnings score',
         'Sentiment score',
+        'Performance score',
         'YTD'
       ];
       worksheet.addRow(headers);
@@ -121,6 +123,10 @@ export const ExportExcelLog = ({
         }
         if (header === 'Strategy') {
           width = 32;
+        }
+
+        if (header === 'Count') {
+          width = 10;
         }
 
         if (header === 'YTD') {
@@ -160,7 +166,18 @@ export const ExportExcelLog = ({
         };
       };
 
-      // Removed getScoreColor because not used for styling now
+      const getCountCellStyle = (allEntryGood?: boolean) => ({
+        font: {
+          bold: true,
+          color: { argb: 'FFFFFFFF' }
+        },
+        fill: {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: allEntryGood ? 'FF52C41A' : 'FFFAAD14' }
+        }
+      });
+
       signals.forEach((log: Signal) => {
         const realtime = resFromWS.realtime.find(
           (r: any) => r.symbol === log.symbol
@@ -177,8 +194,9 @@ export const ExportExcelLog = ({
         const low7dPL = calculatePLValues(log.lowestPrice7Days, baseEntry);
         const negativeNews = !!log.isNewsNegative ? 'Yes' : 'No';
 
-        worksheet.addRow([
+        const row = worksheet.addRow([
           log.symbol,
+          log.countSignal > 1 ? log.countSignal : '-',
           log.strategyName,
           log.isImport === 0 ? 'STOCK' : 'OPTIONS',
           log.timeFrame,
@@ -272,6 +290,10 @@ export const ExportExcelLog = ({
           log.performanceScore ? roundToDecimals(log.performanceScore, 2) : '-',
           log.ytd ? roundToDecimals(log.ytd, 2) : '-'
         ]);
+
+        if (log.countSignal > 1) {
+          Object.assign(row.getCell(2), getCountCellStyle(log.allEntryGood));
+        }
       });
 
       const buffer = await workbook.xlsx.writeBuffer();
