@@ -1,4 +1,4 @@
-import { Card, Col, Row, Statistic, Typography } from 'antd';
+import { Card, Col, Row, Statistic } from 'antd';
 import { useLanguage } from '../hooks/use-language.hook';
 
 function DashboardPage() {
@@ -11,9 +11,6 @@ function DashboardPage() {
 
   return (
     <div>
-      <Typography.Title level={2}>{t('dashboardTitle')}</Typography.Title>
-      <Typography.Paragraph type='secondary'>{t('dashboardDescription')}</Typography.Paragraph>
-
       <Row gutter={[16, 16]}>
         {mockStats.map((item) => (
           <Col xs={24} md={8} key={item.title}>

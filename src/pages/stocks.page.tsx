@@ -19,12 +19,6 @@ const HeaderSpace = styled(Space)`
   }
 `;
 
-const PageTitle = styled(Typography.Title).attrs({ level: 2 })`
-  && {
-    margin-bottom: 0;
-  }
-`;
-
 const dataSource = [
   {
     key: '1',
@@ -65,10 +59,7 @@ function StocksPage() {
     <PageCard>
       <VerticalSpace direction='vertical' size='large'>
         <HeaderSpace>
-          <div>
-            <PageTitle>{t('stocksTitle')}</PageTitle>
-            <Typography.Text type='secondary'>{t('stocksDescription')}</Typography.Text>
-          </div>
+          <Typography.Text type='secondary'>{t('stocksDescription')}</Typography.Text>
 
           <Button type='primary'>{t('stocksAdd')}</Button>
         </HeaderSpace>

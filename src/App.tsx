@@ -1,6 +1,7 @@
 import { ConfigProvider, theme } from 'antd';
 import enUS from 'antd/locale/en_US';
 import viVN from 'antd/locale/vi_VN';
+import { useLayoutEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { LANGUAGE_CODES } from './constants/language.constants';
 import { appThemeTokens, THEME_MODES } from './constants/theme.constants';
@@ -13,6 +14,14 @@ function App() {
   const { themeMode } = useTheme();
   const antdLocale = currentLanguage === LANGUAGE_CODES.en ? enUS : viVN;
   const currentThemeTokens = appThemeTokens[themeMode];
+
+  useLayoutEffect(() => {
+    const rootStyle = document.documentElement.style;
+
+    Object.entries(currentThemeTokens.cssVariables).forEach(([name, value]) => {
+      rootStyle.setProperty(`--${name}`, value);
+    });
+  }, [currentThemeTokens]);
 
   return (
     <ConfigProvider
