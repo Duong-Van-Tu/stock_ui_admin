@@ -3,6 +3,8 @@
   "commonAppDescription": "Manage stock information",
   "commonLogout": "Logout",
   "commonLanguage": "Language",
+  "commonLightMode": "Light mode",
+  "commonDarkMode": "Dark mode",
   "commonVietnamese": "Vietnamese",
   "commonEnglish": "English",
   "menuDashboard": "Dashboard",

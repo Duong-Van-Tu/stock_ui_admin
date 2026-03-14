@@ -2,9 +2,12 @@ import { Button, Layout, Menu, Select, Space, Typography } from 'antd';
 import type { MenuProps } from 'antd';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import type { ThemeMode } from '../constants/theme.constants';
 import { useAuth } from '../hooks/use-auth.hook';
 import { useLanguage } from '../hooks/use-language.hook';
+import { useTheme } from '../hooks/use-theme.hook';
 import { LANGUAGE_CODES } from '../constants/language.constants';
+import { THEME_MODES } from '../constants/theme.constants';
 import { routePaths } from '../router/router.paths';
 
 const { Header, Content } = Layout;
@@ -12,27 +15,27 @@ const { Title, Text } = Typography;
 
 const StyledLayout = styled(Layout)`
   min-height: 100vh;
-  background: #f5f7fa;
+  background: var(--surface-base-color);
 `;
 
 const StyledHeader = styled(Header)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #0f172a;
+  background: var(--header-background-color);
   padding-inline: 24px;
 `;
 
 const BrandTitle = styled(Title).attrs({ level: 4 })`
   && {
-    color: #fff;
+    color: var(--text-on-dark-color);
     margin: 0;
   }
 `;
 
 const BrandDescription = styled(Text)`
   && {
-    color: #cbd5e1;
+    color: var(--text-on-dark-muted-color);
   }
 `;
 
@@ -56,6 +59,10 @@ const LanguageSelectWrapper = styled.div`
   min-width: 120px;
 `;
 
+const ThemeSelectWrapper = styled.div`
+  min-width: 120px;
+`;
+
 const StyledContent = styled(Content)`
   padding: 24px;
 `;
@@ -65,6 +72,7 @@ function MainLayout() {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { currentLanguage, changeLanguage, t } = useLanguage();
+  const { themeMode, setThemeMode } = useTheme();
 
   const menuItems: MenuProps['items'] = [
     {
@@ -96,11 +104,21 @@ function MainLayout() {
 
         <HeaderActions size='middle'>
           <StyledMenu
-            theme='dark'
+            theme={themeMode === THEME_MODES.dark ? 'dark' : 'light'}
             mode='horizontal'
             selectedKeys={[location.pathname]}
             items={menuItems}
           />
+          <ThemeSelectWrapper>
+            <Select
+              value={themeMode}
+              onChange={(value) => setThemeMode(value as ThemeMode)}
+              options={[
+                { label: t('commonLightMode'), value: THEME_MODES.light },
+                { label: t('commonDarkMode'), value: THEME_MODES.dark },
+              ]}
+            />
+          </ThemeSelectWrapper>
           <LanguageSelectWrapper>
             <Select
               value={currentLanguage}

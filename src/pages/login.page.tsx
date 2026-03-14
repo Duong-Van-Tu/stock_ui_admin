@@ -18,7 +18,11 @@ const PageContainer = styled.div`
   display: grid;
   place-items: center;
   padding: 24px;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: linear-gradient(
+    135deg,
+    var(--login-gradient-start-color) 0%,
+    var(--login-gradient-end-color) 100%
+  );
 `;
 
 const LoginCard = styled(Card)`
