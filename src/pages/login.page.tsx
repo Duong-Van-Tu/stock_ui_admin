@@ -17,7 +17,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 24px;
+  padding: 2.4rem;
   background: linear-gradient(
     135deg,
     var(--login-gradient-start-color) 0%,
@@ -27,11 +27,11 @@ const PageContainer = styled.div`
 
 const LoginCard = styled(Card)`
   width: 100%;
-  max-width: 420px;
+  max-width: 42rem;
 `;
 
 const ErrorAlert = styled(Alert)`
-  margin-bottom: 16px;
+  margin-bottom: 1.6rem;
 `;
 
 function LoginPage() {

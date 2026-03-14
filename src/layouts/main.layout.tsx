@@ -43,18 +43,31 @@ const StyledLayout = styled(Layout)`
   height: 100vh;
   overflow: hidden;
   background:
-    radial-gradient(circle at top left, rgba(8, 127, 244, 0.08), transparent 18%),
-    linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+    radial-gradient(circle at top left, var(--shell-accent-glow), transparent 18%),
+    linear-gradient(180deg, var(--shell-gradient-start) 0%, var(--shell-gradient-end) 100%);
 `;
 
 const StyledSider = styled(Sider)`
   && {
-    background: rgba(255, 255, 255, 0.92);
-    border-right: 1px solid rgba(15, 23, 42, 0.08);
-    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.06);
+    background: var(--sidebar-bg);
     position: sticky;
     top: 0;
     height: 100vh;
+    backdrop-filter: blur(1.6rem);
+    z-index: 2;
+    margin-right: -0.1rem;
+    overflow: hidden;
+  }
+
+  &&::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0.2rem;
+    height: 100%;
+    background: var(--sidebar-bg);
+    pointer-events: none;
   }
 
   .ant-layout-sider-children {
@@ -65,21 +78,25 @@ const StyledSider = styled(Sider)`
 `;
 
 const SidebarHeader = styled.div`
-  height: 72px;
+  height: 7.2rem;
   display: grid;
   place-items: center;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  border-bottom: 0.1rem solid var(--sidebar-border);
 `;
 
 const SidebarToggle = styled.button`
-  width: 38px;
-  height: 38px;
-  border: 1px solid rgba(22, 119, 255, 0.18);
-  border-radius: 12px;
+  width: 3.8rem;
+  height: 3.8rem;
+  border: 0.1rem solid var(--icon-accent-border);
+  border-radius: 1.2rem;
   display: grid;
   place-items: center;
-  color: #1677ff;
-  background: linear-gradient(180deg, #f7fbff 0%, #eef6ff 100%);
+  color: var(--icon-accent-color);
+  background: linear-gradient(
+    180deg,
+    var(--icon-accent-bg-start) 0%,
+    var(--icon-accent-bg-end) 100%
+  );
   cursor: pointer;
   transition:
     transform 0.2s ease,
@@ -87,15 +104,15 @@ const SidebarToggle = styled.button`
     background-color 0.2s ease;
 
   &:hover {
-    box-shadow: 0 10px 24px rgba(22, 119, 255, 0.14);
-    transform: translateY(-1px);
+    box-shadow: var(--icon-accent-shadow);
+    transform: translateY(-0.1rem);
   }
 `;
 
 const SidebarMenu = styled(Menu)`
   && {
     border-inline-end: none;
-    padding: 16px 10px;
+    padding: 1.6rem 1rem;
     background: transparent;
     flex: 1;
     min-height: 0;
@@ -103,19 +120,19 @@ const SidebarMenu = styled(Menu)`
   }
 
   && .ant-menu-item {
-    height: 46px;
-    margin: 8px 0;
-    border-radius: 14px;
-    color: rgba(15, 23, 42, 0.88);
-    font-size: 15px;
+    height: 4.6rem;
+    margin: 0.8rem 0;
+    border-radius: 1.4rem;
+    color: var(--menu-item-color);
+    font-size: 1.5rem;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 1rem;
   }
 
   && .ant-menu-item-selected {
-    background: #dff0ff;
-    color: #1677ff;
+    background: var(--menu-item-selected-bg);
+    color: var(--menu-item-selected-color);
     font-weight: 600;
   }
 
@@ -129,15 +146,21 @@ const MainShell = styled(Layout)`
   height: 100vh;
   min-width: 0;
   overflow: hidden;
+  position: relative;
 `;
 
 const UserDrawer = styled(Drawer)`
+  && .ant-drawer-content {
+    background: var(--sidebar-bg);
+  }
+
   && .ant-drawer-header {
     display: none;
   }
 
   && .ant-drawer-body {
-    padding: 24px;
+    padding: 2.4rem;
+    color: var(--text-color);
   }
 `;
 
@@ -145,13 +168,13 @@ const Topbar = styled(Header)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 14px 24px;
-  height: auto;
+  gap: 1.6rem;
+  padding: 0 2.4rem;
+  height: 7.2rem;
   line-height: normal;
-  background: rgba(255, 255, 255, 0.84);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  background: var(--topbar-bg);
+  backdrop-filter: blur(1rem);
+  border-bottom: 0.1rem solid var(--topbar-border);
   position: sticky;
   top: 0;
   z-index: 5;
@@ -161,78 +184,90 @@ const LeftCluster = styled(Space)`
   && {
     flex: 1;
     min-width: 0;
-    gap: 16px;
+    gap: 1.6rem;
   }
+`;
+
+const CenterCluster = styled.div`
+  flex: 0 1 64rem;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  padding: 0 2rem;
 `;
 
 const RightCluster = styled(Space)`
   && {
-    gap: 12px;
+    flex: 1;
+    justify-content: flex-end;
+    gap: 1.2rem;
     align-items: center;
   }
 `;
 
 const SearchWrap = styled.div`
-  min-width: 260px;
-  max-width: 380px;
+  min-width: 26rem;
+  max-width: 38rem;
   width: 100%;
 `;
 
 const MarketBadge = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 1rem;
   min-width: 0;
-  padding: 0 14px;
-  height: 38px;
-  border-radius: 12px;
-  border: 1px solid rgba(245, 34, 45, 0.12);
-  background: rgba(255, 77, 79, 0.05);
+  width: 100%;
+  padding: 0 1.4rem;
+  height: 3.8rem;
+  border-radius: 1.2rem;
+  border: 0.1rem solid var(--market-badge-border);
+  background: var(--market-badge-bg);
 `;
 
 const DeltaPill = styled.span`
   display: inline-grid;
   place-items: center;
-  min-width: 52px;
-  height: 28px;
-  padding: 0 10px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #ffbf43 0%, #ff9f1c 100%);
+  min-width: 5.2rem;
+  height: 2.8rem;
+  padding: 0 1rem;
+  border-radius: 99.9rem;
+  background: linear-gradient(180deg, var(--market-pill-start) 0%, var(--market-pill-end) 100%);
   color: #ffffff;
-  font-size: 14px;
+  font-size: 1.4rem;
   font-weight: 700;
 `;
 
 const MarketText = styled(Text)`
   && {
-    color: #ef4444;
-    max-width: 360px;
+    flex: 1;
+    min-width: 0;
+    color: var(--market-badge-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 14px;
+    font-size: 1.4rem;
   }
 `;
 
 const MarketTicker = styled.div`
   display: inline-grid;
   place-items: center;
-  min-width: 54px;
-  height: 28px;
-  padding: 0 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(22, 119, 255, 0.24);
-  color: #1677ff;
+  min-width: 5.4rem;
+  height: 2.8rem;
+  padding: 0 1.2rem;
+  border-radius: 1rem;
+  border: 0.1rem solid var(--ticker-border);
+  color: var(--ticker-text);
   font-weight: 700;
-  background: #ffffff;
+  background: var(--ticker-bg);
 `;
 
 const UserChip = styled(Button)`
   && {
-    height: 42px;
-    padding-inline: 14px;
-    border-radius: 12px;
-    border-color: rgba(15, 23, 42, 0.1);
+    height: 4.2rem;
+    padding-inline: 1.4rem;
+    border-radius: 1.2rem;
+    border-color: var(--user-chip-border);
     box-shadow: none;
   }
 `;
@@ -240,68 +275,73 @@ const UserChip = styled(Button)`
 const Viewport = styled(Content)`
   flex: 1;
   min-height: 0;
-  padding: 28px 24px 36px;
+  padding: 2.8rem 2.4rem 3.6rem;
   overflow: auto;
 `;
 
 const ContentFrame = styled.div`
-  min-height: calc(100vh - 104px);
-  border-radius: 26px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(15, 23, 42, 0.06);
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.06);
-  padding: 26px;
+  min-height: calc(100vh - 10.4rem);
+  border-radius: 2.6rem;
+  background: var(--content-frame-bg);
+  border: 0.1rem solid var(--content-frame-border);
+  box-shadow: var(--content-frame-shadow);
+  backdrop-filter: blur(1.8rem);
+  padding: 2.6rem;
 `;
 
 const DrawerHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
 `;
 
 const DrawerHeaderMain = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 1.2rem;
 `;
 
 const UserAvatar = styled.div`
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: 1.4rem;
   display: grid;
   place-items: center;
-  color: #1677ff;
-  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
-  font-size: 18px;
+  color: var(--icon-accent-color);
+  background: linear-gradient(
+    180deg,
+    var(--icon-accent-bg-start) 0%,
+    var(--icon-accent-bg-end) 100%
+  );
+  font-size: 1.8rem;
 `;
 
 const DrawerMeta = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0.2rem;
 `;
 
 const DrawerTitle = styled.div`
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: 700;
-  color: rgba(15, 23, 42, 0.92);
+  color: var(--text-color);
 `;
 
 const DrawerSubtitle = styled.div`
-  font-size: 13px;
-  color: rgba(15, 23, 42, 0.55);
+  font-size: 1.3rem;
+  color: var(--drawer-subtitle);
 `;
 
 const DrawerMenu = styled(Menu)`
   && {
     border-inline-end: none;
     background: transparent;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(15, 23, 42, 0.08);
+    margin-top: 1.6rem;
+    padding-top: 1.6rem;
+    border-top: 0.1rem solid var(--drawer-divider);
   }
 
   &&::after {
@@ -314,26 +354,27 @@ const DrawerMenu = styled(Menu)`
   }
 
   && .ant-menu-item {
-    height: 46px;
-    margin: 8px 0;
-    border-radius: 14px;
-    font-size: 15px;
+    height: 4.6rem;
+    margin: 0.8rem 0;
+    border-radius: 1.4rem;
+    font-size: 1.5rem;
     display: flex;
     align-items: center;
+    color: var(--menu-item-color);
   }
 `;
 
 const DrawerFooter = styled.div`
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  margin-top: 2rem;
+  padding-top: 1.6rem;
+  border-top: 0.1rem solid var(--drawer-divider);
 `;
 
 const DrawerCloseButton = styled(Button)`
   && {
     border: none;
     box-shadow: none;
-    color: rgba(15, 23, 42, 0.62);
+    color: var(--close-button-color);
   }
 `;
 
@@ -359,16 +400,19 @@ function MainLayout() {
   const { themeMode, setThemeMode } = useTheme();
 
   const selectedMenuKey =
-    navigationItems.find((item) => item.key === location.pathname)?.key ?? routePaths.dashboard.absolute;
+    navigationItems.find((item) => item.key === location.pathname)?.key ??
+    routePaths.dashboard.absolute;
 
   const menuItems: MenuProps['items'] = navigationItems.map((item) => ({
     key: item.key,
     icon: item.icon,
-    label: item.key.startsWith('/') && Object.values(routePaths).some((route) => route.absolute === item.key) ? (
-      <Link to={item.key}>{item.label}</Link>
-    ) : (
-      item.label
-    ),
+    label:
+      item.key.startsWith('/') &&
+      Object.values(routePaths).some((route) => route.absolute === item.key) ? (
+        <Link to={item.key}>{item.label}</Link>
+      ) : (
+        item.label
+      ),
   }));
 
   const handleLogout = () => {
@@ -383,10 +427,10 @@ function MainLayout() {
   return (
     <StyledLayout>
       <StyledSider
-        width={294}
+        width='29.4rem'
         collapsible
         collapsed={isSidebarCollapsed}
-        collapsedWidth={88}
+        collapsedWidth='8.8rem'
         trigger={null}
       >
         <SidebarHeader>
@@ -418,7 +462,9 @@ function MainLayout() {
                 allowClear
               />
             </SearchWrap>
+          </LeftCluster>
 
+          <CenterCluster>
             <MarketBadge>
               <DeltaPill>-6.43</DeltaPill>
               <MarketText>
@@ -426,12 +472,12 @@ function MainLayout() {
               </MarketText>
               <MarketTicker>ADBE</MarketTicker>
             </MarketBadge>
-          </LeftCluster>
+          </CenterCluster>
 
           <RightCluster size='middle'>
             <Select
               value={themeMode}
-              style={{ width: 118 }}
+              style={{ width: '11.8rem' }}
               onChange={(value) => setThemeMode(value as ThemeMode)}
               options={[
                 { label: 'Light', value: THEME_MODES.light },
@@ -441,7 +487,7 @@ function MainLayout() {
 
             <Select
               value={currentLanguage}
-              style={{ width: 116 }}
+              style={{ width: '11.6rem' }}
               onChange={(value) => handleLanguageChange(String(value))}
               options={[
                 { label: 'VI', value: LANGUAGE_CODES.vi },
@@ -457,7 +503,7 @@ function MainLayout() {
 
         <Viewport>
           <ContentFrame>
-            <Title level={1} style={{ marginTop: 0, marginBottom: 24, textAlign: 'center' }}>
+            <Title level={1} style={{ marginTop: 0, marginBottom: '2.4rem', textAlign: 'center' }}>
               {pageTitleByPath[location.pathname] ?? 'Trade Signals Dashboard'}
             </Title>
             <Outlet />
@@ -468,7 +514,7 @@ function MainLayout() {
       <UserDrawer
         title={null}
         placement='right'
-        width={360}
+        width='36rem'
         open={isUserDrawerOpen}
         onClose={() => setIsUserDrawerOpen(false)}
         closable={false}
