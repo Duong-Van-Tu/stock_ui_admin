@@ -1,23 +1,29 @@
 import { Button, Card, Space, Table, Tag, Typography } from 'antd';
+import styled from 'styled-components';
+import { useLanguage } from '../hooks/use-language.hook';
 
-const columns = [
-  {
-    title: 'Ma',
-    dataIndex: 'symbol',
-    key: 'symbol',
-  },
-  {
-    title: 'Ten cong ty',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: 'San',
-    dataIndex: 'exchange',
-    key: 'exchange',
-    render: (value: string) => <Tag color='green'>{value}</Tag>,
-  },
-];
+const PageCard = styled(Card)`
+  width: 100%;
+`;
+
+const VerticalSpace = styled(Space)`
+  && {
+    width: 100%;
+  }
+`;
+
+const HeaderSpace = styled(Space)`
+  && {
+    width: 100%;
+    justify-content: space-between;
+  }
+`;
+
+const PageTitle = styled(Typography.Title).attrs({ level: 2 })`
+  && {
+    margin-bottom: 0;
+  }
+`;
 
 const dataSource = [
   {
@@ -35,23 +41,41 @@ const dataSource = [
 ];
 
 function StocksPage() {
+  const { t } = useLanguage();
+  const columns = [
+    {
+      title: t('stocksSymbol'),
+      dataIndex: 'symbol',
+      key: 'symbol',
+    },
+    {
+      title: t('stocksCompanyName'),
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: t('stocksExchange'),
+      dataIndex: 'exchange',
+      key: 'exchange',
+      render: (value: string) => <Tag color='green'>{value}</Tag>,
+    },
+  ];
+
   return (
-    <Card>
-      <Space direction='vertical' size='large' style={{ width: '100%' }}>
-        <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+    <PageCard>
+      <VerticalSpace direction='vertical' size='large'>
+        <HeaderSpace>
           <div>
-            <Typography.Title level={2} style={{ marginBottom: 0 }}>
-              Stocks
-            </Typography.Title>
-            <Typography.Text type='secondary'>Danh sach ma co phieu mau de bat dau</Typography.Text>
+            <PageTitle>{t('stocksTitle')}</PageTitle>
+            <Typography.Text type='secondary'>{t('stocksDescription')}</Typography.Text>
           </div>
 
-          <Button type='primary'>Them co phieu</Button>
-        </Space>
+          <Button type='primary'>{t('stocksAdd')}</Button>
+        </HeaderSpace>
 
         <Table columns={columns} dataSource={dataSource} pagination={false} />
-      </Space>
-    </Card>
+      </VerticalSpace>
+    </PageCard>
   );
 }
 
