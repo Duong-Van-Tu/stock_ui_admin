@@ -94,7 +94,9 @@ export const FinnhubAndLsegNewsTable = () => {
         getFinnhubAndLsegNews({
           page,
           limit: pageSize,
-          sortField: fieldMapping[sortField] ?? sortField,
+          sortField: sortType
+            ? (fieldMapping[sortField] ?? sortField)
+            : undefined,
           sortType: convertSortType(sortType),
           symbol: symbol ?? undefined,
           storyId: storyId ?? undefined,
@@ -248,7 +250,7 @@ export const FinnhubAndLsegNewsTable = () => {
       }),
       render: (value, record) => {
         const isExpanded = expandedRowKeys.includes(record.key);
-        if (value > 0) {
+        if (value > 1) {
           return (
             <Badge count={value} color='gold'>
               <Button
@@ -282,14 +284,11 @@ export const FinnhubAndLsegNewsTable = () => {
       }),
       onCell: (record) => ({
         className:
-          (record.breakingNews === 1
+          record.breakingNews === 1
             ? 'hl-breaking-news-positive '
             : record.breakingNews === -1
               ? 'hl-breaking-news-negative '
-              : '') +
-          (record.articleScore && record.articleScore > 5
-            ? 'hl-high-score-symbol'
-            : '')
+              : ''
       }),
       render: (value) => <SymbolCell symbol={value} />
     },
@@ -928,7 +927,7 @@ export const FinnhubAndLsegNewsTable = () => {
                 />
               );
             },
-            rowExpandable: (record) => record.totalNews24H > 0,
+            rowExpandable: (record) => record.totalNews24H > 1,
             onExpand: handleExpandRow,
             expandedRowKeys,
             expandIcon: () => null,
