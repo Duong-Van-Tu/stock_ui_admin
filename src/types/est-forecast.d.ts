@@ -65,6 +65,7 @@ type EstForecast = {
   currentPrice: number | null;
   type?: string | null;
   urlFile?: string | null;
+  lsegStarmine?: string | null;
 };
 
 type EstForecastFilterItem = {
@@ -147,6 +148,7 @@ type EstForecastFilterItem = {
   sortOrder?: number | null;
   startmine: string | null;
   startminePoint: number | null;
+  lsegStarmine?: string | null;
   urlFile?: string | null;
 };
 

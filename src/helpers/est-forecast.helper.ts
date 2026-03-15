@@ -86,6 +86,7 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
     highest3DaysPrice: toNumber(item[fieldMapping.highestPrice3Days]),
     lowest3DaysPrice: toNumber(item[fieldMapping.lowestPrice3Days]),
     currentPrice: toNumber(item[fieldMapping.currentPrice]),
+    lsegStarmine: item[fieldMapping.lsegStarmine],
     urlFile: item[fieldMapping.urlFile]
   }));
 };
@@ -205,6 +206,7 @@ export const transformEstForecastFilter = (
     sortOrder: toNumber(item[fieldMapping.sortOrder]),
     startmine: item.startmine,
     startminePoint: toNumber(item[fieldMapping.startminePoint]),
+    lsegStarmine: item[fieldMapping.lsegStarmine],
     updatedAt: item[fieldMapping.updatedAt],
     urlFile: item[fieldMapping.urlFile]
   }));

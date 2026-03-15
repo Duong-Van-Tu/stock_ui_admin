@@ -523,6 +523,17 @@ export const EstForecastSelectedTable = ({
         align: 'center',
         render: (v, r) => renderText(v, 'noteForTrader', r)
       },
+      {
+        title: 'LSEG Starmine',
+        dataIndex: 'lsegStarmine',
+        width: 260,
+        align: 'center',
+        render: (v, r) => (
+          <div css={multilineCellStyles}>
+            {renderText(v, 'lsegStarmine', r)}
+          </div>
+        )
+      },
       ...((mode === 'active'
         ? [
             {
@@ -1316,5 +1327,10 @@ const optionResultsModalStyles = css`
 const reasoningModalStyles = css`
   white-space: pre-wrap;
   margin-bottom: 0;
+  line-height: 1.5;
+`;
+
+const multilineCellStyles = css`
+  white-space: pre-wrap;
   line-height: 1.5;
 `;

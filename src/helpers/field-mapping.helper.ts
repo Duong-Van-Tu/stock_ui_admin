@@ -342,6 +342,7 @@ export const fieldMapping: Record<string, string> = {
   macd1d: 'macd_1d',
   macd1w: 'macd_1w',
   tradeDate: 'trade_date',
+  lsegStarmine: 'lseg_starmine',
   urlFile: 'url_file',
   assetCode: 'asset_code',
   windowTimestamp: 'window_timestamp',
