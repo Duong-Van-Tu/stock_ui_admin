@@ -134,6 +134,8 @@ type EstForecastFilterItem = {
   marketpsychTrustZ: number | null;
   marketpsychTrustZPoint: number | null;
   noteForTrader: string;
+  diffDays?: number | null;
+  aiRecommend?: string | null;
   daysToEarning: number | null;
   noteForEarning: string;
   tradeDate: string;

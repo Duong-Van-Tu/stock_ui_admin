@@ -102,6 +102,13 @@ export const EstForecastSelectedTable = ({
     [filterList]
   );
 
+  const getUpcomingEarningRowClassName = (record: EstForecastFilterItem) => {
+    if (!isNumeric(record.diffDays)) return '';
+
+    const diffDays = Number(record.diffDays);
+    return diffDays >= 0 && diffDays <= 3 ? 'upcoming-earning-row' : '';
+  };
+
   const handleFilter = (values: { startDate: string; endDate: string }) => {
     if (mode !== 'date') return;
 
@@ -565,13 +572,6 @@ export const EstForecastSelectedTable = ({
             }
           ]
         : []) as TableColumnsType<EstForecastFilterItem>),
-      {
-        title: 'Days to Earning',
-        dataIndex: 'daysToEarning',
-        width: 140,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'daysToEarning', r)
-      },
       {
         title: 'Earnings Date',
         dataIndex: 'earningsDate',
@@ -1175,6 +1175,7 @@ export const EstForecastSelectedTable = ({
             <Table
               loading={loading}
               rowKey={(record) => record.key!}
+              rowClassName={getUpcomingEarningRowClassName}
               size={isMobile ? 'small' : 'middle'}
               css={tableStyles}
               columns={columns}
@@ -1196,6 +1197,7 @@ export const EstForecastSelectedTable = ({
             <Table
               loading={loading}
               rowKey={(record) => record.key!}
+              rowClassName={getUpcomingEarningRowClassName}
               size={isMobile ? 'small' : 'middle'}
               css={tableStyles}
               columns={columns}
@@ -1288,6 +1290,11 @@ const tableStyles = css`
   }
   .ant-table-thead > tr > th {
     background: #fafafa;
+  }
+  .ant-table-tbody
+    > tr.upcoming-earning-row
+    > td:not(:first-of-type):not(:last-of-type) {
+    background: ${lightenColor('#faad14', 0.85)} !important;
   }
 `;
 
