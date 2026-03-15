@@ -23,6 +23,9 @@
   --light-white-color: #e7e7e7;
   --black-50-opacity: rgba(0, 0, 0, 0.5);
   --separator-color: #b0b0b0;
+  --scrollbar-thumb-color: #eaeaea;
+  --scrollbar-thumb-active-color: #c1c1c1;
+  --scrollbar-track-color: #f5f5f5;
   --soft-pink-color: #fef2f2;
   --green-color: #0eb34b;
   --orange-color: #ff6a00;
@@ -44,6 +47,15 @@
   --brand-blue-color: #1677ff;
   --background-Row-table-color: #b7e3ff;
   --table-row-bg-color: #f3f3f3;
+  --surface-muted-color: #f0f0f0;
+  --surface-subtle-color: #fafafa;
+  --surface-hover-color: #fcfcfc;
+  --border-light-color: #e8e8e8;
+  --danger-soft-color: #ff4d4f;
+  --text-primary-strong-color: #1a1a1a;
+  --text-secondary-color: #595959;
+  --text-tertiary-color: #8c8c8c;
+  --text-heading-color: #262626;
   --font-family: 'Inter', sans-serif;
   --collapsed-sidebar-width: 80px;
   --mobile-collapsed-sidebar-width: 50px;
@@ -62,7 +74,7 @@ body {
   line-height: 1.8rem;
   font-size: 1.6rem;
   text-align: left;
-  font-family: 'Inter', sans-serif !important;
+  font-family: var(--font-family) !important;
   font-optical-sizing: auto;
   font-style: normal;
   overflow-y: auto;

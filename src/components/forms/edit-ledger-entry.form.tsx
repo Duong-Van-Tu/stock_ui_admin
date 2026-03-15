@@ -594,14 +594,15 @@ const formContainerStyles = css`
       width: 6px;
     }
     &::-webkit-scrollbar-track {
-      background: #f5f5f5;
+      background: var(--scrollbar-track-color);
     }
     &::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
+      background: var(--scrollbar-thumb-active-color);
       border-radius: 3px;
     }
     scrollbar-width: thin;
-    scrollbar-color: #c1c1c1 #f5f5f5;
+    scrollbar-color: var(--scrollbar-thumb-active-color)
+      var(--scrollbar-track-color);
   `}
 
   ${isMobile &&
