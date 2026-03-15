@@ -117,16 +117,16 @@ const contentStyles = (background: string, collapsed: boolean) => css`
       ? '0'
       : 'var(--mobile-expanded-sidebar-width)'
     : collapsed
-    ? 'var(--collapsed-sidebar-width)'
-    : 'var(--expanded-sidebar-width)'};
+      ? 'var(--collapsed-sidebar-width)'
+      : 'var(--expanded-sidebar-width)'};
   transition: margin-inline-start 0.25s ease;
   min-height: calc(100vh - var(--header-height));
-  background: var(--white-color);
+  background: var(--surface-base-color);
   padding: ${isMobile ? '2rem 1rem' : '1.4rem 1.6rem'};
 `;
 
 const layoutStyles = css`
-  background: var(--white-color);
+  background: var(--app-background-color);
   height: '100%';
   .ant-layout-header {
     line-height: 1.6rem;
@@ -147,7 +147,7 @@ const sidebarStyle: CSSProperties = {
 
 const menuTopStyles = (collapsed: boolean) => css`
   height: var(--header-height);
-  border-bottom: 0.1rem solid var(--border-color);
+  border-bottom: 0.1rem solid var(--shell-divider-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -157,18 +157,21 @@ const menuTopStyles = (collapsed: boolean) => css`
       ? 'var(--mobile-collapsed-sidebar-width)'
       : 'var(--mobile-expanded-sidebar-width)'
     : collapsed
-    ? 'var(--collapsed-sidebar-width)'
-    : 'var(--expanded-sidebar-width)'};
+      ? 'var(--collapsed-sidebar-width)'
+      : 'var(--expanded-sidebar-width)'};
 
-  background: var(--white-color);
+  background: var(--sidebar-background-color);
   z-index: 99;
   transition: width 0.25s ease;
-  border-right: ${isMobile ? 'unset' : '0.1rem solid var(--border-color)'};
+  border-right: ${isMobile
+    ? 'unset'
+    : '0.1rem solid var(--shell-divider-color)'};
 `;
 
 const menuContainerStyle = css`
   margin-top: var(--header-height);
   height: calc(100% - var(--header-height));
+  border-right: 0.1rem solid var(--shell-divider-color);
 `;
 
 const collapsedBtnStyles = css`

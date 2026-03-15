@@ -297,7 +297,9 @@ const tableStyles = (isEmpty: boolean) => css`
     padding: ${isMobile
       ? '0.6rem 0.8rem !important'
       : '0.8rem 1rem !important'};
-    border-bottom: ${isEmpty ? 'unset' : '1px solid #f0f0f0'} !important;
+    border-bottom: ${isEmpty
+      ? 'unset'
+      : '1px solid var(--border-table-color)'} !important;
     height: ${isEmpty ? '33.2rem' : 'unset'};
   }
 `;
@@ -305,7 +307,7 @@ const tableStyles = (isEmpty: boolean) => css`
 const cardStyles = css`
   width: 100%;
   .ant-card-body {
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid var(--border-table-color);
     padding: 0;
     display: flex;
     align-items: center;

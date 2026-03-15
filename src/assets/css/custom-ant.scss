@@ -4,6 +4,37 @@
   scrollbar-gutter: stable;
 }
 
+:root[data-theme='dark'] .ant-dropdown .ant-dropdown-menu,
+:root[data-theme='dark'] .ant-select-dropdown,
+:root[data-theme='dark'] .ant-picker-dropdown .ant-picker-panel-container,
+:root[data-theme='dark'] .ant-popover .ant-popover-inner {
+  background: var(--surface-elevated-color) !important;
+  border: 1px solid var(--border-color);
+}
+
+:root[data-theme='dark'] .ant-dropdown .ant-dropdown-menu-item,
+:root[data-theme='dark'] .ant-dropdown .ant-dropdown-menu-submenu-title {
+  color: var(--text-color);
+}
+
+:root[data-theme='dark'] .ant-dropdown .ant-dropdown-menu-item:hover,
+:root[data-theme='dark'] .ant-dropdown .ant-dropdown-menu-submenu-title:hover {
+  background: var(--shell-hover-color) !important;
+}
+
+:root[data-theme='dark'] .ant-select-selector,
+:root[data-theme='dark'] .ant-input-affix-wrapper,
+:root[data-theme='dark'] .ant-input,
+:root[data-theme='dark'] .ant-btn-default,
+:root[data-theme='dark'] .ant-btn-compact-item,
+:root[data-theme='dark'] .ant-picker,
+:root[data-theme='dark'] .ant-tag {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
 @media (max-width: 768px) {
   .ant-picker-panel:last-child .ant-picker-date-panel {
     display: none !important;

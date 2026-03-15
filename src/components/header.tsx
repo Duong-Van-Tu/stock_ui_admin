@@ -19,6 +19,7 @@ import { regex } from '@/utils/regex';
 import BreakingNews from './breaking-news';
 import { EconomicCalendarList } from './economic-calendar-list';
 import { useWindowSize } from '@/hooks/window-size.hook';
+import ThemeToggle from './theme-toggle';
 
 enum UserMenu {
   PROFILE,
@@ -182,6 +183,7 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
         </div>
       )}
       <div css={rightSectionStyles(isMobile)}>
+        <ThemeToggle compact={isMobile} />
         <EconomicCalendarList />
         {showTimeZoneClock && <TimeZoneClock />}
         {isDesktop && (
@@ -230,7 +232,7 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
             />
           }
           arrow
-          css={isMobile && userDropdownBtnStyles}
+          css={isMobile ? userDropdownBtnStyles : undefined}
         >
           {showUserFullName && <span>{user?.fullname}</span>}
         </Dropdown.Button>
@@ -258,7 +260,7 @@ const rootStyles = (
       ? 'var(--collapsed-sidebar-width)'
       : 'var(--expanded-sidebar-width)'};
   transition: left 0.25s ease;
-  border-bottom: 0.1rem solid var(--border-color);
+  border-bottom: 0.1rem solid var(--shell-divider-color);
   padding-right: 2rem;
   display: flex;
   align-items: center;
@@ -281,8 +283,27 @@ const searchStyles = (isDesktopView: boolean) => css`
   min-width: ${isDesktopView ? '24rem' : 'unset'};
   width: 100%;
   flex: 1;
+
   .ant-input-affix-wrapper {
     min-width: 0;
+    background: var(--surface-elevated-color);
+    border-color: var(--border-color);
+    box-shadow: none;
+  }
+
+  .ant-input-affix-wrapper:hover,
+  .ant-input-affix-wrapper:focus,
+  .ant-input-affix-wrapper-focused {
+    border-color: var(--primary-color);
+  }
+
+  .ant-input {
+    background: transparent;
+    color: var(--text-color);
+  }
+
+  .ant-input::placeholder {
+    color: var(--text-tertiary-color);
   }
 `;
 
@@ -323,6 +344,19 @@ const menuIconStyles = css`
 `;
 
 const userDropdownBtnStyles = css`
+  .ant-btn {
+    background: var(--surface-elevated-color);
+    border-color: var(--border-color);
+    color: var(--text-color);
+  }
+
+  .ant-btn:hover,
+  .ant-btn:focus {
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
+    background: var(--surface-elevated-color) !important;
+  }
+
   .ant-btn-compact-first-item {
     display: none;
   }
@@ -331,7 +365,7 @@ const userDropdownBtnStyles = css`
     border: none;
     border-radius: 50% !important;
     padding: 0;
-    width: 2.8;
+    width: 2.8rem;
     box-shadow: none;
   }
 `;
