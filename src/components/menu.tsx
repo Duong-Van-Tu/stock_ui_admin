@@ -38,12 +38,9 @@ export const Menu = ({
 
   const menuStructure = getMenuStructure(t);
   const getMenuIcon = (type: string, itemKey: string) => {
-    const isActive = pathname.includes(itemKey);
-    const fillColor = isActive ? 'var(--primary-color)' : 'var(--text-color)';
-
     return (
-      <span>
-        <Icon icon={type} width={20} height={20} fill={fillColor} />
+      <span css={menuIconStyles(pathname.includes(itemKey))}>
+        <Icon icon={type} width={20} height={20} fill='currentColor' />
       </span>
     );
   };
@@ -157,6 +154,11 @@ const rootStyles = (collapsed: boolean) => css`
     color: var(--sidebar-text-hover-color) !important;
   }
 
+  .ant-menu-item-icon,
+  .ant-menu-item-icon > span {
+    color: inherit;
+  }
+
   .ant-menu-item .ant-menu-title-content a,
   .ant-menu-submenu-title .ant-menu-title-content {
     color: inherit;
@@ -181,4 +183,9 @@ const rootStyles = (collapsed: boolean) => css`
   .ant-menu-submenu-title:hover .ant-menu-submenu-arrow {
     color: currentColor !important;
   }
+`;
+
+const menuIconStyles = (isActive: boolean) => css`
+  display: inline-flex;
+  color: ${isActive ? 'var(--primary-color)' : 'inherit'};
 `;

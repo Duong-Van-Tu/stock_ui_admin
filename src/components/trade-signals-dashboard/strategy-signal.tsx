@@ -3,11 +3,7 @@ import { css } from '@emotion/react';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Card, Table, TableColumnsType } from 'antd';
-import {
-  calculatePercentage,
-  cleanFalsyValues,
-  roundToDecimals
-} from '@/utils/common';
+import { cleanFalsyValues, roundToDecimals } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 import { PositiveNegativeText } from '../positive-negative-text';
@@ -15,7 +11,6 @@ import { useTranslations } from 'next-intl';
 import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { SocketContext } from '@/providers/socket.provider';
-import { getCurrentPrice } from '@/helpers/socket.helper';
 import {
   getSignalStrategyId,
   watchSignalByStrategyId
@@ -26,7 +21,6 @@ import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
 import { EmptyDataTable } from '../tables/empty.table';
-import { StockChangeCell } from '../tables/columns/stock-change-cell.column';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { isMobile } from 'react-device-detect';
 
@@ -40,7 +34,7 @@ export const StrategySignal = ({
 }: StrategySignalProps) => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const { setWatchList, resFromWS } = useContext(SocketContext);
+  const { setWatchList } = useContext(SocketContext);
 
   const strategyData = useAppSelector(watchSignalByStrategyId);
   const signalStrategyLoading = useAppSelector(
@@ -161,60 +155,6 @@ export const StrategySignal = ({
       render: (value) => (value ? roundToDecimals(value, 2) : '-')
     },
     {
-      title: t('exitDate'),
-      dataIndex: 'exitDate',
-      key: 'exitDate',
-      width: isMobile ? 110 : 130,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'exitDate' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('exitDate')
-      }),
-      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
-    },
-    {
-      title: t('exitPrice'),
-      dataIndex: 'exitPrice',
-      key: 'exitPrice',
-      width: isMobile ? 110 : 130,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'exitPrice' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('exitPrice')
-      }),
-      render: (value, record) => {
-        const percentage = calculatePercentage(record.entryPrice, value);
-        return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
-        ) : (
-          '-'
-        );
-      }
-    },
-    {
-      title: t('currentPrice'),
-      dataIndex: 'currentPrice',
-      key: 'currentPrice',
-      width: 130,
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'currentPrice' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('currentPrice')
-      }),
-      align: 'center',
-      render: (value, record) => {
-        const currPrice = getCurrentPrice(resFromWS, record.symbol);
-        const price = currPrice ?? value;
-        const percentage = calculatePercentage(record.entryPrice, price);
-        return <StockChangeCell value={price} percentage={percentage} />;
-      }
-    },
-    {
       title: t('winOrLoss'),
       dataIndex: 'winOrLoss',
       key: 'winOrLoss',
@@ -301,6 +241,10 @@ const tableStyles = (isEmpty: boolean) => css`
       ? 'unset'
       : '1px solid var(--border-table-color)'} !important;
     height: ${isEmpty ? '33.2rem' : 'unset'};
+  }
+
+  .ant-table-placeholder .ant-table-cell {
+    border-bottom: none !important;
   }
 `;
 
