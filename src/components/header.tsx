@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { searchSymbol } from '@/redux/slices/search';
-import { Button, Dropdown, Input, Layout, Space, theme } from 'antd';
+import { Button, Dropdown, Input, Layout, Space } from 'antd';
 import type { MenuProps } from 'antd';
 import { Icon } from './icons';
 import { MenuItemType } from 'antd/es/menu/interface';
@@ -14,7 +14,6 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { PageURLs } from '@/utils/navigate';
 import { getPathnameSegment } from '@/utils/common';
 import { setSideBarCollapsed } from '@/redux/slices/app.slice';
-import TimeZoneClock from './time-zone-clock';
 import { regex } from '@/utils/regex';
 import BreakingNews from './breaking-news';
 import { EconomicCalendarList } from './economic-calendar-list';
@@ -34,10 +33,6 @@ type HeaderProps = {
 };
 
 export default function Header({ collapsed, setCollapsed }: HeaderProps) {
-  const {
-    token: { colorBgContainer }
-  } = theme.useToken();
-
   const t = useTranslations();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -47,7 +42,6 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
   const searchParams = useSearchParams();
   const { width, isMobile, isDesktop } = useWindowSize();
   const showBreakingNews = width >= 1280;
-  const showTimeZoneClock = width >= 1160;
   const showUserFullName = width >= 1080;
 
   const [searchValue, setSearchValue] = useState('');
@@ -147,7 +141,7 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
   }, [pathname, dispatch]);
 
   return (
-    <Layout.Header css={rootStyles(colorBgContainer, collapsed, isMobile)}>
+    <Layout.Header css={rootStyles(collapsed, isMobile)}>
       <div css={leftSectionStyles(isMobile)}>
         {isMobile && (
           <Icon
@@ -183,9 +177,8 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
         </div>
       )}
       <div css={rightSectionStyles(isMobile)}>
-        <ThemeToggle compact={isMobile} />
         <EconomicCalendarList />
-        {showTimeZoneClock && <TimeZoneClock />}
+        <ThemeToggle compact={isMobile} />
         {isDesktop && (
           <div
             css={css`
@@ -241,12 +234,8 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
   );
 }
 
-const rootStyles = (
-  background: string,
-  collapsed: boolean,
-  isMobileView: boolean
-) => css`
-  background: ${background};
+const rootStyles = (collapsed: boolean, isMobileView: boolean) => css`
+  background: var(--sidebar-background-color);
   padding: 0;
   height: var(--header-height);
   position: fixed;

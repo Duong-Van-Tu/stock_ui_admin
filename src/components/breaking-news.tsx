@@ -115,17 +115,7 @@ export default function BreakingNews() {
                       />
                     </span>
                   )}
-                  {news.title}{' '}
-                  <Tag
-                    color='blue'
-                    style={{
-                      marginLeft: '0.4rem',
-                      fontWeight: 600,
-                      fontSize: '1.3rem'
-                    }}
-                  >
-                    {news.symbol}
-                  </Tag>
+                  {news.title} <Tag style={symbolTagStyles}>{news.symbol}</Tag>
                 </span>
               </Space>
               <Space>
@@ -139,7 +129,14 @@ export default function BreakingNews() {
       style:
         news.isHighlight === 1
           ? {
-              backgroundColor: news.breakingNews === 1 ? '#f6ffed' : '#fff1f0'
+              background: 'var(--shell-hover-color)',
+              borderLeft: `0.3rem solid ${
+                news.breakingNews === 1
+                  ? 'var(--positive-color)'
+                  : 'var(--negative-color)'
+              }`,
+              boxShadow: `inset 0 0 0 1px var(--shell-accent-color)`,
+              borderRadius: '0.8rem'
             }
           : undefined
     };
@@ -174,25 +171,6 @@ export default function BreakingNews() {
             gap: '0.8rem'
           }}
         >
-          {(displayNews.breakingNews === 1 ||
-            displayNews.breakingNews === -1) && (
-            <Badge
-              count={roundToDecimals(displayNews.articleScore * 10)}
-              color='gold'
-              offset={[10, -6]}
-            >
-              <Icon
-                icon='fire'
-                width={18}
-                height={18}
-                fill={
-                  displayNews.breakingNews === 1
-                    ? 'var(--positive-color)'
-                    : 'var(--negative-color)'
-                }
-              />
-            </Badge>
-          )}
           <div
             style={{
               flex: 1,
@@ -209,6 +187,45 @@ export default function BreakingNews() {
                 gap: '0.6rem'
               }}
             >
+              <Text
+                type='secondary'
+                style={{
+                  fontSize: '1.2rem',
+                  flexShrink: 0
+                }}
+              >
+                {formatTimeAgo(displayNews.datetime)}
+              </Text>
+              {(displayNews.breakingNews === 1 ||
+                displayNews.breakingNews === -1) && (
+                <Tag
+                  color={displayNews.articleScore > 0 ? 'green' : 'red'}
+                  style={articleTagStyles}
+                >
+                  Article: {roundToDecimals(displayNews.articleScore * 10)}
+                </Tag>
+              )}
+              {(displayNews.breakingNews === 1 ||
+                displayNews.breakingNews === -1) && (
+                <span
+                  style={{
+                    flexShrink: 0,
+                    display: 'inline-flex',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon
+                    icon='fire'
+                    width={18}
+                    height={18}
+                    fill={
+                      displayNews.breakingNews === 1
+                        ? 'var(--positive-color)'
+                        : 'var(--negative-color)'
+                    }
+                  />
+                </span>
+              )}
               <Text
                 style={{
                   flex: 1,
@@ -228,17 +245,7 @@ export default function BreakingNews() {
               >
                 {displayNews.title}
               </Text>
-              <Tag
-                color='blue'
-                style={{
-                  marginLeft: '0.4rem',
-                  fontWeight: 600,
-                  fontSize: '1.3rem',
-                  flexShrink: 0
-                }}
-              >
-                {displayNews.symbol}
-              </Tag>
+              <Tag style={headlineSymbolTagStyles}>{displayNews.symbol}</Tag>
             </div>
           </div>
 
@@ -252,3 +259,22 @@ export default function BreakingNews() {
     </Dropdown>
   ) : null;
 }
+
+const symbolTagStyles = {
+  marginLeft: '0.4rem',
+  fontWeight: 600,
+  fontSize: '1.3rem',
+  color: 'var(--primary-color)',
+  border: '1px solid var(--shell-accent-color)',
+  background: 'transparent'
+};
+
+const articleTagStyles = {
+  marginRight: 0,
+  flexShrink: 0
+};
+
+const headlineSymbolTagStyles = {
+  ...symbolTagStyles,
+  flexShrink: 0
+};
