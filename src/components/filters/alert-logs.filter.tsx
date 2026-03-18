@@ -13,7 +13,6 @@ import {
   getLatestEntryDate,
   watchLatestEntryDate
 } from '@/redux/slices/signals.slice';
-import { getCategories } from '@/redux/slices/signals.slice';
 import {
   getIndustriesV2,
   getSectorsV2,
@@ -24,6 +23,7 @@ import { isMobile } from 'react-device-detect';
 import dayjs from 'dayjs';
 import { TimeZone } from '@/constants/timezone.constant';
 import { PeriodOptions } from '@/constants/common.constant';
+import FloatField from '@/components/float-field';
 
 type AlertLogsFilterProps = {
   customStyles?: SerializedStyles;
@@ -36,6 +36,13 @@ const { RangePicker } = DatePicker;
 const NY_TZ = TimeZone.NEW_YORK;
 const fmt = 'YYYY-MM-DD';
 const ny = () => dayjs().tz(NY_TZ);
+const getTodayRange = () => {
+  const today = ny();
+  return [today.startOf('day'), today.endOf('day')] as [
+    dayjs.Dayjs,
+    dayjs.Dayjs
+  ];
+};
 
 type QuickRange =
   | 'all'
@@ -120,16 +127,16 @@ export const AlertLogsFilter = ({
   const industries = useAppSelector(watchIndustries);
   const sectors = useAppSelector(watchSectors);
 
-  const defaultQuickRange: QuickRange = useMemo(() => {
-    if (!latestEntryDate) return 'today';
-    const latestNY = dayjs.tz(latestEntryDate, NY_TZ);
-    const todayNY = ny();
-    return latestNY.isSame(todayNY, 'day') ? 'today' : 'lastDay';
-  }, [latestEntryDate]);
+  const defaultQuickRange: QuickRange = 'today';
+  const defaultEntryDateRange = useMemo(() => getTodayRange(), []);
+  const allStrategyLabel = `${t('all')} ${t('strategy')}`;
 
   const strategyOptions = useMemo(
-    () => strategies?.map(({ id, name }) => ({ value: id, label: name })),
-    [strategies]
+    () => [
+      { value: '', label: allStrategyLabel },
+      ...(strategies?.map(({ id, name }) => ({ value: id, label: name })) ?? [])
+    ],
+    [allStrategyLabel, strategies]
   );
 
   const sectorOptions = useMemo(
@@ -173,7 +180,7 @@ export const AlertLogsFilter = ({
       toEntryDate: values.entryDate?.[1]?.tz(TimeZone.NEW_YORK).format(fmt),
       fromExitDate: values.exitDate?.[0]?.tz(TimeZone.NEW_YORK).format(fmt),
       toExitDate: values.exitDate?.[1]?.tz(TimeZone.NEW_YORK).format(fmt),
-      strategyId: values.strategyId,
+      strategyId: values.strategyId || undefined,
       categoryId: values.categoryId ? Number(values.categoryId) : undefined,
       symbol: symbol || undefined,
       sector: values.sector || '',
@@ -182,7 +189,7 @@ export const AlertLogsFilter = ({
           ? values.industry.replace(/ & /g, ' @ ')
           : values.industry
         : '',
-      timeFrame: values.timeFrame
+      timeFrame: values.timeFrame || ''
     });
   }, [form, onFilter, isOption, symbol]);
 
@@ -210,11 +217,10 @@ export const AlertLogsFilter = ({
     dispatch(getStrategies());
     dispatch(getLatestEntryDate());
     dispatch(getSectorsV2());
-    dispatch(getCategories());
   }, [dispatch]);
 
   useEffect(() => {
-    if (isFirstRender.current && latestEntryDate && strategies?.length) {
+    if (isFirstRender.current && strategies) {
       isFirstRender.current = false;
       const [start, end] = getEntryRangeByOption(
         defaultQuickRange,
@@ -223,7 +229,7 @@ export const AlertLogsFilter = ({
       const initialValues = {
         quickRange: defaultQuickRange,
         entryDate: start && end ? [start, end] : undefined,
-        strategyId: strategyId
+        strategyId: strategyId ?? ''
       };
       form.setFieldsValue(initialValues);
 
@@ -254,64 +260,84 @@ export const AlertLogsFilter = ({
         labelCol={{ span: isMobile ? 3 : undefined }}
         css={formStyles}
         layout='horizontal'
-        initialValues={{ timeFrame: '' }}
+        initialValues={{
+          strategyId: '',
+          timeFrame: '',
+          quickRange: defaultQuickRange,
+          entryDate: defaultEntryDateRange
+        }}
       >
         <Row gutter={[16, 12]} align='bottom' justify='end'>
           <Col css={fullWidthStyles}>
-            <Form.Item
-              css={formItemStyles}
-              name='strategyId'
-              label={<span css={labelStyles}>{t('strategy')}</span>}
-            >
-              <Select
-                css={selectStrategyStyles}
-                allowClear
-                showSearch
-                loading={strategyLoading}
-                placeholder={t('searchSelectStrategy')}
-                optionFilterProp='label'
-                options={strategyOptions}
-                onChange={(value) => {
-                  updateSearchParams('strategyId', value?.toString());
-                  handleSearch();
-                }}
-              />
+            <Form.Item css={formItemStyles}>
+              <FloatField
+                label={t('strategy')}
+                width={isMobile ? '100%' : '28rem'}
+              >
+                <Form.Item name='strategyId' noStyle>
+                  <Select
+                    css={fieldControlStyles}
+                    allowClear
+                    showSearch
+                    loading={strategyLoading}
+                    placeholder={allStrategyLabel}
+                    optionFilterProp='label'
+                    options={strategyOptions}
+                    onChange={(value) => {
+                      updateSearchParams('strategyId', value?.toString());
+                      handleSearch();
+                    }}
+                  />
+                </Form.Item>
+              </FloatField>
             </Form.Item>
           </Col>
           <Col css={fullWidthStyles}>
-            <Form.Item
-              css={formItemStyles}
-              name='timeFrame'
-              label={<span css={labelStyles}>{t('period')}</span>}
-            >
-              <Select
-                css={periodStyles}
-                allowClear
-                options={[
-                  { value: '', label: t('allPeriod') },
-                  ...periodOptions
-                ]}
-                onChange={() => {
-                  handleSearch();
-                }}
-              />
+            <Form.Item css={formItemStyles}>
+              <FloatField
+                label={t('period')}
+                width={isMobile ? '100%' : '12rem'}
+              >
+                <Form.Item name='timeFrame' noStyle>
+                  <Select
+                    css={fieldControlStyles}
+                    allowClear
+                    placeholder={t('all')}
+                    options={[
+                      { value: '', label: t('allPeriod') },
+                      ...periodOptions
+                    ]}
+                    onChange={() => {
+                      handleSearch();
+                    }}
+                  />
+                </Form.Item>
+              </FloatField>
             </Form.Item>
           </Col>
           <Col css={fullWidthStyles}>
-            <Form.Item name='quickRange' css={formItemStyles}>
-              <Select
-                css={selectQuickRangeStyles}
-                options={[
-                  { value: 'all', label: t('all') },
-                  { value: 'today', label: t('today') },
-                  { value: 'lastDay', label: t('lastDay') },
-                  { value: 'currentWeek', label: t('currentWeek') },
-                  { value: 'lastWeek', label: t('lastWeek') },
-                  { value: 'currentMonth', label: t('currentMonth') },
-                  { value: 'lastMonth', label: t('lastMonth') }
-                ]}
-                onChange={(value) => handleQuickRangeChange(value)}
-              />
+            <Form.Item css={formItemStyles}>
+              <FloatField
+                label={t('dateRange')}
+                width={isMobile ? '100%' : '13.8rem'}
+              >
+                <Form.Item name='quickRange' noStyle>
+                  <Select
+                    css={fieldControlStyles}
+                    placeholder={t('dateRange')}
+                    options={[
+                      { value: 'all', label: t('all') },
+                      { value: 'today', label: t('today') },
+                      { value: 'lastDay', label: t('lastDay') },
+                      { value: 'currentWeek', label: t('currentWeek') },
+                      { value: 'lastWeek', label: t('lastWeek') },
+                      { value: 'currentMonth', label: t('currentMonth') },
+                      { value: 'lastMonth', label: t('lastMonth') }
+                    ]}
+                    onChange={(value) => handleQuickRangeChange(value)}
+                  />
+                </Form.Item>
+              </FloatField>
             </Form.Item>
           </Col>
 
@@ -320,16 +346,20 @@ export const AlertLogsFilter = ({
               width: ${isMobile ? '100%' : 'unset'};
             `}
           >
-            <Form.Item
-              css={formItemStyles}
-              name='entryDate'
-              label={<span css={labelStyles}>{t('entryDate')}</span>}
-            >
-              <RangePicker
-                css={rangePickerStyles}
-                format='MM-DD-YYYY'
-                allowClear
-              />
+            <Form.Item css={formItemStyles}>
+              <FloatField
+                label={t('entryDate')}
+                width={isMobile ? '100%' : '26rem'}
+              >
+                <Form.Item name='entryDate' noStyle>
+                  <RangePicker
+                    css={fieldControlStyles}
+                    format='MM-DD-YYYY'
+                    allowClear
+                    placeholder={[t('fromDate'), t('toDate')]}
+                  />
+                </Form.Item>
+              </FloatField>
             </Form.Item>
           </Col>
 
@@ -338,59 +368,69 @@ export const AlertLogsFilter = ({
               width: ${isMobile ? '100%' : 'unset'};
             `}
           >
-            <Form.Item
-              css={formItemStyles}
-              name='exitDate'
-              label={<span css={labelStyles}>{t('exitDate')}</span>}
-            >
-              <RangePicker
-                css={rangePickerStyles}
-                format='MM-DD-YYYY'
-                allowClear
-              />
+            <Form.Item css={formItemStyles}>
+              <FloatField
+                label={t('exitDate')}
+                width={isMobile ? '100%' : '26rem'}
+              >
+                <Form.Item name='exitDate' noStyle>
+                  <RangePicker
+                    css={fieldControlStyles}
+                    format='MM-DD-YYYY'
+                    allowClear
+                    placeholder={[t('fromDate'), t('toDate')]}
+                  />
+                </Form.Item>
+              </FloatField>
             </Form.Item>
           </Col>
 
           <Col css={fullWidthStyles}>
-            <Form.Item
-              css={formItemStyles}
-              name='sector'
-              label={<span css={labelStyles}>{t('sector')}</span>}
-            >
-              <Select
-                css={selectSectorStyles}
-                allowClear
-                showSearch
-                placeholder={t('allSector')}
-                optionFilterProp='label'
-                options={sectorOptions}
-                onChange={(value) => {
-                  form.setFieldValue('industry', '');
-                  if (value) dispatch(getIndustriesV2(value as string));
-                  handleSearch();
-                }}
-              />
+            <Form.Item css={formItemStyles}>
+              <FloatField
+                label={t('sector')}
+                width={isMobile ? '100%' : '20rem'}
+              >
+                <Form.Item name='sector' noStyle>
+                  <Select
+                    css={fieldControlStyles}
+                    allowClear
+                    showSearch
+                    placeholder={t('allSector')}
+                    optionFilterProp='label'
+                    options={sectorOptions}
+                    onChange={(value) => {
+                      form.setFieldValue('industry', '');
+                      if (value) dispatch(getIndustriesV2(value as string));
+                      handleSearch();
+                    }}
+                  />
+                </Form.Item>
+              </FloatField>
             </Form.Item>
           </Col>
 
           <Col css={fullWidthStyles}>
-            <Form.Item
-              css={formItemStyles}
-              name='industry'
-              label={<span css={labelStyles}>{t('industry')}</span>}
-            >
-              <Select
-                css={selectIndustryStyles}
-                allowClear
-                showSearch
-                placeholder={t('searchSelectIndustry')}
-                optionFilterProp='label'
-                options={industryOptions}
-                disabled={!form.getFieldValue('sector')}
-                onChange={() => {
-                  handleSearch();
-                }}
-              />
+            <Form.Item css={formItemStyles}>
+              <FloatField
+                label={t('industry')}
+                width={isMobile ? '100%' : '20rem'}
+              >
+                <Form.Item name='industry' noStyle>
+                  <Select
+                    css={fieldControlStyles}
+                    allowClear
+                    showSearch
+                    placeholder={t('searchSelectIndustry')}
+                    optionFilterProp='label'
+                    options={industryOptions}
+                    disabled={!form.getFieldValue('sector')}
+                    onChange={() => {
+                      handleSearch();
+                    }}
+                  />
+                </Form.Item>
+              </FloatField>
             </Form.Item>
           </Col>
 
@@ -436,34 +476,8 @@ const formItemStyles = css`
   margin-bottom: 0;
 `;
 
-const labelStyles = css`
-  font-size: 1.4rem;
-  font-weight: 500;
-  line-height: 1.8rem;
-`;
-
-const selectStrategyStyles = css`
-  width: ${isMobile ? '100%' : '28rem !important'};
-`;
-
-const selectSectorStyles = css`
-  width: ${isMobile ? '100%' : '20rem !important'};
-`;
-
-const selectIndustryStyles = css`
-  width: ${isMobile ? '100%' : '20rem !important'};
-`;
-
-const periodStyles = css`
-  width: ${isMobile ? '100%' : '12rem !important'};
-`;
-
-const selectQuickRangeStyles = css`
-  width: ${isMobile ? '100%' : '13.8rem !important'};
-`;
-
-const rangePickerStyles = css`
-  width: ${isMobile ? '100%' : 'unset'};
+const fieldControlStyles = css`
+  width: 100% !important;
 `;
 
 const fullWidthStyles = css`

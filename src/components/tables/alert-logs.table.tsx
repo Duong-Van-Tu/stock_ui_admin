@@ -37,11 +37,7 @@ import {
   watchAlertLogsPagination,
   watchLatestHitOnePercent
 } from '@/redux/slices/signals.slice';
-import {
-  getCategories,
-  watchCategories,
-  addAlertLogToCategory
-} from '@/redux/slices/signals.slice';
+import { addAlertLogToCategory } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { AlertLogsFilter } from '../filters/alert-logs.filter';
@@ -120,7 +116,6 @@ export const AlertLogsTable = ({
   const pagination = useAppSelector(watchAlertLogsPagination);
   const loading = useAppSelector(watchAlertLogsLoading);
   const latestHitOnePercent = useAppSelector(watchLatestHitOnePercent);
-  const categories = useAppSelector(watchCategories);
 
   const [filter, setFilter] = useState<AlertLogsFilter>({});
   const [isFilterReady, setIsFilterReady] = useState(false);
@@ -380,13 +375,6 @@ export const AlertLogsTable = ({
       dispatch(resetState());
     };
   }, [dispatch]);
-
-  useEffect(() => {
-    if (!categories || categories.length === 0) {
-      dispatch(getCategories());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const baseColumns: TableColumnsType<Signal> = [
     {
