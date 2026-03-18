@@ -135,20 +135,6 @@ export const AlertLogsTable = ({
   const [storyLoadingMap, setStoryLoadingMap] = useState<
     Record<string, boolean>
   >({});
-  const optionColumnKeys = [
-    'symbol',
-    'timeFrame',
-    'entryDate',
-    'entryPrice',
-    'winOrLoss'
-  ];
-  const optionColumnWidths: Record<string, number> = {
-    symbol: isMobile ? 120 : 140,
-    timeFrame: 110,
-    entryDate: 134,
-    entryPrice: 120,
-    winOrLoss: isMobile ? 84 : 90
-  };
 
   const handleExpandRowKeys = (record: Signal) => {
     const rowKey = record.key;
@@ -1539,7 +1525,11 @@ export const AlertLogsTable = ({
             isPositive={record.plPercent >= 0}
             isNegative={record.plPercent < 0}
           >
-            {record.plPercent >= 0 ? <span>{t('win')}</span> : <span>{t('loss')}</span>}
+            {record.plPercent >= 0 ? (
+              <span>{t('win')}</span>
+            ) : (
+              <span>{t('loss')}</span>
+            )}
           </PositiveNegativeText>
         ) : (
           '-'
@@ -1745,20 +1735,9 @@ export const AlertLogsTable = ({
     setVisibleColumns(checkedValues);
   };
 
-  const filteredColumns: TableColumnsType<Signal> = isOption
-    ? (baseColumns
-        .filter((col) => optionColumnKeys.includes(col.key as string))
-        .map((col) => ({
-          ...col,
-          fixed:
-            col.key === 'symbol'
-              ? ('left' as const)
-              : col.key === 'winOrLoss' && !isMobile
-                ? ('right' as const)
-                : undefined,
-          width: optionColumnWidths[String(col.key)] ?? col.width
-        })) as TableColumnsType<Signal>)
-    : baseColumns.filter((col) => visibleColumns.includes(col.key as string));
+  const filteredColumns: TableColumnsType<Signal> = baseColumns.filter((col) =>
+    visibleColumns.includes(col.key as string)
+  );
 
   return (
     <>
@@ -1789,23 +1768,21 @@ export const AlertLogsTable = ({
                     shape='circle'
                   />
                 </Tooltip>
-                {!isOption && (
-                  <Tooltip title={!isMobile && t('setColumn')}>
-                    <Button
-                      onClick={toggleDrawer}
-                      type='text'
-                      icon={
-                        <Icon
-                          customStyles={iconStyles}
-                          icon='columnSetting'
-                          width={22}
-                          height={22}
-                        />
-                      }
-                      shape='circle'
-                    />
-                  </Tooltip>
-                )}
+                <Tooltip title={!isMobile && t('setColumn')}>
+                  <Button
+                    onClick={toggleDrawer}
+                    type='text'
+                    icon={
+                      <Icon
+                        customStyles={iconStyles}
+                        icon='columnSetting'
+                        width={22}
+                        height={22}
+                      />
+                    }
+                    shape='circle'
+                  />
+                </Tooltip>
               </TableTitle>
               <div css={exitBtnContainerStyles}>
                 {selectedIds.size > 0 &&
@@ -2002,16 +1979,15 @@ export const AlertLogsTable = ({
           />
         </div>
       </div>
-      {!isOption && (
-        <SetColumn
-          visible={isDrawerVisible}
-          columns={baseColumns}
-          visibleColumns={visibleColumns}
-          onChange={handleColumnChange}
-          onClose={toggleDrawer}
-          storageKey={storageKey}
-        />
-      )}
+      <SetColumn
+        key={storageKey}
+        visible={isDrawerVisible}
+        columns={baseColumns}
+        visibleColumns={visibleColumns}
+        onChange={handleColumnChange}
+        onClose={toggleDrawer}
+        storageKey={storageKey}
+      />
     </>
   );
 };
