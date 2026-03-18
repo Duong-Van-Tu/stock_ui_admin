@@ -159,7 +159,11 @@ export default function BreakingNews() {
         style={{
           width: '100%',
           minWidth: 0,
-          maxWidth: '56rem'
+          maxWidth: '56rem',
+          background: 'var(--shell-hover-color)',
+          border: '1px solid var(--shell-accent-color)',
+          borderRadius: '1rem',
+          padding: '0.8rem 1.2rem'
         }}
       >
         <div

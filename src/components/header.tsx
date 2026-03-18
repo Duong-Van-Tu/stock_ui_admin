@@ -172,7 +172,7 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
         />
       </div>
       {showBreakingNews && (
-        <div css={breakingNewsStyles}>
+        <div css={breakingNewsStyles(isMobile)}>
           <BreakingNews />
         </div>
       )}
@@ -296,11 +296,28 @@ const searchStyles = (isDesktopView: boolean) => css`
   }
 `;
 
-const breakingNewsStyles = css`
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  justify-content: flex-start;
+const breakingNewsStyles = (isMobileView: boolean) => css`
+  ${isMobileView
+    ? `
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      justify-content: flex-start;
+    `
+    : `
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(56rem, calc(100% - 76rem));
+      min-width: 36rem;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+
+      > * {
+        pointer-events: auto;
+      }
+    `}
 `;
 
 const rightSectionStyles = (isMobileView: boolean) => css`

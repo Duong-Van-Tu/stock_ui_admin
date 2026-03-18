@@ -164,7 +164,12 @@ export const EconomicCalendarList = () => {
         trigger='click'
         placement='bottomRight'
         onOpenChange={(visible) => visible && setNewEventsCount(0)}
-        overlayInnerStyle={{ padding: 0 }}
+        overlayInnerStyle={{
+          padding: 0,
+          borderRadius: '1.2rem',
+          overflow: 'hidden',
+          background: 'var(--surface-elevated-color)'
+        }}
       >
         <Badge count={newEventsCount} offset={[0, 0]} color='gold'>
           <div css={iconWrapperStyles}>
@@ -189,7 +194,9 @@ const popoverContentStyles = css`
   width: 50rem;
   display: flex;
   flex-direction: column;
-  background: var(--white-color);
+  background: var(--surface-elevated-color);
+  border-radius: 1.2rem;
+  overflow: hidden;
 `;
 
 const scrollContainerStyles = css`
@@ -207,7 +214,7 @@ const scrollContainerStyles = css`
 const headerStyles = css`
   padding: 1rem 1.4rem;
   border-bottom: 0.1rem solid var(--surface-muted-color);
-  background: var(--white-color);
+  background: var(--surface-elevated-color);
 `;
 
 const listItemStyles = css`
@@ -217,6 +224,7 @@ const listItemStyles = css`
   gap: 1.6rem;
   border-bottom: 0.1rem solid var(--surface-muted-color) !important;
   transition: background 0.2s;
+  background: var(--surface-elevated-color);
 
   &:hover {
     background: var(--surface-hover-color);
@@ -233,7 +241,7 @@ const listItemStyles = css`
     border: 0.1rem solid var(--border-light-color);
     border-radius: 0.4rem;
     overflow: hidden;
-    background: var(--white-color);
+    background: var(--surface-elevated-color);
     flex-shrink: 0;
     margin-top: 0.2rem;
 
