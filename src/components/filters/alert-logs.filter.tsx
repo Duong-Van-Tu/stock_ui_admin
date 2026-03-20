@@ -11,7 +11,8 @@ import {
   watchStrategies,
   watchStrategyLoading,
   getLatestEntryDate,
-  watchLatestEntryDate
+  watchLatestEntryDate,
+  watchLatestEntryDateLoading
 } from '@/redux/slices/signals.slice';
 import {
   getIndustriesV2,
@@ -35,14 +36,27 @@ const { RangePicker } = DatePicker;
 
 const NY_TZ = TimeZone.NEW_YORK;
 const fmt = 'YYYY-MM-DD';
+const latestEntryDateFmt = 'YYYY-MM-DD HH:mm:ss';
 const ny = () => dayjs().tz(NY_TZ);
-const getTodayRange = () => {
-  const today = ny();
-  return [today.startOf('day'), today.endOf('day')] as [
-    dayjs.Dayjs,
-    dayjs.Dayjs
-  ];
+
+const parseLatestEntryDateUtc = (value?: string | null) =>
+  value ? dayjs.utc(value, latestEntryDateFmt) : null;
+
+const getLatestEntryDateKey = (latestEntryDate?: string | null) =>
+  (parseLatestEntryDateUtc(latestEntryDate) ?? dayjs.utc()).format(fmt);
+
+const getLatestEntryDisplayRange = (
+  latestEntryDate?: string | null
+): [dayjs.Dayjs, dayjs.Dayjs] => {
+  const latestEntryDateKey = getLatestEntryDateKey(latestEntryDate);
+  const displayDate = dayjs(latestEntryDateKey, fmt);
+  return [displayDate.startOf('day'), displayDate.endOf('day')];
 };
+
+const formatPickerValueForApi = (
+  value?: dayjs.Dayjs | null,
+  fallbackDateKey?: string
+) => value?.format(fmt) ?? fallbackDateKey;
 
 type QuickRange =
   | 'all'
@@ -63,15 +77,11 @@ function getEntryRangeByOption(
       return [d.startOf('day'), d.endOf('day')];
     }
     case 'lastDay': {
-      const today = ny().startOf('day');
-      if (
-        latestEntryDate &&
-        !dayjs.tz(latestEntryDate, NY_TZ).isSame(today, 'day')
-      ) {
-        const d = dayjs.tz(latestEntryDate, NY_TZ);
-        return [d.startOf('day'), d.endOf('day')];
+      if (latestEntryDate) {
+        const [start, end] = getLatestEntryDisplayRange(latestEntryDate);
+        return [start, end];
       }
-      const d = ny().subtract(1, 'day');
+      const d = dayjs().subtract(1, 'day');
       return [d.startOf('day'), d.endOf('day')];
     }
     case 'currentWeek': {
@@ -123,12 +133,16 @@ export const AlertLogsFilter = ({
   const strategies = useAppSelector(watchStrategies);
   const strategyLoading = useAppSelector(watchStrategyLoading);
   const latestEntryDate = useAppSelector(watchLatestEntryDate);
+  const latestEntryDateLoading = useAppSelector(watchLatestEntryDateLoading);
 
   const industries = useAppSelector(watchIndustries);
   const sectors = useAppSelector(watchSectors);
 
-  const defaultQuickRange: QuickRange = 'today';
-  const defaultEntryDateRange = useMemo(() => getTodayRange(), []);
+  const defaultQuickRange: QuickRange = 'lastDay';
+  const defaultEntryDateRange = useMemo(
+    () => getLatestEntryDisplayRange(latestEntryDate),
+    [latestEntryDate]
+  );
   const allStrategyLabel = `${t('all')} ${t('strategy')}`;
 
   const strategyOptions = useMemo(
@@ -174,12 +188,19 @@ export const AlertLogsFilter = ({
 
   const handleSearch = useCallback(() => {
     const values = form.getFieldsValue();
+    const latestEntryDateKey = getLatestEntryDateKey(latestEntryDate);
     onFilter({
       isImport: isOption ? 1 : 0,
-      fromEntryDate: values.entryDate?.[0]?.tz(TimeZone.NEW_YORK).format(fmt),
-      toEntryDate: values.entryDate?.[1]?.tz(TimeZone.NEW_YORK).format(fmt),
-      fromExitDate: values.exitDate?.[0]?.tz(TimeZone.NEW_YORK).format(fmt),
-      toExitDate: values.exitDate?.[1]?.tz(TimeZone.NEW_YORK).format(fmt),
+      fromEntryDate: formatPickerValueForApi(
+        values.entryDate?.[0],
+        latestEntryDateKey
+      ),
+      toEntryDate: formatPickerValueForApi(
+        values.entryDate?.[1],
+        latestEntryDateKey
+      ),
+      fromExitDate: formatPickerValueForApi(values.exitDate?.[0]),
+      toExitDate: formatPickerValueForApi(values.exitDate?.[1]),
       strategyId: values.strategyId || undefined,
       categoryId: values.categoryId ? Number(values.categoryId) : undefined,
       symbol: symbol || undefined,
@@ -191,7 +212,7 @@ export const AlertLogsFilter = ({
         : '',
       timeFrame: values.timeFrame || ''
     });
-  }, [form, onFilter, isOption, symbol]);
+  }, [form, latestEntryDate, onFilter, isOption, symbol]);
 
   const handleClearFilters = () => {
     form.resetFields();
@@ -220,7 +241,12 @@ export const AlertLogsFilter = ({
   }, [dispatch]);
 
   useEffect(() => {
-    if (isFirstRender.current && strategies) {
+    if (
+      isFirstRender.current &&
+      strategies &&
+      latestEntryDate &&
+      !latestEntryDateLoading
+    ) {
       isFirstRender.current = false;
       const [start, end] = getEntryRangeByOption(
         defaultQuickRange,
@@ -235,8 +261,14 @@ export const AlertLogsFilter = ({
 
       const filterPayload: AlertLogsFilter = {
         isImport: isOption === 1 ? 1 : 0,
-        fromEntryDate: start?.tz(TimeZone.NEW_YORK).format(fmt),
-        toEntryDate: end?.tz(TimeZone.NEW_YORK).format(fmt),
+        fromEntryDate: formatPickerValueForApi(
+          start,
+          getLatestEntryDateKey(latestEntryDate)
+        ),
+        toEntryDate: formatPickerValueForApi(
+          end,
+          getLatestEntryDateKey(latestEntryDate)
+        ),
         strategyId: strategyId,
         categoryId: searchParams.get('categoryId')
           ? Number(searchParams.get('categoryId'))
@@ -249,7 +281,14 @@ export const AlertLogsFilter = ({
       onFilterReady(filterPayload);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultQuickRange, latestEntryDate, form, strategies, strategyId]);
+  }, [
+    defaultQuickRange,
+    latestEntryDate,
+    latestEntryDateLoading,
+    form,
+    strategies,
+    strategyId
+  ]);
 
   return (
     <div css={[rootStyles, customStyles]}>
