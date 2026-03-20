@@ -13,7 +13,6 @@ import {
   getLatestEntryDate,
   watchLatestEntryDate
 } from '@/redux/slices/signals.slice';
-import { getCategories } from '@/redux/slices/signals.slice';
 import {
   getIndustriesV2,
   getSectorsV2,
@@ -210,7 +209,6 @@ export const AlertLogsFilter = ({
     dispatch(getStrategies());
     dispatch(getLatestEntryDate());
     dispatch(getSectorsV2());
-    dispatch(getCategories());
   }, [dispatch]);
 
   useEffect(() => {

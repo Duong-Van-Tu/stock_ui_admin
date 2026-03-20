@@ -82,6 +82,7 @@
   "strategyOptions": "Options",
   "stocks": "STOCKS",
   "options": "OPTIONS",
+  "countMacd": "COUNT + MACD",
   "searchSelectStrategy": "Search select Strategy",
   "clear": "Clear",
   "earnings": "Earnings",

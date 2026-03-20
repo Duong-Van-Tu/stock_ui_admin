@@ -37,11 +37,7 @@ import {
   watchAlertLogsPagination,
   watchLatestHitOnePercent
 } from '@/redux/slices/signals.slice';
-import {
-  getCategories,
-  watchCategories,
-  addAlertLogToCategory
-} from '@/redux/slices/signals.slice';
+import { addAlertLogToCategory } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { AlertLogsFilter } from '../filters/alert-logs.filter';
@@ -110,6 +106,9 @@ export const AlertLogsTable = ({
   const isOption = searchParams.get('isOption')
     ? Number(searchParams.get('isOption'))
     : 0;
+  const countMacdGreen = searchParams.get('countMacdGreen')
+    ? Number(searchParams.get('countMacdGreen'))
+    : 0;
 
   const categoryId = searchParams.get('categoryId')
     ? Number(searchParams.get('categoryId'))
@@ -120,8 +119,6 @@ export const AlertLogsTable = ({
   const pagination = useAppSelector(watchAlertLogsPagination);
   const loading = useAppSelector(watchAlertLogsLoading);
   const latestHitOnePercent = useAppSelector(watchLatestHitOnePercent);
-  const categories = useAppSelector(watchCategories);
-
   const [filter, setFilter] = useState<AlertLogsFilter>({});
   const [isFilterReady, setIsFilterReady] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -235,6 +232,7 @@ export const AlertLogsTable = ({
         sortType: convertSortType(sortType),
         ...filter,
         isImport: isOption,
+        countMacdGreen: countMacdGreen || undefined,
         categoryId,
         fromEntryDate: !!categoryId ? undefined : filter.fromEntryDate,
         toEntryDate: !!categoryId ? undefined : filter.toEntryDate
@@ -253,6 +251,7 @@ export const AlertLogsTable = ({
       sortField,
       sortType,
       isOption,
+      countMacdGreen,
       categoryId,
       pagination.pageSize
     ]
@@ -319,7 +318,7 @@ export const AlertLogsTable = ({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOption, categoryId]);
+  }, [isOption, countMacdGreen, categoryId]);
 
   useEffect(() => {
     if (!isFilterPage) {
@@ -352,6 +351,7 @@ export const AlertLogsTable = ({
 
       params.delete('isOption');
       params.delete('categoryId');
+      params.delete('countMacdGreen');
 
       if (view === AlertLogsView.OPTIONS) {
         params.set('isOption', '1');
@@ -359,9 +359,11 @@ export const AlertLogsTable = ({
         params.set('categoryId', '1');
       } else if (view === AlertLogsView.WATCHLIST) {
         params.set('categoryId', '2');
+      } else if (view === AlertLogsView.COUNT_MACD) {
+        params.set('countMacdGreen', '1');
       }
 
-      router.replace(`${pathname}?${params.toString()}`);
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
     [pathname, searchParams, router]
   );
@@ -380,13 +382,6 @@ export const AlertLogsTable = ({
       dispatch(resetState());
     };
   }, [dispatch]);
-
-  useEffect(() => {
-    if (!categories || categories.length === 0) {
-      dispatch(getCategories());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const baseColumns: TableColumnsType<Signal> = [
     {
@@ -496,26 +491,29 @@ export const AlertLogsTable = ({
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'is_have_news' ? sortType : null,
-      hidden: !categoryId,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('is_have_news')
       }),
       render: (value, record) => (
-        <PositiveNegativeText isPositive={value} isNegative={!value}>
-          <span
-            css={css`
-              text-decoration: underline;
-              cursor: pointer;
-            `}
-            onClick={() =>
-              router.push(
-                `${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`
-              )
-            }
-          >
-            {value ? t('yes') : t('no')}
-          </span>
-        </PositiveNegativeText>
+        categoryId ? (
+          <PositiveNegativeText isPositive={value} isNegative={!value}>
+            <span
+              css={css`
+                text-decoration: underline;
+                cursor: pointer;
+              `}
+              onClick={() =>
+                router.push(
+                  `${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`
+                )
+              }
+            >
+              {value ? t('yes') : t('no')}
+            </span>
+          </PositiveNegativeText>
+        ) : (
+          '-'
+        )
       )
     },
     {
@@ -1711,6 +1709,30 @@ export const AlertLogsTable = ({
     visibleColumns.includes(col.key as string)
   );
 
+  const renderedColumns = filteredColumns.filter((col) => !col.hidden);
+
+  const currentView =
+    categoryId === 1
+      ? AlertLogsView.IN_TRADE
+      : categoryId === 2
+        ? AlertLogsView.WATCHLIST
+        : countMacdGreen
+          ? AlertLogsView.COUNT_MACD
+          : isOption
+            ? AlertLogsView.OPTIONS
+            : AlertLogsView.STOCKS;
+
+  const tableScrollX = renderedColumns.reduce(
+    (total, column) => {
+      if (typeof column.width === 'number') {
+        return total + column.width;
+      }
+
+      return total + 140;
+    },
+    isMobile ? 0 : 120
+  );
+
   return (
     <>
       <div css={rootStyles}>
@@ -1718,6 +1740,81 @@ export const AlertLogsTable = ({
           onFilter={handleFilter}
           onFilterReady={handleFilterReady}
         />
+        {isDesktop && (
+          <div css={externalActionStyles}>
+            <div css={leftExternalActionStyles}>
+              {selectedIds.size > 0 && categoryId !== 1 && categoryId !== 2 && (
+                <Button
+                  onClick={() =>
+                    modal.openModal(
+                      <ExitSignal
+                        ids={Array.from(selectedIds)}
+                        setSelectedIds={setSelectedIds}
+                        title={t('exitSelectedSignals')}
+                        description={t('confirmExitSelected')}
+                      />,
+                      { width: 400 }
+                    )
+                  }
+                  icon={
+                    <Icon
+                      icon='exit'
+                      fill={
+                        selectedIds.size <= 0
+                          ? 'var(--gray-light-color)'
+                          : 'var(--orange-color)'
+                      }
+                      width={18}
+                      height={18}
+                    />
+                  }
+                  css={exitBtnStyles}
+                  disabled={selectedIds.size <= 0}
+                  size='middle'
+                  danger
+                >
+                  {t('exitSelected')}
+                </Button>
+              )}
+              {(categoryId === 1 || categoryId === 2) &&
+                selectedIds.size > 0 && (
+                  <Button
+                    onClick={() =>
+                      modal.openModal(
+                        <ConfirmRemoveCategory
+                          alertLogIds={Array.from(selectedIds).map((id) =>
+                            parseInt(id)
+                          )}
+                          categoryId={categoryId}
+                          categoryName={
+                            categoryId === 1 ? t('trade') : t('watchlist')
+                          }
+                          title={t('confirmRemoveAllFromCategory')}
+                          description={t(
+                            'confirmRemoveAllFromCategoryDescription'
+                          )}
+                          onSuccess={handleRefresh}
+                          setSelectedIds={setSelectedIds}
+                        />,
+                        { width: 400 }
+                      )
+                    }
+                    icon={<Icon icon='trash' width={18} height={18} />}
+                    css={exitBtnStyles}
+                    size='middle'
+                    danger
+                  >
+                    {t('deleteAll')}
+                  </Button>
+                )}
+            </div>
+            <Space>
+              <ExportExcelLog filter={filter} isFilterPage={isFilterPage} />
+              <ImportSymbolButton url='tickers-profile/import' />
+              <DownloadSymbolTemplateButton />
+            </Space>
+          </div>
+        )}
         <div css={tableWrapperStyles}>
           <div css={tableTopStyles}>
             <div css={titleContainerStyles}>
@@ -1756,145 +1853,63 @@ export const AlertLogsTable = ({
                   />
                 </Tooltip>
               </TableTitle>
-              <div css={exitBtnContainerStyles}>
-                {selectedIds.size > 0 &&
-                  categoryId !== 1 &&
-                  categoryId !== 2 && (
-                    <Button
-                      onClick={() =>
-                        modal.openModal(
-                          <ExitSignal
-                            ids={Array.from(selectedIds)}
-                            setSelectedIds={setSelectedIds}
-                            title={t('exitSelectedSignals')}
-                            description={t('confirmExitSelected')}
-                          />,
-                          { width: 400 }
-                        )
-                      }
-                      icon={
-                        <Icon
-                          icon='exit'
-                          fill={
-                            selectedIds.size <= 0
-                              ? 'var(--gray-light-color)'
-                              : 'var(--orange-color)'
-                          }
-                          width={18}
-                          height={18}
-                        />
-                      }
-                      css={exitBtnStyles}
-                      disabled={selectedIds.size <= 0}
-                      size={isMobile ? 'small' : 'middle'}
-                      danger
-                    >
-                      {t('exitSelected')}
-                    </Button>
-                  )}
-                {(categoryId === 1 || categoryId === 2) &&
-                  selectedIds.size > 0 && (
-                    <Button
-                      onClick={() =>
-                        modal.openModal(
-                          <ConfirmRemoveCategory
-                            alertLogIds={Array.from(selectedIds).map((id) =>
-                              parseInt(id)
-                            )}
-                            categoryId={categoryId}
-                            categoryName={
-                              categoryId === 1 ? t('trade') : t('watchlist')
-                            }
-                            title={t('confirmRemoveAllFromCategory')}
-                            description={t(
-                              'confirmRemoveAllFromCategoryDescription'
-                            )}
-                            onSuccess={handleRefresh}
-                            setSelectedIds={setSelectedIds}
-                          />,
-                          { width: 400 }
-                        )
-                      }
-                      icon={<Icon icon='trash' width={18} height={18} />}
-                      css={exitBtnStyles}
-                      size={isMobile ? 'small' : 'middle'}
-                      danger
-                    >
-                      {t('deleteAll')}
-                    </Button>
-                  )}
-              </div>
             </div>
 
-            <Segmented
-              css={segmentedStyles(sideBarCollapsed)}
-              options={[
-                {
-                  label: <div css={segmentedLabelStyles}>{t('stocks')}</div>,
-                  value: AlertLogsView.STOCKS
-                },
-                {
-                  label: <div css={segmentedLabelStyles}>{t('options')}</div>,
-                  value: AlertLogsView.OPTIONS
-                },
-                {
-                  label: (
-                    <div css={segmentedLabelStyles}>
-                      {t('inTrade').toUpperCase()}
-                    </div>
-                  ),
-                  value: AlertLogsView.IN_TRADE
-                },
-                {
-                  label: (
-                    <div css={segmentedLabelStyles}>
-                      {t('watchlist').toUpperCase()}
-                    </div>
-                  ),
-                  value: AlertLogsView.WATCHLIST
-                }
-              ]}
-              defaultValue={
-                categoryId === 1
-                  ? AlertLogsView.IN_TRADE
-                  : categoryId === 2
-                    ? AlertLogsView.WATCHLIST
-                    : isOption
-                      ? AlertLogsView.OPTIONS
-                      : AlertLogsView.STOCKS
-              }
-              onChange={(value) => handleChangeView(value)}
-            />
-            {(isDesktop || (isMobile && selectedIds.size > 0)) && (
-              <div css={actionStyles}>
-                {isDesktop && (
-                  <Space>
-                    <ExportExcelLog
-                      filter={filter}
-                      isFilterPage={isFilterPage}
-                    />
-                    <ImportSymbolButton url='tickers-profile/import' />
-                    <DownloadSymbolTemplateButton />
-                  </Space>
-                )}
-              </div>
-            )}
+            <div css={segmentedContainerStyles}>
+              <Segmented
+                css={segmentedStyles(sideBarCollapsed)}
+                options={[
+                  {
+                    label: <div css={segmentedLabelStyles}>{t('stocks')}</div>,
+                    value: AlertLogsView.STOCKS
+                  },
+                  {
+                    label: <div css={segmentedLabelStyles}>{t('options')}</div>,
+                    value: AlertLogsView.OPTIONS
+                  },
+                  {
+                    label: (
+                      <div css={segmentedLabelStyles}>
+                        {t('inTrade').toUpperCase()}
+                      </div>
+                    ),
+                    value: AlertLogsView.IN_TRADE
+                  },
+                  {
+                    label: (
+                      <div css={segmentedLabelStyles}>
+                        {t('watchlist').toUpperCase()}
+                      </div>
+                    ),
+                    value: AlertLogsView.WATCHLIST
+                  },
+                  {
+                    label: (
+                      <div css={segmentedLabelStyles}>{t('countMacd')}</div>
+                    ),
+                    value: AlertLogsView.COUNT_MACD
+                  }
+                ]}
+                value={currentView}
+                onChange={(value) => handleChangeView(value)}
+              />
+            </div>
           </div>
           <Table<Signal>
             size='small'
             css={tableStyles}
             rowKey={(record) => record.key}
             rowSelection={isMobile ? undefined : rowSelection}
-            columns={filteredColumns}
+            columns={renderedColumns}
             dataSource={alertLogsData}
             loading={loading}
             scroll={{
-              x: 1200,
+              x: Math.max(tableScrollX, isMobile ? 1200 : 2200),
               y:
                 alertLogsData.length > 0
                   ? isMobile
                     ? height - 220
-                    : height - 366
+                    : height - 430
                   : undefined
             }}
             sortDirections={['descend', 'ascend']}
@@ -2010,8 +2025,9 @@ const tableStyles = css`
 `;
 
 const tableTopStyles = css`
-  display: flex;
-  justify-content: ${isMobile ? 'center' : 'space-between'};
+  display: ${isMobile ? 'flex' : 'grid'};
+  grid-template-columns: ${isMobile ? 'unset' : 'auto minmax(0, 1fr)'};
+  justify-content: ${isMobile ? 'center' : 'unset'};
   flex-wrap: wrap;
   align-items: center;
   padding: 1.2rem 1.6rem;
@@ -2019,19 +2035,65 @@ const tableTopStyles = css`
   position: relative;
 `;
 
-const actionStyles = css`
+const externalActionStyles = css`
   display: flex;
-  justify-content: flex-end;
-  gap: 1.2rem;
-  width: ${isMobile ? '100%' : 'unset'};
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+const leftExternalActionStyles = css`
+  display: flex;
+  align-items: center;
+  min-height: 4rem;
+`;
+
+const segmentedContainerStyles = css`
+  display: flex;
+  justify-content: center;
+  min-width: 0;
 `;
 
 const segmentedStyles = (sideBarCollapsed: boolean) => css`
-  padding: 0;
+  padding: 0.4rem;
+  border-radius: 1.4rem;
+  background: #f3f6fa;
+  border: 1px solid rgba(8, 127, 244, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+  .ant-segmented-group {
+    gap: 0.4rem;
+  }
+
+  .ant-segmented-item {
+    border-radius: 1rem;
+    color: rgba(0, 0, 0, 0.55);
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .ant-segmented-item:hover {
+    color: rgba(0, 0, 0, 0.88);
+  }
+
   .ant-segmented-item-selected {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, #1677ff 0%, #0b8cff 100%);
+    color: var(--white-color);
+    box-shadow: 0 8px 18px rgba(8, 127, 244, 0.22);
+  }
+
+  .ant-segmented-item-selected:hover {
     color: var(--white-color);
   }
+
+  .ant-segmented-thumb {
+    border-radius: 1rem;
+    box-shadow: 0 8px 18px rgba(8, 127, 244, 0.18);
+  }
+
   ${sideBarCollapsed &&
   `
     @media (min-width: 1510px) {
@@ -2044,8 +2106,14 @@ const segmentedStyles = (sideBarCollapsed: boolean) => css`
 `;
 
 const segmentedLabelStyles = css`
+  min-width: ${isMobile ? '7.4rem' : '8.8rem'};
+  padding: ${isMobile ? '0.8rem 1rem' : '0.9rem 1.4rem'};
   font-size: ${isMobile ? '1.4rem' : '1.6rem'};
-  font-weight: 500;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
 `;
 
 const emptyStyles = (height: number) => css`
@@ -2057,7 +2125,6 @@ const emptyStyles = (height: number) => css`
 
 const exitBtnStyles = css`
   display: flex;
-  margin-right: auto;
 `;
 
 const exitTitleStyles = css`
@@ -2087,10 +2154,6 @@ const titleContainerStyles = css`
   gap: 1.4rem;
   align-items: center;
   width: ${isMobile && '100%'};
-`;
-
-const exitBtnContainerStyles = css`
-  width: 14.5rem;
 `;
 
 const iconStyles = css`
