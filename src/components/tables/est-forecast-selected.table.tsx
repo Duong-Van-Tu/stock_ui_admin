@@ -53,6 +53,7 @@ import { ImportSymbolButton } from '../import-symbol-template';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { transformEstForecastOptionRecommendations } from '@/helpers/est-forecast.helper';
 import { DateTimeCell } from './columns/date-time-cell.column';
+import { StockChangeCell } from './columns/stock-change-cell.column';
 import EllipsisText from '../ellipsis-text';
 
 type EstForecastSelectedTableProps = {
@@ -580,6 +581,35 @@ export const EstForecastSelectedTable = ({
         render: (v) => (v ? stripTimeFromISOString(v) : '-')
       },
       {
+        title: 'Earnings Time',
+        dataIndex: 'dateAtEarning',
+        width: 170,
+        align: 'center',
+        render: (value) =>
+          value ? <DateTimeCell value={value} convertTimeZone /> : '-'
+      },
+      {
+        title: 'Earnings Price',
+        dataIndex: 'priceAtEarning',
+        width: 140,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'priceAtEarning', r)
+      },
+      {
+        title: 'Current Price',
+        dataIndex: 'priceCurrentEstForecast',
+        width: 130,
+        align: 'center',
+        render: (v, r) =>
+          isNumeric(v) && isNumeric(r.percentEstForecast) ? (
+            <StockChangeCell value={v} percentage={Number(r.percentEstForecast)} />
+          ) : isNumeric(v) ? (
+            renderNumber(v, 'priceCurrentEstForecast', r)
+          ) : (
+            '-'
+          )
+      },
+      {
         title: 'Trade Date',
         dataIndex: 'tradeDate',
         width: 130,
@@ -599,13 +629,6 @@ export const EstForecastSelectedTable = ({
         width: 120,
         align: 'center',
         render: (v, r) => renderNumber(v, 'entryPrice', r)
-      },
-      {
-        title: 'Current Price',
-        dataIndex: 'currentPrice',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'currentPrice', r)
       },
       {
         title: 'Highest Price',
