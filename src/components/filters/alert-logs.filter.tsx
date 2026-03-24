@@ -33,8 +33,11 @@ type AlertLogsFilterProps = {
 const { RangePicker } = DatePicker;
 
 const NY_TZ = TimeZone.NEW_YORK;
-const fmt = 'YYYY-MM-DD';
+const apiDateFmt = 'YYYY-MM-DD';
 const ny = () => dayjs().tz(NY_TZ);
+const localTz = () => dayjs.tz.guess();
+const toApiUtcDate = (value?: dayjs.Dayjs | null) =>
+  value?.tz(NY_TZ).utc().format(apiDateFmt);
 
 type QuickRange =
   | 'all'
@@ -45,25 +48,59 @@ type QuickRange =
   | 'currentMonth'
   | 'lastMonth';
 
+function getLatestEntryDay(latestEntryDate?: string | null) {
+  return latestEntryDate ? dayjs.utc(latestEntryDate).tz(NY_TZ) : null;
+}
+
+function isTradingDay(date: dayjs.Dayjs) {
+  const day = date.day();
+  return day !== 0 && day !== 6;
+}
+
+function getPreviousTradingDay(baseDate: dayjs.Dayjs) {
+  let date = baseDate.startOf('day').subtract(1, 'day');
+
+  while (!isTradingDay(date)) {
+    date = date.subtract(1, 'day');
+  }
+
+  return date;
+}
+
+function isLatestEntryToday(latestEntryDate?: string | null) {
+  const latest = getLatestEntryDay(latestEntryDate);
+  if (!latest || !isTradingDay(latest)) return false;
+
+  return (
+    latest.isSame(ny(), 'day') ||
+    latest.tz(localTz()).isSame(dayjs().tz(localTz()), 'day')
+  );
+}
+
 function getEntryRangeByOption(
   value: QuickRange,
   latestEntryDate?: string | null
 ): [dayjs.Dayjs | null, dayjs.Dayjs | null] {
   switch (value) {
     case 'today': {
+      if (isLatestEntryToday(latestEntryDate)) {
+        const latest = getLatestEntryDay(latestEntryDate);
+        if (latest) return [latest.startOf('day'), latest.endOf('day')];
+      }
+
       const d = ny();
       return [d.startOf('day'), d.endOf('day')];
     }
     case 'lastDay': {
       const today = ny().startOf('day');
-      if (
-        latestEntryDate &&
-        !dayjs.tz(latestEntryDate, NY_TZ).isSame(today, 'day')
-      ) {
-        const d = dayjs.tz(latestEntryDate, NY_TZ);
+      const latest = getLatestEntryDay(latestEntryDate);
+
+      if (latest && isTradingDay(latest) && latest.isBefore(today, 'day')) {
+        const d = latest;
         return [d.startOf('day'), d.endOf('day')];
       }
-      const d = ny().subtract(1, 'day');
+
+      const d = getPreviousTradingDay(today);
       return [d.startOf('day'), d.endOf('day')];
     }
     case 'currentWeek': {
@@ -121,9 +158,7 @@ export const AlertLogsFilter = ({
 
   const defaultQuickRange: QuickRange = useMemo(() => {
     if (!latestEntryDate) return 'today';
-    const latestNY = dayjs.tz(latestEntryDate, NY_TZ);
-    const todayNY = ny();
-    return latestNY.isSame(todayNY, 'day') ? 'today' : 'lastDay';
+    return isLatestEntryToday(latestEntryDate) ? 'today' : 'lastDay';
   }, [latestEntryDate]);
 
   const strategyOptions = useMemo(
@@ -168,10 +203,10 @@ export const AlertLogsFilter = ({
     const values = form.getFieldsValue();
     onFilter({
       isImport: isOption ? 1 : 0,
-      fromEntryDate: values.entryDate?.[0]?.tz(TimeZone.NEW_YORK).format(fmt),
-      toEntryDate: values.entryDate?.[1]?.tz(TimeZone.NEW_YORK).format(fmt),
-      fromExitDate: values.exitDate?.[0]?.tz(TimeZone.NEW_YORK).format(fmt),
-      toExitDate: values.exitDate?.[1]?.tz(TimeZone.NEW_YORK).format(fmt),
+      fromEntryDate: toApiUtcDate(values.entryDate?.[0]),
+      toEntryDate: toApiUtcDate(values.entryDate?.[1]),
+      fromExitDate: toApiUtcDate(values.exitDate?.[0]),
+      toExitDate: toApiUtcDate(values.exitDate?.[1]),
       strategyId: values.strategyId,
       categoryId: values.categoryId ? Number(values.categoryId) : undefined,
       symbol: symbol || undefined,
@@ -227,8 +262,8 @@ export const AlertLogsFilter = ({
 
       const filterPayload: AlertLogsFilter = {
         isImport: isOption === 1 ? 1 : 0,
-        fromEntryDate: start?.tz(TimeZone.NEW_YORK).format(fmt),
-        toEntryDate: end?.tz(TimeZone.NEW_YORK).format(fmt),
+        fromEntryDate: toApiUtcDate(start),
+        toEntryDate: toApiUtcDate(end),
         strategyId: strategyId,
         categoryId: searchParams.get('categoryId')
           ? Number(searchParams.get('categoryId'))

@@ -494,7 +494,7 @@ export const AlertLogsTable = ({
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('is_have_news')
       }),
-      render: (value, record) => (
+      render: (value, record) =>
         categoryId ? (
           <PositiveNegativeText isPositive={value} isNegative={!value}>
             <span
@@ -514,7 +514,6 @@ export const AlertLogsTable = ({
         ) : (
           '-'
         )
-      )
     },
     {
       title: t('strategy'),
@@ -1809,7 +1808,13 @@ export const AlertLogsTable = ({
                 )}
             </div>
             <Space>
-              <ExportExcelLog filter={filter} isFilterPage={isFilterPage} />
+              <ExportExcelLog
+                filter={filter}
+                isFilterPage={isFilterPage}
+                isImport={isOption}
+                countMacdGreen={countMacdGreen}
+                categoryId={categoryId}
+              />
               <ImportSymbolButton url='tickers-profile/import' />
               <DownloadSymbolTemplateButton />
             </Space>

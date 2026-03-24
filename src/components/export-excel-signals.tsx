@@ -25,10 +25,16 @@ import { RecommendationText } from '@/constants/common.constant';
 type ExportExcelLogProps = {
   filter: AlertLogsFilter;
   isFilterPage?: boolean;
+  isImport?: number;
+  countMacdGreen?: number;
+  categoryId?: number;
 };
 export const ExportExcelLog = ({
   filter,
-  isFilterPage
+  isFilterPage,
+  isImport,
+  countMacdGreen,
+  categoryId
 }: ExportExcelLogProps) => {
   const t = useTranslations();
   const { setWatchList, resFromWS } = useContext(SocketContext);
@@ -46,7 +52,12 @@ export const ExportExcelLog = ({
           limit: PAGINATION_PARAMS.unLimit,
           sortField: fieldMapping.entryDate,
           sortType: 'desc',
-          ...filter
+          ...filter,
+          isImport,
+          countMacdGreen: countMacdGreen || undefined,
+          categoryId,
+          fromEntryDate: categoryId ? undefined : filter.fromEntryDate,
+          toEntryDate: categoryId ? undefined : filter.toEntryDate
         }
       }
     );
