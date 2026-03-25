@@ -18,7 +18,7 @@ export const ScoreBlock = ({
   size = '1.6rem'
 }: StatItemProps) => (
   <div css={statBlockStyles}>
-    <Text strong type='secondary'>
+    <Text css={labelStyles}>
       {label}
     </Text>
     <br />
@@ -27,6 +27,7 @@ export const ScoreBlock = ({
         isPositive={value > 7}
         isNegative={value < 4}
         size={size}
+        contrastInDark
       >
         <span>{roundToDecimals(value, 2)}</span>
       </PositiveNegativeText>
@@ -38,4 +39,8 @@ export const ScoreBlock = ({
 
 const statBlockStyles = css`
   text-align: center;
+`;
+
+const labelStyles = css`
+  color: var(--text-secondary-color) !important;
 `;

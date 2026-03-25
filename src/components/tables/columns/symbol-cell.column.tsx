@@ -117,7 +117,7 @@ export const SymbolCell = ({
                     align='middle'
                   >
                     <Col css={columnStyles}>
-                      <Typography.Text strong type='secondary'>
+                      <Typography.Text css={metricLabelStyles}>
                         {t('beta')}:&nbsp;
                       </Typography.Text>
                       <span>
@@ -127,7 +127,7 @@ export const SymbolCell = ({
                       </span>
                     </Col>
                     <Col css={columnStyles}>
-                      <Typography.Text strong type='secondary'>
+                      <Typography.Text css={metricLabelStyles}>
                         {t('atr')}:&nbsp;
                       </Typography.Text>
                       <div>
@@ -148,7 +148,7 @@ export const SymbolCell = ({
                       </div>
                     </Col>
                     <Col css={columnStyles}>
-                      <Typography.Text strong type='secondary'>
+                      <Typography.Text css={metricLabelStyles}>
                         {t('rsi')}:&nbsp;
                       </Typography.Text>
                       <span>
@@ -352,6 +352,10 @@ const columnStyles = css`
   display: flex;
   justify-content: space-between;
   gap: 0.4rem;
+`;
+
+const metricLabelStyles = css`
+  color: var(--text-secondary-color) !important;
 `;
 
 const sellIconStyles = css`
