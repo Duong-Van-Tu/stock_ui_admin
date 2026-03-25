@@ -52,24 +52,9 @@ function getLatestEntryDay(latestEntryDate?: string | null) {
   return latestEntryDate ? dayjs.utc(latestEntryDate).tz(NY_TZ) : null;
 }
 
-function isTradingDay(date: dayjs.Dayjs) {
-  const day = date.day();
-  return day !== 0 && day !== 6;
-}
-
-function getPreviousTradingDay(baseDate: dayjs.Dayjs) {
-  let date = baseDate.startOf('day').subtract(1, 'day');
-
-  while (!isTradingDay(date)) {
-    date = date.subtract(1, 'day');
-  }
-
-  return date;
-}
-
 function isLatestEntryToday(latestEntryDate?: string | null) {
   const latest = getLatestEntryDay(latestEntryDate);
-  if (!latest || !isTradingDay(latest)) return false;
+  if (!latest) return false;
 
   return (
     latest.isSame(ny(), 'day') ||
@@ -95,12 +80,12 @@ function getEntryRangeByOption(
       const today = ny().startOf('day');
       const latest = getLatestEntryDay(latestEntryDate);
 
-      if (latest && isTradingDay(latest) && latest.isBefore(today, 'day')) {
+      if (latest && latest.isBefore(today, 'day')) {
         const d = latest;
         return [d.startOf('day'), d.endOf('day')];
       }
 
-      const d = getPreviousTradingDay(today);
+      const d = today.subtract(1, 'day');
       return [d.startOf('day'), d.endOf('day')];
     }
     case 'currentWeek': {
