@@ -16,6 +16,11 @@ type EstForecast = {
   gpt: string;
   forecast: string;
   earningsDate: string;
+  priceAtEarning?: number | null;
+  dateAtEarning?: string | null;
+  priceCurrentEstForecast?: number | null;
+  datePrice?: string | null;
+  percentEstForecast?: number | null;
   revenueForecast: number | null;
   revenueForecastPoint: number | null;
   netMargin: number | null;
@@ -134,9 +139,16 @@ type EstForecastFilterItem = {
   marketpsychTrustZ: number | null;
   marketpsychTrustZPoint: number | null;
   noteForTrader: string;
+  diffDays?: number | null;
+  aiRecommend?: string | null;
   daysToEarning: number | null;
   noteForEarning: string;
   tradeDate: string;
+  priceAtEarning?: number | null;
+  dateAtEarning?: string | null;
+  priceCurrentEstForecast?: number | null;
+  datePrice?: string | null;
+  percentEstForecast?: number | null;
   forecastPct: number | null;
   entryDate: string;
   entryPrice: number | null;

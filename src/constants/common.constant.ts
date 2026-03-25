@@ -4,7 +4,8 @@ export enum AlertLogsView {
   STOCKS,
   OPTIONS,
   IN_TRADE,
-  WATCHLIST
+  WATCHLIST,
+  COUNT_MACD
 }
 
 export enum WatchlistView {

@@ -18,6 +18,7 @@ import {
 import { TimeZone } from '@/constants/timezone.constant';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { useNotification } from '@/hooks/notification.hook';
+import { useThemeMode } from '@/providers/theme.provider';
 import { Empty, Select, Spin } from 'antd';
 import { calculateRSI, formatNumberShort, formatPercent } from '@/utils/common';
 import { PeriodOptions } from '@/constants/common.constant';
@@ -50,6 +51,7 @@ export const ChartBackTest = ({
   entryDate
 }: BacktestSpikeVolumeProps) => {
   const { notifyError } = useNotification();
+  const { isDarkMode } = useThemeMode();
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -81,6 +83,28 @@ export const ChartBackTest = ({
     ExtendedCandlestickData[]
   >([]);
   const [loading, setLoading] = useState(true);
+
+  const getChartTheme = useCallback(() => {
+    if (typeof window === 'undefined') {
+      return {
+        backgroundColor: '#ffffff',
+        textColor: '#333333',
+        gridColor: '#eeeeee',
+        borderColor: '#cccccc'
+      };
+    }
+
+    const rootStyle = window.getComputedStyle(document.documentElement);
+    const getVar = (name: string, fallback: string) =>
+      rootStyle.getPropertyValue(name).trim() || fallback;
+
+    return {
+      backgroundColor: getVar('--surface-base-color', '#ffffff'),
+      textColor: getVar('--text-secondary-color', '#333333'),
+      gridColor: isDarkMode ? 'rgba(148, 163, 184, 0.14)' : '#eeeeee',
+      borderColor: getVar('--border-light-color', '#cccccc')
+    };
+  }, [isDarkMode]);
 
   const tooltipVisibleRef = useRef(false);
 
@@ -329,19 +353,27 @@ export const ChartBackTest = ({
   useEffect(() => {
     if (!chartContainerRef.current || chartRef.current) return;
 
+    const chartTheme = getChartTheme();
+
     const chartOptions: DeepPartial<ChartOptions> = {
       width: chartContainerRef.current.clientWidth,
       height: 400,
-      layout: { background: { color: '#ffffff' }, textColor: '#333' },
-      grid: { vertLines: { color: '#eee' }, horzLines: { color: '#eee' } },
+      layout: {
+        background: { color: chartTheme.backgroundColor },
+        textColor: chartTheme.textColor
+      },
+      grid: {
+        vertLines: { color: chartTheme.gridColor },
+        horzLines: { color: chartTheme.gridColor }
+      },
       crosshair: { mode: 0 },
       timeScale: {
-        borderColor: '#ccc',
+        borderColor: chartTheme.borderColor,
         timeVisible: true,
         tickMarkFormatter: (timestamp: any) =>
           dayjs.unix(timestamp).tz(TimeZone.NEW_YORK).format('MM-DD HH:mm')
       },
-      rightPriceScale: { borderColor: '#ccc' },
+      rightPriceScale: { borderColor: chartTheme.borderColor },
       watermark: { visible: false }
     };
 
@@ -401,7 +433,7 @@ export const ChartBackTest = ({
 
     chart.applyOptions({
       rightPriceScale: {
-        borderColor: '#ccc',
+        borderColor: chartTheme.borderColor,
         scaleMargins: { top: 0.05, bottom: 0.45 }
       }
     });
@@ -551,7 +583,31 @@ export const ChartBackTest = ({
         overlayCanvasRef.current = null;
       }
     };
-  }, [scheduleDraw]);
+  }, [getChartTheme, scheduleDraw]);
+
+  useEffect(() => {
+    if (!chartRef.current) return;
+
+    const chartTheme = getChartTheme();
+
+    chartRef.current.applyOptions({
+      layout: {
+        background: { color: chartTheme.backgroundColor },
+        textColor: chartTheme.textColor
+      },
+      grid: {
+        vertLines: { color: chartTheme.gridColor },
+        horzLines: { color: chartTheme.gridColor }
+      },
+      timeScale: {
+        borderColor: chartTheme.borderColor
+      },
+      rightPriceScale: {
+        borderColor: chartTheme.borderColor,
+        scaleMargins: { top: 0.05, bottom: 0.45 }
+      }
+    });
+  }, [getChartTheme]);
 
   useEffect(() => {
     dataRef.current = candlestickData;
@@ -767,15 +823,16 @@ const styles = {
   `,
   tooltip: css`
     position: absolute;
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid #ccc;
+    background: var(--surface-overlay-color);
+    color: var(--text-primary-strong-color);
+    border: 1px solid var(--border-light-color);
     padding: 10px;
     border-radius: 4px;
     pointer-events: none;
     display: none;
     white-space: nowrap;
     z-index: 2;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 24px var(--box-shadow-color);
     font-size: 1.4rem;
   `,
   selectWrapper: css`

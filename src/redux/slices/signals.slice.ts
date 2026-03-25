@@ -30,8 +30,6 @@ export type SignalsState = {
   latestEntryDateLoading: boolean;
   latestHitOnePercent: string[];
   latestHitOnePercentLoading: boolean;
-  categories: Array<{ id: number; category_name: string }>;
-  categoriesLoading: boolean;
   latestExitInTrade: LatestExitInTrade[];
   latestExitInTradeLoading: boolean;
 };
@@ -55,8 +53,6 @@ const initialState: SignalsState = {
   latestEntryDateLoading: false,
   latestHitOnePercent: [],
   latestHitOnePercentLoading: false,
-  categories: [],
-  categoriesLoading: false,
   latestExitInTrade: [],
   latestExitInTradeLoading: false
 };
@@ -344,28 +340,6 @@ export const signalSlice = createAppSlice({
       }
     ),
 
-    getCategories: create.asyncThunk(
-      async () => {
-        const response = await defaultApiFetcher.get(
-          'stock-alert-log-categories/list'
-        );
-        return response.data;
-      },
-      {
-        pending: (state) => {
-          state.categoriesLoading = true;
-        },
-        fulfilled: (state, action) => {
-          state.categoriesLoading = false;
-          state.categories = action.payload ?? [];
-        },
-        rejected: (state) => {
-          state.categoriesLoading = false;
-          state.categories = [];
-        }
-      }
-    ),
-
     addAlertLogToCategory: create.asyncThunk(
       async (params: { alertLogId: number; categoryId: number }) => {
         await defaultApiFetcher.post(
@@ -462,8 +436,6 @@ export const signalSlice = createAppSlice({
     watchLatestHitOnePercent: (state) => state.latestHitOnePercent,
     watchLatestExitInTradeLoading: (state) => state.latestExitInTradeLoading,
     watchLatestExitInTrade: (state) => state.latestExitInTrade,
-    watchCategories: (state) => state.categories,
-    watchCategoriesLoading: (state) => state.categoriesLoading,
     watchCategoryActionLoading: (state) => (alertLogId: number) =>
       state.categoryActionLoading[alertLogId] || false,
     watchCategoryActionMap: (state) => state.categoryActionLoading
@@ -490,8 +462,6 @@ export const {
   watchLatestHitOnePercent,
   watchLatestExitInTradeLoading,
   watchLatestExitInTrade,
-  watchCategories,
-  watchCategoriesLoading,
   watchCategoryActionLoading,
   watchCategoryActionMap
 } = signalSlice.selectors;
@@ -508,7 +478,6 @@ export const {
   getLatestEntryDate,
   getLatestHitOnePercent,
   getLatestExitInTrade,
-  getCategories,
   addAlertLogToCategory,
   deleteAlertLogInCategory
 } = signalSlice.actions;

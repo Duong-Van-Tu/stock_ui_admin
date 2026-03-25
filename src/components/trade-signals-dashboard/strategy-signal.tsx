@@ -269,4 +269,10 @@ const strategyLinkStyles = css`
   display: block;
   text-align: center;
   font-size: ${isMobile ? '1.6rem' : '1.8rem'};
+  color: var(--symbol-color);
+  font-weight: 600;
+
+  &:hover {
+    color: var(--primary-color);
+  }
 `;

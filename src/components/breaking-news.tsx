@@ -76,7 +76,7 @@ export default function BreakingNews() {
               style={{
                 width: '100%',
                 justifyContent: 'space-between',
-                paddingTop: '1.4rem'
+                padding: '1rem 0'
               }}
             >
               <Space>
@@ -136,7 +136,8 @@ export default function BreakingNews() {
                   : 'var(--negative-color)'
               }`,
               boxShadow: `inset 0 0 0 1px var(--shell-accent-color)`,
-              borderRadius: '0.8rem'
+              borderRadius: '0.8rem',
+              marginBottom: '0.8rem'
             }
           : undefined
     };
@@ -149,7 +150,8 @@ export default function BreakingNews() {
         style: {
           maxHeight: '400px',
           overflowY: 'auto',
-          maxWidth: 'min(60rem, calc(100vw - 3.2rem))'
+          maxWidth: 'min(60rem, calc(100vw - 3.2rem))',
+          padding: '0.4rem 0.8rem'
         }
       }}
       trigger={['click']}

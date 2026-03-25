@@ -53,6 +53,7 @@ import { ImportSymbolButton } from '../import-symbol-template';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { transformEstForecastOptionRecommendations } from '@/helpers/est-forecast.helper';
 import { DateTimeCell } from './columns/date-time-cell.column';
+import { StockChangeCell } from './columns/stock-change-cell.column';
 import EllipsisText from '../ellipsis-text';
 
 type EstForecastSelectedTableProps = {
@@ -101,6 +102,13 @@ export const EstForecastSelectedTable = ({
     () => filterList.filter((item) => item.type === 'put'),
     [filterList]
   );
+
+  const getUpcomingEarningRowClassName = (record: EstForecastFilterItem) => {
+    if (!isNumeric(record.diffDays)) return '';
+
+    const diffDays = Number(record.diffDays);
+    return diffDays >= 0 && diffDays <= 3 ? 'upcoming-earning-row' : '';
+  };
 
   const handleFilter = (values: { startDate: string; endDate: string }) => {
     if (mode !== 'date') return;
@@ -566,18 +574,40 @@ export const EstForecastSelectedTable = ({
           ]
         : []) as TableColumnsType<EstForecastFilterItem>),
       {
-        title: 'Days to Earning',
-        dataIndex: 'daysToEarning',
-        width: 140,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'daysToEarning', r)
-      },
-      {
         title: 'Earnings Date',
         dataIndex: 'earningsDate',
         width: 130,
         align: 'center',
         render: (v) => (v ? stripTimeFromISOString(v) : '-')
+      },
+      {
+        title: 'Earnings Time',
+        dataIndex: 'dateAtEarning',
+        width: 170,
+        align: 'center',
+        render: (value) =>
+          value ? <DateTimeCell value={value} convertTimeZone /> : '-'
+      },
+      {
+        title: 'Earnings Price',
+        dataIndex: 'priceAtEarning',
+        width: 140,
+        align: 'center',
+        render: (v, r) => renderNumber(v, 'priceAtEarning', r)
+      },
+      {
+        title: 'Current Price',
+        dataIndex: 'priceCurrentEstForecast',
+        width: 130,
+        align: 'center',
+        render: (v, r) =>
+          isNumeric(v) && isNumeric(r.percentEstForecast) ? (
+            <StockChangeCell value={v} percentage={Number(r.percentEstForecast)} />
+          ) : isNumeric(v) ? (
+            renderNumber(v, 'priceCurrentEstForecast', r)
+          ) : (
+            '-'
+          )
       },
       {
         title: 'Trade Date',
@@ -599,13 +629,6 @@ export const EstForecastSelectedTable = ({
         width: 120,
         align: 'center',
         render: (v, r) => renderNumber(v, 'entryPrice', r)
-      },
-      {
-        title: 'Current Price',
-        dataIndex: 'currentPrice',
-        width: 120,
-        align: 'center',
-        render: (v, r) => renderNumber(v, 'currentPrice', r)
       },
       {
         title: 'Highest Price',
@@ -1175,6 +1198,7 @@ export const EstForecastSelectedTable = ({
             <Table
               loading={loading}
               rowKey={(record) => record.key!}
+              rowClassName={getUpcomingEarningRowClassName}
               size={isMobile ? 'small' : 'middle'}
               css={tableStyles}
               columns={columns}
@@ -1196,6 +1220,7 @@ export const EstForecastSelectedTable = ({
             <Table
               loading={loading}
               rowKey={(record) => record.key!}
+              rowClassName={getUpcomingEarningRowClassName}
               size={isMobile ? 'small' : 'middle'}
               css={tableStyles}
               columns={columns}
@@ -1288,6 +1313,11 @@ const tableStyles = css`
   }
   .ant-table-thead > tr > th {
     background: #fafafa;
+  }
+  .ant-table-tbody
+    > tr.upcoming-earning-row
+    > td:not(:first-of-type):not(:last-of-type) {
+    background: ${lightenColor('#faad14', 0.85)} !important;
   }
 `;
 

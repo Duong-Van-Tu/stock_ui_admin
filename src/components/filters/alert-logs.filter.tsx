@@ -38,7 +38,7 @@ const NY_TZ = TimeZone.NEW_YORK;
 const fmt = 'YYYY-MM-DD';
 const latestEntryDateFmt = 'YYYY-MM-DD HH:mm:ss';
 const ny = () => dayjs().tz(NY_TZ);
-
+const localTz = () => dayjs.tz.guess();
 const parseLatestEntryDateUtc = (value?: string | null) =>
   value ? dayjs.utc(value, latestEntryDateFmt) : null;
 
@@ -67,12 +67,36 @@ type QuickRange =
   | 'currentMonth'
   | 'lastMonth';
 
+function getLatestEntryDay(latestEntryDate?: string | null) {
+  return latestEntryDate ? dayjs.utc(latestEntryDate).tz(NY_TZ) : null;
+}
+
+function isTradingDay(date: dayjs.Dayjs) {
+  const day = date.day();
+  return day !== 0 && day !== 6;
+}
+
+function isLatestEntryToday(latestEntryDate?: string | null) {
+  const latest = getLatestEntryDay(latestEntryDate);
+  if (!latest || !isTradingDay(latest)) return false;
+
+  return (
+    latest.isSame(ny(), 'day') ||
+    latest.tz(localTz()).isSame(dayjs().tz(localTz()), 'day')
+  );
+}
+
 function getEntryRangeByOption(
   value: QuickRange,
   latestEntryDate?: string | null
 ): [dayjs.Dayjs | null, dayjs.Dayjs | null] {
   switch (value) {
     case 'today': {
+      if (isLatestEntryToday(latestEntryDate)) {
+        const latest = getLatestEntryDay(latestEntryDate);
+        if (latest) return [latest.startOf('day'), latest.endOf('day')];
+      }
+
       const d = ny();
       return [d.startOf('day'), d.endOf('day')];
     }

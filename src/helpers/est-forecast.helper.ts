@@ -80,6 +80,13 @@ export const transformEstForecast = (data: any[]): EstForecast[] => {
     daysToEarning: toNumber(item[fieldMapping.daysToEarning]),
     noteForEarning: item[fieldMapping.noteForEarning],
     forecastPct: toNumber(item[fieldMapping.forecastPct]),
+    priceAtEarning: toNumber(item[fieldMapping.priceAtEarning]),
+    dateAtEarning: item[fieldMapping.dateAtEarning],
+    priceCurrentEstForecast: toNumber(
+      item[fieldMapping.priceCurrentEstForecast]
+    ),
+    datePrice: item[fieldMapping.datePrice],
+    percentEstForecast: toNumber(item[fieldMapping.percentEstForecast]),
     entryDate: item[fieldMapping.entryDate],
     entryPrice: toNumber(item[fieldMapping.entryPrice]),
     highestPrice: toNumber(item[fieldMapping.highestPrice]),
@@ -115,6 +122,13 @@ export const transformEstForecastFilter = (
     noteForEarning: item[fieldMapping.noteForEarning],
     forecast: item.forecast,
     forecastPct: toNumber(item[fieldMapping.forecastPct]),
+    priceAtEarning: toNumber(item[fieldMapping.priceAtEarning]),
+    dateAtEarning: item[fieldMapping.dateAtEarning],
+    priceCurrentEstForecast: toNumber(
+      item[fieldMapping.priceCurrentEstForecast]
+    ),
+    datePrice: item[fieldMapping.datePrice],
+    percentEstForecast: toNumber(item[fieldMapping.percentEstForecast]),
     entryDate: item[fieldMapping.entryDate],
     entryPrice: toNumber(item[fieldMapping.entryPrice]),
     highestPrice: toNumber(item[fieldMapping.highestPrice]),
