@@ -37,6 +37,7 @@ import {
   watchAlertLogsPagination,
   watchLatestHitOnePercent
 } from '@/redux/slices/signals.slice';
+import { addAlertLogToCategory } from '@/redux/slices/signals.slice';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { AlertLogsFilter } from '../filters/alert-logs.filter';
@@ -53,11 +54,13 @@ import { ExportExcelLog } from '../export-excel-signals';
 import { Icon } from '../icons';
 import { useModal } from '@/hooks/modal.hook';
 import { ConfirmRemoveCategory } from '../forms/confirm-remove-category.form';
+import { useNotification } from '@/hooks/notification.hook';
 import { AIExplain } from '../ai-explain';
 import { SignalInformation } from '../signal-information';
 import { NotesSignal } from '../forms/note-signal.form';
 import { ExitSignal } from '../forms/exit-signal.form';
 import { TableRowSelection } from 'antd/es/table/interface';
+import { isRequestSuccess } from '@/utils/request-status';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { watchSideBarCollapsed } from '@/redux/slices/app.slice';
 import EllipsisText from '../ellipsis-text';
@@ -93,6 +96,7 @@ export const AlertLogsTable = ({
   const searchParams = useSearchParams();
   const { height } = useWindowSize();
   const modal = useModal();
+  const { notifySuccess, notifyError } = useNotification();
   const storageKey = isFilterPage
     ? VisibleColumnsStorageKey.AlertLogsFilter
     : VisibleColumnsStorageKey.AlertLogs;
@@ -115,7 +119,6 @@ export const AlertLogsTable = ({
   const pagination = useAppSelector(watchAlertLogsPagination);
   const loading = useAppSelector(watchAlertLogsLoading);
   const latestHitOnePercent = useAppSelector(watchLatestHitOnePercent);
-
   const [filter, setFilter] = useState<AlertLogsFilter>({});
   const [isFilterReady, setIsFilterReady] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -1502,34 +1505,6 @@ export const AlertLogsTable = ({
         )
     },
     {
-      title: t('winOrLoss'),
-      dataIndex: 'winOrLoss',
-      key: 'winOrLoss',
-      width: 120,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'plPercent' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('plPercent')
-      }),
-      render: (_, record) =>
-        record.plPercent ? (
-          <PositiveNegativeText
-            isPositive={record.plPercent >= 0}
-            isNegative={record.plPercent < 0}
-          >
-            {record.plPercent >= 0 ? (
-              <span>{t('win')}</span>
-            ) : (
-              <span>{t('loss')}</span>
-            )}
-          </PositiveNegativeText>
-        ) : (
-          '-'
-        )
-    },
-    {
       title: t('actions'),
       dataIndex: 'action',
       key: 'action',
@@ -1544,6 +1519,96 @@ export const AlertLogsTable = ({
             trigger={['click']}
             menu={{
               items: [
+                {
+                  key: 'trade',
+                  label: (
+                    <span>
+                      {record.categoryIds?.includes(1)
+                        ? t('removeFromTrade')
+                        : t('trade')}
+                    </span>
+                  ),
+                  onClick: async () => {
+                    const categoryId = 1;
+                    const categoryName = t('trade');
+                    const isInCategory =
+                      record.categoryIds?.includes(categoryId);
+                    if (isInCategory) {
+                      modal.openModal(
+                        <ConfirmRemoveCategory
+                          alertLogIds={[record.id]}
+                          categoryId={categoryId}
+                          categoryName={categoryName}
+                          title={t('confirmRemoveFromTrade')}
+                          description={t('confirmRemoveFromTradeDescription')}
+                          onSuccess={handleRefresh}
+                        />,
+                        { width: 400 }
+                      );
+                    } else {
+                      const res = await dispatch(
+                        addAlertLogToCategory({
+                          alertLogId: record.id,
+                          categoryId
+                        })
+                      );
+                      if (isRequestSuccess(res)) {
+                        notifySuccess(t('addToTradeSuccess'));
+                      } else {
+                        notifyError(t('addToTradeFailed'));
+                      }
+                    }
+                  }
+                },
+                {
+                  type: 'divider'
+                },
+                {
+                  key: 'watchlist',
+                  label: (
+                    <span>
+                      {record.categoryIds?.includes(2)
+                        ? t('removeFromWatchlist')
+                        : t('addToWatchlist')}
+                    </span>
+                  ),
+                  onClick: async () => {
+                    const categoryId = 2;
+                    const categoryName = t('watchlist');
+                    const isInCategory =
+                      record.categoryIds?.includes(categoryId);
+                    if (isInCategory) {
+                      modal.openModal(
+                        <ConfirmRemoveCategory
+                          alertLogIds={[record.id]}
+                          categoryId={categoryId}
+                          categoryName={categoryName}
+                          title={t('confirmRemoveFromWatchlist')}
+                          description={t(
+                            'confirmRemoveFromWatchlistDescription'
+                          )}
+                          onSuccess={handleRefresh}
+                        />,
+                        { width: 400 }
+                      );
+                    } else {
+                      const res = await dispatch(
+                        addAlertLogToCategory({
+                          alertLogId: record.id,
+                          categoryId
+                        })
+                      );
+                      if (isRequestSuccess(res)) {
+                        notifySuccess(t('addToWatchlistSuccess'));
+                      } else {
+                        notifyError(t('addToWatchlistFailed'));
+                      }
+                    }
+                  }
+                },
+                {
+                  type: 'divider'
+                },
                 {
                   key: 'notes',
                   label: t('notes'),
@@ -1639,7 +1704,7 @@ export const AlertLogsTable = ({
     setVisibleColumns(checkedValues);
   };
 
-  const filteredColumns: TableColumnsType<Signal> = baseColumns.filter((col) =>
+  const filteredColumns = baseColumns.filter((col) =>
     visibleColumns.includes(col.key as string)
   );
 
@@ -1844,7 +1909,7 @@ export const AlertLogsTable = ({
             dataSource={alertLogsData}
             loading={loading}
             scroll={{
-              x: 1200,
+              x: Math.max(tableScrollX, isMobile ? 1200 : 2200),
               y:
                 alertLogsData.length > 0
                   ? isMobile
@@ -1907,7 +1972,6 @@ export const AlertLogsTable = ({
         </div>
       </div>
       <SetColumn
-        key={storageKey}
         visible={isDrawerVisible}
         columns={baseColumns}
         visibleColumns={visibleColumns}
