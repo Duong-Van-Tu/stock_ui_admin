@@ -18,7 +18,7 @@ export default function FloatSelect({
   ...restProps
 }: FloatSelectProps) {
   const {
-    token: { colorBgContainer }
+    token: { colorBgContainer, colorTextSecondary }
   } = theme.useToken();
   // const [focus, setFocus] = useState(true);
   const isOccupied = true;
@@ -51,7 +51,11 @@ export default function FloatSelect({
       />
       <label
         css={[
-          labelBaseStyle(restProps.disabled, colorBgContainer),
+          labelBaseStyle(
+            restProps.disabled,
+            colorBgContainer,
+            colorTextSecondary
+          ),
           isOccupied ? labelActiveStyle : labelPlaceholderStyle
         ]}
       >
@@ -70,7 +74,11 @@ const getInputStyles = (width: string) => css`
   width: ${width} !important;
 `;
 
-const labelBaseStyle = (hidden?: boolean, backgroundColor?: string) => css`
+const labelBaseStyle = (
+  hidden?: boolean,
+  backgroundColor?: string,
+  textColor?: string
+) => css`
   font-weight: normal;
   position: absolute;
   pointer-events: none;
@@ -78,12 +86,12 @@ const labelBaseStyle = (hidden?: boolean, backgroundColor?: string) => css`
   top: 0.4rem;
   transition: 0.2s ease all;
   background: ${backgroundColor || 'var(--white-color)'};
-  color: var(--text-tertiary-color);
+  color: ${textColor || 'var(--text-tertiary-color)'};
   display: ${hidden && 'none'};
 `;
 
 const labelPlaceholderStyle = css`
-  color: var(--text-tertiary-color);
+  color: inherit;
 `;
 
 const labelActiveStyle = css`
