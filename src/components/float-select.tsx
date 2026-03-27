@@ -45,7 +45,7 @@ export default function FloatSelect({
       <Select
         {...restProps}
         value={value}
-        placeholder=''
+        placeholder={placeholder || label}
         size='middle'
         css={getInputStyles(width)}
       />
