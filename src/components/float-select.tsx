@@ -79,7 +79,7 @@ const labelBaseStyle = (
   backgroundColor?: string,
   textColor?: string
 ) => css`
-  font-weight: normal;
+  font-weight: 500;
   position: absolute;
   pointer-events: none;
   left: 1.2rem;
@@ -97,6 +97,7 @@ const labelPlaceholderStyle = css`
 const labelActiveStyle = css`
   top: -1.2rem;
   font-size: 1.2rem !important;
+  line-height: 1.6rem;
   padding: 0 0.4rem;
   margin-left: -0.4rem;
 `;
