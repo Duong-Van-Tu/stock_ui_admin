@@ -418,9 +418,19 @@ export const AlertLogsTable = ({
                 onClick={() => handleExpandRowKeys(record)}
                 icon={
                   isExpanded ? (
-                    <Icon icon='arrowDown' width={16} height={16} />
+                    <Icon
+                      icon='arrowDown'
+                      width={16}
+                      height={16}
+                      fill='var(--text-color)'
+                    />
                   ) : (
-                    <Icon icon='right' width={18} height={18} />
+                    <Icon
+                      icon='right'
+                      width={18}
+                      height={18}
+                      fill='var(--text-color)'
+                    />
                   )
                 }
               />
@@ -1668,7 +1678,15 @@ export const AlertLogsTable = ({
           >
             <Button
               type='text'
-              icon={<Icon icon='dotsVertical' width={18} height={18} />}
+              css={actionMenuBtnStyles}
+              icon={
+                <Icon
+                  icon='dotsVertical'
+                  width={18}
+                  height={18}
+                  fill='var(--text-color)'
+                />
+              }
               shape='circle'
             />
           </Dropdown>
@@ -1831,30 +1849,32 @@ export const AlertLogsTable = ({
                   <Button
                     onClick={handleRefresh}
                     type='text'
+                    css={headerIconBtnStyles}
                     icon={
                       <Icon
                         customStyles={iconStyles}
                         icon='refresh'
                         width={22}
                         height={22}
+                        fill='var(--text-color)'
                       />
                     }
-                    shape='circle'
                   />
                 </Tooltip>
                 <Tooltip title={!isMobile && t('setColumn')}>
                   <Button
                     onClick={toggleDrawer}
                     type='text'
+                    css={headerIconBtnStyles}
                     icon={
                       <Icon
                         customStyles={iconStyles}
                         icon='columnSetting'
                         width={22}
                         height={22}
+                        fill='var(--text-color)'
                       />
                     }
-                    shape='circle'
                   />
                 </Tooltip>
               </TableTitle>
@@ -1993,7 +2013,7 @@ const titleStyles = css`
   width: ${isMobile ? '100%' : 'unset'};
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.8rem;
   span {
     line-height: 2rem;
   }
@@ -2187,4 +2207,43 @@ const detailTableStyles = css`
 const expandIconBtnStyles = css`
   width: 2.6rem !important;
   height: 2.6rem;
+  color: var(--text-color);
+  background: var(--table-row-bg-color);
+  border: 1px solid var(--gray-light-color);
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--gray-soft-color);
+    border-color: var(--text-secondary-color) !important;
+  }
+`;
+
+const actionMenuBtnStyles = css`
+  color: var(--text-color);
+  background: var(--table-row-bg-color) !important;
+  border: 1px solid var(--gray-light-color) !important;
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--gray-soft-color) !important;
+    border-color: var(--text-secondary-color) !important;
+  }
+`;
+
+const headerIconBtnStyles = css`
+  color: var(--text-color);
+  background: var(--table-row-bg-color) !important;
+  border: 1px solid var(--gray-light-color) !important;
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--gray-soft-color) !important;
+    border-color: var(--text-secondary-color) !important;
+  }
 `;
