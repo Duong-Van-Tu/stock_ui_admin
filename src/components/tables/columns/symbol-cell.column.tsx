@@ -22,6 +22,7 @@ import {
 } from '@/utils/common';
 import { PositiveNegativeText } from '@/components/positive-negative-text';
 import { useRouter } from 'next/navigation';
+import { useThemeMode } from '@/providers/theme.provider';
 
 type SymbolCellProps = {
   symbol: string;
@@ -55,9 +56,16 @@ export const SymbolCell = ({
 }: SymbolCellProps) => {
   const t = useTranslations();
   const router = useRouter();
+  const { isDarkMode } = useThemeMode();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerContent, setDrawerContent] = useState<ContentType | null>(null);
   const [drawerOption, setDrawerOption] = useState<string>('');
+  const popoverBackgroundColor = isDarkMode
+    ? '#1f1f1f'
+    : 'var(--surface-elevated-color)';
+  const popoverBorderColor = isDarkMode
+    ? 'rgba(255, 255, 255, 0.1)'
+    : 'var(--border-light-color)';
 
   const handleIconClick = (contentType: ContentType, option?: string) => {
     setDrawerContent(contentType);
@@ -75,11 +83,12 @@ export const SymbolCell = ({
     <>
       <div css={symbolStyles}>
         <Popover
+          color={popoverBackgroundColor}
           content={
-            <>
+            <div css={popoverContentStyles(popoverBackgroundColor)}>
               <ChartMiniTradingview symbol={symbol} />
               {stockInfo && (
-                <div css={stockInfoStyles}>
+                <div css={stockInfoStyles(popoverBackgroundColor, isDarkMode)}>
                   <div css={scoreWrapperStyles}>
                     <ScoreBlock
                       label={t('totalScore')}
@@ -158,11 +167,20 @@ export const SymbolCell = ({
                   </Row>
                 </div>
               )}
-            </>
+            </div>
           }
           trigger='hover'
           placement='rightTop'
-          overlayStyle={{ padding: 0 }}
+          overlayStyle={{
+            padding: 0,
+            ['--antd-arrow-background-color' as any]: popoverBackgroundColor
+          }}
+          overlayInnerStyle={{
+            background: popoverBackgroundColor,
+            border: `1px solid ${popoverBorderColor}`,
+            borderRadius: '0.8rem',
+            padding: 0
+          }}
         >
           {isMobile ? (
             <span css={stockLinkStyles}>{symbol}</span>
@@ -340,12 +358,22 @@ const dividerStyles = css`
   height: 4rem;
 `;
 
-const stockInfoStyles = css`
+const stockInfoStyles = (backgroundColor: string, isDarkMode: boolean) => css`
   margin-top: 1rem;
+  padding-top: 1.2rem;
   bottom: 0.4rem;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  background: ${backgroundColor};
+  border-top: 1px solid
+    ${isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'var(--border-light-color)'};
+`;
+
+const popoverContentStyles = (backgroundColor: string) => css`
+  background: ${backgroundColor};
+  padding: 1.2rem;
+  border-radius: 0.8rem;
 `;
 
 const columnStyles = css`

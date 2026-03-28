@@ -22,7 +22,7 @@ const ChartMiniTradingview = ({
   const container = useRef<HTMLDivElement>(null);
   const resolvedColorTheme = colorTheme ?? (isDarkMode ? 'dark' : 'light');
   const widgetBackgroundColor =
-    resolvedColorTheme === 'dark' ? '#1f1f1f' : 'var(--white-color)';
+    resolvedColorTheme === 'dark' ? '#1f1f1f' : 'var(--surface-elevated-color)';
 
   useEffect(() => {
     if (container.current) {
@@ -55,7 +55,7 @@ const ChartMiniTradingview = ({
       css={css`
         position: relative;
         overflow: hidden;
-        background: transparent;
+        background: ${widgetBackgroundColor};
         border-radius: 0.8rem;
 
         &::before {

@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { searchSymbol } from '@/redux/slices/search';
-import { Button, Dropdown, Input, Layout, Space } from 'antd';
+import { Button, Dropdown, Layout, Space } from 'antd';
 import type { MenuProps } from 'antd';
 import { Icon } from './icons';
 import { MenuItemType } from 'antd/es/menu/interface';
@@ -19,13 +19,12 @@ import BreakingNews from './breaking-news';
 import { EconomicCalendarList } from './economic-calendar-list';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import ThemeToggle from './theme-toggle';
+import { SearchOutlined } from '@ant-design/icons';
 
 enum UserMenu {
   PROFILE,
   LOGOUT
 }
-
-const { Search } = Input;
 
 type HeaderProps = {
   collapsed: boolean;
@@ -160,16 +159,36 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
           width={34}
           height={34}
         />
-        <Search
-          placeholder={t('searchPlaceholder')}
-          size='middle'
-          allowClear
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
-          onSearch={handleSearch}
-          onClear={handleClear}
-          css={searchStyles(isDesktop)}
-        />
+        <div css={searchWrapperStyles(isDesktop)}>
+          <input
+            type='text'
+            placeholder={t('searchPlaceholder')}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch((e.target as HTMLInputElement).value);
+              }
+            }}
+            css={searchInputStyles}
+          />
+          {!!searchValue && (
+            <button
+              type='button'
+              aria-label='Clear search'
+              onClick={handleClear}
+              css={searchClearBtnStyles}
+            >
+              ×
+            </button>
+          )}
+          <Button
+            type='text'
+            css={searchActionBtnStyles}
+            icon={<SearchOutlined css={searchActionIconStyles} />}
+            onClick={() => handleSearch(searchValue)}
+          />
+        </div>
       </div>
       {showBreakingNews && (
         <div css={breakingNewsStyles(isMobile)}>
@@ -267,33 +286,86 @@ const leftSectionStyles = (isMobileView: boolean) => css`
   min-width: 0;
 `;
 
-const searchStyles = (isDesktopView: boolean) => css`
-  max-width: 32rem;
-  min-width: ${isDesktopView ? '24rem' : 'unset'};
+const searchWrapperStyles = (isDesktopView: boolean) => css`
+  max-width: 34rem;
+  min-width: ${isDesktopView ? '30rem' : 'unset'};
   width: 100%;
   flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 4.8rem;
+  padding: 0 0.8rem 0 1.8rem;
+  background: var(--surface-elevated-color);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  box-shadow: none;
+  overflow: hidden;
 
-  .ant-input-affix-wrapper {
-    min-width: 0;
-    background: var(--surface-elevated-color);
-    border-color: var(--border-color);
-    box-shadow: none;
+  :root[data-theme='dark'] & {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
   }
+`;
 
-  .ant-input-affix-wrapper:hover,
-  .ant-input-affix-wrapper:focus,
-  .ant-input-affix-wrapper-focused {
-    border-color: var(--primary-color);
-  }
+const searchInputStyles = css`
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 1.55rem;
+  font-weight: 500;
+  padding: 0 7.6rem 0 0;
 
-  .ant-input {
-    background: transparent;
-    color: var(--text-color);
-  }
-
-  .ant-input::placeholder {
+  &::placeholder {
     color: var(--text-tertiary-color);
   }
+`;
+
+const searchClearBtnStyles = css`
+  position: absolute;
+  top: 50%;
+  right: 4.9rem;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary-color);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+`;
+
+const searchActionBtnStyles = css`
+  position: absolute;
+  top: 50%;
+  right: 0.7rem;
+  transform: translateY(-50%);
+  width: 4rem;
+  min-width: 4rem;
+  height: 4rem !important;
+  padding: 0;
+  border: none !important;
+  border-radius: 50% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0d7dff 0%, #19c8ff 100%) !important;
+  box-shadow: none;
+
+  &:hover,
+  &:focus {
+    background: linear-gradient(135deg, #1a88ff 0%, #28d0ff 100%) !important;
+  }
+`;
+
+const searchActionIconStyles = css`
+  color: var(--white-color);
+  font-size: 2rem;
 `;
 
 const breakingNewsStyles = (isMobileView: boolean) => css`
