@@ -2081,11 +2081,11 @@ const segmentedContainerStyles = css`
 
 const segmentedStyles = (sideBarCollapsed: boolean) => css`
   && {
-  padding: 0.4rem;
-  border-radius: 1.4rem;
-  background: #f3f6fa;
-  border: 1px solid rgba(8, 127, 244, 0.12);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    padding: 0.4rem;
+    border-radius: 1.4rem;
+    background: #f3f6fa;
+    border: 1px solid rgba(8, 127, 244, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
   }
 
   .ant-segmented-group {
