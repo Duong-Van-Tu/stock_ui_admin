@@ -294,8 +294,8 @@ const searchWrapperStyles = (isDesktopView: boolean) => css`
   position: relative;
   display: flex;
   align-items: center;
-  height: 4.8rem;
-  padding: 0 0.8rem 0 1.8rem;
+  height: 4.4rem;
+  padding: 0 0.6rem 0 1.6rem;
   background: var(--surface-elevated-color);
   border: 1px solid var(--border-color);
   border-radius: 999px;
@@ -315,9 +315,9 @@ const searchInputStyles = css`
   outline: none;
   background: transparent;
   color: var(--text-color);
-  font-size: 1.55rem;
+  font-size: 1.45rem;
   font-weight: 500;
-  padding: 0 7.6rem 0 0;
+  padding: 0 6.8rem 0 0;
 
   &::placeholder {
     color: var(--text-tertiary-color);
@@ -327,15 +327,15 @@ const searchInputStyles = css`
 const searchClearBtnStyles = css`
   position: absolute;
   top: 50%;
-  right: 4.9rem;
+  right: 4.3rem;
   transform: translateY(-50%);
-  width: 2rem;
-  height: 2rem;
+  width: 1.8rem;
+  height: 1.8rem;
   padding: 0;
   border: none;
   background: transparent;
   color: var(--text-tertiary-color);
-  font-size: 2rem;
+  font-size: 1.8rem;
   line-height: 1;
   cursor: pointer;
 `;
@@ -343,11 +343,11 @@ const searchClearBtnStyles = css`
 const searchActionBtnStyles = css`
   position: absolute;
   top: 50%;
-  right: 0.7rem;
+  right: 0.5rem;
   transform: translateY(-50%);
-  width: 4rem;
-  min-width: 4rem;
-  height: 4rem !important;
+  width: 3.6rem;
+  min-width: 3.6rem;
+  height: 3.6rem !important;
   padding: 0;
   border: none !important;
   border-radius: 50% !important;
@@ -365,7 +365,7 @@ const searchActionBtnStyles = css`
 
 const searchActionIconStyles = css`
   color: var(--white-color);
-  font-size: 2rem;
+  font-size: 1.7rem;
 `;
 
 const breakingNewsStyles = (isMobileView: boolean) => css`
