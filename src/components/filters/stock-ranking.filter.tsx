@@ -110,6 +110,38 @@ const selectStyles = css`
   min-width: ${isMobile ? '100%' : '20rem'};
   max-width: ${isMobile ? '14rem' : '20rem'};
   width: ${isMobile ? '100%' : 'unset'};
+
+  .ant-select-selector {
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--brand-blue-color) 14%,
+        var(--border-light-color)
+      ) !important;
+    transition: border-color 0.2s ease !important;
+  }
+
+  .ant-select-selection-placeholder {
+    color: color-mix(
+      in srgb,
+      var(--text-secondary-color) 82%,
+      var(--text-color)
+    ) !important;
+    font-weight: 400;
+  }
+
+  &:hover .ant-select-selector {
+    border-color: color-mix(
+      in srgb,
+      var(--brand-blue-color) 24%,
+      var(--border-light-color)
+    ) !important;
+  }
+
+  &.ant-select-focused .ant-select-selector,
+  &.ant-select-open .ant-select-selector {
+    border-color: var(--brand-blue-color) !important;
+  }
 `;
 
 const selectContainerStyles = css`

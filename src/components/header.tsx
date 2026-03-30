@@ -92,13 +92,20 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
       {
         label: t('profile'),
         key: UserMenu.PROFILE,
-        icon: <Icon icon='userProfile' width={16} height={16} />,
+        icon: (
+          <Icon
+            icon='userProfile'
+            width={16}
+            height={16}
+            fill='currentColor'
+          />
+        ),
         style: { gap: '0.6rem', alignItems: 'flex-start' }
       },
       {
         label: t('logout'),
         key: UserMenu.LOGOUT,
-        icon: <Icon icon='logout' width={16} height={16} />,
+        icon: <Icon icon='logout' width={16} height={16} fill='currentColor' />,
         style: { gap: '0.6rem' }
       }
     ],
