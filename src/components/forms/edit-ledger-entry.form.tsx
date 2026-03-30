@@ -200,8 +200,16 @@ export default function EditLedgerEntry() {
           </Title>
           <Tooltip title={isMobile ? null : t('back')} css={goBackStyles}>
             <Button
+              css={backButtonStyles}
               shape='circle'
-              icon={<Icon icon='back' width={18} height={18} />}
+              icon={
+                <Icon
+                  icon='back'
+                  width={18}
+                  height={18}
+                  fill='var(--text-color)'
+                />
+              }
               onClick={handleGoBack}
             />
           </Tooltip>
@@ -471,7 +479,12 @@ export default function EditLedgerEntry() {
             </div>
             <Form.Item css={formActionsStyles}>
               <Space>
-                <Button onClick={handleGoBack} type='default' size='large'>
+                <Button
+                  css={secondaryButtonStyles}
+                  onClick={handleGoBack}
+                  type='default'
+                  size='large'
+                >
                   {t('cancel')}
                 </Button>
                 <Button
@@ -631,11 +644,45 @@ const formActionsStyles = css`
   bottom: -2rem;
   margin-bottom: 0 !important;
   box-shadow: 0 -1.2px 2.4px var(--separator-color);
-  background: var(--white-color);
+  border-top: 1px solid var(--separator-color);
+  background: var(--surface-elevated-color);
+
+  .ant-space {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    width: 100%;
+  }
 `;
 
 const fullWidthStyles = css`
   width: 100%;
+`;
+
+const backButtonStyles = css`
+  background: var(--surface-elevated-color);
+  border-color: var(--border-color);
+  color: var(--text-color);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+
+  &:hover,
+  &:focus {
+    background: var(--surface-subtle-color) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--text-color) !important;
+  }
+`;
+
+const secondaryButtonStyles = css`
+  background: var(--surface-base-color);
+  border-color: var(--border-color);
+  color: var(--text-color);
+
+  &:hover,
+  &:focus {
+    background: var(--surface-subtle-color) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--text-color) !important;
+  }
 `;
 
 const saveBtnStyles = css`

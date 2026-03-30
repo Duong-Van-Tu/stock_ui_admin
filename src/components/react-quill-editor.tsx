@@ -76,7 +76,11 @@ export const ReactQuillEditor = ({
       <div
         className={className}
         css={editorStyles(height, maxHeight)}
-        style={{ border: '1px solid #ccc', borderRadius: '4px' }}
+        style={{
+          border: '1px solid var(--border-color)',
+          borderRadius: '4px',
+          background: 'var(--surface-base-color)'
+        }}
       />
     );
   }
@@ -110,20 +114,48 @@ const editorStyles = (
     ${maxHeight ? 'overflow-y: auto;' : ''}
     font-size: 1.4rem;
     line-height: 1.5;
+    color: var(--text-color);
+    background: var(--surface-base-color);
   }
 
   .ql-container {
     font-family: inherit;
     border-radius: 0 0 4px 4px;
+    background: var(--surface-base-color);
+    color: var(--text-color);
   }
 
   .ql-toolbar {
     border-radius: 4px 4px 0 0;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
+    background: var(--surface-elevated-color);
   }
 
   .ql-container.ql-snow {
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-top: none;
+  }
+
+  .ql-snow .ql-stroke {
+    stroke: var(--text-color);
+  }
+
+  .ql-snow .ql-fill,
+  .ql-snow .ql-stroke.ql-fill {
+    fill: var(--text-color);
+  }
+
+  .ql-snow .ql-picker {
+    color: var(--text-color);
+  }
+
+  .ql-snow .ql-picker-options {
+    background: var(--surface-elevated-color);
+    border-color: var(--border-color);
+  }
+
+  .ql-editor.ql-blank::before {
+    color: var(--text-secondary-color);
+    font-style: normal;
   }
 `;

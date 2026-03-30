@@ -27,6 +27,8 @@ import { useThemeMode } from '@/providers/theme.provider';
 type SymbolCellProps = {
   symbol: string;
   companyName?: string;
+  symbolColor?: string;
+  companyNameColor?: string;
   isNews?: boolean;
   earningDate?: string;
   isNewsNegative?: boolean;
@@ -43,6 +45,8 @@ type SymbolCellProps = {
 export const SymbolCell = ({
   symbol,
   companyName,
+  symbolColor,
+  companyNameColor,
   isNews,
   earningDate,
   isNewsNegative,
@@ -183,10 +187,10 @@ export const SymbolCell = ({
           }}
         >
           {isMobile ? (
-            <span css={stockLinkStyles}>{symbol}</span>
+            <span css={stockLinkStyles(symbolColor)}>{symbol}</span>
           ) : (
             <Link
-              css={stockLinkStyles}
+              css={stockLinkStyles(symbolColor)}
               href={link ?? PageURLs.ofStockDetail(symbol, signalId)}
               target={link ? undefined : isDesktop ? '_blank' : undefined}
             >
@@ -301,7 +305,7 @@ export const SymbolCell = ({
       </div>
 
       {companyName && (
-        <div css={companyNameStyles()}>
+        <div css={companyNameStyles(companyNameColor)}>
           <EllipsisText text={companyName} maxLines={1} />
         </div>
       )}
@@ -323,9 +327,9 @@ const symbolStyles = css`
   font-weight: 600;
 `;
 
-const stockLinkStyles = css`
+const stockLinkStyles = (symbolColor?: string) => css`
   margin-right: 0.6rem;
-  color: var(--symbol-color);
+  color: ${symbolColor || 'var(--symbol-color)'};
   font-size: ${isMobile ? '1.4rem' : '1.6rem'};
   &:hover {
     color: var(--primary-color);
@@ -339,11 +343,11 @@ const buttonStyles = css`
   border-radius: 50%;
 `;
 
-const companyNameStyles = () => css`
+const companyNameStyles = (companyNameColor?: string) => css`
   font-size: 1.3rem;
   line-height: 1.4rem;
   font-weight: 500;
-  color: var(--text-color);
+  color: ${companyNameColor || 'var(--text-color)'};
 `;
 
 const scoreWrapperStyles = css`

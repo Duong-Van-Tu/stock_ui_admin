@@ -8,7 +8,8 @@ import {
   Input,
   Popconfirm,
   Tooltip,
-  Modal
+  Modal,
+  Pagination
 } from 'antd';
 import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -495,6 +496,37 @@ export const EstForecastSelectedTable = ({
     [handleDelete, handleRefresh, mode, startEdit]
   );
 
+  const getForecastCellBackground = useCallback((forecast?: string | null) => {
+    return forecast
+      ? lightenColor(forecast, 0.5)
+      : 'var(--surface-elevated-color)';
+  }, []);
+
+  const getContrastTextColor = useCallback((backgroundColor: string) => {
+    const rgbMatch = backgroundColor.match(/\d+/g);
+    if (!rgbMatch || rgbMatch.length < 3) {
+      return {
+        symbolColor: 'var(--symbol-color)',
+        companyNameColor: 'var(--text-primary-strong-color)'
+      };
+    }
+
+    const [r, g, b] = rgbMatch.slice(0, 3).map(Number);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+    if (luminance > 0.72) {
+      return {
+        symbolColor: '#1d4ed8',
+        companyNameColor: '#111827'
+      };
+    }
+
+    return {
+      symbolColor: '#dbeafe',
+      companyNameColor: '#f9fafb'
+    };
+  }, []);
+
   const columns: TableColumnsType<EstForecastFilterItem> = useMemo(
     () => [
       {
@@ -504,18 +536,24 @@ export const EstForecastSelectedTable = ({
         fixed: 'left',
         onCell: (record) => ({
           style: {
-            backgroundColor: record.forecast
-              ? lightenColor(record.forecast, 0.5)
-              : 'var(--white-color)'
+            backgroundColor: getForecastCellBackground(record.forecast)
           }
         }),
-        render: (_, record) => (
-          <SymbolCell
-            symbol={record.symbol}
-            companyName={isMobile ? undefined : record.company}
-            link={`${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`}
-          />
-        )
+        render: (_, record) => {
+          const backgroundColor = getForecastCellBackground(record.forecast);
+          const { symbolColor, companyNameColor } =
+            getContrastTextColor(backgroundColor);
+
+          return (
+            <SymbolCell
+              symbol={record.symbol}
+              companyName={isMobile ? undefined : record.company}
+              symbolColor={symbolColor}
+              companyNameColor={companyNameColor}
+              link={`${PageURLs.ofFinnhubLsegNews()}?symbol=${record.symbol}`}
+            />
+          );
+        }
       },
       {
         title: 'Forecast Pct',
@@ -1146,7 +1184,9 @@ export const EstForecastSelectedTable = ({
       renderText,
       renderAction,
       optionResultLoadingMap,
-      handleViewOptionResults
+      handleViewOptionResults,
+      getContrastTextColor,
+      getForecastCellBackground
     ]
   );
 
@@ -1239,17 +1279,13 @@ export const EstForecastSelectedTable = ({
         </div>
 
         <div css={paginationWrapperStyles}>
-          <Table
-            dataSource={[]}
-            pagination={{
-              current: pagination.currentPage,
-              pageSize: pagination.pageSize,
-              total: pagination.total,
-              position: ['bottomCenter'],
-              showSizeChanger: true,
-              showQuickJumper: true,
-              onChange: handlePageChange
-            }}
+          <Pagination
+            current={pagination.currentPage}
+            pageSize={pagination.pageSize}
+            total={pagination.total}
+            showSizeChanger
+            showQuickJumper
+            onChange={handlePageChange}
           />
         </div>
       </div>
@@ -1266,7 +1302,6 @@ const rootStyles = css`
 const tableWrapperStyles = css`
   border: 1px solid var(--border-table-color);
   border-radius: 0.8rem;
-  background: var(--white-color);
 `;
 
 const titleRowStyles = css`
@@ -1311,9 +1346,14 @@ const tableStyles = css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
-  .ant-table-thead > tr > th {
-    background: #fafafa;
+
+  .ant-table-cell-fix-left,
+  .ant-table-cell-fix-right,
+  .ant-table-cell-fix-left-last,
+  .ant-table-cell-fix-right-first {
+    background: inherit;
   }
+
   .ant-table-tbody
     > tr.upcoming-earning-row
     > td:not(:first-of-type):not(:last-of-type) {
@@ -1323,9 +1363,7 @@ const tableStyles = css`
 
 const paginationWrapperStyles = css`
   padding: 1.2rem;
-  .ant-table {
-    display: none;
-  }
+
   .ant-pagination {
     display: flex;
     justify-content: center;
