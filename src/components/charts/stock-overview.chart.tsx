@@ -1,5 +1,10 @@
+'use client';
+
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { useEffect, useRef, memo } from 'react';
 import { TimeZone } from '@/constants/timezone.constant';
+import { useThemeMode } from '@/providers/theme.provider';
 import { isMobile } from 'react-device-detect';
 
 interface StockChartOverviewProps {
@@ -7,7 +12,13 @@ interface StockChartOverviewProps {
 }
 
 const StockChartOverview = ({ symbol }: StockChartOverviewProps) => {
+  const { isDarkMode } = useThemeMode();
   const container = useRef<HTMLDivElement>(null);
+  const chartTheme = isDarkMode ? 'dark' : 'light';
+  const widgetBackgroundColor = isDarkMode
+    ? 'var(--surface-elevated-color)'
+    : '#ffffff';
+
   useEffect(() => {
     if (container.current) {
       container.current.innerHTML = '';
@@ -22,7 +33,7 @@ const StockChartOverview = ({ symbol }: StockChartOverviewProps) => {
           "symbol": "${symbol}",
           "interval": "D",
           "timezone": "${TimeZone.NEW_YORK}",
-          "theme": "light",
+          "theme": "${chartTheme}",
           "style": "1.5",
           "locale": "en",
           "allow_symbol_change": true,
@@ -36,13 +47,25 @@ const StockChartOverview = ({ symbol }: StockChartOverviewProps) => {
         }`;
       container.current.appendChild(script);
     }
-  }, [symbol]);
+  }, [symbol, chartTheme]);
 
   return (
     <div
       className='tradingview-widget-container'
       ref={container}
       style={{ height: '100%', width: '100%', minHeight: '450px' }}
+      css={css`
+        background: ${widgetBackgroundColor};
+        border-radius: 0.8rem;
+        overflow: hidden;
+
+        > div,
+        iframe,
+        .tradingview-widget-container__widget,
+        .tradingview-widget-container__widget iframe {
+          background: ${widgetBackgroundColor} !important;
+        }
+      `}
     >
       <div
         className='tradingview-widget-container__widget'
