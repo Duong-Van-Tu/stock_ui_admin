@@ -46,6 +46,7 @@ import { ExportExcelFinnhubLsegNews } from '../export-excel-finnhub-lseg-news';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { transformFinnhubAndLsegNews } from '@/helpers/sentiment.helper';
+import { useThemeMode } from '@/providers/theme.provider';
 
 export const FinnhubAndLsegNewsTable = () => {
   const t = useTranslations();
@@ -56,6 +57,7 @@ export const FinnhubAndLsegNewsTable = () => {
   const symbol = searchParams.get('symbol');
   const storyId = searchParams.get('storyId');
   const { height } = useWindowSize();
+  const { isDarkMode } = useThemeMode();
   const modal = useModal();
 
   const loading = useAppSelector(watchFinnhubAndLsegNewsLoading);
@@ -223,6 +225,26 @@ export const FinnhubAndLsegNewsTable = () => {
   };
 
   const dataSource = Array.isArray(listNews) ? listNews : [];
+  const getBreakingNewsCellStyle = useCallback(
+    (breakingNews?: number) => {
+      if (breakingNews === 1) {
+        return {
+          background: isDarkMode
+            ? 'var(--watching-solid-color)'
+            : 'var(--watching-color)'
+        };
+      }
+
+      if (breakingNews === -1) {
+        return {
+          background: isDarkMode ? '#3a1f28' : 'var(--soft-pink-color)'
+        };
+      }
+
+      return undefined;
+    },
+    [isDarkMode]
+  );
 
   const columns: TableColumnsType<FinnhubAndLsegNewsTableItem> = [
     {
@@ -283,12 +305,7 @@ export const FinnhubAndLsegNewsTable = () => {
         onClick: () => handleSortOrder('symbol')
       }),
       onCell: (record) => ({
-        className:
-          record.breakingNews === 1
-            ? 'hl-breaking-news-positive '
-            : record.breakingNews === -1
-              ? 'hl-breaking-news-negative '
-              : ''
+        style: getBreakingNewsCellStyle(record.breakingNews)
       }),
       render: (value) => <SymbolCell symbol={value} />
     },
@@ -306,12 +323,7 @@ export const FinnhubAndLsegNewsTable = () => {
       }),
       align: 'center',
       onCell: (record) => ({
-        className:
-          record.breakingNews === 1
-            ? 'hl-breaking-news-positive'
-            : record.breakingNews === -1
-              ? 'hl-breaking-news-negative'
-              : ''
+        style: getBreakingNewsCellStyle(record.breakingNews)
       }),
       render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
@@ -893,6 +905,7 @@ export const FinnhubAndLsegNewsTable = () => {
           </div>
         </div>
         <Table<FinnhubAndLsegNewsTableItem>
+          className='finnhub-lseg-news-table'
           size={isMobile ? 'small' : 'middle'}
           css={tableStyles}
           rowKey={(record) => record.key}
@@ -1001,12 +1014,7 @@ const tableStyles = css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
-  .hl-breaking-news-positive {
-    background-color: var(--watching-color) !important;
-  }
-  .hl-breaking-news-negative {
-    background-color: var(--soft-pink-color) !important;
-  }
+
   .ant-table-expanded-row-fixed {
     padding: 0;
   }

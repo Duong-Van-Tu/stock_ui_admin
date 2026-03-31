@@ -18,6 +18,29 @@
   background-color: var(--border-table-color) !important;
 }
 
+:root[data-theme='dark']
+  .finnhub-lseg-news-table
+  .ant-table-tbody
+  > tr
+  > .ant-table-cell-fix-left,
+:root[data-theme='dark']
+  .finnhub-lseg-news-table
+  .ant-table-tbody
+  > tr
+  > .ant-table-cell-fix-right,
+:root[data-theme='dark']
+  .finnhub-lseg-news-table
+  .ant-table-tbody
+  > tr
+  > .ant-table-cell-fix-left-last,
+:root[data-theme='dark']
+  .finnhub-lseg-news-table
+  .ant-table-tbody
+  > tr
+  > .ant-table-cell-fix-right-first {
+  background: var(--table-row-bg-color);
+}
+
 :root[data-theme='dark'] .ant-dropdown .ant-dropdown-menu,
 :root[data-theme='dark'] .ant-select-dropdown,
 :root[data-theme='dark'] .ant-picker-dropdown .ant-picker-panel-container,
