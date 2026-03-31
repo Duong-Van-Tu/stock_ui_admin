@@ -274,15 +274,25 @@ export const FinnhubAndLsegNewsTable = () => {
         const isExpanded = expandedRowKeys.includes(record.key);
         if (value > 1) {
           return (
-            <Badge count={value} color='gold'>
+            <Badge count={value} color='gold' css={countBadgeStyles}>
               <Button
                 css={expandIconBtnStyles}
                 onClick={() => handleExpandRowKeys(record)}
                 icon={
                   isExpanded ? (
-                    <Icon icon='arrowDown' width={16} height={16} />
+                    <Icon
+                      icon='arrowDown'
+                      width={16}
+                      height={16}
+                      fill='var(--text-color)'
+                    />
                   ) : (
-                    <Icon icon='right' width={18} height={18} />
+                    <Icon
+                      icon='right'
+                      width={18}
+                      height={18}
+                      fill='var(--text-color)'
+                    />
                   )
                 }
               />
@@ -866,15 +876,16 @@ export const FinnhubAndLsegNewsTable = () => {
               <Button
                 onClick={handleRefresh}
                 type='text'
+                css={headerIconBtnStyles}
                 icon={
                   <Icon
                     customStyles={iconStyles}
                     icon='refresh'
                     width={22}
                     height={22}
+                    fill='var(--text-color)'
                   />
                 }
-                shape='circle'
               />
             </Tooltip>
           </TableTitle>
@@ -1036,7 +1047,7 @@ const titleStyles = css`
   width: ${isMobile ? '100%' : 'unset'};
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.8rem;
   span {
     line-height: 2rem;
   }
@@ -1090,9 +1101,47 @@ const detailTableStyles = css`
   }
 `;
 
+const countBadgeStyles = css`
+  .ant-badge-count {
+    min-width: 2rem;
+    height: 2rem;
+    padding-inline: 0.6rem;
+    border-radius: 999px;
+    color: var(--white-color);
+    font-weight: 500;
+    line-height: 2rem;
+    box-shadow: 0 4px 12px rgba(250, 173, 20, 0.22);
+  }
+`;
+
 const expandIconBtnStyles = css`
-  width: 2.4rem !important;
-  height: 2.4rem;
+  width: 2.6rem !important;
+  height: 2.6rem;
+  color: var(--text-color);
+  background: var(--table-row-bg-color);
+  border: 1px solid var(--gray-light-color);
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--gray-soft-color) !important;
+    border-color: var(--text-secondary-color) !important;
+  }
+`;
+
+const headerIconBtnStyles = css`
+  color: var(--text-color);
+  background: var(--table-row-bg-color) !important;
+  border: 1px solid var(--gray-light-color) !important;
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--gray-soft-color) !important;
+    border-color: var(--text-secondary-color) !important;
+  }
 `;
 
 const checkboxStyles = css`

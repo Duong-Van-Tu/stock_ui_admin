@@ -412,7 +412,7 @@ export const AlertLogsTable = ({
         const isExpanded = expandedRowKeys.includes(record.key);
         if (value > 1) {
           return (
-            <Badge count={value} color={badgeColor}>
+            <Badge count={value} color={badgeColor} css={countBadgeStyles}>
               <Button
                 css={expandIconBtnStyles}
                 onClick={() => handleExpandRowKeys(record)}
@@ -2243,6 +2243,18 @@ const detailTableStyles = css`
     .ant-table-cell {
       background: var(--table-row-bg-color);
     }
+  }
+`;
+
+const countBadgeStyles = css`
+  .ant-badge-count {
+    min-width: 2rem;
+    height: 2rem;
+    padding-inline: 0.6rem;
+    border-radius: 999px;
+    color: var(--white-color);
+    font-weight: 500;
+    line-height: 2rem;
   }
 `;
 
