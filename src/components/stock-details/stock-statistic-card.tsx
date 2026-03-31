@@ -7,6 +7,7 @@ import {
   formatMarketCap,
   formatNumberShort,
   formatPercent,
+  isFiniteNumber,
   roundToDecimals
 } from '@/utils/common';
 import { PositiveNegativeText } from '../positive-negative-text';
@@ -30,7 +31,7 @@ const renderValue = (
     compareTo
   }: { suffix?: string; isPercent?: boolean; compareTo?: number } = {}
 ) => {
-  if (!value) return '--';
+  if (!isFiniteNumber(value)) return '--';
 
   const display = isPercent
     ? formatPercent(value)
@@ -86,11 +87,20 @@ export const StatisticCard = () => {
     aiExplain
   } = stockDetails || {};
 
+  const aiExplainText = typeof aiExplain === 'string' ? aiExplain : null;
+  const grokReasoningText =
+    typeof grokReasoning === 'string' ? grokReasoning : null;
+
+  const hasAiRatingSection = isFiniteNumber(aiRating) && Boolean(aiExplainText);
+  const hasGrokRatingSection =
+    isFiniteNumber(grokRating) && Boolean(grokReasoningText);
+  const hasTopSection = hasAiRatingSection || hasGrokRatingSection;
+
   return (
     <Card title={t('statistic')} bordered size='small' css={cardStyles}>
       <Row gutter={[8, 8]}>
         <Col span={12}>
-          {aiRating && aiExplain && (
+          {hasAiRatingSection && (
             <div css={chartContainer}>
               <Col span={24}>
                 <Typography.Title css={aiRatingStyles}>
@@ -109,7 +119,7 @@ export const StatisticCard = () => {
                   css={signalBtnStyles}
                   onClick={() =>
                     modal.openModal(
-                      <AIExplain symbol={ticker!} text={aiExplain} />
+                      <AIExplain symbol={ticker!} text={aiExplainText!} />
                     )
                   }
                   type='link'
@@ -122,7 +132,7 @@ export const StatisticCard = () => {
           )}
         </Col>
         <Col span={12}>
-          {grokRating && grokReasoning && (
+          {hasGrokRatingSection && (
             <div css={chartContainer}>
               <Col span={24}>
                 <Typography.Title css={grokRatingStyles}>
@@ -148,7 +158,10 @@ export const StatisticCard = () => {
                           }
                         )
                       : modal.openModal(
-                          <AIExplain symbol={ticker!} text={grokReasoning} />
+                          <AIExplain
+                            symbol={ticker!}
+                            text={grokReasoningText!}
+                          />
                         )
                   }
                   type='link'
@@ -161,12 +174,12 @@ export const StatisticCard = () => {
           )}
         </Col>
       </Row>
-      <Divider css={dividerStyles} />
+      {hasTopSection && <Divider css={dividerStyles} />}
       <Row gutter={[8, 8]}>
         <StatRow
           label={t('marketCapIntraday')}
           value={
-            marketCap ? (
+            isFiniteNumber(marketCap) ? (
               <>
                 {formatMarketCap(marketCap)}&nbsp;({marketCapTitle || '--'})
               </>
@@ -177,7 +190,7 @@ export const StatisticCard = () => {
         />
         <StatRow
           label={t('volume')}
-          value={volume ? formatNumberShort(volume) : '--'}
+          value={isFiniteNumber(volume) ? formatNumberShort(volume) : '--'}
         />
         <StatRow label={t('atr')} value={renderValue(atr)} />
         <StatRow label={t('beta')} value={renderValue(beta)} />
@@ -204,7 +217,7 @@ export const StatisticCard = () => {
         <StatRow
           label={t('week52Range')}
           value={
-            week52Low && week52High
+            isFiniteNumber(week52Low) && isFiniteNumber(week52High)
               ? `${roundToDecimals(week52Low)}$ - ${roundToDecimals(
                   week52High
                 )}$`
