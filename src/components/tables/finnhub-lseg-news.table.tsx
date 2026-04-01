@@ -924,7 +924,7 @@ export const FinnhubAndLsegNewsTable = () => {
         <Table<FinnhubAndLsegNewsTableItem>
           className='finnhub-lseg-news-table'
           size={isMobile ? 'small' : 'middle'}
-          css={tableStyles}
+          css={tableStyles(isDarkMode)}
           rowKey={(record) => record.key}
           columns={columns}
           dataSource={dataSource}
@@ -1027,7 +1027,7 @@ const filterBarStyles = css`
   padding: 1.6rem 1.6rem 1.2rem;
 `;
 
-const tableStyles = css`
+const tableStyles = (isDarkMode: boolean) => css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
@@ -1036,7 +1036,7 @@ const tableStyles = css`
   .ant-table-tbody > tr > .ant-table-cell-fix-right,
   .ant-table-tbody > tr > .ant-table-cell-fix-left-last,
   .ant-table-tbody > tr > .ant-table-cell-fix-right-first {
-    background: inherit;
+    background: ${isDarkMode ? '#141414' : 'var(--white-color)'};
   }
 
   .ant-table-expanded-row-fixed {
