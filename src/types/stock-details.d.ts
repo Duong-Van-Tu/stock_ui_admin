@@ -28,10 +28,10 @@ type StockDetails = {
   week52HighDate: string;
   week52Low: number;
   week52LowDate: string;
-  aiRating: number;
+  aiRating: number | null;
   aiRecommendationSignal: string;
   aiExplain: string;
-  grokRating: number;
+  grokRating: number | null;
   grokReasoning: string;
   grokRec: string;
   performanceScore: number;
