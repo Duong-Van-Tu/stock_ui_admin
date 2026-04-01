@@ -452,9 +452,6 @@ const rootStyles = css`
     rgba(255, 255, 255, 0.03) 0%,
     rgba(255, 255, 255, 0.015) 100%
   );
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 10px 24px rgba(0, 0, 0, 0.08);
 
   :root[data-theme='light'] & {
     background: linear-gradient(
@@ -463,9 +460,6 @@ const rootStyles = css`
       rgba(248, 250, 252, 0.96) 100%
     );
     border-color: rgba(15, 23, 42, 0.08);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.8),
-      0 8px 24px rgba(15, 23, 42, 0.05);
   }
 
   :root[data-theme='dark'] & {
@@ -475,9 +469,6 @@ const rootStyles = css`
       rgba(15, 24, 40, 0.98) 100%
     );
     border-color: rgba(148, 163, 184, 0.14);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.05),
-      0 12px 28px rgba(0, 0, 0, 0.22);
   }
 `;
 
