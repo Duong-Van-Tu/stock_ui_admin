@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { fieldMapping } from './field-mapping.helper';
 import { TimeZone } from '@/constants/timezone.constant';
+import { toNumber } from '@/utils/common';
 
 export const initFundamentalScore = {
   ebitScore: 0,
@@ -60,10 +61,10 @@ export const transformStockDetails = (stock: any): StockDetails | null => {
     week52HighDate: stock[fieldMapping.week52HighDate],
     week52Low: stock[fieldMapping.week52Low],
     week52LowDate: stock[fieldMapping.week52LowDate],
-    aiRating: stock[fieldMapping.AIRating],
+    aiRating: toNumber(stock[fieldMapping.AIRating]),
     aiRecommendationSignal: stock[fieldMapping.AIRecommendationSignal],
     aiExplain: stock[fieldMapping.AIExplain],
-    grokRating: Number(stock[fieldMapping.grokRating]),
+    grokRating: toNumber(stock[fieldMapping.grokRating]),
     grokReasoning: stock[fieldMapping.grokReasoning],
     grokRec: stock[fieldMapping.grokRec]
   };
