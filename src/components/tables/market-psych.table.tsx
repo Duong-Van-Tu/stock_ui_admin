@@ -462,7 +462,15 @@ export const MarketPsychTable = () => {
               })
             }
             type='text'
-            icon={<Icon icon='refresh' width={22} height={22} />}
+            css={refreshIconBtnStyles}
+            icon={
+              <Icon
+                icon='refresh'
+                width={22}
+                height={22}
+                fill='var(--text-color)'
+              />
+            }
             shape='circle'
           />
         </TableTitle>
@@ -529,4 +537,18 @@ const titleStyles = css`
   display: flex;
   align-items: center;
   gap: 0.4rem;
+`;
+
+const refreshIconBtnStyles = css`
+  color: var(--text-color);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
+  }
 `;

@@ -1267,7 +1267,7 @@ export const WatchlistSwingTradeTable = () => {
                   <Button
                     onClick={handleRefresh}
                     type='text'
-                    css={headerIconBtnStyles}
+                    css={refreshIconBtnStyles}
                     icon={
                       <Icon
                         customStyles={iconStyles}
@@ -1495,6 +1495,20 @@ const dayChartBtnStyles = css`
 
 const iconStyles = css`
   margin-top: 0.2rem;
+`;
+
+const refreshIconBtnStyles = css`
+  color: var(--text-color);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
+  }
 `;
 
 const headerIconBtnStyles = css`

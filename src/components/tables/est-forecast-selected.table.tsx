@@ -1213,7 +1213,15 @@ export const EstForecastSelectedTable = ({
               <Button
                 onClick={handleRefresh}
                 type='text'
-                icon={<Icon icon='refresh' width={22} height={22} />}
+                css={refreshIconBtnStyles}
+                icon={
+                  <Icon
+                    icon='refresh'
+                    width={22}
+                    height={22}
+                    fill='var(--text-color)'
+                  />
+                }
               />
             </Tooltip>
           </TableTitle>
@@ -1383,6 +1391,20 @@ const titleStyles = css`
   justify-content: center;
   align-items: center;
   gap: 0.2rem;
+`;
+
+const refreshIconBtnStyles = css`
+  color: var(--text-color);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
+  }
 `;
 
 const optionResultsModalStyles = css`

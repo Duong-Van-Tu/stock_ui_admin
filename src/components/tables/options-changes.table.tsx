@@ -544,12 +544,14 @@ export const OptionChangesTable = ({ optionType }: OptionChangesTableProps) => {
                     })
                   }
                   type='text'
+                  css={refreshIconBtnStyles}
                   icon={
                     <Icon
                       customStyles={refreshIconStyles}
                       icon='refresh'
                       width={22}
                       height={22}
+                      fill='var(--text-color)'
                     />
                   }
                   shape='circle'
@@ -668,6 +670,20 @@ const emptyStyles = (h: number) => css`
 
 const refreshIconStyles = css`
   margin-top: 0.2rem;
+`;
+
+const refreshIconBtnStyles = css`
+  color: var(--text-color);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
+  }
 `;
 
 const dateTextStyles = css`

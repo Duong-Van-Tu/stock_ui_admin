@@ -1849,7 +1849,7 @@ export const AlertLogsTable = ({
                   <Button
                     onClick={handleRefresh}
                     type='text'
-                    css={headerIconBtnStyles}
+                    css={refreshIconBtnStyles}
                     icon={
                       <Icon
                         customStyles={iconStyles}
@@ -2299,5 +2299,19 @@ const headerIconBtnStyles = css`
   &:focus-visible {
     background: var(--gray-soft-color) !important;
     border-color: var(--text-secondary-color) !important;
+  }
+`;
+
+const refreshIconBtnStyles = css`
+  color: var(--text-color);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
   }
 `;
