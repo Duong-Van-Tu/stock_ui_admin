@@ -37,6 +37,10 @@ import { TimeZone } from '@/constants/timezone.constant';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
+import {
+  createSegmentedLabelStyles,
+  segmentedStyles as baseSegmentedStyles
+} from './segmented.styles';
 
 const formatRatioPercent = (value: number | null | undefined) => {
   if (!isNumeric(value)) return '-';
@@ -572,14 +576,7 @@ const rightControlStyles = css`
 `;
 
 const segmentedStyles = css`
-  padding: 0;
-  .ant-segmented-item-selected {
-    background: var(--primary-color);
-    color: var(--white-color);
-  }
-  .ant-segmented-item-label {
-    text-transform: uppercase;
-  }
+  ${baseSegmentedStyles};
   @media (min-width: 992px) {
     position: absolute;
     left: 50%;
@@ -592,11 +589,9 @@ const segmentedStyles = css`
   }
 `;
 
-const segmentedLabelStyles = css`
-  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
-  font-weight: 500;
-  text-transform: uppercase;
-`;
+const segmentedLabelStyles = createSegmentedLabelStyles({
+  textTransform: 'uppercase'
+});
 
 const newsTypeFilterStyles = css`
   display: flex;

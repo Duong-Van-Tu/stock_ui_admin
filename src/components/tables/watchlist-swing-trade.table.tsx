@@ -50,6 +50,10 @@ import PriceRangeSlider from '../charts/price-range.chart';
 import { SetColumn } from './columns/set-column';
 import { useLocalStorage } from '@/hooks/local-storage.hook';
 import { VisibleColumnsStorageKey } from '@/constants/column.constant';
+import {
+  createSegmentedLabelStyles,
+  segmentedStyles as baseSegmentedStyles
+} from './segmented.styles';
 
 export const WatchlistSwingTradeTable = () => {
   const t = useTranslations();
@@ -1465,24 +1469,14 @@ const filterContainerStyles = css`
 `;
 
 const segmentedStyles = css`
-  padding: 0;
+  ${baseSegmentedStyles};
   position: absolute;
   top: 70%;
   left: 50%;
   transform: translate(-50%, -70%);
-  .ant-segmented-item {
-    width: 8.8rem;
-  }
-  .ant-segmented-item-selected {
-    background: var(--primary-color);
-    color: var(--white-color);
-  }
 `;
 
-const segmentedLabelStyles = css`
-  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
-  font-weight: 500;
-`;
+const segmentedLabelStyles = createSegmentedLabelStyles();
 
 const dayChartBtnStyles = css`
   width: 140px;
