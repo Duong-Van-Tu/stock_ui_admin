@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 import { roundToDecimals } from '@/utils/common';
+import { useEChartsTheme } from './echarts-theme';
 
 interface PriceRangeSliderProps {
   lowest: number;
@@ -14,6 +15,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
   current
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
+  const chartTheme = useEChartsTheme();
 
   const effectiveLowest = Math.min(lowest, current);
   const effectiveHighest = Math.max(highest, current);
@@ -41,12 +43,12 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
           }
           return '';
         },
-        backgroundColor: '#fff',
-        borderColor: '#ccc',
+        backgroundColor: chartTheme.tooltipBackgroundColor,
+        borderColor: chartTheme.tooltipBorderColor,
         borderWidth: 1,
         padding: [1, 4],
         textStyle: {
-          color: '#000',
+          color: chartTheme.tooltipTextColor,
           fontSize: 12
         },
         position: (point: number[]) => [point[0] + 10, point[1] - 10]
@@ -71,7 +73,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
             [effectiveHighest, 0]
           ],
           lineStyle: {
-            color: '#444',
+            color: chartTheme.axisLineColor,
             width: 3
           },
           showSymbol: false,
@@ -114,7 +116,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
           top: 'bottom',
           style: {
             text: roundToDecimals(effectiveLowest),
-            fill: '#000',
+            fill: chartTheme.secondaryTextColor,
             font: '12px sans-serif'
           }
         },
@@ -124,7 +126,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
           top: 'bottom',
           style: {
             text: roundToDecimals(effectiveHighest),
-            fill: '#000',
+            fill: chartTheme.secondaryTextColor,
             font: '12px sans-serif'
           }
         }
@@ -137,7 +139,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
       chart.dispose();
       window.removeEventListener('resize', handleResize);
     };
-  }, [effectiveLowest, effectiveHighest, current]);
+  }, [chartTheme, current, effectiveHighest, effectiveLowest]);
 
   return (
     <div

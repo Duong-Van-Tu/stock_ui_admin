@@ -13,6 +13,7 @@ import {
 import { CanvasRenderer } from 'echarts/renderers';
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
+import { useEChartsTheme } from './echarts-theme';
 
 echarts.use([
   TooltipComponent,
@@ -39,6 +40,7 @@ export default function LineChart({
   width
 }: LineChartProps) {
   const [isChartReady, setIsChartReady] = useState(false);
+  const chartTheme = useEChartsTheme();
 
   const option = {
     legend: {
@@ -46,10 +48,15 @@ export default function LineChart({
       left: 0,
       bottom: 0,
       itemGap: 16,
-      textStyle: { color: '#1e1e1e' }
+      textStyle: { color: chartTheme.secondaryTextColor }
     },
     tooltip: {
-      trigger: 'axis'
+      trigger: 'axis',
+      backgroundColor: chartTheme.tooltipBackgroundColor,
+      borderColor: chartTheme.tooltipBorderColor,
+      textStyle: {
+        color: chartTheme.tooltipTextColor
+      }
     },
     dataset: {
       source: data
@@ -58,7 +65,7 @@ export default function LineChart({
       type: 'category',
       boundaryGap: false,
       axisLabel: {
-        color: '#1e1e1e',
+        color: chartTheme.secondaryTextColor,
         margin: 10,
         formatter: (value: string) =>
           dayjs(value).isValid() ? dayjs(value).format('MM-DD-YYYY') : value,
@@ -66,14 +73,14 @@ export default function LineChart({
       },
       axisLine: {
         lineStyle: {
-          color: '#ccc'
+          color: chartTheme.axisLineColor
         }
       }
     },
     yAxis: {
-      axisLabel: { color: '#1e1e1e' },
-      axisLine: { lineStyle: { color: '#ccc' } },
-      splitLine: { lineStyle: { color: '#e0e0e0' } }
+      axisLabel: { color: chartTheme.secondaryTextColor },
+      axisLine: { lineStyle: { color: chartTheme.axisLineColor } },
+      splitLine: { lineStyle: { color: chartTheme.splitLineColor } }
     },
     grid: {
       top: 20,
@@ -117,6 +124,7 @@ export default function LineChart({
         css={chartStyle}
         echarts={echarts}
         option={option}
+        key={chartTheme.backgroundColor}
         notMerge={true}
         lazyUpdate={true}
       />

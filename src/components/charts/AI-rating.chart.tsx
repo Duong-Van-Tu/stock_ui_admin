@@ -1,5 +1,6 @@
 import * as echarts from 'echarts';
 import { useEffect, useRef } from 'react';
+import { useEChartsTheme } from './echarts-theme';
 
 enum Recommendation {
   STRONG_SELL = 'Strong Sell',
@@ -34,6 +35,7 @@ const getRecommendationColor = (recommendation: Recommendation): string => {
 
 export default function AIRatingChart({ rating }: AIRatingProps) {
   const chartRef = useRef<HTMLDivElement>(null);
+  const chartTheme = useEChartsTheme();
   const recommendation = getRecommendation(rating);
   const recommendationColor = getRecommendationColor(recommendation);
 
@@ -115,7 +117,7 @@ export default function AIRatingChart({ rating }: AIRatingProps) {
               splitNumber: 10
             },
             axisLabel: {
-              color: '#464646',
+              color: chartTheme.secondaryTextColor,
               fontSize: layout.axisLabelFontSize,
               distance: -32,
               rotate: 'tangential',
@@ -167,7 +169,7 @@ export default function AIRatingChart({ rating }: AIRatingProps) {
       window.removeEventListener('resize', handleResize);
       chart.dispose();
     };
-  }, [rating, recommendation, recommendationColor]);
+  }, [chartTheme, rating, recommendation, recommendationColor]);
 
   return (
     <div
