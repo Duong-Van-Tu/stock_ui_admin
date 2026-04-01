@@ -328,6 +328,10 @@ export function isNumeric(value: unknown): boolean {
   return !isNaN(Number(value)) && value !== null && value !== '';
 }
 
+export function isFiniteNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value);
+}
+
 export const tidyTime = (t?: string): string =>
   (t || '')
     .trim()
