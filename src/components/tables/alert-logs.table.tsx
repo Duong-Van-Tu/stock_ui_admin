@@ -2013,7 +2013,7 @@ const titleStyles = css`
   width: ${isMobile ? '100%' : 'unset'};
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.4rem;
   span {
     line-height: 2rem;
   }
@@ -2290,15 +2290,15 @@ const actionMenuBtnStyles = css`
 
 const headerIconBtnStyles = css`
   color: var(--text-color);
-  background: var(--table-row-bg-color) !important;
-  border: 1px solid var(--gray-light-color) !important;
-  border-radius: 0.8rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
 
   &:hover,
   &:focus-visible {
-    background: var(--gray-soft-color) !important;
-    border-color: var(--text-secondary-color) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
   }
 `;
 
