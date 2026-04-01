@@ -1267,30 +1267,32 @@ export const WatchlistSwingTradeTable = () => {
                   <Button
                     onClick={handleRefresh}
                     type='text'
+                    css={headerIconBtnStyles}
                     icon={
                       <Icon
                         customStyles={iconStyles}
                         icon='refresh'
                         width={22}
                         height={22}
+                        fill='var(--text-color)'
                       />
                     }
-                    shape='circle'
                   />
                 </Tooltip>
                 <Tooltip title={!isMobile && t('setColumn')}>
                   <Button
                     onClick={toggleDrawer}
                     type='text'
+                    css={headerIconBtnStyles}
                     icon={
                       <Icon
                         customStyles={iconStyles}
                         icon='columnSetting'
                         width={22}
                         height={22}
+                        fill='var(--text-color)'
                       />
                     }
-                    shape='circle'
                   />
                 </Tooltip>
               </TableTitle>
@@ -1493,4 +1495,18 @@ const dayChartBtnStyles = css`
 
 const iconStyles = css`
   margin-top: 0.2rem;
+`;
+
+const headerIconBtnStyles = css`
+  color: var(--text-color);
+  background: var(--table-row-bg-color) !important;
+  border: 1px solid var(--gray-light-color) !important;
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--gray-soft-color) !important;
+    border-color: var(--text-secondary-color) !important;
+  }
 `;
