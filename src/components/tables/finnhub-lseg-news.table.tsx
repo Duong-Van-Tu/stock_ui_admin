@@ -254,6 +254,9 @@ export const FinnhubAndLsegNewsTable = () => {
       width: 70,
       align: 'center',
       fixed: !isMobile && 'left',
+      onCell: (record) => ({
+        style: getBreakingNewsCellStyle(record.breakingNews)
+      }),
       render: (_v, _r, index) =>
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
     },
@@ -269,6 +272,9 @@ export const FinnhubAndLsegNewsTable = () => {
       sortOrder: sortField === 'totalNews24H' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('totalNews24H')
+      }),
+      onCell: (record) => ({
+        style: getBreakingNewsCellStyle(record.breakingNews)
       }),
       render: (value, record) => {
         const isExpanded = expandedRowKeys.includes(record.key);
@@ -1024,6 +1030,13 @@ const filterBarStyles = css`
 const tableStyles = css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
+  }
+
+  .ant-table-tbody > tr > .ant-table-cell-fix-left,
+  .ant-table-tbody > tr > .ant-table-cell-fix-right,
+  .ant-table-tbody > tr > .ant-table-cell-fix-left-last,
+  .ant-table-tbody > tr > .ant-table-cell-fix-right-first {
+    background: inherit;
   }
 
   .ant-table-expanded-row-fixed {
