@@ -244,16 +244,21 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
           placement='bottomRight'
           trigger={['click']}
           icon={
-            <Icon
-              icon='user'
-              width={isMobile ? 26 : 22}
-              height={isMobile ? 26 : 22}
-            />
+            <span css={userAvatarChipStyles(isMobile)}>
+              <Icon
+                icon='user'
+                width={isMobile ? 22 : 18}
+                height={isMobile ? 22 : 18}
+                fill='#061826'
+              />
+            </span>
           }
           arrow
-          css={isMobile ? userDropdownBtnStyles : undefined}
+          css={userDropdownBtnStyles(showUserFullName, isMobile)}
         >
-          {showUserFullName && <span>{user?.fullname}</span>}
+          {showUserFullName && (
+            <span css={userNameStyles}>{user?.fullname}</span>
+          )}
         </Dropdown.Button>
       </div>
     </Layout.Header>
@@ -428,29 +433,122 @@ const menuIconStyles = css`
   }
 `;
 
-const userDropdownBtnStyles = css`
+const userDropdownBtnStyles = (
+  showUserFullName: boolean,
+  isMobileView: boolean
+) => css`
+  display: inline-flex;
+  align-items: center;
+  height: 3.8rem;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-elevated-color);
+  box-shadow: 0 0.35rem 1rem var(--box-shadow-color);
+  overflow: hidden;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: var(--primary-color);
+    box-shadow:
+      0 7px 16px rgba(15, 23, 42, 0.09),
+      0 0 0 1px rgba(8, 127, 244, 0.08);
+  }
+
   .ant-btn {
-    background: var(--surface-elevated-color);
-    border-color: var(--border-color);
-    color: var(--text-color);
+    height: 100%;
+    border: none !important;
+    background: transparent !important;
+    color: var(--text-color) !important;
+    box-shadow: none !important;
+  }
+
+  .ant-btn-compact-item::before {
+    display: none !important;
   }
 
   .ant-btn:hover,
   .ant-btn:focus {
-    border-color: var(--primary-color) !important;
-    color: var(--primary-color) !important;
-    background: var(--surface-elevated-color) !important;
+    color: var(--text-color) !important;
   }
 
   .ant-btn-compact-first-item {
-    display: none;
+    display: ${showUserFullName ? 'inline-flex' : 'none'};
+    align-items: center;
+    padding: 0 1.2rem 0 1.15rem;
+    border-radius: 999px 0 0 999px !important;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 0;
+      width: 1px;
+      height: 1.55rem;
+      transform: translateY(-50%);
+      background: linear-gradient(
+        180deg,
+        rgba(15, 23, 42, 0.03) 0%,
+        rgba(15, 23, 42, 0.12) 50%,
+        rgba(15, 23, 42, 0.03) 100%
+      );
+    }
   }
 
   .ant-btn-compact-last-item {
-    border: none;
-    border-radius: 50% !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: ${isMobileView ? '3.4rem' : '3.8rem'};
+    min-width: ${isMobileView ? '3.4rem' : '3.8rem'};
     padding: 0;
-    width: 2.8rem;
-    box-shadow: none;
+    border-radius: ${showUserFullName ? '0 999px 999px 0' : '999px'}
+      !important;
   }
+
+  :root[data-theme='dark'] & {
+    &:hover {
+      border-color: var(--primary-color);
+      box-shadow:
+        0 0.5rem 1.2rem var(--box-shadow-color),
+        0 0 0 1px rgba(25, 200, 255, 0.06);
+    }
+
+    .ant-btn-compact-first-item::after {
+      background: linear-gradient(
+        180deg,
+        rgba(148, 163, 184, 0.05) 0%,
+        rgba(148, 163, 184, 0.2) 50%,
+        rgba(148, 163, 184, 0.05) 100%
+      );
+    }
+  }
+`;
+
+const userNameStyles = css`
+  display: block;
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1.32rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-color);
+`;
+
+const userAvatarChipStyles = (isMobileView: boolean) => css`
+  width: ${isMobileView ? '2.65rem' : '2.95rem'};
+  height: ${isMobileView ? '2.65rem' : '2.95rem'};
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #24a7f4 0%, #5ed7ff 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 8px 18px rgba(28, 154, 223, 0.3);
 `;
