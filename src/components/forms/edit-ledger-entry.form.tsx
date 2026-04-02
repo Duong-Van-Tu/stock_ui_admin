@@ -11,10 +11,10 @@ import {
   Spin,
   Typography,
   Space,
-  Tooltip,
   Modal
 } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
+import { BackButton } from '../back-button';
 import { Icon } from '../icons';
 import { ReactQuillEditor } from '../react-quill-editor';
 import { useTranslations } from 'next-intl';
@@ -198,21 +198,11 @@ export default function EditLedgerEntry() {
           <Title level={isMobile ? 4 : 3} css={titleStyles}>
             {t('UpdateLedgerEntry')}
           </Title>
-          <Tooltip title={isMobile ? null : t('back')} css={goBackStyles}>
-            <Button
-              css={backButtonStyles}
-              shape='circle'
-              icon={
-                <Icon
-                  icon='back'
-                  width={18}
-                  height={18}
-                  fill='var(--text-color)'
-                />
-              }
-              onClick={handleGoBack}
-            />
-          </Tooltip>
+          <BackButton
+            onClick={handleGoBack}
+            tooltip={t('back')}
+            wrapperCss={goBackStyles}
+          />
           <Form
             form={form}
             layout='vertical'
@@ -656,20 +646,6 @@ const formActionsStyles = css`
 
 const fullWidthStyles = css`
   width: 100%;
-`;
-
-const backButtonStyles = css`
-  background: var(--surface-elevated-color);
-  border-color: var(--border-color);
-  color: var(--text-color);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
-
-  &:hover,
-  &:focus {
-    background: var(--surface-subtle-color) !important;
-    border-color: var(--primary-color) !important;
-    color: var(--text-color) !important;
-  }
 `;
 
 const secondaryButtonStyles = css`

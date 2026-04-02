@@ -1,8 +1,9 @@
 'use client';
 
-import { Button, Result } from 'antd';
+import { Result } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import { BackButton } from './back-button';
 
 export default function StockNotFound() {
   const router = useRouter();
@@ -14,9 +15,11 @@ export default function StockNotFound() {
       title={t('notFoundTitle')}
       subTitle={t('stockNotFoundSubtitle')}
       extra={
-        <Button type='primary' onClick={() => router.back()}>
-          {t('stockNotFoundBack')}
-        </Button>
+        <BackButton
+          onClick={() => router.back()}
+          label={t('stockNotFoundBack')}
+          size='large'
+        />
       }
     />
   );
