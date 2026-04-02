@@ -56,6 +56,7 @@ import { transformEstForecastOptionRecommendations } from '@/helpers/est-forecas
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import EllipsisText from '../ellipsis-text';
+import { useThemeMode } from '@/providers/theme.provider';
 
 type EstForecastSelectedTableProps = {
   mode?: 'date' | 'active';
@@ -71,6 +72,7 @@ export const EstForecastSelectedTable = ({
   const pathname = usePathname();
   const { openModal, closeModal } = useModal();
   const locale = useLocale() || 'en';
+  const { isDarkMode } = useThemeMode();
 
   const loading = useAppSelector(watchEstForecastFilterLoading);
   const filterList = useAppSelector(watchEstForecastFilterList);
@@ -478,7 +480,7 @@ export const EstForecastSelectedTable = ({
       }
 
       return (
-        <Space>
+        <Space css={actionCellStyles}>
           <Button type='primary' onClick={() => startEdit(record)}>
             Edit
           </Button>
@@ -1248,7 +1250,7 @@ export const EstForecastSelectedTable = ({
               rowKey={(record) => record.key!}
               rowClassName={getUpcomingEarningRowClassName}
               size={isMobile ? 'small' : 'middle'}
-              css={tableStyles}
+              css={tableStyles(isDarkMode)}
               columns={columns}
               dataSource={callData}
               scroll={{ x: 1200 }}
@@ -1270,7 +1272,7 @@ export const EstForecastSelectedTable = ({
               rowKey={(record) => record.key!}
               rowClassName={getUpcomingEarningRowClassName}
               size={isMobile ? 'small' : 'middle'}
-              css={tableStyles}
+              css={tableStyles(isDarkMode)}
               columns={columns}
               dataSource={putData}
               scroll={{ x: 1200 }}
@@ -1350,16 +1352,30 @@ const typeHeaderStyles = (type: 'call' | 'put') => css`
   text-align: center;
 `;
 
-const tableStyles = css`
+const tableStyles = (isDarkMode: boolean) => css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
 
   .ant-table-cell-fix-left,
-  .ant-table-cell-fix-right,
-  .ant-table-cell-fix-left-last,
-  .ant-table-cell-fix-right-first {
+  .ant-table-cell-fix-left-last {
     background: inherit;
+  }
+
+  .ant-table-thead > tr > .ant-table-cell-fix-right,
+  .ant-table-thead > tr > .ant-table-cell-fix-right-first {
+    background: ${isDarkMode ? '#1f1f1f' : '#fafafa'} !important;
+  }
+
+  .ant-table-tbody > tr > .ant-table-cell-fix-right,
+  .ant-table-tbody > tr > .ant-table-cell-fix-right-first {
+    background: ${isDarkMode ? '#141414' : '#ffffff'} !important;
+    background-clip: padding-box;
+  }
+
+  .ant-table-tbody > tr:hover > .ant-table-cell-fix-right,
+  .ant-table-tbody > tr:hover > .ant-table-cell-fix-right-first {
+    background: ${isDarkMode ? '#1f1f1f' : '#fafafa'} !important;
   }
 
   .ant-table-tbody
@@ -1367,6 +1383,11 @@ const tableStyles = css`
     > td:not(:first-of-type):not(:last-of-type) {
     background: ${lightenColor('#faad14', 0.85)} !important;
   }
+`;
+
+const actionCellStyles = css`
+  width: 100%;
+  justify-content: center;
 `;
 
 const paginationWrapperStyles = css`
