@@ -149,8 +149,12 @@ export const AlertLogsFilter = ({
   }, [latestEntryDate]);
 
   const strategyOptions = useMemo(
-    () => strategies?.map(({ id, name }) => ({ value: id, label: name })),
-    [strategies]
+    () => [
+      { value: '', label: t('allStrategy') },
+      ...(strategies?.map(({ id, name }) => ({ value: id, label: name })) ??
+        [])
+    ],
+    [strategies, t]
   );
 
   const sectorOptions = useMemo(
@@ -166,7 +170,7 @@ export const AlertLogsFilter = ({
 
   const industryOptions = useMemo(
     () => [
-      { value: '', label: t('searchSelectIndustry') },
+      { value: '', label: t('allIndustry') },
       ...(industries?.map((item) => ({
         value: item.industry,
         label: item.industry
@@ -194,7 +198,7 @@ export const AlertLogsFilter = ({
       toEntryDate: toApiUtcDate(values.entryDate?.[1]),
       fromExitDate: toApiUtcDate(values.exitDate?.[0]),
       toExitDate: toApiUtcDate(values.exitDate?.[1]),
-      strategyId: values.strategyId,
+      strategyId: values.strategyId ? Number(values.strategyId) : undefined,
       categoryId: values.categoryId ? Number(values.categoryId) : undefined,
       symbol: symbol || undefined,
       sector: values.sector || '',
@@ -209,6 +213,12 @@ export const AlertLogsFilter = ({
 
   const handleClearFilters = () => {
     form.resetFields();
+    form.setFieldsValue({
+      strategyId: '',
+      sector: '',
+      industry: '',
+      timeFrame: ''
+    });
     updateSearchParams('strategyId');
     updateSearchParams('categoryId');
     handleQuickRangeChange(defaultQuickRange);
@@ -243,7 +253,10 @@ export const AlertLogsFilter = ({
       const initialValues = {
         quickRange: defaultQuickRange,
         entryDate: start && end ? [start, end] : undefined,
-        strategyId: strategyId
+        strategyId: strategyId ?? '',
+        sector: '',
+        industry: '',
+        timeFrame: ''
       };
       form.setFieldsValue(initialValues);
 
@@ -274,7 +287,12 @@ export const AlertLogsFilter = ({
         labelCol={{ span: isMobile ? 3 : undefined }}
         css={formStyles}
         layout='horizontal'
-        initialValues={{ timeFrame: '' }}
+        initialValues={{
+          strategyId: '',
+          sector: '',
+          industry: '',
+          timeFrame: ''
+        }}
       >
         <Row gutter={[16, 12]} align='bottom' justify='end'>
           <Col css={fullWidthStyles}>
@@ -286,7 +304,7 @@ export const AlertLogsFilter = ({
                   allowClear
                   showSearch
                   loading={strategyLoading}
-                  placeholder={t('searchSelectStrategy')}
+                  placeholder={t('allStrategy')}
                   optionFilterProp='label'
                   options={strategyOptions}
                   onChange={(value) => {
@@ -409,7 +427,7 @@ export const AlertLogsFilter = ({
                   width={isMobile ? '100%' : '20rem'}
                   allowClear
                   showSearch
-                  placeholder={t('searchSelectIndustry')}
+                  placeholder={t('allIndustry')}
                   optionFilterProp='label'
                   options={industryOptions}
                   disabled={!form.getFieldValue('sector')}
