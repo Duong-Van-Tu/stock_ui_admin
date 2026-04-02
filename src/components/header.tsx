@@ -93,12 +93,7 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
         label: t('profile'),
         key: UserMenu.PROFILE,
         icon: (
-          <Icon
-            icon='userProfile'
-            width={16}
-            height={16}
-            fill='currentColor'
-          />
+          <Icon icon='userProfile' width={16} height={16} fill='currentColor' />
         ),
         style: { gap: '0.6rem', alignItems: 'flex-start' }
       },
@@ -444,7 +439,7 @@ const userDropdownBtnStyles = (
   border-radius: 999px;
   border: 1px solid var(--border-color);
   background: var(--surface-elevated-color);
-  box-shadow: 0 0.35rem 1rem var(--box-shadow-color);
+  box-shadow: none;
   overflow: hidden;
   transition:
     border-color 0.2s ease,
@@ -452,9 +447,7 @@ const userDropdownBtnStyles = (
 
   &:hover {
     border-color: var(--primary-color);
-    box-shadow:
-      0 7px 16px rgba(15, 23, 42, 0.09),
-      0 0 0 1px rgba(8, 127, 244, 0.08);
+    box-shadow: none;
   }
 
   .ant-btn {
@@ -479,13 +472,25 @@ const userDropdownBtnStyles = (
     align-items: center;
     padding: 0 1.2rem 0 1.15rem;
     border-radius: 999px 0 0 999px !important;
-    position: relative;
+  }
 
-    &::after {
+  .ant-btn-compact-last-item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: ${isMobileView ? '3.4rem' : '3.8rem'};
+    min-width: ${isMobileView ? '3.4rem' : '3.8rem'};
+    padding: 0;
+    border-radius: ${showUserFullName ? '0 999px 999px 0' : '999px'} !important;
+
+    &::before {
       content: '';
+      display: ${showUserFullName ? 'block' : 'none'};
       position: absolute;
       top: 50%;
-      right: 0;
+      left: 0;
+      z-index: 1;
       width: 1px;
       height: 1.55rem;
       transform: translateY(-50%);
@@ -498,31 +503,23 @@ const userDropdownBtnStyles = (
     }
   }
 
-  .ant-btn-compact-last-item {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: ${isMobileView ? '3.4rem' : '3.8rem'};
-    min-width: ${isMobileView ? '3.4rem' : '3.8rem'};
-    padding: 0;
-    border-radius: ${showUserFullName ? '0 999px 999px 0' : '999px'}
-      !important;
-  }
-
   :root[data-theme='dark'] & {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: none;
+
     &:hover {
       border-color: var(--primary-color);
-      box-shadow:
-        0 0.5rem 1.2rem var(--box-shadow-color),
-        0 0 0 1px rgba(25, 200, 255, 0.06);
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: none;
     }
 
-    .ant-btn-compact-first-item::after {
+    .ant-btn-compact-last-item::before {
       background: linear-gradient(
         180deg,
-        rgba(148, 163, 184, 0.05) 0%,
-        rgba(148, 163, 184, 0.2) 50%,
-        rgba(148, 163, 184, 0.05) 100%
+        rgba(148, 163, 184, 0.08) 0%,
+        rgba(148, 163, 184, 0.28) 50%,
+        rgba(148, 163, 184, 0.08) 100%
       );
     }
   }
@@ -549,6 +546,6 @@ const userAvatarChipStyles = (isMobileView: boolean) => css`
   justify-content: center;
   background: linear-gradient(135deg, #24a7f4 0%, #5ed7ff 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-    0 8px 18px rgba(28, 154, 223, 0.3);
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 0.3rem 0.75rem rgba(28, 154, 223, 0.16);
 `;
