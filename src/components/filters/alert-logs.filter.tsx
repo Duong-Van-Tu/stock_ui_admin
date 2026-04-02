@@ -348,7 +348,7 @@ export const AlertLogsFilter = ({
               >
                 <Form.Item name='entryDate' noStyle>
                   <RangePicker
-                    css={fieldControlStyles}
+                    className='brand-ant-picker'
                     format='MM-DD-YYYY'
                     allowClear
                     placeholder={[t('fromDate'), t('toDate')]}
@@ -370,7 +370,7 @@ export const AlertLogsFilter = ({
               >
                 <Form.Item name='exitDate' noStyle>
                   <RangePicker
-                    css={fieldControlStyles}
+                    className='brand-ant-picker'
                     format='MM-DD-YYYY'
                     allowClear
                     placeholder={[t('fromDate'), t('toDate')]}
@@ -481,10 +481,6 @@ const formStyles = css`
 
 const formItemStyles = css`
   margin-bottom: 0;
-`;
-
-const fieldControlStyles = css`
-  width: 100% !important;
 `;
 
 const fullWidthStyles = css`

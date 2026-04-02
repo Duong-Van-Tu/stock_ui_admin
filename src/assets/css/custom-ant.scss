@@ -72,6 +72,47 @@
     color 0.2s ease;
 }
 
+.brand-ant-picker {
+  width: 100% !important;
+  border: 1px solid
+    color-mix(in srgb, var(--brand-blue-color) 14%, var(--border-light-color)) !important;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease !important;
+}
+
+.brand-ant-picker:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--brand-blue-color) 24%,
+    var(--border-light-color)
+  ) !important;
+}
+
+.brand-ant-picker.ant-picker-focused {
+  border-color: var(--brand-blue-color) !important;
+  box-shadow: none !important;
+}
+
+.brand-ant-picker .ant-picker-input > input::placeholder {
+  color: color-mix(
+    in srgb,
+    var(--text-secondary-color) 82%,
+    var(--text-color)
+  ) !important;
+  font-weight: 400;
+}
+
+.brand-ant-picker .ant-picker-range-separator,
+.brand-ant-picker .ant-picker-suffix,
+.brand-ant-picker .ant-picker-clear {
+  color: color-mix(
+    in srgb,
+    var(--text-secondary-color) 78%,
+    var(--text-color)
+  ) !important;
+}
+
 @media (max-width: 768px) {
   .ant-picker-panel:last-child .ant-picker-date-panel {
     display: none !important;

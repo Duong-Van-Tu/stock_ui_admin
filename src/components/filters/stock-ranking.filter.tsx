@@ -4,7 +4,6 @@ import { css, SerializedStyles } from '@emotion/react';
 import { useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Select } from 'antd';
 import {
   getIndustries,
   getSectors,
@@ -14,6 +13,7 @@ import {
   watchSectors
 } from '@/redux/slices/stock-score.slice';
 import { isMobile } from 'react-device-detect';
+import FloatSelect from '@/components/float-select';
 
 type StockRankingFilterProps = {
   customStyles?: SerializedStyles;
@@ -71,10 +71,11 @@ export const StockRankingFilter = ({
   return (
     <div css={[rootStyles, customStyles]}>
       <div css={selectContainerStyles}>
-        <Select
+        <FloatSelect
+          label={t('sector')}
+          width={isMobile ? '100%' : '20rem'}
           allowClear
           showSearch
-          css={selectStyles}
           loading={sectorsLoading}
           placeholder={t('searchSelectSector')}
           optionFilterProp='label'
@@ -83,10 +84,11 @@ export const StockRankingFilter = ({
         />
       </div>
       <div css={selectContainerStyles}>
-        <Select
+        <FloatSelect
+          label={t('industry')}
+          width={isMobile ? '100%' : '20rem'}
           allowClear
           showSearch
-          css={selectStyles}
           loading={industriesLoading}
           placeholder={t('searchSelectIndustry')}
           optionFilterProp='label'
@@ -104,44 +106,6 @@ const rootStyles = css`
   gap: 1.2rem;
   justify-content: ${isMobile ? 'flex-end' : 'unset'};
   width: ${isMobile ? '100%' : 'unset'};
-`;
-
-const selectStyles = css`
-  min-width: ${isMobile ? '100%' : '20rem'};
-  max-width: ${isMobile ? '14rem' : '20rem'};
-  width: ${isMobile ? '100%' : 'unset'};
-
-  .ant-select-selector {
-    border: 1px solid
-      color-mix(
-        in srgb,
-        var(--brand-blue-color) 14%,
-        var(--border-light-color)
-      ) !important;
-    transition: border-color 0.2s ease !important;
-  }
-
-  .ant-select-selection-placeholder {
-    color: color-mix(
-      in srgb,
-      var(--text-secondary-color) 82%,
-      var(--text-color)
-    ) !important;
-    font-weight: 400;
-  }
-
-  &:hover .ant-select-selector {
-    border-color: color-mix(
-      in srgb,
-      var(--brand-blue-color) 24%,
-      var(--border-light-color)
-    ) !important;
-  }
-
-  &.ant-select-focused .ant-select-selector,
-  &.ant-select-open .ant-select-selector {
-    border-color: var(--brand-blue-color) !important;
-  }
 `;
 
 const selectContainerStyles = css`
