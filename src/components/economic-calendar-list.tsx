@@ -3,7 +3,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Popover, List, Badge, Typography, Spin, Tag } from 'antd';
+import { Popover, List, Badge, Typography, Spin, Tag, Tooltip } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -159,29 +159,35 @@ export const EconomicCalendarList = () => {
 
   return (
     <div css={rootStyles}>
-      <Popover
-        content={content}
-        trigger='click'
-        placement='bottomRight'
-        onOpenChange={(visible) => visible && setNewEventsCount(0)}
-        overlayInnerStyle={{
-          padding: 0,
-          borderRadius: '1.2rem',
-          overflow: 'hidden',
-          background: 'var(--surface-elevated-color)'
-        }}
-      >
-        <Badge count={newEventsCount} offset={[0, 0]} color='gold'>
-          <div css={iconWrapperStyles}>
-            <Icon
-              icon='calendar'
-              width={24}
-              height={24}
-              fill='var(--earning-color)'
-            />
-          </div>
-        </Badge>
-      </Popover>
+      <Tooltip title='Economic Calendar' placement='bottom'>
+        <Popover
+          content={content}
+          trigger='click'
+          placement='bottomRight'
+          onOpenChange={(visible) => visible && setNewEventsCount(0)}
+          overlayInnerStyle={{
+            padding: 0,
+            borderRadius: '1.2rem',
+            overflow: 'hidden',
+            background: 'var(--surface-elevated-color)'
+          }}
+        >
+          <Badge count={newEventsCount} offset={[0, 0]} color='gold'>
+            <button
+              type='button'
+              aria-label='Open economic calendar'
+              css={iconWrapperStyles}
+            >
+              <Icon
+                icon='calendar'
+                width={24}
+                height={24}
+                fill='var(--earning-color)'
+              />
+            </button>
+          </Badge>
+        </Popover>
+      </Tooltip>
     </div>
   );
 };
@@ -366,4 +372,28 @@ const iconWrapperStyles = css`
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 3.8rem;
+  min-width: 3.8rem;
+  height: 3.8rem;
+  padding: 0;
+  appearance: none;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: var(--surface-elevated-color);
+  box-shadow: none;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+
+  :root[data-theme='dark'] & {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--primary-color);
+    outline: none;
+  }
 `;

@@ -234,11 +234,16 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
             </Dropdown>
           </div>
         )}
-        <Dropdown.Button
+        <Dropdown
           menu={userMenus}
           placement='bottomRight'
           trigger={['click']}
-          icon={
+          arrow
+        >
+          <button type='button' css={userDropdownBtnStyles(showUserFullName)}>
+            {showUserFullName && (
+              <span css={userNameStyles}>{user?.fullname}</span>
+            )}
             <span css={userAvatarChipStyles(isMobile)}>
               <Icon
                 icon='user'
@@ -247,14 +252,8 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
                 fill='#061826'
               />
             </span>
-          }
-          arrow
-          css={userDropdownBtnStyles(showUserFullName, isMobile)}
-        >
-          {showUserFullName && (
-            <span css={userNameStyles}>{user?.fullname}</span>
-          )}
-        </Dropdown.Button>
+          </button>
+        </Dropdown>
       </div>
     </Layout.Header>
   );
@@ -428,19 +427,19 @@ const menuIconStyles = css`
   }
 `;
 
-const userDropdownBtnStyles = (
-  showUserFullName: boolean,
-  isMobileView: boolean
-) => css`
+const userDropdownBtnStyles = (showUserFullName: boolean) => css`
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  gap: ${showUserFullName ? '0.8rem' : '0'};
   height: 3.8rem;
-  padding: 0;
+  padding: ${showUserFullName ? '0 0.45rem 0 1.15rem' : '0'};
   border-radius: 999px;
   border: 1px solid var(--border-color);
   background: var(--surface-elevated-color);
   box-shadow: none;
   overflow: hidden;
+  cursor: pointer;
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
@@ -450,57 +449,14 @@ const userDropdownBtnStyles = (
     box-shadow: none;
   }
 
-  .ant-btn {
-    height: 100%;
-    border: none !important;
-    background: transparent !important;
-    color: var(--text-color) !important;
-    box-shadow: none !important;
-  }
-
-  .ant-btn-compact-item::before {
-    display: none !important;
-  }
-
-  .ant-btn:hover,
-  .ant-btn:focus {
-    color: var(--text-color) !important;
-  }
-
-  .ant-btn-compact-first-item {
-    display: ${showUserFullName ? 'inline-flex' : 'none'};
-    align-items: center;
-    padding: 0 1.2rem 0 1.15rem;
-    border-radius: 999px 0 0 999px !important;
-  }
-
-  .ant-btn-compact-last-item {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: ${isMobileView ? '3.4rem' : '3.8rem'};
-    min-width: ${isMobileView ? '3.4rem' : '3.8rem'};
-    padding: 0;
-    border-radius: ${showUserFullName ? '0 999px 999px 0' : '999px'} !important;
-
-    &::before {
-      content: '';
-      display: ${showUserFullName ? 'block' : 'none'};
-      position: absolute;
-      top: 50%;
-      left: 0;
-      z-index: 1;
-      width: 1px;
-      height: 1.55rem;
-      transform: translateY(-50%);
-      background: linear-gradient(
-        180deg,
-        rgba(15, 23, 42, 0.03) 0%,
-        rgba(15, 23, 42, 0.12) 50%,
-        rgba(15, 23, 42, 0.03) 100%
-      );
-    }
+  &:focus,
+  &:focus-visible,
+  &:active {
+    border-color: var(--primary-color);
+    background: var(--surface-elevated-color);
+    color: var(--text-color);
+    box-shadow: none;
+    outline: none;
   }
 
   :root[data-theme='dark'] & {
@@ -512,15 +468,6 @@ const userDropdownBtnStyles = (
       border-color: var(--primary-color);
       background: rgba(255, 255, 255, 0.06);
       box-shadow: none;
-    }
-
-    .ant-btn-compact-last-item::before {
-      background: linear-gradient(
-        180deg,
-        rgba(148, 163, 184, 0.08) 0%,
-        rgba(148, 163, 184, 0.28) 50%,
-        rgba(148, 163, 184, 0.08) 100%
-      );
     }
   }
 `;
