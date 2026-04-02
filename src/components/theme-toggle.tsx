@@ -52,14 +52,12 @@ const toggleButtonStyles = (compact: boolean) => css`
   height: 3.8rem;
   padding: ${compact ? '0' : '0 1.1rem'};
   border-radius: ${compact ? '50%' : '999px'};
-  border: 1px solid var(--border-color);
-  background: var(--surface-elevated-color);
+  border: 1px solid var(--header-chip-border-color);
+  background: var(--header-chip-background-color);
   color: var(--text-color);
   box-shadow: none;
 
   :root[data-theme='dark'] & {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.14);
     box-shadow: none;
   }
 
@@ -67,12 +65,7 @@ const toggleButtonStyles = (compact: boolean) => css`
   &:focus {
     border-color: var(--primary-color) !important;
     color: var(--primary-color) !important;
-    background: var(--surface-elevated-color) !important;
-  }
-
-  :root[data-theme='dark'] &:hover,
-  :root[data-theme='dark'] &:focus {
-    background: rgba(255, 255, 255, 0.06) !important;
+    background: var(--header-chip-hover-background-color) !important;
   }
 `;
 

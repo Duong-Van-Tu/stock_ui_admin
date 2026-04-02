@@ -378,22 +378,22 @@ const iconWrapperStyles = css`
   height: 3.8rem;
   padding: 0;
   appearance: none;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--header-chip-border-color);
   border-radius: 50%;
-  background: var(--surface-elevated-color);
+  background: var(--header-chip-background-color);
   box-shadow: none;
   transition:
     border-color 0.2s ease,
     background 0.2s ease;
 
   :root[data-theme='dark'] & {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: none;
   }
 
   &:hover,
   &:focus-visible {
     border-color: var(--primary-color);
+    background: var(--header-chip-hover-background-color);
     outline: none;
   }
 `;

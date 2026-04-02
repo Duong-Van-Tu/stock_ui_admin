@@ -20,6 +20,7 @@ import { EconomicCalendarList } from './economic-calendar-list';
 import { useWindowSize } from '@/hooks/window-size.hook';
 import ThemeToggle from './theme-toggle';
 import { SearchOutlined } from '@ant-design/icons';
+import TimeZoneClock from './time-zone-clock';
 
 enum UserMenu {
   PROFILE,
@@ -42,6 +43,7 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
   const { width, isMobile, isDesktop } = useWindowSize();
   const showBreakingNews = width >= 1280;
   const showUserFullName = width >= 1080;
+  const showTimeZoneClock = !isMobile;
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -199,6 +201,7 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
       )}
       <div css={rightSectionStyles(isMobile)}>
         <EconomicCalendarList />
+        {showTimeZoneClock && <TimeZoneClock />}
         <ThemeToggle compact={isMobile} />
         {isDesktop && (
           <div
@@ -435,17 +438,19 @@ const userDropdownBtnStyles = (showUserFullName: boolean) => css`
   height: 3.8rem;
   padding: ${showUserFullName ? '0 0.45rem 0 1.15rem' : '0'};
   border-radius: 999px;
-  border: 1px solid var(--border-color);
-  background: var(--surface-elevated-color);
+  border: 1px solid var(--header-chip-border-color);
+  background: var(--header-chip-background-color);
   box-shadow: none;
   overflow: hidden;
   cursor: pointer;
   transition:
     border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 
   &:hover {
     border-color: var(--primary-color);
+    background: var(--header-chip-hover-background-color);
     box-shadow: none;
   }
 
@@ -453,20 +458,18 @@ const userDropdownBtnStyles = (showUserFullName: boolean) => css`
   &:focus-visible,
   &:active {
     border-color: var(--primary-color);
-    background: var(--surface-elevated-color);
+    background: var(--header-chip-hover-background-color);
     color: var(--text-color);
     box-shadow: none;
     outline: none;
   }
 
   :root[data-theme='dark'] & {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.14);
     box-shadow: none;
 
     &:hover {
       border-color: var(--primary-color);
-      background: rgba(255, 255, 255, 0.06);
+      background: var(--header-chip-hover-background-color);
       box-shadow: none;
     }
   }
