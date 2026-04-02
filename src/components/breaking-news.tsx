@@ -137,7 +137,7 @@ export default function BreakingNews() {
               }`,
               boxShadow: `inset 0 0 0 1px var(--shell-accent-color)`,
               borderRadius: '0.8rem',
-              marginBottom: '0.8rem'
+              margin: '0.8rem 0'
             }
           : undefined
     };
