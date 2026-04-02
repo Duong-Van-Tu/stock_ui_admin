@@ -8,7 +8,7 @@ import {
   watchNewsScoresPagination,
   getNewsScores
 } from '@/redux/slices/sentiment.slice';
-import { Table, TableColumnsType, Radio, Button } from 'antd';
+import { Button, Segmented, Table, TableColumnsType } from 'antd';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { convertSortType } from '@/utils/sort-table';
@@ -26,6 +26,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { PageURLs } from '@/utils/navigate';
 import { PositiveNegativeText } from '../positive-negative-text';
 import Link from 'next/link';
+import {
+  createSegmentedLabelStyles,
+  segmentedStyles as baseSegmentedStyles
+} from './segmented.styles';
 
 export const NewsScoresTable = () => {
   const t = useTranslations();
@@ -108,7 +112,7 @@ export const NewsScoresTable = () => {
         title: 'Symbol',
         dataIndex: 'symbol',
         key: 'symbol',
-        width: 90,
+        width: 70,
         sorter: true,
         showSorterTooltip: false,
         sortOrder: sortField === 'symbol' ? sortType : null,
@@ -122,7 +126,7 @@ export const NewsScoresTable = () => {
         title: 'Finnhub Score',
         dataIndex: 'finnhubAggScore',
         key: 'finnhubAggScore',
-        width: 116,
+        width: 90,
         align: 'center',
         sorter: true,
         showSorterTooltip: false,
@@ -152,7 +156,7 @@ export const NewsScoresTable = () => {
         title: 'LSEG Score',
         dataIndex: 'lsegAggScore',
         key: 'lsegAggScore',
-        width: 100,
+        width: 80,
         align: 'center',
         sorter: true,
         showSorterTooltip: false,
@@ -182,7 +186,7 @@ export const NewsScoresTable = () => {
         title: 'Finnhub Total Articles',
         dataIndex: 'finnhubTotalArticles',
         key: 'finnhubTotalArticles',
-        width: 86,
+        width: 120,
         align: 'center',
         sorter: true,
         showSorterTooltip: false,
@@ -203,7 +207,7 @@ export const NewsScoresTable = () => {
         title: 'LSEG Total Articles',
         dataIndex: 'lsegTotalArticles',
         key: 'lsegTotalArticles',
-        width: 82,
+        width: 120,
         align: 'center',
         sorter: true,
         showSorterTooltip: false,
@@ -306,14 +310,21 @@ export const NewsScoresTable = () => {
         <div css={titleRowStyles}>
           <TableTitle>News Scores</TableTitle>
 
-          <Radio.Group
+          <Segmented
+            css={segmentedStyles}
             value={filter.typeDay}
-            onChange={(e) => handleTypeDayChange(e.target.value)}
-            buttonStyle='solid'
-          >
-            <Radio.Button value={1}>1 Day</Radio.Button>
-            <Radio.Button value={3}>3 Day</Radio.Button>
-          </Radio.Group>
+            options={[
+              {
+                label: <div css={segmentedLabelStyles}>1 Day</div>,
+                value: 1
+              },
+              {
+                label: <div css={segmentedLabelStyles}>3 Day</div>,
+                value: 3
+              }
+            ]}
+            onChange={(value) => handleTypeDayChange(value as number)}
+          />
         </div>
 
         <Table<NewsScore>
@@ -325,7 +336,7 @@ export const NewsScoresTable = () => {
           loading={loading}
           scroll={{
             x: 1100,
-            y: list.length > 0 ? height - 244 : undefined
+            y: list.length > 0 ? height - 242 : undefined
           }}
           locale={{
             emptyText: (
@@ -361,9 +372,32 @@ const tableWrapperStyles = css`
 
 const titleRowStyles = css`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  position: relative;
   padding: 1.2rem 1.6rem;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+`;
+
+const segmentedStyles = css`
+  ${baseSegmentedStyles};
+
+  && {
+    padding: 0.3rem;
+  }
+
+  @media (min-width: 992px) {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  @media (max-width: 991px) {
+    position: static;
+    left: auto;
+    transform: none;
+  }
 `;
 
 const tableStyles = css`
@@ -381,4 +415,11 @@ const emptyStyles = (height: number) => css`
 
 const scoreNewsLinkStyles = css`
   text-decoration: underline;
+`;
+
+const segmentedLabelStyles = css`
+  ${createSegmentedLabelStyles({
+    minWidth: isMobile ? '6.4rem' : '7.6rem'
+  })};
+  padding: ${isMobile ? '0.6rem 0.8rem' : '0.7rem 1.1rem'};
 `;

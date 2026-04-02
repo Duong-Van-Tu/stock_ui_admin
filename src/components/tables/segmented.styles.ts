@@ -43,7 +43,7 @@ export const segmentedStyles = css`
   .ant-segmented-item-selected {
     background: linear-gradient(135deg, #1677ff 0%, #0b8cff 100%);
     color: var(--white-color);
-    box-shadow: 0 8px 18px rgba(8, 127, 244, 0.22);
+    box-shadow: 0 4px 10px rgba(8, 127, 244, 0.14);
   }
 
   .ant-segmented-item-selected:hover {
@@ -52,7 +52,7 @@ export const segmentedStyles = css`
 
   .ant-segmented-thumb {
     border-radius: 1rem;
-    box-shadow: 0 8px 18px rgba(8, 127, 244, 0.18);
+    box-shadow: 0 4px 10px rgba(8, 127, 244, 0.12);
   }
 
   [data-theme='dark'] && {
@@ -79,7 +79,7 @@ export const segmentedStyles = css`
       background: linear-gradient(135deg, #1677ff 0%, #36a3ff 100%) !important;
       color: var(--white-color) !important;
       box-shadow:
-        0 10px 24px rgba(8, 127, 244, 0.28),
+        0 6px 14px rgba(8, 127, 244, 0.18),
         inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
     }
 
@@ -90,7 +90,7 @@ export const segmentedStyles = css`
     .ant-segmented-thumb {
       background: linear-gradient(135deg, #1677ff 0%, #36a3ff 100%) !important;
       box-shadow:
-        0 10px 24px rgba(8, 127, 244, 0.2),
+        0 6px 14px rgba(8, 127, 244, 0.14),
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
     }
   }
