@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import { Button, Col, Form, Row, Space } from 'antd';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
 import { SelectFilter } from './select-filter';
+import { filterPanelStyles } from './filter-panel.styles';
 import { getMarketCapOptions, getPeriodOptions } from '@/utils/stock-filter';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -215,8 +216,7 @@ export const WatchlistSwingTradeFilter = ({
 };
 
 const rootStyles = css`
-  border: 1px solid var(--border-table-color);
-  border-radius: 0.6rem;
+  ${filterPanelStyles};
   padding: 1.4rem 1.6rem;
 `;
 

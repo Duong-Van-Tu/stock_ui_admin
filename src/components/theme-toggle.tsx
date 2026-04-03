@@ -47,15 +47,29 @@ const toggleButtonStyles = (compact: boolean) => css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
   gap: ${compact ? '0' : '0.8rem'};
+  width: ${compact ? '3.8rem' : 'auto'};
   min-width: ${compact ? '3.8rem' : '9.8rem'};
+  max-width: ${compact ? '3.8rem' : 'none'};
   height: 3.8rem;
-  padding: ${compact ? '0' : '0 1.1rem'};
-  border-radius: ${compact ? '50%' : '999px'};
+  min-height: 3.8rem;
+  max-height: 3.8rem;
+  inline-size: ${compact ? '3.8rem' : 'auto'};
+  min-inline-size: ${compact ? '3.8rem' : '9.8rem'};
+  max-inline-size: ${compact ? '3.8rem' : 'none'};
+  block-size: 3.8rem;
+  min-block-size: 3.8rem;
+  max-block-size: 3.8rem;
+  padding: ${compact ? '0 !important' : '0 1.1rem'};
+  border-radius: ${compact ? '9999px !important' : '999px'};
+  aspect-ratio: ${compact ? '1 / 1' : 'auto'};
   border: 1px solid var(--header-chip-border-color);
   background: var(--header-chip-background-color);
   color: var(--text-color);
   box-shadow: none;
+  line-height: 1;
+  overflow: hidden;
 
   :root[data-theme='dark'] & {
     box-shadow: none;

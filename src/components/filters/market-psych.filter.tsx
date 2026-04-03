@@ -7,6 +7,7 @@ import { useEffect, useMemo } from 'react';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { useSearchParams } from 'next/navigation';
 import { MARKET_PSYCH_DATA_TYPES } from '@/constants/common.constant';
+import { filterPanelStyles } from './filter-panel.styles';
 
 type Props = {
   customStyles?: SerializedStyles;
@@ -117,6 +118,7 @@ export const MarketPsychFilter = ({
 };
 
 const rootStyles = css`
+  ${filterPanelStyles};
   display: flex;
 `;
 const formStyles = css`

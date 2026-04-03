@@ -14,6 +14,7 @@ import {
 } from '@/redux/slices/stock-score.slice';
 import { isMobile } from 'react-device-detect';
 import FloatSelect from '@/components/float-select';
+import { filterPanelStyles } from './filter-panel.styles';
 
 type StockRankingFilterProps = {
   customStyles?: SerializedStyles;
@@ -101,6 +102,7 @@ export const StockRankingFilter = ({
 };
 
 const rootStyles = css`
+  ${filterPanelStyles};
   display: flex;
   flex-wrap: ${isMobile ? 'no-wrap' : 'wrap'};
   gap: 1.2rem;

@@ -19,20 +19,24 @@ type ThemeContextValue = {
 };
 
 const STORAGE_KEY = 'stock-ui-theme-mode';
+const DEFAULT_THEME_MODE: ThemeMode = 'dark';
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 const getInitialThemeMode = (): ThemeMode => {
-  if (typeof window === 'undefined') return 'light';
+  if (typeof window === 'undefined') return DEFAULT_THEME_MODE;
+
+  const documentMode = document.documentElement.dataset.theme;
+  if (documentMode === 'light' || documentMode === 'dark') {
+    return documentMode;
+  }
 
   const storedMode = window.localStorage.getItem(STORAGE_KEY);
   if (storedMode === 'light' || storedMode === 'dark') {
     return storedMode;
   }
 
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light';
+  return DEFAULT_THEME_MODE;
 };
 
 export function ThemeProvider({ children }: { children: ReactNode }) {

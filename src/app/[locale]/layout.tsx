@@ -5,7 +5,25 @@ import '../../assets/css/globals.scss';
 import Providers from '@/providers';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { Locale, locales } from '@/constants/locale.constant';
-import Head from 'next/head';
+
+const themeInitScript = `
+  (function() {
+    try {
+      var storageKey = 'stock-ui-theme-mode';
+      var storedMode = window.localStorage.getItem(storageKey);
+      var resolvedMode =
+        storedMode === 'light' || storedMode === 'dark'
+          ? storedMode
+          : 'dark';
+
+      document.documentElement.dataset.theme = resolvedMode;
+      document.documentElement.style.colorScheme = resolvedMode;
+    } catch (error) {
+      document.documentElement.dataset.theme = 'dark';
+      document.documentElement.style.colorScheme = 'dark';
+    }
+  })();
+`;
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await import('next-intl/server').then((m) => m.getTranslations());
@@ -32,13 +50,14 @@ export default function RootLayout({
   }
 
   return (
-    <html lang={locale || 'en'}>
-      <Head>
+    <html lang={locale || 'en'} suppressHydrationWarning>
+      <head>
         <meta
           name='viewport'
           content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'
         />
-      </Head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>

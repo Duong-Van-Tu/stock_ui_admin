@@ -11,6 +11,7 @@ import {
 } from '@/redux/slices/est-forecast.slice';
 import { useLocale, useTranslations } from 'next-intl';
 import { isMobile } from 'react-device-detect';
+import { filterPanelStyles } from './filter-panel.styles';
 
 type EstForecastFilterProps = {
   customStyles?: SerializedStyles;
@@ -196,6 +197,7 @@ export const EstForecastFilter = ({
 };
 
 const rootStyles = css`
+  ${filterPanelStyles};
   display: flex;
   justify-content: center;
   align-items: center;

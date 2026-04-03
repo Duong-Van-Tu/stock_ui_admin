@@ -72,6 +72,50 @@
     color 0.2s ease;
 }
 
+.ant-input:-webkit-autofill,
+.ant-input:-webkit-autofill:hover,
+.ant-input:-webkit-autofill:focus,
+.ant-input-affix-wrapper input:-webkit-autofill,
+.ant-input-affix-wrapper input:-webkit-autofill:hover,
+.ant-input-affix-wrapper input:-webkit-autofill:focus,
+.ant-input-number-input:-webkit-autofill,
+.ant-input-number-input:-webkit-autofill:hover,
+.ant-input-number-input:-webkit-autofill:focus,
+textarea.ant-input:-webkit-autofill,
+textarea.ant-input:-webkit-autofill:hover,
+textarea.ant-input:-webkit-autofill:focus,
+.ant-input:autofill,
+.ant-input-affix-wrapper input:autofill,
+.ant-input-number-input:autofill,
+textarea.ant-input:autofill {
+  -webkit-text-fill-color: var(--text-primary-strong-color) !important;
+  caret-color: var(--text-primary-strong-color);
+  border-radius: inherit;
+  box-shadow: 0 0 0 1000px var(--surface-subtle-color) inset !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--surface-subtle-color) inset !important;
+  transition:
+    background-color 99999s ease-in-out 0s,
+    color 0.2s ease;
+}
+
+.ant-input:focus:-webkit-autofill,
+.ant-input.ant-input-focused:-webkit-autofill,
+.ant-input-affix-wrapper-focused input:-webkit-autofill,
+.ant-input-affix-wrapper:focus-within input:-webkit-autofill,
+.ant-input-number-focused .ant-input-number-input:-webkit-autofill,
+.ant-input-number:focus-within .ant-input-number-input:-webkit-autofill,
+textarea.ant-input:focus:-webkit-autofill,
+.ant-input:focus:autofill,
+.ant-input.ant-input-focused:autofill,
+.ant-input-affix-wrapper-focused input:autofill,
+.ant-input-affix-wrapper:focus-within input:autofill,
+.ant-input-number-focused .ant-input-number-input:autofill,
+.ant-input-number:focus-within .ant-input-number-input:autofill,
+textarea.ant-input:focus:autofill {
+  box-shadow: 0 0 0 1000px var(--surface-base-color) inset !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--surface-base-color) inset !important;
+}
+
 .brand-ant-picker {
   width: 100% !important;
   border: 1px solid
