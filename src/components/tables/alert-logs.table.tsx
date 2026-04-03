@@ -2141,7 +2141,7 @@ const iconStyles = css`
 `;
 
 const detailTableStyles = css`
-  padding: 1.6rem 1rem;
+  padding: 0.8rem 0;
   .ant-table {
     margin-inline: 0 !important;
   }
