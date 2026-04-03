@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Segmented,
-  Select,
   Table,
   TableColumnsType,
   Tooltip
@@ -24,6 +23,7 @@ import {
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { TableTitle } from './title.table';
+import FloatSelect from '../float-select';
 import { Icon } from '../icons';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
@@ -429,9 +429,9 @@ export const BreakingNewsAnalyticsTable = () => {
               onChange={(value) => setMarketMode(value as MarketMode)}
             />
             <div css={newsTypeFilterStyles}>
-              <span css={filterLabelStyles}>News Type</span>
-              <Select
+              <FloatSelect
                 allowClear
+                label='News Type'
                 showSearch
                 optionFilterProp='label'
                 filterOption={(input, option) =>
@@ -440,10 +440,10 @@ export const BreakingNewsAnalyticsTable = () => {
                     .includes(input.toLowerCase())
                 }
                 options={newsTypeOptions}
-                value={filter.newsType}
+                value={filter.newsType ?? ''}
                 placeholder='Select news type'
                 onChange={(value) => handleFilterNewsType(value)}
-                style={{ width: isMobile ? 220 : 320 }}
+                width={isMobile ? '100%' : '32rem'}
               />
             </div>
           </div>
@@ -596,18 +596,11 @@ const segmentedLabelStyles = createSegmentedLabelStyles({
 const newsTypeFilterStyles = css`
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  min-width: ${isMobile ? '22rem' : '32rem'};
   @media (max-width: 640px) {
     width: 100%;
-    flex-wrap: wrap;
+    min-width: 100%;
   }
-`;
-
-const filterLabelStyles = css`
-  font-size: 1.4rem;
-  font-weight: 600;
-  line-height: 1.8rem;
-  white-space: nowrap;
 `;
 
 const tableStyles = css`
