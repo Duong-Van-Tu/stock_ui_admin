@@ -156,13 +156,6 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
           />
         )}
 
-        <Icon
-          onClick={() => router.push(PageURLs.ofIndex())}
-          customStyles={logoIconStyles}
-          icon='logo'
-          width={34}
-          height={34}
-        />
         <div css={searchWrapperStyles(isDesktop)}>
           <input
             type='text'
@@ -412,14 +405,6 @@ const rightSectionStyles = (isMobileView: boolean) => css`
 const languageStyles = css`
   display: block;
   color: var(--primary-color);
-`;
-
-const logoIconStyles = css`
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.85;
-  }
 `;
 
 const menuIconStyles = css`
