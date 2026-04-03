@@ -80,8 +80,8 @@ export default function AuthLayout({
           </div>
         </section>
 
-        <section css={cardStyles(isDarkMode)}>
-          <div css={cardBodyStyles}>
+        <section css={cardStyles(isDarkMode, mode)}>
+          <div css={cardBodyStyles(mode)}>
             <div css={cardTopBarStyles}>
               <div css={cardBadgeStyles(isDarkMode)}>
                 <Icon icon='logo' width={28} height={28} />
@@ -109,10 +109,10 @@ export default function AuthLayout({
                   {t('register')}
                 </Link>
               </div>
-              <Text css={cardDescriptionStyles}>{description}</Text>
+              <Text css={cardDescriptionStyles(mode)}>{description}</Text>
             </div>
 
-            <div css={contentStyles}>{children}</div>
+            <div css={contentStyles(mode)}>{children}</div>
           </div>
         </section>
       </div>
@@ -210,10 +210,11 @@ const showcaseStyles = (isDarkMode: boolean) => css`
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: clamp(1.4rem, 2vh, 2.2rem);
   overflow: hidden;
-  min-height: clamp(49rem, 64dvh, 63rem);
-  padding: clamp(2.6rem, 3vw, 3.6rem);
+  min-height: clamp(44rem, 58dvh, 56rem);
+  padding: clamp(1.8rem, 2.2vw, 2.5rem);
   border-radius: 2.4rem;
   background:
     radial-gradient(
@@ -246,7 +247,7 @@ const showcaseStyles = (isDarkMode: boolean) => css`
   }
 
   @media (max-height: 860px) and (min-width: 1024px) {
-    min-height: clamp(46rem, 60dvh, 56rem);
+    min-height: clamp(41rem, 54dvh, 50rem);
   }
 
   @media (max-width: 1023px) {
@@ -259,7 +260,7 @@ const brandRowStyles = css`
   z-index: 1;
   display: inline-flex;
   align-items: center;
-  gap: 1.4rem;
+  gap: 1.2rem;
 `;
 
 const brandIconWrapStyles = (isDarkMode: boolean) => css`
@@ -268,7 +269,7 @@ const brandIconWrapStyles = (isDarkMode: boolean) => css`
   justify-content: center;
   width: 6rem;
   height: 6rem;
-  border-radius: 1.8rem;
+  border-radius: 1rem;
   background: ${isDarkMode
     ? 'rgba(255, 255, 255, 0.08)'
     : 'rgba(255, 255, 255, 0.14)'};
@@ -284,58 +285,58 @@ const brandTextWrapStyles = css`
 
 const brandTitleStyles = css`
   color: var(--white-color) !important;
-  font-size: 1.8rem;
+  font-size: 1.65rem;
   font-weight: 700;
   line-height: 1.2;
 `;
 
 const brandDescriptionStyles = css`
   color: rgba(255, 255, 255, 0.72) !important;
-  font-size: 1.4rem;
-  line-height: 1.6;
+  font-size: 1.3rem;
+  line-height: 1.5;
 `;
 
 const showcaseHeaderStyles = css`
   position: relative;
   z-index: 1;
-  margin-top: clamp(2.4rem, 4vw, 4.8rem);
+  margin-top: 0.2rem;
   max-width: 52rem;
 
   @media (max-width: 767px) {
-    margin-top: 3.2rem;
+    margin-top: 0.2rem;
   }
 `;
 
 const eyebrowStyles = (isDarkMode: boolean) => css`
   display: inline-flex;
   align-items: center;
-  min-height: 3.6rem;
-  padding: 0 1.4rem;
+  min-height: 3.2rem;
+  padding: 0 1.2rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   background: ${isDarkMode
     ? 'rgba(255, 255, 255, 0.08)'
     : 'rgba(255, 255, 255, 0.12)'};
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 `;
 
 const showcaseTitleStyles = css`
-  margin-top: 1.6rem !important;
-  margin-bottom: 1.2rem !important;
+  margin-top: 1.2rem !important;
+  margin-bottom: 0.8rem !important;
   color: var(--white-color) !important;
-  font-size: clamp(3rem, 4.2vw, 5rem) !important;
-  line-height: 1.05 !important;
+  font-size: clamp(2.7rem, 3.8vw, 4.4rem) !important;
+  line-height: 1.08 !important;
   letter-spacing: -0.04em;
 `;
 
 const showcaseDescriptionStyles = css`
   display: block;
   color: rgba(255, 255, 255, 0.8) !important;
-  font-size: 1.6rem;
-  line-height: 1.65;
+  font-size: 1.5rem;
+  line-height: 1.55;
 `;
 
 const featureGridStyles = css`
@@ -343,8 +344,9 @@ const featureGridStyles = css`
   z-index: 1;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.2rem;
-  margin-top: clamp(2.4rem, 3vw, 4.2rem);
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: clamp(1.4rem, 2.4vh, 2.4rem);
 
   @media (max-width: 767px) {
     grid-template-columns: 1fr;
@@ -354,8 +356,8 @@ const featureGridStyles = css`
 
 const featureCardStyles = (isDarkMode: boolean) => css`
   position: relative;
-  min-height: 15rem;
-  padding: 1.2rem 1rem;
+  min-height: 13rem;
+  padding: 1rem;
   border-radius: 2rem;
   background: ${isDarkMode
     ? 'rgba(255, 255, 255, 0.07)'
@@ -367,34 +369,38 @@ const featureCardStyles = (isDarkMode: boolean) => css`
 const featureIndexStyles = css`
   display: inline-flex;
   color: rgba(255, 255, 255, 0.6);
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.1em;
 `;
 
 const featureTitleStyles = css`
-  margin-top: 1.8rem !important;
-  margin-bottom: 0.8rem !important;
+  margin-top: 1.4rem !important;
+  margin-bottom: 0.6rem !important;
   color: var(--white-color) !important;
-  font-size: 1.8rem !important;
+  font-size: 1.6rem !important;
   line-height: 1.25 !important;
 `;
 
 const featureDescriptionStyles = css`
   display: block;
   color: rgba(255, 255, 255, 0.72) !important;
-  font-size: 1.4rem;
-  line-height: 1.6;
+  font-size: 1.3rem;
+  line-height: 1.5;
 `;
 
-const cardStyles = (isDarkMode: boolean) => css`
+const cardStyles = (isDarkMode: boolean, mode: AuthLayoutProps['mode']) => css`
   position: relative;
   display: flex;
   align-items: stretch;
   flex-direction: column;
-  min-height: clamp(48rem, 58dvh, 60rem);
-  padding: clamp(2rem, 2.4vw, 2.6rem) clamp(2rem, 2.6vw, 2.8rem);
+  min-height: ${mode === 'register'
+    ? 'clamp(46rem, 56dvh, 57rem)'
+    : 'clamp(44rem, 52dvh, 53rem)'};
+  padding: ${mode === 'register'
+    ? 'clamp(1.6rem, 2vw, 2.1rem) clamp(1.7rem, 2.2vw, 2.3rem)'
+    : 'clamp(1.8rem, 2.2vw, 2.3rem) clamp(1.8rem, 2.3vw, 2.4rem)'};
   border-radius: 2.4rem;
   background: ${isDarkMode
     ? 'rgba(17, 27, 46, 0.9)'
@@ -410,11 +416,13 @@ const cardStyles = (isDarkMode: boolean) => css`
   }
 
   @media (max-height: 860px) and (min-width: 1024px) {
-    min-height: clamp(46rem, 56dvh, 54rem);
+    min-height: ${mode === 'register'
+      ? 'clamp(43rem, 52dvh, 51rem)'
+      : 'clamp(41rem, 48dvh, 47rem)'};
   }
 
   @media (max-width: 767px) {
-    padding: 2rem 1.6rem 1.8rem;
+    padding: 1.8rem 1.5rem 1.6rem;
     border-radius: 2rem;
   }
 `;
@@ -435,13 +443,13 @@ const toggleWrapStyles = css`
   flex: 0 0 auto;
 `;
 
-const cardBodyStyles = css`
+const cardBodyStyles = (mode: AuthLayoutProps['mode']) => css`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   width: min(100%, 37.6rem);
   margin: 0 auto;
-  padding-top: 0.2rem;
+  padding-top: ${mode === 'register' ? '0' : '0.1rem'};
   min-height: 100%;
 
   @media (max-width: 767px) {
@@ -458,7 +466,7 @@ const segmentedWrapStyles = (isDarkMode: boolean) => css`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.6rem;
-  padding: 0.5rem;
+  padding: 0.45rem;
   margin-bottom: 1.2rem;
   border-radius: 999px;
   border: 1px solid
@@ -472,7 +480,7 @@ const segmentItemStyles = (isDarkMode: boolean, isActive: boolean) => css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 4.4rem;
+  min-height: 4.1rem;
   padding: 0 1.4rem;
   border-radius: 999px;
   color: ${isActive
@@ -484,7 +492,7 @@ const segmentItemStyles = (isDarkMode: boolean, isActive: boolean) => css`
     ? 'linear-gradient(135deg, #0f7bff 0%, #20c3f2 100%)'
     : 'transparent'};
   box-shadow: ${isActive ? '0 1.2rem 2.6rem rgba(8, 127, 244, 0.22)' : 'none'};
-  font-size: 1.45rem;
+  font-size: 1.4rem;
   font-weight: 700;
   transition:
     color 0.2s ease,
@@ -504,9 +512,9 @@ const segmentItemStyles = (isDarkMode: boolean, isActive: boolean) => css`
 const cardBadgeStyles = (isDarkMode: boolean) => css`
   display: inline-flex;
   align-items: center;
-  gap: 1rem;
-  min-height: 4.2rem;
-  padding: 0.4rem 1.4rem;
+  gap: 0.8rem;
+  min-height: 3.8rem;
+  padding: 0.3rem 1.2rem;
   border-radius: 999px;
   border: 1px solid
     ${isDarkMode ? 'rgba(148, 163, 184, 0.18)' : 'rgba(8, 127, 244, 0.12)'};
@@ -514,34 +522,34 @@ const cardBadgeStyles = (isDarkMode: boolean) => css`
     ? 'rgba(148, 163, 184, 0.08)'
     : 'rgba(8, 127, 244, 0.06)'};
   color: var(--text-secondary-color);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 `;
 
-const cardDescriptionStyles = css`
+const cardDescriptionStyles = (mode: AuthLayoutProps['mode']) => css`
   display: block;
   color: color-mix(
     in srgb,
     var(--text-secondary-color) 86%,
     var(--text-primary-strong-color)
   ) !important;
-  font-size: 1.5rem;
-  line-height: 1.6;
+  font-size: ${mode === 'register' ? '1.42rem' : '1.45rem'};
+  line-height: ${mode === 'register' ? '1.55' : '1.58'};
 `;
 
-const contentStyles = css`
+const contentStyles = (mode: AuthLayoutProps['mode']) => css`
   display: flex;
   align-items: flex-start;
   width: 100%;
-  margin-top: 2rem;
+  margin-top: ${mode === 'register' ? '1.4rem' : '1.7rem'};
 
   > * {
     width: 100%;
   }
 
   @media (max-width: 767px) {
-    margin-top: 1.6rem;
+    margin-top: 1.4rem;
   }
 `;

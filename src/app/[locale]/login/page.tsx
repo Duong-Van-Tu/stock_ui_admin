@@ -19,11 +19,11 @@ const useStyle = createStyles(({ prefixCls, css }) => ({
     &.${prefixCls}-btn-primary:not([disabled]):not(
         .${prefixCls}-btn-dangerous
       ) {
-      height: 5.2rem;
+      height: 4.8rem;
       border: none;
       border-radius: 999px;
       background: linear-gradient(135deg, #0f7bff 0%, #20c3f2 100%);
-      box-shadow: 0 1.8rem 3.6rem rgba(8, 127, 244, 0.24);
+      box-shadow: 0 1.4rem 3rem rgba(8, 127, 244, 0.22);
       transition:
         transform 0.2s ease,
         box-shadow 0.2s ease,
@@ -31,7 +31,7 @@ const useStyle = createStyles(({ prefixCls, css }) => ({
 
       > span {
         position: relative;
-        font-size: 1.5rem;
+        font-size: 1.45rem;
         font-weight: 700;
       }
 
@@ -47,7 +47,7 @@ const useStyle = createStyles(({ prefixCls, css }) => ({
 
       &:hover,
       &:focus {
-        box-shadow: 0 2.2rem 4rem rgba(8, 127, 244, 0.3);
+        box-shadow: 0 1.8rem 3.4rem rgba(8, 127, 244, 0.28);
         filter: saturate(1.06);
         transform: translateY(-1px);
       }
@@ -127,25 +127,29 @@ export default function Login() {
 
 const formLabelStyles = css`
   font-weight: 600;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   color: var(--text-primary-strong-color);
 `;
 
 const formStyles = css`
   .ant-form-item {
     position: relative;
-    margin-bottom: 2.2rem;
+    margin-bottom: 1.8rem;
   }
 
   .ant-form-item-control {
     position: static;
   }
 
+  .ant-form-item-label {
+    padding-bottom: 0.5rem;
+  }
+
   .ant-input-outlined,
   .ant-input-affix-wrapper {
-    min-height: 5rem;
-    padding: 0 1.4rem;
-    border-radius: 1.6rem;
+    min-height: 4.6rem;
+    padding: 0 1.2rem;
+    border-radius: 1.4rem;
     border: 1px solid var(--border-light-color) !important;
     background: var(--surface-subtle-color) !important;
     box-shadow: none !important;
@@ -172,9 +176,9 @@ const formStyles = css`
   }
 
   .ant-input-prefix {
-    margin-right: 1rem;
+    margin-right: 0.8rem;
     color: var(--text-tertiary-color);
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
 
   .ant-input-password-icon.anticon {
@@ -191,14 +195,14 @@ const formStyles = css`
     right: 0;
     left: 0;
     top: 100%;
-    min-height: 2.2rem;
+    min-height: 1.9rem;
     pointer-events: none;
   }
 
   .ant-form-item-explain-error {
     margin-top: 0;
-    font-size: 1.4rem;
-    line-height: 1.5;
+    font-size: 1.25rem;
+    line-height: 1.4;
   }
 
   .ant-form-item:last-of-type {
@@ -219,7 +223,7 @@ const formStyles = css`
 
   @media (max-width: 767px) {
     .ant-form-item {
-      margin-bottom: 2.2rem;
+      margin-bottom: 1.7rem;
     }
   }
 `;
