@@ -1,74 +1,85 @@
 /** @jsxImportSource @emotion/react */
-import { css, keyframes } from '@emotion/react';
+import { css } from '@emotion/react';
 import { Icon } from './icons';
 
 export default function Loading() {
   return (
     <div css={rootStyles}>
-      <div css={loaderStyles}>
-        <div css={circleStyles}></div>
-        <Icon icon='logo' width={70} height={70} customStyles={logoStyles} />
+      <div css={contentStyles}>
+        <Icon icon='logo' width={96} height={96} customStyles={logoStyles} />
+        <div css={textBlockStyles}>
+          <div css={appNameStyles}>Daily Option Profit</div>
+        </div>
       </div>
     </div>
   );
 }
 
-const spinAnimation = keyframes`
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-`;
-
 const rootStyles = css`
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--loading-background-color);
-  z-index: 999;
-`;
-
-const loaderStyles = css`
-  position: relative;
-  width: 10rem;
-  height: 10rem;
   overflow: hidden;
-`;
+  background:
+    radial-gradient(
+      circle at 50% 38%,
+      rgba(8, 127, 244, 0.04),
+      transparent 24%
+    ),
+    linear-gradient(180deg, rgba(7, 27, 48, 0.02), rgba(7, 27, 48, 0.008)),
+    var(--app-background-color);
+  z-index: 999;
 
-const circleStyles = css`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  margin: 0 auto;
-  border-radius: 50%;
-  background: linear-gradient(
-    to right,
-    var(--loading-color) 10%,
-    rgba(0, 100, 166, 0) 50%
-  );
-  animation: ${spinAnimation} 1s infinite linear;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 92%;
-    height: 92%;
-    margin: auto;
-    border-radius: 50%;
-    background: var(--loading-background-color);
+  html[data-theme='dark'] & {
+    background:
+      radial-gradient(
+        circle at 50% 38%,
+        rgba(8, 127, 244, 0.08),
+        transparent 24%
+      ),
+      linear-gradient(180deg, rgba(7, 27, 48, 0.04), rgba(7, 27, 48, 0.015)),
+      var(--app-background-color);
   }
 `;
 
+const contentStyles = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.8rem;
+  padding: 2.4rem;
+  text-align: center;
+`;
+
 const logoStyles = css`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 10px 24px rgba(7, 27, 48, 0.12));
+
+  html[data-theme='dark'] & {
+    filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.28));
+  }
+`;
+
+const textBlockStyles = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+`;
+
+const appNameStyles = css`
+  font-family: var(--font-family);
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.04rem;
+  color: #12263f;
+
+  html[data-theme='dark'] & {
+    color: rgba(255, 255, 255, 0.92);
+  }
 `;
