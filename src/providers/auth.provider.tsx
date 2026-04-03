@@ -1,4 +1,4 @@
-import Loading from '@/components/loading';
+import AuthSplashScreen from '@/components/auth-splash-screen';
 import { AuthContext } from '@/hooks/auth.hook';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ isLoggedIn: isAuthenticated }}>
-      {(loading || delayedLoading) && <Loading />}
+      {(loading || delayedLoading) && <AuthSplashScreen />}
       {children}
     </AuthContext.Provider>
   );
