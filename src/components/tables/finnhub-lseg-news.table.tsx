@@ -225,10 +225,11 @@ export const FinnhubAndLsegNewsTable = () => {
   };
 
   const dataSource = Array.isArray(listNews) ? listNews : [];
-  const getBreakingNewsCellStyle = useCallback(
+  const getBreakingNewsCellProps = useCallback(
     (breakingNews?: number) => {
       if (breakingNews === 1) {
         return {
+          className: 'breaking-news-positive-cell',
           background: isDarkMode
             ? 'var(--watching-solid-color)'
             : 'var(--watching-color)'
@@ -237,6 +238,7 @@ export const FinnhubAndLsegNewsTable = () => {
 
       if (breakingNews === -1) {
         return {
+          className: 'breaking-news-negative-cell',
           background: isDarkMode ? '#3a1f28' : 'var(--soft-pink-color)'
         };
       }
@@ -244,6 +246,18 @@ export const FinnhubAndLsegNewsTable = () => {
       return undefined;
     },
     [isDarkMode]
+  );
+
+  const getBreakingNewsOnCell = useCallback(
+    (breakingNews?: number) => {
+      const cellProps = getBreakingNewsCellProps(breakingNews);
+
+      return {
+        className: cellProps?.className,
+        style: cellProps ? { background: cellProps.background } : undefined
+      };
+    },
+    [getBreakingNewsCellProps]
   );
 
   const columns: TableColumnsType<FinnhubAndLsegNewsTableItem> = [
@@ -254,9 +268,7 @@ export const FinnhubAndLsegNewsTable = () => {
       width: 70,
       align: 'center',
       fixed: !isMobile && 'left',
-      onCell: (record) => ({
-        style: getBreakingNewsCellStyle(record.breakingNews)
-      }),
+      onCell: (record) => getBreakingNewsOnCell(record.breakingNews),
       render: (_v, _r, index) =>
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
     },
@@ -273,9 +285,7 @@ export const FinnhubAndLsegNewsTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('totalNews24H')
       }),
-      onCell: (record) => ({
-        style: getBreakingNewsCellStyle(record.breakingNews)
-      }),
+      onCell: (record) => getBreakingNewsOnCell(record.breakingNews),
       render: (value, record) => {
         const isExpanded = expandedRowKeys.includes(record.key);
         if (value > 1) {
@@ -320,9 +330,7 @@ export const FinnhubAndLsegNewsTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('symbol')
       }),
-      onCell: (record) => ({
-        style: getBreakingNewsCellStyle(record.breakingNews)
-      }),
+      onCell: (record) => getBreakingNewsOnCell(record.breakingNews),
       render: (value) => <SymbolCell symbol={value} />
     },
     {
@@ -338,9 +346,7 @@ export const FinnhubAndLsegNewsTable = () => {
         onClick: () => handleSortOrder('datetime')
       }),
       align: 'center',
-      onCell: (record) => ({
-        style: getBreakingNewsCellStyle(record.breakingNews)
-      }),
+      onCell: (record) => getBreakingNewsOnCell(record.breakingNews),
       render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
@@ -863,7 +869,27 @@ export const FinnhubAndLsegNewsTable = () => {
     .map((col) => ({
       ...col,
       sorter: undefined,
-      onHeaderCell: undefined
+      onHeaderCell: undefined,
+      onCell: (record, rowIndex) => {
+        const cellProps = col.onCell?.(record, rowIndex) ?? {};
+        const hasHighlightedBackground = Boolean(cellProps.style?.background);
+
+        return {
+          ...cellProps,
+          className: [
+            cellProps.className,
+            hasHighlightedBackground
+              ? 'detail-cell-highlighted'
+              : 'detail-cell-neutral'
+          ]
+            .filter(Boolean)
+            .join(' '),
+          style: {
+            background: isDarkMode ? '#131f33' : 'var(--table-row-bg-color)',
+            ...cellProps.style
+          }
+        };
+      }
     }));
 
   return (
@@ -931,7 +957,7 @@ export const FinnhubAndLsegNewsTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: dataSource.length > 0 ? height - 340 : undefined
+            y: dataSource.length > 0 ? height - 350 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -946,7 +972,7 @@ export const FinnhubAndLsegNewsTable = () => {
               const compositeKey = `${row.symbol}_${row.id}`;
               return (
                 <Table
-                  css={detailTableStyles}
+                  css={detailTableStyles(isDarkMode)}
                   dataSource={expandedNews[compositeKey] || []}
                   columns={detailColumns}
                   rowKey={(record) => record.key}
@@ -1049,11 +1075,42 @@ const tableStyles = (isDarkMode: boolean) => css`
     padding: 0.8rem 1rem !important;
   }
 
+  .ant-table-tbody
+    > tr:hover
+    > .ant-table-cell:not(.breaking-news-positive-cell):not(
+      .breaking-news-negative-cell
+    ) {
+    background: ${isDarkMode ? 'var(--gray-soft-color)' : '#fafafa'} !important;
+  }
+
   .ant-table-tbody > tr > .ant-table-cell-fix-left,
   .ant-table-tbody > tr > .ant-table-cell-fix-right,
   .ant-table-tbody > tr > .ant-table-cell-fix-left-last,
   .ant-table-tbody > tr > .ant-table-cell-fix-right-first {
     background: ${isDarkMode ? '#141414' : 'var(--white-color)'};
+  }
+
+  .ant-table-tbody
+    > tr:hover
+    > .ant-table-cell-fix-left:not(.breaking-news-positive-cell):not(
+      .breaking-news-negative-cell
+    ),
+  .ant-table-tbody
+    > tr:hover
+    > .ant-table-cell-fix-right:not(.breaking-news-positive-cell):not(
+      .breaking-news-negative-cell
+    ),
+  .ant-table-tbody
+    > tr:hover
+    > .ant-table-cell-fix-left-last:not(.breaking-news-positive-cell):not(
+      .breaking-news-negative-cell
+    ),
+  .ant-table-tbody
+    > tr:hover
+    > .ant-table-cell-fix-right-first:not(.breaking-news-positive-cell):not(
+      .breaking-news-negative-cell
+    ) {
+    background: ${isDarkMode ? 'var(--gray-soft-color)' : '#fafafa'} !important;
   }
 
   .ant-table-expanded-row-fixed {
@@ -1112,7 +1169,7 @@ const iconStyles = css`
   margin-top: 0.2rem;
 `;
 
-const detailTableStyles = css`
+const detailTableStyles = (isDarkMode: boolean) => css`
   padding: 1.6rem 1rem;
   .ant-table {
     margin-inline: 0 !important;
@@ -1128,6 +1185,10 @@ const detailTableStyles = css`
     .ant-table-cell {
       background: var(--table-row-bg-color);
     }
+  }
+
+  .ant-table-tbody > tr:hover > .detail-cell-neutral {
+    background: ${isDarkMode ? 'var(--gray-soft-color)' : '#fafafa'} !important;
   }
 `;
 
