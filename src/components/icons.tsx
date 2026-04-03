@@ -2,7 +2,8 @@
 import React from 'react';
 import { css, SerializedStyles } from '@emotion/react';
 import camelCase from 'lodash/camelCase';
-import Logo from '@/assets/svg/logo.svg';
+import Image from 'next/image';
+import LogoPng from '@/assets/images/logo.png';
 import ExpandLeft from '@/assets/svg/expand-left.svg';
 import ExpandRight from '@/assets/svg/expand-right.svg';
 import Home from '@/assets/svg/home.svg';
@@ -75,7 +76,6 @@ type IconProps = {
 };
 
 const svgList = {
-  Logo,
   ExpandLeft,
   ExpandRight,
   Home,
@@ -157,6 +157,20 @@ export const Icon = ({
   customStyles,
   onClick
 }: IconProps) => {
+  if (icon === 'logo') {
+    return (
+      <Image
+        src={LogoPng.src}
+        alt='Logo'
+        width={typeof width === 'number' ? width : LogoPng.width}
+        height={typeof height === 'number' ? height : LogoPng.height}
+        style={{ width, height }}
+        css={customStyles}
+        onClick={onClick}
+      />
+    );
+  }
+
   const SelectedIcon = iconMap[icon];
 
   if (!SelectedIcon) return null;

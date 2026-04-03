@@ -483,7 +483,7 @@ export const MarketPsychTable = () => {
           loading={loading}
           scroll={{
             x: 1200,
-            y: data.length > 0 ? height - 320 : undefined
+            y: data.length > 0 ? height - 324 : undefined
           }}
           locale={{
             emptyText: (
@@ -514,7 +514,28 @@ const rootStyles = css`
 const filterBarStyles = css`
   border: 1px solid var(--border-table-color);
   border-radius: 0.6rem;
-  padding: 1.6rem 1.4rem 1.2rem;
+  padding: 1.2rem 1.4rem 1.2rem;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
+
+  :root[data-theme='light'] & {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(248, 250, 252, 0.96) 100%
+    );
+  }
+
+  :root[data-theme='dark'] & {
+    background: linear-gradient(
+      180deg,
+      rgba(19, 31, 51, 0.92) 0%,
+      rgba(15, 24, 40, 0.98) 100%
+    );
+  }
 `;
 const tableStyles = css`
   .ant-table-cell {
@@ -525,13 +546,12 @@ const tableWrapperStyles = css`
   border: 1px solid var(--border-table-color);
   border-radius: 0.8rem;
 `;
-const emptyStyles = (height: number) =>
-  css`
-    height: ${height}px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  `;
+const emptyStyles = (height: number) => css`
+  height: ${height}px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
 const titleStyles = css`
   padding: 1.2rem 1.6rem;
   display: flex;

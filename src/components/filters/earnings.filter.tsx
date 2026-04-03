@@ -11,7 +11,6 @@ import {
 } from '@/redux/slices/earnings.slice';
 import { useLocale, useTranslations } from 'next-intl';
 import { isMobile } from 'react-device-detect';
-import { filterPanelStyles } from './filter-panel.styles';
 
 type EarningsFilterProps = {
   customStyles?: SerializedStyles;
@@ -173,7 +172,6 @@ export const EarningFilter = ({
 };
 
 const rootStyles = css`
-  ${filterPanelStyles};
   display: flex;
   justify-content: center;
   align-items: center;

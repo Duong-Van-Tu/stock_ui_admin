@@ -47,7 +47,7 @@ export default function AuthLayout({
         <section css={showcaseStyles(isDarkMode)}>
           <div css={brandRowStyles}>
             <div css={brandIconWrapStyles(isDarkMode)}>
-              <Icon icon='logo' width={42} height={42} />
+              <Icon icon='logo' width={50} height={50} />
             </div>
             <div css={brandTextWrapStyles}>
               <Text css={brandTitleStyles}>{t('appTitle')}</Text>
@@ -84,7 +84,7 @@ export default function AuthLayout({
           <div css={cardBodyStyles}>
             <div css={cardTopBarStyles}>
               <div css={cardBadgeStyles(isDarkMode)}>
-                <Icon icon='logo' width={18} height={18} />
+                <Icon icon='logo' width={28} height={28} />
                 <span>{t('authEyebrow')}</span>
               </div>
               <div css={toggleWrapStyles}>
@@ -504,9 +504,9 @@ const segmentItemStyles = (isDarkMode: boolean, isActive: boolean) => css`
 const cardBadgeStyles = (isDarkMode: boolean) => css`
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
-  min-height: 3.4rem;
-  padding: 0 1.2rem;
+  gap: 1rem;
+  min-height: 4.2rem;
+  padding: 0.4rem 1.4rem;
   border-radius: 999px;
   border: 1px solid
     ${isDarkMode ? 'rgba(148, 163, 184, 0.18)' : 'rgba(8, 127, 244, 0.12)'};

@@ -16,7 +16,6 @@ import {
   watchSectors
 } from '@/redux/slices/stock-score.slice';
 import { useTranslations } from 'next-intl';
-import { filterPanelStyles } from './filter-panel.styles';
 
 type Props = {
   customStyles?: SerializedStyles;
@@ -378,7 +377,6 @@ export const FinnhubAndLsegNewsFilter = ({
 };
 
 const rootStyles = css`
-  ${filterPanelStyles};
   display: flex;
 `;
 

@@ -181,6 +181,11 @@ const formStyles = css`
     color: var(--text-tertiary-color);
   }
 
+  .ant-form-item-has-error .ant-input-prefix,
+  .ant-form-item-has-error .ant-input-password-icon.anticon {
+    color: var(--text-tertiary-color) !important;
+  }
+
   .ant-form-item-additional {
     position: absolute;
     right: 0;
