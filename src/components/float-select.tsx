@@ -85,7 +85,7 @@ const labelBaseStyle = (
   left: 1.2rem;
   top: 0.4rem;
   transition: 0.2s ease all;
-  background: ${backgroundColor || 'var(--white-color)'};
+  background: var(--float-label-bg, ${backgroundColor || 'var(--white-color)'});
   color: ${textColor || 'var(--text-tertiary-color)'};
   display: ${hidden && 'none'};
 `;

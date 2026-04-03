@@ -868,7 +868,7 @@ export const FinnhubAndLsegNewsTable = () => {
 
   return (
     <div css={rootStyles}>
-      <div css={filterBarStyles}>
+      <div css={filterBarStyles(isDarkMode)}>
         <FinnhubAndLsegNewsFilter
           onFilter={handleFilter}
           onFilterReady={handleFilterReady}
@@ -1021,10 +1021,27 @@ const textSearchStyles = css`
   min-width: 20rem;
 `;
 
-const filterBarStyles = css`
+const filterBarStyles = (isDarkMode: boolean) => css`
+  --float-label-bg: ${isDarkMode
+    ? 'rgba(19, 31, 51, 0.92)'
+    : 'rgba(255, 255, 255, 0.98)'};
   border: 1px solid var(--border-table-color);
   border-radius: 0.6rem;
   padding: 1.6rem 1.6rem 1.2rem;
+  background: ${isDarkMode
+    ? `linear-gradient(
+        180deg,
+        rgba(19, 31, 51, 0.92) 0%,
+        rgba(15, 24, 40, 0.98) 100%
+      )`
+    : `linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.98) 0%,
+        rgba(248, 250, 252, 0.96) 100%
+      )`};
+  border-color: ${isDarkMode
+    ? 'rgba(148, 163, 184, 0.14)'
+    : 'rgba(15, 23, 42, 0.08)'};
 `;
 
 const tableStyles = (isDarkMode: boolean) => css`

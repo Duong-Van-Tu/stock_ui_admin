@@ -45,7 +45,7 @@ const floatFieldLabelStyles = (
   z-index: 1;
   padding: 0 0.4rem;
   margin-left: -0.4rem;
-  background: ${backgroundColor};
+  background: var(--float-label-bg, ${backgroundColor});
   color: ${textColor};
   font-size: 1.2rem;
   font-weight: 500;
