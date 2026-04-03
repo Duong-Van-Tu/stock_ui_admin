@@ -21,14 +21,21 @@ import { getPathnameSegment } from '@/utils/common';
 import ModalProvider from './modal.provider';
 import { NotificationProvider } from './notification-provider';
 import { ThemeProvider, useThemeMode } from './theme.provider';
+import { ThemeMode } from '@/constants/theme.constant';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(isoWeek);
 
-export default function Providers({ children }: { children: ReactNode }) {
+export default function Providers({
+  children,
+  initialThemeMode
+}: {
+  children: ReactNode;
+  initialThemeMode: ThemeMode;
+}) {
   return (
-    <ThemeProvider>
+    <ThemeProvider initialThemeMode={initialThemeMode}>
       <AppProviders>{children}</AppProviders>
     </ThemeProvider>
   );

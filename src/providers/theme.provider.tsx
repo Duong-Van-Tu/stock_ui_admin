@@ -8,8 +8,13 @@ import {
   useMemo,
   useState
 } from 'react';
-
-export type ThemeMode = 'light' | 'dark';
+import {
+  DEFAULT_THEME_MODE,
+  isThemeMode,
+  THEME_COOKIE_KEY,
+  THEME_STORAGE_KEY,
+  ThemeMode
+} from '@/constants/theme.constant';
 
 type ThemeContextValue = {
   themeMode: ThemeMode;
@@ -18,34 +23,42 @@ type ThemeContextValue = {
   toggleTheme: () => void;
 };
 
-const STORAGE_KEY = 'stock-ui-theme-mode';
-const DEFAULT_THEME_MODE: ThemeMode = 'dark';
-
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
-const getInitialThemeMode = (): ThemeMode => {
-  if (typeof window === 'undefined') return DEFAULT_THEME_MODE;
+const getInitialThemeMode = (
+  initialThemeMode: ThemeMode = DEFAULT_THEME_MODE
+): ThemeMode => {
+  if (typeof window === 'undefined') return initialThemeMode;
 
   const documentMode = document.documentElement.dataset.theme;
-  if (documentMode === 'light' || documentMode === 'dark') {
+  if (isThemeMode(documentMode)) {
     return documentMode;
   }
 
-  const storedMode = window.localStorage.getItem(STORAGE_KEY);
-  if (storedMode === 'light' || storedMode === 'dark') {
+  const storedMode = window.localStorage.getItem(THEME_STORAGE_KEY);
+  if (isThemeMode(storedMode)) {
     return storedMode;
   }
 
-  return DEFAULT_THEME_MODE;
+  return initialThemeMode;
 };
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [themeMode, setThemeMode] = useState<ThemeMode>(getInitialThemeMode);
+export function ThemeProvider({
+  children,
+  initialThemeMode = DEFAULT_THEME_MODE
+}: {
+  children: ReactNode;
+  initialThemeMode?: ThemeMode;
+}) {
+  const [themeMode, setThemeMode] = useState<ThemeMode>(() =>
+    getInitialThemeMode(initialThemeMode)
+  );
 
   useEffect(() => {
     document.documentElement.dataset.theme = themeMode;
     document.documentElement.style.colorScheme = themeMode;
-    window.localStorage.setItem(STORAGE_KEY, themeMode);
+    window.localStorage.setItem(THEME_STORAGE_KEY, themeMode);
+    document.cookie = `${THEME_COOKIE_KEY}=${themeMode}; path=/; max-age=31536000; samesite=lax`;
   }, [themeMode]);
 
   const value = useMemo(
