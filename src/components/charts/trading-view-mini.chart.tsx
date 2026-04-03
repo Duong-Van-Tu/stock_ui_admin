@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useEffect, useRef, memo } from 'react';
+import { useThemeMode } from '@/providers/theme.provider';
 
 type ChartMiniTradingviewProps = {
   symbol: string;
@@ -14,10 +15,14 @@ const ChartMiniTradingview = ({
   symbol,
   width = '100%',
   height = 180,
-  colorTheme = 'light',
+  colorTheme,
   locale = 'en'
 }: ChartMiniTradingviewProps) => {
+  const { isDarkMode } = useThemeMode();
   const container = useRef<HTMLDivElement>(null);
+  const resolvedColorTheme = colorTheme ?? (isDarkMode ? 'dark' : 'light');
+  const widgetBackgroundColor =
+    resolvedColorTheme === 'dark' ? '#1f1f1f' : 'var(--surface-elevated-color)';
 
   useEffect(() => {
     if (container.current) {
@@ -35,47 +40,115 @@ const ChartMiniTradingview = ({
           "height": "${height}",
           "locale": "${locale}",
           "dateRange": "3M",
-          "colorTheme": "${colorTheme}",
-          "isTransparent": true,
+          "colorTheme": "${resolvedColorTheme}",
+          "isTransparent": false,
           "autosize": false
         }`;
 
       container.current.appendChild(script);
     }
-  }, [symbol, width, height, colorTheme, locale]);
+  }, [symbol, width, height, resolvedColorTheme, locale]);
 
   return (
     <div
-      className='tradingview-widget-container'
-      ref={container}
       style={{ width, height }}
       css={css`
         position: relative;
         overflow: hidden;
+        background: ${widgetBackgroundColor};
+        border-radius: 0.8rem;
 
         &::before {
           content: '';
           position: absolute;
-          top: 0.7rem;
-          right: 0.6rem;
-          width: 3.2rem;
-          height: 2.6rem;
-          background: var(--white-color);
-          box-shadow: 0 2px 4px 0 var(--white-color);
-        }
-        &::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: transparent;
-          z-index: 10;
-          pointer-events: all;
+          top: -1px;
+          right: -1px;
+          width: 5.2rem;
+          height: 4.8rem;
+          background: ${widgetBackgroundColor};
+          border-top-right-radius: 0.8rem;
+          border-bottom-left-radius: 1.2rem;
+          z-index: 11;
         }
       `}
-    />
+    >
+      <div
+        className='tradingview-widget-container'
+        ref={container}
+        css={css`
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          border-radius: 0.8rem;
+          background: ${widgetBackgroundColor};
+
+          > div,
+          iframe,
+          .tradingview-widget-container__widget,
+          .tradingview-widget-container__widget iframe {
+            border-radius: inherit !important;
+            background: ${widgetBackgroundColor} !important;
+          }
+
+          &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background:
+              linear-gradient(
+                to bottom,
+                ${widgetBackgroundColor} 0,
+                ${widgetBackgroundColor} 1px,
+                transparent 1px
+              ),
+              linear-gradient(
+                to top,
+                ${widgetBackgroundColor} 0,
+                ${widgetBackgroundColor} 1px,
+                transparent 1px
+              ),
+              linear-gradient(
+                to right,
+                ${widgetBackgroundColor} 0,
+                ${widgetBackgroundColor} 1px,
+                transparent 1px
+              ),
+              linear-gradient(
+                to left,
+                ${widgetBackgroundColor} 0,
+                ${widgetBackgroundColor} 1px,
+                transparent 1px
+              );
+            background-repeat: no-repeat;
+            background-size:
+              100% 1px,
+              100% 1px,
+              1px 100%,
+              1px 100%;
+            background-position:
+              top left,
+              bottom left,
+              top left,
+              top right;
+            pointer-events: none;
+            z-index: 3;
+          }
+        `}
+      />
+      <div
+        aria-hidden='true'
+        css={css`
+          position: absolute;
+          inset: 0;
+          z-index: 12;
+          border-radius: 0.8rem;
+          background: transparent;
+          pointer-events: auto;
+        `}
+      />
+    </div>
   );
 };
 

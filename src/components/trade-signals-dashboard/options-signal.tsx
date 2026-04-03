@@ -3,11 +3,7 @@ import { css } from '@emotion/react';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Card, Table, TableColumnsType } from 'antd';
-import {
-  calculatePercentage,
-  cleanFalsyValues,
-  roundToDecimals
-} from '@/utils/common';
+import { cleanFalsyValues, roundToDecimals } from '@/utils/common';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 import { PositiveNegativeText } from '../positive-negative-text';
@@ -15,7 +11,6 @@ import { useTranslations } from 'next-intl';
 import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { SocketContext } from '@/providers/socket.provider';
-import { getCurrentPrice } from '@/helpers/socket.helper';
 import {
   getAlertLogs,
   watchOptionAlertLogsPagination,
@@ -28,14 +23,13 @@ import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import Link from 'next/link';
 import { PageURLs } from '@/utils/navigate';
 import { EmptyDataTable } from '../tables/empty.table';
-import { StockChangeCell } from '../tables/columns/stock-change-cell.column';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { isMobile } from 'react-device-detect';
 
 export const OptionSignal = () => {
   const t = useTranslations();
   const dispatch = useAppDispatch();
-  const { setWatchList, resFromWS } = useContext(SocketContext);
+  const { setWatchList } = useContext(SocketContext);
 
   const strategyData = useAppSelector(watchSignalOptions);
   const loading = useAppSelector(watchOptionLoading);
@@ -149,60 +143,6 @@ export const OptionSignal = () => {
       render: (value) => (value ? roundToDecimals(value, 2) : '-')
     },
     {
-      title: t('exitDate'),
-      dataIndex: 'exitDate',
-      key: 'exitDate',
-      width: 120,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'exitDate' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('exitDate')
-      }),
-      render: (value) => (value ? <DateTimeCell value={value} /> : '-')
-    },
-    {
-      title: t('exitPrice'),
-      dataIndex: 'exitPrice',
-      key: 'exitPrice',
-      width: 130,
-      align: 'center',
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'exitPrice' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('exitPrice')
-      }),
-      render: (value, record) => {
-        const percentage = calculatePercentage(record.entryPrice, value);
-        return value ? (
-          <StockChangeCell value={value} percentage={percentage} />
-        ) : (
-          '-'
-        );
-      }
-    },
-    {
-      title: t('currentPrice'),
-      dataIndex: 'currentPrice',
-      key: 'currentPrice',
-      width: 130,
-      sorter: true,
-      showSorterTooltip: false,
-      sortOrder: sortField === 'currentPrice' ? sortType : null,
-      onHeaderCell: () => ({
-        onClick: () => handleSortOrder('currentPrice')
-      }),
-      align: 'center',
-      render: (value, record) => {
-        const currPrice = getCurrentPrice(resFromWS, record.symbol);
-        const price = currPrice ?? value;
-        const percentage = calculatePercentage(record.entryPrice, price);
-        return <StockChangeCell value={price} percentage={percentage} />;
-      }
-    },
-    {
       title: t('winOrLoss'),
       dataIndex: 'winOrLoss',
       key: 'winOrLoss',
@@ -248,7 +188,9 @@ export const OptionSignal = () => {
         columns={columns}
         dataSource={strategyData}
         showHeader={strategyData?.length > 0}
-        scroll={strategyData.length > 0 ? { x: 600, y: undefined } : undefined}
+        scroll={
+          strategyData.length > 0 ? { x: 600, y: undefined } : undefined
+        }
         sortDirections={['descend', 'ascend']}
         locale={{
           emptyText: (
@@ -281,15 +223,19 @@ const tableStyles = (isEmpty: boolean) => css`
     padding: ${isMobile
       ? '0.6rem 0.8rem !important'
       : '0.8rem 1rem !important'};
-    border-bottom: ${isEmpty ? 'unset' : '1px solid #f0f0f0'} !important;
+    border-bottom: ${isEmpty ? 'unset' : '1px solid var(--border-table-color)'} !important;
     height: ${isEmpty ? '33.2rem' : 'unset'};
+  }
+
+  .ant-table-placeholder .ant-table-cell {
+    border-bottom: none !important;
   }
 `;
 
 const cardStyles = css`
   width: 100%;
   .ant-card-body {
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid var(--border-table-color);
     padding: 0;
     display: flex;
     align-items: center;
@@ -307,4 +253,10 @@ const strategyLinkStyles = css`
   display: block;
   text-align: center;
   font-size: ${isMobile ? '1.6rem' : '1.8rem'};
+  color: var(--symbol-color);
+  font-weight: 600;
+
+  &:hover {
+    color: var(--primary-color);
+  }
 `;

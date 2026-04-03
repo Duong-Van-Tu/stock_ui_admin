@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Segmented,
-  Select,
   Table,
   TableColumnsType,
   Tooltip
@@ -24,6 +23,7 @@ import {
 import { useWindowSize } from '@/hooks/window-size.hook';
 import { EmptyDataTable } from './empty.table';
 import { TableTitle } from './title.table';
+import FloatSelect from '../float-select';
 import { Icon } from '../icons';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
@@ -37,6 +37,10 @@ import { TimeZone } from '@/constants/timezone.constant';
 import { useSortOrder } from '@/hooks/sort-order.hook';
 import { convertSortType } from '@/utils/sort-table';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
+import {
+  createSegmentedLabelStyles,
+  segmentedStyles as baseSegmentedStyles
+} from './segmented.styles';
 
 const formatRatioPercent = (value: number | null | undefined) => {
   if (!isNumeric(value)) return '-';
@@ -381,12 +385,14 @@ export const BreakingNewsAnalyticsTable = () => {
                     })
                   }
                   type='text'
+                  css={refreshIconBtnStyles}
                   icon={
                     <Icon
                       customStyles={iconStyles}
                       icon='refresh'
                       width={22}
                       height={22}
+                      fill='var(--text-color)'
                     />
                   }
                   shape='circle'
@@ -423,9 +429,9 @@ export const BreakingNewsAnalyticsTable = () => {
               onChange={(value) => setMarketMode(value as MarketMode)}
             />
             <div css={newsTypeFilterStyles}>
-              <span css={filterLabelStyles}>News Type</span>
-              <Select
+              <FloatSelect
                 allowClear
+                label='News Type'
                 showSearch
                 optionFilterProp='label'
                 filterOption={(input, option) =>
@@ -434,10 +440,10 @@ export const BreakingNewsAnalyticsTable = () => {
                     .includes(input.toLowerCase())
                 }
                 options={newsTypeOptions}
-                value={filter.newsType}
+                value={filter.newsType ?? ''}
                 placeholder='Select news type'
                 onChange={(value) => handleFilterNewsType(value)}
-                style={{ width: isMobile ? 220 : 320 }}
+                width={isMobile ? '100%' : '32rem'}
               />
             </div>
           </div>
@@ -523,6 +529,20 @@ const iconStyles = css`
   margin-top: 0.2rem;
 `;
 
+const refreshIconBtnStyles = css`
+  color: var(--text-color);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
+  }
+`;
+
 const dateTextStyles = css`
   margin-right: 0.6rem;
 `;
@@ -556,14 +576,7 @@ const rightControlStyles = css`
 `;
 
 const segmentedStyles = css`
-  padding: 0;
-  .ant-segmented-item-selected {
-    background: var(--primary-color);
-    color: var(--white-color);
-  }
-  .ant-segmented-item-label {
-    text-transform: uppercase;
-  }
+  ${baseSegmentedStyles};
   @media (min-width: 992px) {
     position: absolute;
     left: 50%;
@@ -576,27 +589,18 @@ const segmentedStyles = css`
   }
 `;
 
-const segmentedLabelStyles = css`
-  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
-  font-weight: 500;
-  text-transform: uppercase;
-`;
+const segmentedLabelStyles = createSegmentedLabelStyles({
+  textTransform: 'uppercase'
+});
 
 const newsTypeFilterStyles = css`
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  min-width: ${isMobile ? '22rem' : '32rem'};
   @media (max-width: 640px) {
     width: 100%;
-    flex-wrap: wrap;
+    min-width: 100%;
   }
-`;
-
-const filterLabelStyles = css`
-  font-size: 1.4rem;
-  font-weight: 600;
-  line-height: 1.8rem;
-  white-space: nowrap;
 `;
 
 const tableStyles = css`

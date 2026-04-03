@@ -22,10 +22,13 @@ import {
 } from '@/utils/common';
 import { PositiveNegativeText } from '@/components/positive-negative-text';
 import { useRouter } from 'next/navigation';
+import { useThemeMode } from '@/providers/theme.provider';
 
 type SymbolCellProps = {
   symbol: string;
   companyName?: string;
+  symbolColor?: string;
+  companyNameColor?: string;
   isNews?: boolean;
   earningDate?: string;
   isNewsNegative?: boolean;
@@ -42,6 +45,8 @@ type SymbolCellProps = {
 export const SymbolCell = ({
   symbol,
   companyName,
+  symbolColor,
+  companyNameColor,
   isNews,
   earningDate,
   isNewsNegative,
@@ -55,9 +60,16 @@ export const SymbolCell = ({
 }: SymbolCellProps) => {
   const t = useTranslations();
   const router = useRouter();
+  const { isDarkMode } = useThemeMode();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerContent, setDrawerContent] = useState<ContentType | null>(null);
   const [drawerOption, setDrawerOption] = useState<string>('');
+  const popoverBackgroundColor = isDarkMode
+    ? '#1f1f1f'
+    : 'var(--surface-elevated-color)';
+  const popoverBorderColor = isDarkMode
+    ? 'rgba(255, 255, 255, 0.1)'
+    : 'var(--border-light-color)';
 
   const handleIconClick = (contentType: ContentType, option?: string) => {
     setDrawerContent(contentType);
@@ -75,11 +87,12 @@ export const SymbolCell = ({
     <>
       <div css={symbolStyles}>
         <Popover
+          color={popoverBackgroundColor}
           content={
-            <>
+            <div css={popoverContentStyles(popoverBackgroundColor)}>
               <ChartMiniTradingview symbol={symbol} />
               {stockInfo && (
-                <div css={stockInfoStyles}>
+                <div css={stockInfoStyles(popoverBackgroundColor, isDarkMode)}>
                   <div css={scoreWrapperStyles}>
                     <ScoreBlock
                       label={t('totalScore')}
@@ -117,7 +130,7 @@ export const SymbolCell = ({
                     align='middle'
                   >
                     <Col css={columnStyles}>
-                      <Typography.Text strong type='secondary'>
+                      <Typography.Text css={metricLabelStyles}>
                         {t('beta')}:&nbsp;
                       </Typography.Text>
                       <span>
@@ -127,7 +140,7 @@ export const SymbolCell = ({
                       </span>
                     </Col>
                     <Col css={columnStyles}>
-                      <Typography.Text strong type='secondary'>
+                      <Typography.Text css={metricLabelStyles}>
                         {t('atr')}:&nbsp;
                       </Typography.Text>
                       <div>
@@ -148,7 +161,7 @@ export const SymbolCell = ({
                       </div>
                     </Col>
                     <Col css={columnStyles}>
-                      <Typography.Text strong type='secondary'>
+                      <Typography.Text css={metricLabelStyles}>
                         {t('rsi')}:&nbsp;
                       </Typography.Text>
                       <span>
@@ -158,17 +171,26 @@ export const SymbolCell = ({
                   </Row>
                 </div>
               )}
-            </>
+            </div>
           }
           trigger='hover'
           placement='rightTop'
-          overlayStyle={{ padding: 0 }}
+          overlayStyle={{
+            padding: 0,
+            ['--antd-arrow-background-color' as any]: popoverBackgroundColor
+          }}
+          overlayInnerStyle={{
+            background: popoverBackgroundColor,
+            border: `1px solid ${popoverBorderColor}`,
+            borderRadius: '0.8rem',
+            padding: 0
+          }}
         >
           {isMobile ? (
-            <span css={stockLinkStyles}>{symbol}</span>
+            <span css={stockLinkStyles(symbolColor)}>{symbol}</span>
           ) : (
             <Link
-              css={stockLinkStyles}
+              css={stockLinkStyles(symbolColor)}
               href={link ?? PageURLs.ofStockDetail(symbol, signalId)}
               target={link ? undefined : isDesktop ? '_blank' : undefined}
             >
@@ -283,7 +305,7 @@ export const SymbolCell = ({
       </div>
 
       {companyName && (
-        <div css={companyNameStyles()}>
+        <div css={companyNameStyles(companyNameColor)}>
           <EllipsisText text={companyName} maxLines={1} />
         </div>
       )}
@@ -305,9 +327,9 @@ const symbolStyles = css`
   font-weight: 600;
 `;
 
-const stockLinkStyles = css`
+const stockLinkStyles = (symbolColor?: string) => css`
   margin-right: 0.6rem;
-  color: var(--symbol-color);
+  color: ${symbolColor || 'var(--symbol-color)'};
   font-size: ${isMobile ? '1.4rem' : '1.6rem'};
   &:hover {
     color: var(--primary-color);
@@ -321,11 +343,11 @@ const buttonStyles = css`
   border-radius: 50%;
 `;
 
-const companyNameStyles = () => css`
+const companyNameStyles = (companyNameColor?: string) => css`
   font-size: 1.3rem;
   line-height: 1.4rem;
   font-weight: 500;
-  color: var(--text-color);
+  color: ${companyNameColor || 'var(--text-color)'};
 `;
 
 const scoreWrapperStyles = css`
@@ -340,18 +362,32 @@ const dividerStyles = css`
   height: 4rem;
 `;
 
-const stockInfoStyles = css`
+const stockInfoStyles = (backgroundColor: string, isDarkMode: boolean) => css`
   margin-top: 1rem;
+  padding-top: 1.2rem;
   bottom: 0.4rem;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  background: ${backgroundColor};
+  border-top: 1px solid
+    ${isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'var(--border-light-color)'};
+`;
+
+const popoverContentStyles = (backgroundColor: string) => css`
+  background: ${backgroundColor};
+  padding: 1.2rem;
+  border-radius: 0.8rem;
 `;
 
 const columnStyles = css`
   display: flex;
   justify-content: space-between;
   gap: 0.4rem;
+`;
+
+const metricLabelStyles = css`
+  color: var(--text-secondary-color) !important;
 `;
 
 const sellIconStyles = css`

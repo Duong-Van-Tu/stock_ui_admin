@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Table, TableColumnsType, Tooltip } from 'antd';
+import { Button, Table, TableColumnsType } from 'antd';
 import { PAGINATION, PAGINATION_PARAMS } from '@/constants/pagination.constant';
 import {
   calculatePercentage,
@@ -30,7 +30,7 @@ import { Recommendation } from '@/constants/common.constant';
 import { useModal } from '@/hooks/modal.hook';
 import { AIExplain } from '../ai-explain';
 import { isMobile } from 'react-device-detect';
-import { Icon } from '../icons';
+import { BackButton } from '../back-button';
 import { PageURLs } from '@/utils/navigate';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import StockOverviewChart from '../charts/stock-overview.chart';
@@ -497,14 +497,7 @@ export const HistoryWatchlistSwingTradeTable = ({
         <div css={tableTopStyles}>
           <div css={tableTopRightStyles}>
             <div css={titleBarStyles}>
-              <Tooltip title={isMobile ? null : t('back')}>
-                <Button
-                  shape='circle'
-                  type='text'
-                  icon={<Icon icon='back' width={18} height={18} />}
-                  onClick={handleGoBack}
-                />
-              </Tooltip>
+              <BackButton onClick={handleGoBack} tooltip={t('back')} />
               <TableTitle customStyles={titleStyles}>
                 {t('history')} {t('symbol')}: <i>{`"${symbol}"`}</i> -{' '}
                 {t('watchlistSwingTradeTitle')}

@@ -82,6 +82,11 @@ import { useLocalStorage } from '@/hooks/local-storage.hook';
 import { TrendCell } from './columns/trend-cell.column';
 import { MacdCell } from './columns/macd-cell.column';
 import { PageURLs } from '@/utils/navigate';
+import {
+  createSegmentedLabelStyles,
+  segmentedContainerStyles as baseSegmentedContainerStyles,
+  segmentedStyles as baseSegmentedStyles
+} from './segmented.styles';
 
 type AlertLogsTableProps = {
   isFilterPage?: boolean;
@@ -412,15 +417,25 @@ export const AlertLogsTable = ({
         const isExpanded = expandedRowKeys.includes(record.key);
         if (value > 1) {
           return (
-            <Badge count={value} color={badgeColor}>
+            <Badge count={value} color={badgeColor} css={countBadgeStyles}>
               <Button
                 css={expandIconBtnStyles}
                 onClick={() => handleExpandRowKeys(record)}
                 icon={
                   isExpanded ? (
-                    <Icon icon='arrowDown' width={16} height={16} />
+                    <Icon
+                      icon='arrowDown'
+                      width={16}
+                      height={16}
+                      fill='var(--text-color)'
+                    />
                   ) : (
-                    <Icon icon='right' width={18} height={18} />
+                    <Icon
+                      icon='right'
+                      width={18}
+                      height={18}
+                      fill='var(--text-color)'
+                    />
                   )
                 }
               />
@@ -1668,7 +1683,15 @@ export const AlertLogsTable = ({
           >
             <Button
               type='text'
-              icon={<Icon icon='dotsVertical' width={18} height={18} />}
+              css={actionMenuBtnStyles}
+              icon={
+                <Icon
+                  icon='dotsVertical'
+                  width={18}
+                  height={18}
+                  fill='var(--text-color)'
+                />
+              }
               shape='circle'
             />
           </Dropdown>
@@ -1831,30 +1854,32 @@ export const AlertLogsTable = ({
                   <Button
                     onClick={handleRefresh}
                     type='text'
+                    css={refreshIconBtnStyles}
                     icon={
                       <Icon
                         customStyles={iconStyles}
                         icon='refresh'
                         width={22}
                         height={22}
+                        fill='var(--text-color)'
                       />
                     }
-                    shape='circle'
                   />
                 </Tooltip>
                 <Tooltip title={!isMobile && t('setColumn')}>
                   <Button
                     onClick={toggleDrawer}
                     type='text'
+                    css={headerIconBtnStyles}
                     icon={
                       <Icon
                         customStyles={iconStyles}
                         icon='columnSetting'
                         width={22}
                         height={22}
+                        fill='var(--text-color)'
                       />
                     }
-                    shape='circle'
                   />
                 </Tooltip>
               </TableTitle>
@@ -2053,51 +2078,10 @@ const leftExternalActionStyles = css`
   min-height: 4rem;
 `;
 
-const segmentedContainerStyles = css`
-  display: flex;
-  justify-content: center;
-  min-width: 0;
-`;
+const segmentedContainerStyles = baseSegmentedContainerStyles;
 
 const segmentedStyles = (sideBarCollapsed: boolean) => css`
-  padding: 0.4rem;
-  border-radius: 1.4rem;
-  background: #f3f6fa;
-  border: 1px solid rgba(8, 127, 244, 0.12);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-
-  .ant-segmented-group {
-    gap: 0.4rem;
-  }
-
-  .ant-segmented-item {
-    border-radius: 1rem;
-    color: rgba(0, 0, 0, 0.55);
-    transition:
-      color 0.2s ease,
-      background-color 0.2s ease,
-      box-shadow 0.2s ease,
-      transform 0.2s ease;
-  }
-
-  .ant-segmented-item:hover {
-    color: rgba(0, 0, 0, 0.88);
-  }
-
-  .ant-segmented-item-selected {
-    background: linear-gradient(135deg, #1677ff 0%, #0b8cff 100%);
-    color: var(--white-color);
-    box-shadow: 0 8px 18px rgba(8, 127, 244, 0.22);
-  }
-
-  .ant-segmented-item-selected:hover {
-    color: var(--white-color);
-  }
-
-  .ant-segmented-thumb {
-    border-radius: 1rem;
-    box-shadow: 0 8px 18px rgba(8, 127, 244, 0.18);
-  }
+  ${baseSegmentedStyles};
 
   ${sideBarCollapsed &&
   `
@@ -2110,16 +2094,7 @@ const segmentedStyles = (sideBarCollapsed: boolean) => css`
   `}
 `;
 
-const segmentedLabelStyles = css`
-  min-width: ${isMobile ? '7.4rem' : '8.8rem'};
-  padding: ${isMobile ? '0.8rem 1rem' : '0.9rem 1.4rem'};
-  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
-  font-weight: 600;
-  text-align: center;
-  letter-spacing: 0.01em;
-  line-height: 1;
-  white-space: nowrap;
-`;
+const segmentedLabelStyles = createSegmentedLabelStyles();
 
 const emptyStyles = (height: number) => css`
   height: ${height}px;
@@ -2166,7 +2141,7 @@ const iconStyles = css`
 `;
 
 const detailTableStyles = css`
-  padding: 1.6rem 1rem;
+  padding: 0.8rem 0;
   .ant-table {
     margin-inline: 0 !important;
   }
@@ -2184,7 +2159,72 @@ const detailTableStyles = css`
   }
 `;
 
+const countBadgeStyles = css`
+  .ant-badge-count {
+    min-width: 2rem;
+    height: 2rem;
+    padding-inline: 0.6rem;
+    border-radius: 999px;
+    color: var(--white-color);
+    font-weight: 500;
+    line-height: 2rem;
+  }
+`;
+
 const expandIconBtnStyles = css`
   width: 2.6rem !important;
   height: 2.6rem;
+  color: var(--text-color);
+  background: var(--table-row-bg-color);
+  border: 1px solid var(--gray-light-color);
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--gray-soft-color);
+    border-color: var(--text-secondary-color) !important;
+  }
+`;
+
+const actionMenuBtnStyles = css`
+  color: var(--text-color);
+  background: var(--table-row-bg-color) !important;
+  border: 1px solid var(--gray-light-color) !important;
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--gray-soft-color) !important;
+    border-color: var(--text-secondary-color) !important;
+  }
+`;
+
+const headerIconBtnStyles = css`
+  color: var(--text-color);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
+  }
+`;
+
+const refreshIconBtnStyles = css`
+  color: var(--text-color);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
+  }
 `;

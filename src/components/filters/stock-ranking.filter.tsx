@@ -4,7 +4,6 @@ import { css, SerializedStyles } from '@emotion/react';
 import { useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Select } from 'antd';
 import {
   getIndustries,
   getSectors,
@@ -14,6 +13,7 @@ import {
   watchSectors
 } from '@/redux/slices/stock-score.slice';
 import { isMobile } from 'react-device-detect';
+import FloatSelect from '@/components/float-select';
 
 type StockRankingFilterProps = {
   customStyles?: SerializedStyles;
@@ -71,10 +71,11 @@ export const StockRankingFilter = ({
   return (
     <div css={[rootStyles, customStyles]}>
       <div css={selectContainerStyles}>
-        <Select
+        <FloatSelect
+          label={t('sector')}
+          width={isMobile ? '100%' : '20rem'}
           allowClear
           showSearch
-          css={selectStyles}
           loading={sectorsLoading}
           placeholder={t('searchSelectSector')}
           optionFilterProp='label'
@@ -83,10 +84,11 @@ export const StockRankingFilter = ({
         />
       </div>
       <div css={selectContainerStyles}>
-        <Select
+        <FloatSelect
+          label={t('industry')}
+          width={isMobile ? '100%' : '20rem'}
           allowClear
           showSearch
-          css={selectStyles}
           loading={industriesLoading}
           placeholder={t('searchSelectIndustry')}
           optionFilterProp='label'
@@ -103,12 +105,6 @@ const rootStyles = css`
   flex-wrap: ${isMobile ? 'no-wrap' : 'wrap'};
   gap: 1.2rem;
   justify-content: ${isMobile ? 'flex-end' : 'unset'};
-  width: ${isMobile ? '100%' : 'unset'};
-`;
-
-const selectStyles = css`
-  min-width: ${isMobile ? '100%' : '20rem'};
-  max-width: ${isMobile ? '14rem' : '20rem'};
   width: ${isMobile ? '100%' : 'unset'};
 `;
 

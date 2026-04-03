@@ -9,7 +9,7 @@ import {
   watchFinnhubAndLsegNewsLoading,
   watchFinnhubAndLsegNewsPagination
 } from '@/redux/slices/sentiment.slice';
-import { Table, TableColumnsType } from 'antd';
+import { Button, Table, TableColumnsType } from 'antd';
 import { EmptyDataTable } from '../tables/empty.table';
 import { useCallback, useEffect, useMemo } from 'react';
 import { PAGINATION_PARAMS } from '@/constants/pagination.constant';
@@ -18,6 +18,7 @@ import { isNumeric, roundToDecimals } from '@/utils/common';
 import EllipsisText from '../ellipsis-text';
 import { isMobile } from 'react-device-detect';
 import { PositiveNegativeText } from '../positive-negative-text';
+import { useModal } from '@/hooks/modal.hook';
 
 type CompanyNewsProps = {
   symbol: string;
@@ -27,6 +28,7 @@ type CompanyNewsProps = {
 
 export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
   const dispatch = useAppDispatch();
+  const modal = useModal();
   const listNews = useAppSelector(watchFinnhubAndLsegNews);
   const loading = useAppSelector(watchFinnhubAndLsegNewsLoading);
   const pagination = useAppSelector(watchFinnhubAndLsegNewsPagination);
@@ -56,19 +58,12 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
   const columns: TableColumnsType<FinnhubAndLsegNewsTableItem> = useMemo(
     () => [
       {
-        title: 'Source',
-        dataIndex: 'sourceType',
-        key: 'sourceType',
-        width: 86,
-        align: 'center',
-        fixed: !isMobile && 'left'
-      },
-      {
         title: 'Publishing Time',
         dataIndex: 'datetime',
         key: 'datetime',
         width: 150,
         align: 'center',
+        fixed: !isMobile && 'left',
         render: (value) => (value ? <DateTimeCell value={value} /> : '-')
       },
       {
@@ -78,13 +73,70 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
         width: 180,
         render: (value) => <EllipsisText text={value} maxLines={2} />
       },
-
       {
-        title: 'Relevance',
-        dataIndex: 'newsRelevance',
-        key: 'newsRelevance',
-        width: 120,
+        title: 'Source',
+        dataIndex: 'sourceType',
+        key: 'sourceType',
+        width: 86,
         align: 'center'
+      },
+      {
+        title: 'News Type',
+        dataIndex: 'newsType',
+        key: 'newsType',
+        width: 180,
+        align: 'center',
+        render: (value) =>
+          value ? <EllipsisText text={value} maxLines={2} /> : '-'
+      },
+      {
+        title: 'Article Score',
+        dataIndex: 'articleScore',
+        key: 'articleScore',
+        width: 140,
+        align: 'center',
+
+        render: (value) =>
+          isNumeric(value) ? roundToDecimals(value) : '-'
+      },
+      {
+        title: 'Impact Score',
+        dataIndex: 'impactScore',
+        key: 'impactScore',
+        width: 130,
+        align: 'center',
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'Sentiment Score',
+        dataIndex: 'newsScore',
+        key: 'newsScore',
+        width: 150,
+        align: 'center',
+        render: (value) =>
+          isNumeric(value) ? (
+            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
+              {roundToDecimals(value)}
+            </PositiveNegativeText>
+          ) : (
+            '-'
+          )
+      },
+      {
+        title: 'Sector',
+        dataIndex: 'sector',
+        key: 'sector',
+        width: 180,
+        render: (value) =>
+          value ? <EllipsisText text={value} maxLines={2} /> : '-'
+      },
+      {
+        title: 'Industry',
+        dataIndex: 'industry',
+        key: 'industry',
+        width: 180,
+        render: (value) =>
+          value ? <EllipsisText text={value} maxLines={2} /> : '-'
       },
       {
         title: 'Direction',
@@ -103,67 +155,63 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
         render: (value) => value ?? '-'
       },
       {
-        title: 'News Type',
-        dataIndex: 'newsType',
-        key: 'newsType',
-        width: 140,
-        align: 'center',
-        render: (value) =>
-          value ? <EllipsisText text={value} maxLines={2} /> : '-'
-      },
-      {
-        title: 'Article Score',
-        dataIndex: 'articleScore',
-        key: 'articleScore',
-        width: 140,
-        align: 'center',
-
-        render: (value) =>
-          isNumeric(value) ? (
-            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
-              {roundToDecimals(value)}
-            </PositiveNegativeText>
-          ) : (
-            '-'
-          )
-      },
-      {
-        title: 'Time Weight',
-        dataIndex: 'timeWeight',
-        key: 'timeWeight',
-        width: 130,
-        align: 'center',
-
-        render: (value) => (isNumeric(value) ? roundToDecimals(value, 4) : '-')
-      },
-      {
-        title: 'Weighted Score',
-        dataIndex: 'weightedScore',
-        key: 'weightedScore',
-        width: 150,
-        align: 'center',
-        render: (value) =>
-          isNumeric(value) ? (
-            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
-              {roundToDecimals(value, 4)}
-            </PositiveNegativeText>
-          ) : (
-            '-'
-          )
-      },
-      {
-        title: 'News Score',
-        dataIndex: 'newsScore',
-        key: 'newsScore',
+        title: 'Relevance',
+        dataIndex: 'newsRelevance',
+        key: 'newsRelevance',
         width: 120,
-        fixed: !isMobile && 'right',
+        align: 'center'
+      },
+      {
+        title: 'Grok Rating',
+        dataIndex: 'grokRating',
+        key: 'grokRating',
+        width: 120,
         align: 'center',
-
+        render: (value) => (isNumeric(value) ? roundToDecimals(value) : '-')
+      },
+      {
+        title: 'Grok Recommendation',
+        dataIndex: 'grokRec',
+        key: 'grokRec',
+        width: 180,
+        align: 'center',
         render: (value) =>
-          isNumeric(value) ? (
-            <PositiveNegativeText isNegative={value < 0} isPositive={value > 0}>
-              {roundToDecimals(value)}
+          value ? (
+            <PositiveNegativeText
+              isPositive={`${value}`.toUpperCase() === 'BUY'}
+              isNegative={`${value}`.toUpperCase() === 'SELL'}
+            >
+              <span>{`${value}`.toUpperCase()}</span>
             </PositiveNegativeText>
+          ) : (
+            '-'
+          )
+      },
+      {
+        title: 'Story',
+        dataIndex: 'summary',
+        key: 'summary',
+        width: 68,
+        align: 'center',
+        fixed: !isMobile && 'right',
+        render: (value, record) =>
+          value ? (
+            <Button
+              onClick={() =>
+                modal.openModal(
+                  <div css={storyStyles}>
+                    <h2>{`News Story (${record.symbol})`}</h2>
+                    <h3>{record.headline}</h3>
+                    <p dangerouslySetInnerHTML={{ __html: value }} />
+                  </div>,
+                  { width: 1000 }
+                )
+              }
+              type='link'
+              block
+            >
+              Story
+            </Button>
           ) : (
             '-'
           )
@@ -209,15 +257,31 @@ export const CompanyNews = ({ symbol, fromDate, toDate }: CompanyNewsProps) => {
 };
 
 const tableStyles = css`
+  .ant-table-header,
+  .ant-table-thead > tr > th,
+  .ant-table-thead > tr > td {
+    background: var(--table-header-bg-color) !important;
+  }
+
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
+
   .ant-table-thead {
     .ant-table-cell {
-      background: var(--blue-100);
+      background: var(--table-header-bg-color) !important;
+
+      &.ant-table-cell-fix-left,
+      &.ant-table-cell-fix-right,
+      &.ant-table-cell-fix-left-last,
+      &.ant-table-cell-fix-right-first {
+        background: var(--table-header-bg-color) !important;
+      }
+
       &:first-of-type {
         border-start-start-radius: 0 !important;
       }
+
       &:last-child {
         border-start-end-radius: 0 !important;
       }
@@ -230,4 +294,20 @@ const emptyStyles = css`
   flex-direction: column;
   justify-content: center;
   padding: 3rem 0;
+`;
+
+const storyStyles = css`
+  h2 {
+    text-align: center;
+  }
+
+  h3 {
+    font-size: 2rem;
+    line-height: 2.4rem;
+    margin-bottom: 0.4rem;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
 `;

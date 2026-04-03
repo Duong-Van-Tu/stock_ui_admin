@@ -6,6 +6,7 @@ import ReactEChartsCore from 'echarts-for-react/lib/core';
 import { GaugeChart as GaugeEChart } from 'echarts/charts';
 import { TooltipComponent, TitleComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
+import { useEChartsTheme } from './echarts-theme';
 
 echarts.use([TitleComponent, TooltipComponent, GaugeEChart, CanvasRenderer]);
 
@@ -15,6 +16,8 @@ type GaugeChartProps = {
 };
 
 export default function GaugeChart({ value, label }: GaugeChartProps) {
+  const chartTheme = useEChartsTheme();
+
   const getValueColor = (value: number) => {
     if (value < 4) return '#d32f2f';
     if (value < 7) return '#FFBF00';
@@ -41,7 +44,7 @@ export default function GaugeChart({ value, label }: GaugeChartProps) {
         },
         axisLabel: {
           show: true,
-          color: '#1e1e1e',
+          color: chartTheme.secondaryTextColor,
           fontSize: 14,
           distance: -20,
           formatter: function (v: number) {
@@ -101,7 +104,7 @@ export default function GaugeChart({ value, label }: GaugeChartProps) {
           offsetCenter: [0, '30%'],
           textStyle: {
             fontWeight: 'bold',
-            color: '#1e1e1e',
+            color: chartTheme.textColor,
             fontSize: 16
           }
         },
@@ -134,7 +137,7 @@ export default function GaugeChart({ value, label }: GaugeChartProps) {
             width: 20,
             color: [
               [value / 10, getValueColor(value)],
-              [1, 'rgba(255, 255, 255, 0.2)']
+              [1, chartTheme.trackColor]
             ]
           }
         },
@@ -161,9 +164,9 @@ export default function GaugeChart({ value, label }: GaugeChartProps) {
     <ReactEChartsCore
       echarts={echarts}
       option={option}
+      key={chartTheme.backgroundColor}
       notMerge={true}
       lazyUpdate={true}
-      theme={'theme_name'}
       opts={{}}
       css={chartContainerStyles}
     />

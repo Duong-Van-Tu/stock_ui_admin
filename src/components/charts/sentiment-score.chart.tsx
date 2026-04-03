@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import ReactECharts from 'echarts-for-react';
 import type { EChartsOption } from 'echarts';
 import { getTextColor } from '@/utils/common';
+import { useEChartsTheme } from './echarts-theme';
 
 type SentimentSCoreProps = {
   score: number;
@@ -11,6 +12,7 @@ type SentimentSCoreProps = {
 export const SentimentSCore = ({ score }: SentimentSCoreProps) => {
   const clamped = Math.max(-10, Math.min(10, score));
   const displayValue = String(score);
+  const chartTheme = useEChartsTheme();
 
   const option: EChartsOption = {
     animation: true,
@@ -59,6 +61,7 @@ export const SentimentSCore = ({ score }: SentimentSCoreProps) => {
     <div css={container}>
       <div css={chartWrapper}>
         <ReactECharts
+          key={chartTheme.backgroundColor}
           option={option}
           notMerge
           style={{ width: '100%', height: '100%' }}

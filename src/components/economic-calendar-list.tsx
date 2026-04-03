@@ -3,7 +3,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Popover, List, Badge, Typography, Spin, Tag } from 'antd';
+import { Popover, List, Badge, Typography, Spin, Tag, Tooltip } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -69,18 +69,21 @@ export const EconomicCalendarList = () => {
   const getImpactColor = (impact: string) => {
     switch (impact?.toUpperCase()) {
       case 'HIGH':
-        return '#ff4d4f';
+        return 'var(--danger-soft-color)';
       case 'MEDIUM':
-        return '#faad14';
+        return 'var(--yellow-color)';
       default:
-        return '#52c41a';
+        return 'var(--success-color)';
     }
   };
 
   const content = (
     <div css={popoverContentStyles}>
       <div css={headerStyles}>
-        <Text strong style={{ fontSize: '1.5rem', color: '#1a1a1a' }}>
+        <Text
+          strong
+          style={{ fontSize: '1.5rem', color: 'var(--text-primary-strong-color)' }}
+        >
           Economic Calendar (New York Time)
         </Text>
       </div>
@@ -156,24 +159,35 @@ export const EconomicCalendarList = () => {
 
   return (
     <div css={rootStyles}>
-      <Popover
-        content={content}
-        trigger='click'
-        placement='bottomRight'
-        onOpenChange={(visible) => visible && setNewEventsCount(0)}
-        overlayInnerStyle={{ padding: 0 }}
-      >
-        <Badge count={newEventsCount} offset={[0, 0]} color='gold'>
-          <div css={iconWrapperStyles}>
-            <Icon
-              icon='calendar'
-              width={24}
-              height={24}
-              fill='var(--earning-color)'
-            />
-          </div>
-        </Badge>
-      </Popover>
+      <Tooltip title='Economic Calendar' placement='bottom'>
+        <Popover
+          content={content}
+          trigger='click'
+          placement='bottomRight'
+          onOpenChange={(visible) => visible && setNewEventsCount(0)}
+          overlayInnerStyle={{
+            padding: 0,
+            borderRadius: '1.2rem',
+            overflow: 'hidden',
+            background: 'var(--surface-elevated-color)'
+          }}
+        >
+          <Badge count={newEventsCount} offset={[0, 0]} color='gold'>
+            <button
+              type='button'
+              aria-label='Open economic calendar'
+              css={iconWrapperStyles}
+            >
+              <Icon
+                icon='calendar'
+                width={24}
+                height={24}
+                fill='var(--earning-color)'
+              />
+            </button>
+          </Badge>
+        </Popover>
+      </Tooltip>
     </div>
   );
 };
@@ -186,7 +200,9 @@ const popoverContentStyles = css`
   width: 50rem;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--surface-elevated-color);
+  border-radius: 1.2rem;
+  overflow: hidden;
 `;
 
 const scrollContainerStyles = css`
@@ -196,15 +212,15 @@ const scrollContainerStyles = css`
     width: 0.4rem;
   }
   ::-webkit-scrollbar-thumb {
-    background: #f0f0f0;
+    background: var(--surface-muted-color);
     border-radius: 0.4rem;
   }
 `;
 
 const headerStyles = css`
   padding: 1rem 1.4rem;
-  border-bottom: 0.1rem solid #f0f0f0;
-  background: #fff;
+  border-bottom: 0.1rem solid var(--surface-muted-color);
+  background: var(--surface-elevated-color);
 `;
 
 const listItemStyles = css`
@@ -212,11 +228,12 @@ const listItemStyles = css`
   display: flex !important;
   align-items: flex-start !important;
   gap: 1.6rem;
-  border-bottom: 0.1rem solid #f0f0f0 !important;
+  border-bottom: 0.1rem solid var(--surface-muted-color) !important;
   transition: background 0.2s;
+  background: var(--surface-elevated-color);
 
   &:hover {
-    background: #fcfcfc;
+    background: var(--surface-hover-color);
   }
   &:last-child {
     border-bottom: none !important;
@@ -227,16 +244,16 @@ const listItemStyles = css`
     flex-direction: column;
     min-width: 4.8rem;
     height: 5.6rem;
-    border: 0.1rem solid #e8e8e8;
+    border: 0.1rem solid var(--border-light-color);
     border-radius: 0.4rem;
     overflow: hidden;
-    background: #fff;
+    background: var(--surface-elevated-color);
     flex-shrink: 0;
     margin-top: 0.2rem;
 
     .calendar-header {
-      background: #ff4d4f;
-      color: #fff;
+      background: var(--danger-soft-color);
+      color: var(--white-color);
       font-size: 0.9rem;
       font-weight: 800;
       text-align: center;
@@ -252,7 +269,7 @@ const listItemStyles = css`
       justify-content: center;
       font-size: 1.6rem;
       font-weight: 800;
-      color: #1a1a1a;
+      color: var(--text-primary-strong-color);
       line-height: 1;
     }
 
@@ -261,9 +278,9 @@ const listItemStyles = css`
       font-weight: 700;
       text-align: center;
       padding-bottom: 0.1rem;
-      color: #595959;
-      background: #fafafa;
-      border-top: 0.1rem solid #f0f0f0;
+      color: var(--text-secondary-color);
+      background: var(--surface-subtle-color);
+      border-top: 0.1rem solid var(--surface-muted-color);
     }
   }
 
@@ -291,7 +308,7 @@ const listItemStyles = css`
     .expand-icon {
       margin-left: 0.8rem;
       margin-top: 0.4rem;
-      color: #8c8c8c;
+      color: var(--text-tertiary-color);
       font-size: 1.2rem;
     }
 
@@ -299,20 +316,20 @@ const listItemStyles = css`
       display: block;
       font-size: 1.4rem;
       font-weight: 700;
-      color: #262626;
+      color: var(--text-heading-color);
       line-height: 1.4;
     }
 
     .description-box {
       margin-top: 0.8rem;
       padding: 0.8rem;
-      background: #fafafa;
+      background: var(--surface-subtle-color);
       border-radius: 0.4rem;
-      border: 1px solid #f0f0f0;
+      border: 1px solid var(--surface-muted-color);
 
       .description-text {
         font-size: 1.3rem;
-        color: #595959;
+        color: var(--text-secondary-color);
         line-height: 1.5;
 
         p {
@@ -334,7 +351,7 @@ const listItemStyles = css`
           font-weight: 600;
         }
         a {
-          color: #1890ff;
+          color: var(--blue-500);
           text-decoration: underline;
         }
       }
@@ -355,4 +372,28 @@ const iconWrapperStyles = css`
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 3.8rem;
+  min-width: 3.8rem;
+  height: 3.8rem;
+  padding: 0;
+  appearance: none;
+  border: 1px solid var(--header-chip-border-color);
+  border-radius: 50%;
+  background: var(--header-chip-background-color);
+  box-shadow: none;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+
+  :root[data-theme='dark'] & {
+    box-shadow: none;
+  }
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--primary-color);
+    background: var(--header-chip-hover-background-color);
+    outline: none;
+  }
 `;

@@ -385,69 +385,118 @@ export const StockRankingTable = () => {
 
   return (
     <div css={rootStyles}>
-      <div css={tableTopStyles}>
-        <TableTitle customStyles={titleStyles}>
-          {t('stockRankingTitle')}
-        </TableTitle>
-        <div css={actionStyles}>
+      <div css={filterWrapperStyles}>
+        <div css={filterContentStyles}>
           <StockRankingFilter onFilter={handleFilter} />
           {isDesktop && <ExportExcelStockRanking />}
         </div>
       </div>
-      <LegendStatus customStyles={legendStatusStyles} />
-      <Table<StockScore>
-        size={isMobile ? 'small' : 'middle'}
-        rowClassName={(record) =>
-          getRowClassName(record, [
-            { key: 'isAdd', className: 'hl-add-symbol' },
-            { key: 'isAddWatchList', className: 'hl-watchList-symbol' }
-          ]).join(' ')
-        }
-        css={tableStyles}
-        rowKey='key'
-        rowSelection={isMobile ? undefined : rowSelection}
-        columns={columns}
-        dataSource={stockScoreData}
-        loading={loading}
-        scroll={{
-          x: 1200,
-          y: stockScoreData.length > 0 ? height - 290 : undefined
-        }}
-        sortDirections={['descend', 'ascend']}
-        locale={{
-          emptyText: (
-            <div css={emptyStyles(height - 400)}>
-              <EmptyDataTable />
-            </div>
-          )
-        }}
-        pagination={{
-          position: ['bottomCenter'],
-          pageSizeOptions: [
-            '10',
-            '20',
-            '50',
-            '100',
-            '200',
-            '300',
-            '400',
-            '500'
-          ],
-          showSizeChanger: true,
-          showQuickJumper: true,
-          current: pagination.currentPage,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          onChange: (page, pageSize) => {
-            fetchDataStockScore({ page, pageSize, filter });
+      <div css={tableWrapperStyles}>
+        <div css={tableTopStyles}>
+          <div css={headerStyles}>
+            <TableTitle customStyles={titleStyles}>
+              {t('stockRankingTitle')}
+            </TableTitle>
+            <LegendStatus customStyles={legendStatusStyles} />
+          </div>
+        </div>
+        <Table<StockScore>
+          size={isMobile ? 'small' : 'middle'}
+          rowClassName={(record) =>
+            getRowClassName(record, [
+              { key: 'isAdd', className: 'hl-add-symbol' },
+              { key: 'isAddWatchList', className: 'hl-watchList-symbol' }
+            ]).join(' ')
           }
-        }}
-      />
+          css={tableStyles}
+          rowKey='key'
+          rowSelection={isMobile ? undefined : rowSelection}
+          columns={columns}
+          dataSource={stockScoreData}
+          loading={loading}
+          scroll={{
+            x: 1200,
+            y: stockScoreData.length > 0 ? height - 320 : undefined
+          }}
+          sortDirections={['descend', 'ascend']}
+          locale={{
+            emptyText: (
+              <div css={emptyStyles(height - 400)}>
+                <EmptyDataTable />
+              </div>
+            )
+          }}
+          pagination={{
+            position: ['bottomCenter'],
+            pageSizeOptions: [
+              '10',
+              '20',
+              '50',
+              '100',
+              '200',
+              '300',
+              '400',
+              '500'
+            ],
+            showSizeChanger: true,
+            showQuickJumper: true,
+            current: pagination.currentPage,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+            onChange: (page, pageSize) => {
+              fetchDataStockScore({ page, pageSize, filter });
+            }
+          }}
+        />
+      </div>
     </div>
   );
 };
 
 const rootStyles = css`
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+`;
+
+const filterWrapperStyles = css`
+  border: 1px solid var(--border-table-color);
+  border-radius: 0.8rem;
+  padding: 1.5rem 1.6rem;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
+
+  :root[data-theme='light'] & {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(248, 250, 252, 0.96) 100%
+    );
+    border-color: rgba(15, 23, 42, 0.08);
+  }
+
+  :root[data-theme='dark'] & {
+    background: linear-gradient(
+      180deg,
+      rgba(19, 31, 51, 0.92) 0%,
+      rgba(15, 24, 40, 0.98) 100%
+    );
+    border-color: rgba(148, 163, 184, 0.14);
+  }
+`;
+
+const filterContentStyles = css`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+`;
+
+const tableWrapperStyles = css`
   border: 1px solid var(--border-table-color);
   border-radius: 0.8rem;
 `;
@@ -461,31 +510,30 @@ const tableStyles = css`
 `;
 
 const titleStyles = css`
-  min-width: 30%;
+  min-width: fit-content;
 `;
 
 const tableTopStyles = css`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
   padding: 1.2rem 1.4rem;
   gap: 1.4rem;
-  align-items: flex-start;
 `;
 
-const actionStyles = css`
+const headerStyles = css`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
   gap: 1.2rem;
-  flex: 1;
   flex-wrap: wrap;
 `;
 
 const legendStatusStyles = css`
-  border-top: 1px solid var(--border-table-color);
-  padding: 1.2rem 1.4rem;
   justify-content: flex-end;
+  margin-left: auto;
 `;
 
 const emptyStyles = (height: number) => css`

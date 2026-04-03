@@ -247,7 +247,14 @@ const dateTextStyles = css`
 const estForecastButtonStyles = css`
   border-color: var(--blue-500);
   color: var(--blue-500);
-  background-color: var(--white-color);
+  background-color: var(--surface-elevated-color);
+
+  &:hover,
+  &:focus {
+    border-color: var(--blue-500) !important;
+    color: var(--blue-500) !important;
+    background-color: var(--surface-subtle-color) !important;
+  }
 `;
 
 const prevBtnStyles = css`

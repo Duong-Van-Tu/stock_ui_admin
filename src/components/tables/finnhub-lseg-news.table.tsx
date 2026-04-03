@@ -46,6 +46,7 @@ import { ExportExcelFinnhubLsegNews } from '../export-excel-finnhub-lseg-news';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { transformFinnhubAndLsegNews } from '@/helpers/sentiment.helper';
+import { useThemeMode } from '@/providers/theme.provider';
 
 export const FinnhubAndLsegNewsTable = () => {
   const t = useTranslations();
@@ -56,6 +57,7 @@ export const FinnhubAndLsegNewsTable = () => {
   const symbol = searchParams.get('symbol');
   const storyId = searchParams.get('storyId');
   const { height } = useWindowSize();
+  const { isDarkMode } = useThemeMode();
   const modal = useModal();
 
   const loading = useAppSelector(watchFinnhubAndLsegNewsLoading);
@@ -223,6 +225,40 @@ export const FinnhubAndLsegNewsTable = () => {
   };
 
   const dataSource = Array.isArray(listNews) ? listNews : [];
+  const getBreakingNewsCellProps = useCallback(
+    (breakingNews?: number) => {
+      if (breakingNews === 1) {
+        return {
+          className: 'breaking-news-positive-cell',
+          background: isDarkMode
+            ? 'var(--watching-solid-color)'
+            : 'var(--watching-color)'
+        };
+      }
+
+      if (breakingNews === -1) {
+        return {
+          className: 'breaking-news-negative-cell',
+          background: isDarkMode ? '#3a1f28' : 'var(--soft-pink-color)'
+        };
+      }
+
+      return undefined;
+    },
+    [isDarkMode]
+  );
+
+  const getBreakingNewsOnCell = useCallback(
+    (breakingNews?: number) => {
+      const cellProps = getBreakingNewsCellProps(breakingNews);
+
+      return {
+        className: cellProps?.className,
+        style: cellProps ? { background: cellProps.background } : undefined
+      };
+    },
+    [getBreakingNewsCellProps]
+  );
 
   const columns: TableColumnsType<FinnhubAndLsegNewsTableItem> = [
     {
@@ -232,6 +268,7 @@ export const FinnhubAndLsegNewsTable = () => {
       width: 70,
       align: 'center',
       fixed: !isMobile && 'left',
+      onCell: (record) => getBreakingNewsOnCell(record.breakingNews),
       render: (_v, _r, index) =>
         index + 1 + (pagination.currentPage - 1) * pagination.pageSize
     },
@@ -248,19 +285,30 @@ export const FinnhubAndLsegNewsTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('totalNews24H')
       }),
+      onCell: (record) => getBreakingNewsOnCell(record.breakingNews),
       render: (value, record) => {
         const isExpanded = expandedRowKeys.includes(record.key);
         if (value > 1) {
           return (
-            <Badge count={value} color='gold'>
+            <Badge count={value} color='gold' css={countBadgeStyles}>
               <Button
                 css={expandIconBtnStyles}
                 onClick={() => handleExpandRowKeys(record)}
                 icon={
                   isExpanded ? (
-                    <Icon icon='arrowDown' width={16} height={16} />
+                    <Icon
+                      icon='arrowDown'
+                      width={16}
+                      height={16}
+                      fill='var(--text-color)'
+                    />
                   ) : (
-                    <Icon icon='right' width={18} height={18} />
+                    <Icon
+                      icon='right'
+                      width={18}
+                      height={18}
+                      fill='var(--text-color)'
+                    />
                   )
                 }
               />
@@ -282,14 +330,7 @@ export const FinnhubAndLsegNewsTable = () => {
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('symbol')
       }),
-      onCell: (record) => ({
-        className:
-          record.breakingNews === 1
-            ? 'hl-breaking-news-positive '
-            : record.breakingNews === -1
-              ? 'hl-breaking-news-negative '
-              : ''
-      }),
+      onCell: (record) => getBreakingNewsOnCell(record.breakingNews),
       render: (value) => <SymbolCell symbol={value} />
     },
     {
@@ -305,14 +346,7 @@ export const FinnhubAndLsegNewsTable = () => {
         onClick: () => handleSortOrder('datetime')
       }),
       align: 'center',
-      onCell: (record) => ({
-        className:
-          record.breakingNews === 1
-            ? 'hl-breaking-news-positive'
-            : record.breakingNews === -1
-              ? 'hl-breaking-news-negative'
-              : ''
-      }),
+      onCell: (record) => getBreakingNewsOnCell(record.breakingNews),
       render: (value) => (value ? <DateTimeCell value={value} /> : '-')
     },
     {
@@ -835,12 +869,32 @@ export const FinnhubAndLsegNewsTable = () => {
     .map((col) => ({
       ...col,
       sorter: undefined,
-      onHeaderCell: undefined
+      onHeaderCell: undefined,
+      onCell: (record, rowIndex) => {
+        const cellProps = col.onCell?.(record, rowIndex) ?? {};
+        const hasHighlightedBackground = Boolean(cellProps.style?.background);
+
+        return {
+          ...cellProps,
+          className: [
+            cellProps.className,
+            hasHighlightedBackground
+              ? 'detail-cell-highlighted'
+              : 'detail-cell-neutral'
+          ]
+            .filter(Boolean)
+            .join(' '),
+          style: {
+            background: isDarkMode ? '#131f33' : 'var(--table-row-bg-color)',
+            ...cellProps.style
+          }
+        };
+      }
     }));
 
   return (
     <div css={rootStyles}>
-      <div css={filterBarStyles}>
+      <div css={filterBarStyles(isDarkMode)}>
         <FinnhubAndLsegNewsFilter
           onFilter={handleFilter}
           onFilterReady={handleFilterReady}
@@ -854,15 +908,16 @@ export const FinnhubAndLsegNewsTable = () => {
               <Button
                 onClick={handleRefresh}
                 type='text'
+                css={headerIconBtnStyles}
                 icon={
                   <Icon
                     customStyles={iconStyles}
                     icon='refresh'
                     width={22}
                     height={22}
+                    fill='var(--text-color)'
                   />
                 }
-                shape='circle'
               />
             </Tooltip>
           </TableTitle>
@@ -893,15 +948,16 @@ export const FinnhubAndLsegNewsTable = () => {
           </div>
         </div>
         <Table<FinnhubAndLsegNewsTableItem>
+          className='finnhub-lseg-news-table'
           size={isMobile ? 'small' : 'middle'}
-          css={tableStyles}
+          css={tableStyles(isDarkMode)}
           rowKey={(record) => record.key}
           columns={columns}
           dataSource={dataSource}
           loading={loading}
           scroll={{
             x: 1200,
-            y: dataSource.length > 0 ? height - 340 : undefined
+            y: dataSource.length > 0 ? height - 350 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -916,7 +972,7 @@ export const FinnhubAndLsegNewsTable = () => {
               const compositeKey = `${row.symbol}_${row.id}`;
               return (
                 <Table
-                  css={detailTableStyles}
+                  css={detailTableStyles(isDarkMode)}
                   dataSource={expandedNews[compositeKey] || []}
                   columns={detailColumns}
                   rowKey={(record) => record.key}
@@ -991,22 +1047,52 @@ const textSearchStyles = css`
   min-width: 20rem;
 `;
 
-const filterBarStyles = css`
+const filterBarStyles = (isDarkMode: boolean) => css`
+  --float-label-bg: ${isDarkMode
+    ? 'rgba(19, 31, 51, 0.92)'
+    : 'rgba(255, 255, 255, 0.98)'};
   border: 1px solid var(--border-table-color);
   border-radius: 0.6rem;
   padding: 1.6rem 1.6rem 1.2rem;
+  background: ${isDarkMode
+    ? `linear-gradient(
+        180deg,
+        rgba(19, 31, 51, 0.92) 0%,
+        rgba(15, 24, 40, 0.98) 100%
+      )`
+    : `linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.98) 0%,
+        rgba(248, 250, 252, 0.96) 100%
+      )`};
+  border-color: ${isDarkMode
+    ? 'rgba(148, 163, 184, 0.14)'
+    : 'rgba(15, 23, 42, 0.08)'};
 `;
 
-const tableStyles = css`
+const tableStyles = (isDarkMode: boolean) => css`
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
-  .hl-breaking-news-positive {
-    background-color: var(--watching-color) !important;
+
+  .ant-table-tbody > tr:hover > .ant-table-cell {
+    background: ${isDarkMode ? 'var(--gray-soft-color)' : '#fafafa'} !important;
   }
-  .hl-breaking-news-negative {
-    background-color: var(--soft-pink-color) !important;
+
+  .ant-table-tbody > tr > .ant-table-cell-fix-left,
+  .ant-table-tbody > tr > .ant-table-cell-fix-right,
+  .ant-table-tbody > tr > .ant-table-cell-fix-left-last,
+  .ant-table-tbody > tr > .ant-table-cell-fix-right-first {
+    background: ${isDarkMode ? '#141414' : 'var(--white-color)'};
   }
+
+  .ant-table-tbody > tr:hover > .ant-table-cell-fix-left,
+  .ant-table-tbody > tr:hover > .ant-table-cell-fix-right,
+  .ant-table-tbody > tr:hover > .ant-table-cell-fix-left-last,
+  .ant-table-tbody > tr:hover > .ant-table-cell-fix-right-first {
+    background: ${isDarkMode ? 'var(--gray-soft-color)' : '#fafafa'} !important;
+  }
+
   .ant-table-expanded-row-fixed {
     padding: 0;
   }
@@ -1028,7 +1114,7 @@ const titleStyles = css`
   width: ${isMobile ? '100%' : 'unset'};
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.8rem;
   span {
     line-height: 2rem;
   }
@@ -1063,8 +1149,8 @@ const iconStyles = css`
   margin-top: 0.2rem;
 `;
 
-const detailTableStyles = css`
-  padding: 1.6rem 1rem;
+const detailTableStyles = (isDarkMode: boolean) => css`
+  padding: 1.6rem 0;
   .ant-table {
     margin-inline: 0 !important;
   }
@@ -1080,11 +1166,53 @@ const detailTableStyles = css`
       background: var(--table-row-bg-color);
     }
   }
+
+  .ant-table-tbody > tr:hover > .ant-table-cell {
+    background: ${isDarkMode ? 'var(--gray-soft-color)' : '#fafafa'} !important;
+  }
+`;
+
+const countBadgeStyles = css`
+  .ant-badge-count {
+    min-width: 2rem;
+    height: 2rem;
+    padding-inline: 0.6rem;
+    border-radius: 999px;
+    color: var(--white-color);
+    font-weight: 500;
+    line-height: 2rem;
+    box-shadow: 0 4px 12px rgba(250, 173, 20, 0.22);
+  }
 `;
 
 const expandIconBtnStyles = css`
-  width: 2.4rem !important;
-  height: 2.4rem;
+  width: 2.6rem !important;
+  height: 2.6rem;
+  color: var(--text-color);
+  background: var(--table-row-bg-color);
+  border: 1px solid var(--gray-light-color);
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--gray-soft-color) !important;
+    border-color: var(--text-secondary-color) !important;
+  }
+`;
+
+const headerIconBtnStyles = css`
+  color: var(--text-color);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
+  }
 `;
 
 const checkboxStyles = css`

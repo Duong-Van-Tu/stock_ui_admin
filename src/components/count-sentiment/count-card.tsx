@@ -118,6 +118,10 @@ const rowStyles = css`
 const totalRowStyles = css`
   margin-top: 0.4rem;
   padding-top: 0.4rem;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border-table-color);
   font-weight: 600;
+
+  :root[data-theme='dark'] & {
+    border-top-color: rgba(255, 255, 255, 0.18);
+  }
 `;

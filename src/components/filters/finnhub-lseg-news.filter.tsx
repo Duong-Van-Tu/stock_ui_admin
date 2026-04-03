@@ -16,6 +16,7 @@ import {
   watchSectors
 } from '@/redux/slices/stock-score.slice';
 import { useTranslations } from 'next-intl';
+import FloatField from '@/components/float-field';
 
 type Props = {
   customStyles?: SerializedStyles;
@@ -226,12 +227,19 @@ export const FinnhubAndLsegNewsFilter = ({
           justify='end'
         >
           <Col css={fullWidthStyles}>
-            <Form.Item css={formItemStyles} name='range'>
-              <DatePicker.RangePicker
-                css={fullWidthStyles}
-                placeholder={['Start date', 'End date']}
-                onChange={() => triggerFilter()}
-              />
+            <Form.Item css={formItemStyles}>
+              <FloatField
+                label={t('dateRange')}
+                width={isMobile ? '100%' : '26rem'}
+              >
+                <Form.Item name='range' noStyle>
+                  <DatePicker.RangePicker
+                    className='brand-ant-picker'
+                    placeholder={[t('fromDate'), t('toDate')]}
+                    onChange={() => triggerFilter()}
+                  />
+                </Form.Item>
+              </FloatField>
             </Form.Item>
           </Col>
 

@@ -15,6 +15,7 @@ import {
 } from '@/redux/slices/stock-score.slice';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { useSearchParams } from 'next/navigation';
+import { filterPanelStyles } from './filter-panel.styles';
 
 type Props = {
   customStyles?: SerializedStyles;
@@ -221,6 +222,7 @@ export const ListNewsFilter = ({ customStyles, onFilter }: Props) => {
 };
 
 const rootStyles = css`
+  ${filterPanelStyles};
   display: flex;
 `;
 

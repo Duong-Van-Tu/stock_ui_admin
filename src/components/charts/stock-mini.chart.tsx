@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { createChart, LineStyle, Time } from 'lightweight-charts';
+import { useThemeMode } from '@/providers/theme.provider';
 
 export type DataPoint = {
   time: Time;
@@ -19,18 +20,49 @@ export default function StockMiniChart({
   width = 140,
   height = 40
 }: StockMiniChartProps) {
+  const { isDarkMode } = useThemeMode();
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ReturnType<typeof createChart>>();
+
+  const getMiniChartTheme = useCallback(() => {
+    if (typeof window === 'undefined') {
+      return {
+        backgroundColor: '#ffffff',
+        textColor: '#999999',
+        baselineColor: '#999999'
+      };
+    }
+
+    const rootStyle = window.getComputedStyle(document.documentElement);
+    const getVar = (name: string, fallback: string) =>
+      rootStyle.getPropertyValue(name).trim() || fallback;
+
+    return {
+      backgroundColor: getVar(
+        '--surface-base-color',
+        isDarkMode ? '#0f1722' : '#ffffff'
+      ),
+      textColor: getVar(
+        '--text-tertiary-color',
+        isDarkMode ? '#93a4b8' : '#999999'
+      ),
+      baselineColor: getVar(
+        '--text-tertiary-color',
+        isDarkMode ? '#93a4b8' : '#999999'
+      )
+    };
+  }, [isDarkMode]);
 
   useEffect(() => {
     if (!chartContainerRef.current || data.length === 0) return;
 
     const container = chartContainerRef.current;
+    const chartTheme = getMiniChartTheme();
 
     const chart = createChart(container, {
       layout: {
-        background: { color: 'transparent' },
-        textColor: '#999'
+        background: { color: chartTheme.backgroundColor },
+        textColor: chartTheme.textColor
       },
       grid: {
         vertLines: { visible: false },
@@ -76,8 +108,7 @@ export default function StockMiniChart({
 
     const segments: { data: DataPoint[]; isDown: boolean }[] = [];
     let currentSegment: DataPoint[] = [];
-    let prevValue = data[0].value;
-    let currentIsDown = prevValue < open;
+    let currentIsDown = data[0].value < open;
 
     for (let i = 0; i < data.length; i++) {
       const point = data[i];
@@ -110,7 +141,6 @@ export default function StockMiniChart({
       }
 
       currentSegment.push(point);
-      prevValue = point.value;
     }
 
     if (currentSegment.length > 0) {
@@ -143,7 +173,7 @@ export default function StockMiniChart({
 
     chart
       .addLineSeries({
-        color: '#999',
+        color: chartTheme.baselineColor,
         lineWidth: 1,
         lineStyle: LineStyle.Dashed,
         priceLineVisible: false
@@ -160,7 +190,7 @@ export default function StockMiniChart({
       resizeObserver.disconnect();
       chart.remove();
     };
-  }, [data]);
+  }, [data, getMiniChartTheme]);
 
   return (
     <div
@@ -168,7 +198,8 @@ export default function StockMiniChart({
         width: ${width}px;
         height: ${height}px;
         margin-top: 2px;
-        background-color: transparent;
+        background-color: var(--surface-base-color);
+        border-radius: 4px;
         transition: background-color 0.3s;
 
         #tv-attr-logo {

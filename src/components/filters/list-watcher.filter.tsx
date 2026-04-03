@@ -8,6 +8,7 @@ import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
 
 import { Impact, Sentiment } from '@/constants/common.constant';
 import { getSentimentText } from '@/helpers/sentiment.helper';
+import { filterPanelStyles } from './filter-panel.styles';
 import { useEffect } from 'react';
 
 type ListWatcherFilterProps = {
@@ -170,8 +171,7 @@ export const ListWatcherFilter = ({
 };
 
 const rootStyles = css`
-  border: 1px solid var(--border-table-color);
-  border-radius: 0.6rem;
+  ${filterPanelStyles};
   padding: 1.4rem 1.6rem;
 `;
 

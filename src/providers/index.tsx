@@ -1,9 +1,9 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { Provider } from 'react-redux';
 import { store } from '@/redux/store';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, theme as antdTheme } from 'antd';
 import enUS from 'antd/es/locale/en_US';
 import { AuthProvider } from './auth.provider';
 import { antdLocales, Locale } from '@/constants/locale.constant';
@@ -20,25 +20,53 @@ import { usePathname } from 'next/navigation';
 import { getPathnameSegment } from '@/utils/common';
 import ModalProvider from './modal.provider';
 import { NotificationProvider } from './notification-provider';
+import { ThemeProvider, useThemeMode } from './theme.provider';
+import { ThemeMode } from '@/constants/theme.constant';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(isoWeek);
 
-const theme = {
-  token: {
-    fontFamily: "'Inter', sans-serif"
-  }
-};
+export default function Providers({
+  children,
+  initialThemeMode
+}: {
+  children: ReactNode;
+  initialThemeMode: ThemeMode;
+}) {
+  return (
+    <ThemeProvider initialThemeMode={initialThemeMode}>
+      <AppProviders>{children}</AppProviders>
+    </ThemeProvider>
+  );
+}
 
-export default function Providers({ children }: { children: ReactNode }) {
+function AppProviders({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const locale = (getPathnameSegment(pathname, 0) || 'en') as Locale;
   const antdLocale = antdLocales[locale] || enUS;
+  const { isDarkMode } = useThemeMode();
+  const themeConfig = useMemo(
+    () =>
+      isDarkMode
+        ? {
+            algorithm: antdTheme.darkAlgorithm,
+            token: {
+              fontFamily: "'Inter', sans-serif",
+              colorPrimary: '#087ff4'
+            }
+          }
+        : {
+            token: {
+              fontFamily: "'Inter', sans-serif"
+            }
+          },
+    [isDarkMode]
+  );
 
   return (
     <AntdRegistry>
-      <ConfigProvider locale={antdLocale} theme={theme}>
+      <ConfigProvider locale={antdLocale} theme={themeConfig}>
         <Provider store={store}>
           <NotificationProvider>
             <AuthProvider>

@@ -50,6 +50,10 @@ import PriceRangeSlider from '../charts/price-range.chart';
 import { SetColumn } from './columns/set-column';
 import { useLocalStorage } from '@/hooks/local-storage.hook';
 import { VisibleColumnsStorageKey } from '@/constants/column.constant';
+import {
+  createSegmentedLabelStyles,
+  segmentedStyles as baseSegmentedStyles
+} from './segmented.styles';
 
 export const WatchlistSwingTradeTable = () => {
   const t = useTranslations();
@@ -1267,30 +1271,32 @@ export const WatchlistSwingTradeTable = () => {
                   <Button
                     onClick={handleRefresh}
                     type='text'
+                    css={refreshIconBtnStyles}
                     icon={
                       <Icon
                         customStyles={iconStyles}
                         icon='refresh'
                         width={22}
                         height={22}
+                        fill='var(--text-color)'
                       />
                     }
-                    shape='circle'
                   />
                 </Tooltip>
                 <Tooltip title={!isMobile && t('setColumn')}>
                   <Button
                     onClick={toggleDrawer}
                     type='text'
+                    css={headerIconBtnStyles}
                     icon={
                       <Icon
                         customStyles={iconStyles}
                         icon='columnSetting'
                         width={22}
                         height={22}
+                        fill='var(--text-color)'
                       />
                     }
-                    shape='circle'
                   />
                 </Tooltip>
               </TableTitle>
@@ -1463,24 +1469,14 @@ const filterContainerStyles = css`
 `;
 
 const segmentedStyles = css`
-  padding: 0;
+  ${baseSegmentedStyles};
   position: absolute;
   top: 70%;
   left: 50%;
   transform: translate(-50%, -70%);
-  .ant-segmented-item {
-    width: 8.8rem;
-  }
-  .ant-segmented-item-selected {
-    background: var(--primary-color);
-    color: var(--white-color);
-  }
 `;
 
-const segmentedLabelStyles = css`
-  font-size: ${isMobile ? '1.4rem' : '1.6rem'};
-  font-weight: 500;
-`;
+const segmentedLabelStyles = createSegmentedLabelStyles();
 
 const dayChartBtnStyles = css`
   width: 140px;
@@ -1493,4 +1489,32 @@ const dayChartBtnStyles = css`
 
 const iconStyles = css`
   margin-top: 0.2rem;
+`;
+
+const refreshIconBtnStyles = css`
+  color: var(--text-color);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
+  }
+`;
+
+const headerIconBtnStyles = css`
+  color: var(--text-color);
+  background: var(--table-row-bg-color) !important;
+  border: 1px solid var(--gray-light-color) !important;
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--gray-soft-color) !important;
+    border-color: var(--text-secondary-color) !important;
+  }
 `;

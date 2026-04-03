@@ -1,7 +1,160 @@
 .ant-table-container {
   scrollbar-width: thin;
-  scrollbar-color: #eaeaea transparent;
+  scrollbar-color: var(--scrollbar-thumb-color) transparent;
   scrollbar-gutter: stable;
+}
+
+.ant-table-wrapper .ant-table-thead > tr > th,
+.ant-table-wrapper .ant-table-tbody > tr > td {
+  border-color: var(--border-table-color);
+}
+
+.ant-table-wrapper
+  .ant-table-thead
+  > tr
+  > th:not(:last-child):not(.ant-table-selection-column):not(
+    .ant-table-row-expand-icon-cell
+  ):not([colspan])::before {
+  background-color: var(--border-table-color) !important;
+}
+
+:root[data-theme='dark']
+  .finnhub-lseg-news-table
+  .ant-table-tbody
+  > tr
+  > .ant-table-cell-fix-left,
+:root[data-theme='dark']
+  .finnhub-lseg-news-table
+  .ant-table-tbody
+  > tr
+  > .ant-table-cell-fix-right,
+:root[data-theme='dark']
+  .finnhub-lseg-news-table
+  .ant-table-tbody
+  > tr
+  > .ant-table-cell-fix-left-last,
+:root[data-theme='dark']
+  .finnhub-lseg-news-table
+  .ant-table-tbody
+  > tr
+  > .ant-table-cell-fix-right-first {
+  background: #141414;
+}
+
+:root[data-theme='dark'] .ant-dropdown .ant-dropdown-menu,
+:root[data-theme='dark'] .ant-select-dropdown,
+:root[data-theme='dark'] .ant-picker-dropdown .ant-picker-panel-container,
+:root[data-theme='dark'] .ant-popover .ant-popover-inner {
+  background: var(--surface-elevated-color) !important;
+  border: 1px solid var(--border-color);
+}
+
+:root[data-theme='dark'] .ant-dropdown .ant-dropdown-menu-item,
+:root[data-theme='dark'] .ant-dropdown .ant-dropdown-menu-submenu-title {
+  color: var(--text-color);
+}
+
+:root[data-theme='dark'] .ant-dropdown .ant-dropdown-menu-item:hover,
+:root[data-theme='dark'] .ant-dropdown .ant-dropdown-menu-submenu-title:hover {
+  background: var(--shell-hover-color) !important;
+}
+
+:root[data-theme='dark'] .ant-select-selector,
+:root[data-theme='dark'] .ant-input-affix-wrapper,
+:root[data-theme='dark'] .ant-input,
+:root[data-theme='dark'] .ant-btn-default,
+:root[data-theme='dark'] .ant-btn-compact-item,
+:root[data-theme='dark'] .ant-picker,
+:root[data-theme='dark'] .ant-tag {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.ant-input:-webkit-autofill,
+.ant-input:-webkit-autofill:hover,
+.ant-input:-webkit-autofill:focus,
+.ant-input-affix-wrapper input:-webkit-autofill,
+.ant-input-affix-wrapper input:-webkit-autofill:hover,
+.ant-input-affix-wrapper input:-webkit-autofill:focus,
+.ant-input-number-input:-webkit-autofill,
+.ant-input-number-input:-webkit-autofill:hover,
+.ant-input-number-input:-webkit-autofill:focus,
+textarea.ant-input:-webkit-autofill,
+textarea.ant-input:-webkit-autofill:hover,
+textarea.ant-input:-webkit-autofill:focus,
+.ant-input:autofill,
+.ant-input-affix-wrapper input:autofill,
+.ant-input-number-input:autofill,
+textarea.ant-input:autofill {
+  -webkit-text-fill-color: var(--text-primary-strong-color) !important;
+  caret-color: var(--text-primary-strong-color);
+  border-radius: inherit;
+  box-shadow: 0 0 0 1000px var(--surface-subtle-color) inset !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--surface-subtle-color) inset !important;
+  transition:
+    background-color 99999s ease-in-out 0s,
+    color 0.2s ease;
+}
+
+.ant-input:focus:-webkit-autofill,
+.ant-input.ant-input-focused:-webkit-autofill,
+.ant-input-affix-wrapper-focused input:-webkit-autofill,
+.ant-input-affix-wrapper:focus-within input:-webkit-autofill,
+.ant-input-number-focused .ant-input-number-input:-webkit-autofill,
+.ant-input-number:focus-within .ant-input-number-input:-webkit-autofill,
+textarea.ant-input:focus:-webkit-autofill,
+.ant-input:focus:autofill,
+.ant-input.ant-input-focused:autofill,
+.ant-input-affix-wrapper-focused input:autofill,
+.ant-input-affix-wrapper:focus-within input:autofill,
+.ant-input-number-focused .ant-input-number-input:autofill,
+.ant-input-number:focus-within .ant-input-number-input:autofill,
+textarea.ant-input:focus:autofill {
+  box-shadow: 0 0 0 1000px var(--surface-base-color) inset !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--surface-base-color) inset !important;
+}
+
+.brand-ant-picker {
+  width: 100% !important;
+  border: 1px solid
+    color-mix(in srgb, var(--brand-blue-color) 14%, var(--border-light-color)) !important;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease !important;
+}
+
+.brand-ant-picker:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--brand-blue-color) 24%,
+    var(--border-light-color)
+  ) !important;
+}
+
+.brand-ant-picker.ant-picker-focused {
+  border-color: var(--brand-blue-color) !important;
+  box-shadow: none !important;
+}
+
+.brand-ant-picker .ant-picker-input > input::placeholder {
+  color: color-mix(
+    in srgb,
+    var(--text-secondary-color) 82%,
+    var(--text-color)
+  ) !important;
+  font-weight: 400;
+}
+
+.brand-ant-picker .ant-picker-range-separator,
+.brand-ant-picker .ant-picker-suffix,
+.brand-ant-picker .ant-picker-clear {
+  color: color-mix(
+    in srgb,
+    var(--text-secondary-color) 78%,
+    var(--text-color)
+  ) !important;
 }
 
 @media (max-width: 768px) {

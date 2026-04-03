@@ -10,10 +10,10 @@ import {
   Button,
   Spin,
   Typography,
-  Space,
-  Tooltip
+  Space
 } from 'antd';
 import { useRouter } from 'next/navigation';
+import { BackButton } from '../back-button';
 import { Icon } from '../icons';
 import { ReactQuillEditor } from '../react-quill-editor';
 import { useTranslations } from 'next-intl';
@@ -122,14 +122,11 @@ export default function AddLedgerEntry() {
           <Title level={isMobile ? 4 : 3} css={titleStyles}>
             {t('addLedgerEntry')}
           </Title>
-
-          <Tooltip title={isMobile ? null : t('back')} css={goBackStyles}>
-            <Button
-              shape='circle'
-              icon={<Icon icon='back' width={18} height={18} />}
-              onClick={handleGoBack}
-            />
-          </Tooltip>
+          <BackButton
+            onClick={handleGoBack}
+            tooltip={t('back')}
+            wrapperCss={goBackStyles}
+          />
 
           <Form
             form={form}
@@ -409,6 +406,7 @@ export default function AddLedgerEntry() {
             <Form.Item css={formActionsStyles}>
               <Space>
                 <Button
+                  css={secondaryButtonStyles}
                   onClick={handleGoBack}
                   type='default'
                   size={isMobile ? 'middle' : 'large'}
@@ -515,14 +513,15 @@ const formContainerStyles = css`
       width: 6px;
     }
     &::-webkit-scrollbar-track {
-      background: #f5f5f5;
+      background: var(--scrollbar-track-color);
     }
     &::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
+      background: var(--scrollbar-thumb-active-color);
       border-radius: 3px;
     }
     scrollbar-width: thin;
-    scrollbar-color: #c1c1c1 #f5f5f5;
+    scrollbar-color: var(--scrollbar-thumb-active-color)
+      var(--scrollbar-track-color);
   `}
 
   ${isMobile &&
@@ -551,11 +550,31 @@ const formActionsStyles = css`
   bottom: -2rem;
   margin-bottom: 0 !important;
   box-shadow: 0 -1.2px 2.4px var(--separator-color);
-  background: var(--white-color);
+  border-top: 1px solid var(--separator-color);
+  background: var(--surface-elevated-color);
+
+  .ant-space {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    width: 100%;
+  }
 `;
 
 const fullWidthStyles = css`
   width: 100%;
+`;
+
+const secondaryButtonStyles = css`
+  background: var(--surface-base-color);
+  border-color: var(--border-color);
+  color: var(--text-color);
+
+  &:hover,
+  &:focus {
+    background: var(--surface-subtle-color) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--text-color) !important;
+  }
 `;
 
 const saveBtnStyles = css`

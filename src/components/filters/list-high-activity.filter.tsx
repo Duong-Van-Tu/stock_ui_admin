@@ -15,6 +15,7 @@ import {
 } from '@/utils/stock-filter';
 import { parseRangeValue } from '@/utils/common';
 import { SelectFilter } from './select-filter';
+import { filterPanelStyles } from './filter-panel.styles';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
 import { usePastDateRange } from '@/hooks/date-range.hook';
 
@@ -186,8 +187,7 @@ export const ListHighActivityFilter = ({
 };
 
 const rootStyles = css`
-  border: 1px solid var(--border-table-color);
-  border-radius: 0.6rem;
+  ${filterPanelStyles};
   padding: 1.4rem 1.6rem;
 `;
 

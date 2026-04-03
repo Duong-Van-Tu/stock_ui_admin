@@ -81,7 +81,30 @@ const rootStyles = css`
     position: sticky;
     z-index: 2;
     top: 6rem;
-    background: var(--white-color);
+    margin-bottom: 2.4rem;
+    padding: 0.8rem 0 0;
+    background: var(--surface-base-color);
+  }
+
+  .ant-tabs-nav::before {
+    border-bottom-color: var(--border-color);
+  }
+
+  .ant-tabs-tab {
+    color: var(--text-secondary-color);
+  }
+
+  .ant-tabs-tab:hover {
+    color: var(--brand-blue-color);
+  }
+
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn,
+  .ant-tabs-tab .ant-tabs-tab-btn {
+    color: inherit;
+  }
+
+  .ant-tabs-content-holder {
+    color: var(--text-color);
   }
 `;
 const tabLabelStyles = css`

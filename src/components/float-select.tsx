@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Select, SelectProps } from 'antd';
+import { Select, SelectProps, theme } from 'antd';
 import { FocusEvent } from 'react';
 
 interface FloatSelectProps extends SelectProps<any> {
@@ -17,6 +17,9 @@ export default function FloatSelect({
   onBlur,
   ...restProps
 }: FloatSelectProps) {
+  const {
+    token: { colorBgContainer, colorTextSecondary }
+  } = theme.useToken();
   // const [focus, setFocus] = useState(true);
   const isOccupied = true;
 
@@ -42,13 +45,17 @@ export default function FloatSelect({
       <Select
         {...restProps}
         value={value}
-        placeholder=''
+        placeholder={placeholder || label}
         size='middle'
         css={getInputStyles(width)}
       />
       <label
         css={[
-          labelBaseStyle(restProps.disabled),
+          labelBaseStyle(
+            restProps.disabled,
+            colorBgContainer,
+            colorTextSecondary
+          ),
           isOccupied ? labelActiveStyle : labelPlaceholderStyle
         ]}
       >
@@ -67,25 +74,30 @@ const getInputStyles = (width: string) => css`
   width: ${width} !important;
 `;
 
-const labelBaseStyle = (hidden?: boolean) => css`
-  font-weight: normal;
+const labelBaseStyle = (
+  hidden?: boolean,
+  backgroundColor?: string,
+  textColor?: string
+) => css`
+  font-weight: 500;
   position: absolute;
   pointer-events: none;
   left: 1.2rem;
   top: 0.4rem;
   transition: 0.2s ease all;
-  background: var(--white-color);
-  color: var(--gray-color);
+  background: var(--float-label-bg, ${backgroundColor || 'var(--white-color)'});
+  color: ${textColor || 'var(--text-tertiary-color)'};
   display: ${hidden && 'none'};
 `;
 
 const labelPlaceholderStyle = css`
-  color: var(--gray-color);
+  color: inherit;
 `;
 
 const labelActiveStyle = css`
   top: -1.2rem;
   font-size: 1.2rem !important;
+  line-height: 1.6rem;
   padding: 0 0.4rem;
   margin-left: -0.4rem;
 `;

@@ -17,12 +17,15 @@
   --pagination-next-prev-color: #f6f6f6;
   --yellow-color: #ffbf00;
   --border-color: rgba(5, 5, 5, 0.06);
-  --border-table-color: rgb(217, 217, 217);
+  --border-table-color: rgba(5, 5, 5, 0.08);
   --bg-bottom-navigation: #f7f7f7;
   --bg-add-form: #f6f6f6;
   --light-white-color: #e7e7e7;
   --black-50-opacity: rgba(0, 0, 0, 0.5);
   --separator-color: #b0b0b0;
+  --scrollbar-thumb-color: #eaeaea;
+  --scrollbar-thumb-active-color: #c1c1c1;
+  --scrollbar-track-color: #f5f5f5;
   --soft-pink-color: #fef2f2;
   --green-color: #0eb34b;
   --orange-color: #ff6a00;
@@ -34,6 +37,8 @@
   --earning-color: #ff5722;
   --watching-color: #e3ffcf;
   --added-portfolio-color: #b1fff0;
+  --watching-accent-color: #52c41a;
+  --added-portfolio-accent-color: #13c2c2;
   --table-header-bg-color: #b1e1ff;
   --blue-500: #1890ff;
   --blue-100: #ddefff;
@@ -44,13 +49,93 @@
   --brand-blue-color: #1677ff;
   --background-Row-table-color: #b7e3ff;
   --table-row-bg-color: #f3f3f3;
+  --surface-muted-color: #f0f0f0;
+  --surface-subtle-color: #fafafa;
+  --surface-hover-color: #fcfcfc;
+  --border-light-color: #e8e8e8;
+  --danger-soft-color: #ff4d4f;
+  --text-primary-strong-color: #1a1a1a;
+  --text-secondary-color: #595959;
+  --text-tertiary-color: #8c8c8c;
+  --text-heading-color: #262626;
+  --app-background-color: #ffffff;
+  --surface-base-color: #ffffff;
+  --surface-elevated-color: #ffffff;
+  --surface-overlay-color: #ffffff;
+  --header-chip-background-color: rgba(8, 127, 244, 0.08);
+  --header-chip-hover-background-color: rgba(8, 127, 244, 0.14);
+  --header-chip-border-color: rgba(8, 127, 244, 0.14);
+  --header-background-color: #ffffff;
+  --sidebar-background-color: #ffffff;
+  --box-shadow-color: rgba(15, 23, 42, 0.08);
+  --shell-divider-color: rgba(5, 5, 5, 0.06);
+  --shell-accent-color: rgba(8, 127, 244, 0.12);
+  --shell-hover-color: rgba(8, 127, 244, 0.05);
+  --sidebar-active-background-color: rgba(8, 127, 244, 0.12);
+  --sidebar-active-text-color: #087ff4;
+  --sidebar-text-color: rgba(0, 0, 0, 0.88);
+  --sidebar-text-hover-color: #087ff4;
   --font-family: 'Inter', sans-serif;
   --collapsed-sidebar-width: 80px;
   --mobile-collapsed-sidebar-width: 50px;
   --expanded-sidebar-width: 250px;
   --mobile-expanded-sidebar-width: 100%;
-  --header-height: 6rem;
+  --header-height: 6.4rem;
   --footer-height: 6rem;
+}
+
+:root[data-theme='dark'] {
+  --text-color: rgba(255, 255, 255, 0.88);
+  --symbol-color: #5aa8ff;
+  --gray-color: #b8c1cc;
+  --gray-light-color: #8f9baa;
+  --gray-soft-color: #1d2633;
+  --background-color: #0f1722;
+  --pagination-next-prev-color: #1d2633;
+  --border-color: rgba(255, 255, 255, 0.12);
+  --border-table-color: rgba(255, 255, 255, 0.08);
+  --bg-bottom-navigation: #111827;
+  --bg-add-form: #111827;
+  --light-white-color: #1d2633;
+  --separator-color: rgba(255, 255, 255, 0.14);
+  --soft-pink-color: rgba(211, 47, 47, 0.18);
+  --loading-background-color: rgba(0, 100, 166, 0.18);
+  --watching-color: rgba(16, 186, 8, 0.18);
+  --added-portfolio-color: rgba(17, 205, 168, 0.18);
+  --watching-solid-color: #1a2e17;
+  --added-portfolio-solid-color: #152c2d;
+  --watching-accent-color: #73d13d;
+  --added-portfolio-accent-color: #36cfc9;
+  --table-header-bg-color: #122033;
+  --blue-100: rgba(24, 144, 255, 0.18);
+  --border-card-color: rgba(255, 255, 255, 0.12);
+  --background-Row-table-color: rgba(24, 144, 255, 0.16);
+  --table-row-bg-color: #141c28;
+  --surface-muted-color: #1a2432;
+  --surface-subtle-color: #111827;
+  --surface-hover-color: #1d2938;
+  --border-light-color: rgba(255, 255, 255, 0.12);
+  --text-primary-strong-color: #f3f4f6;
+  --text-secondary-color: #c3ceda;
+  --text-tertiary-color: #93a4b8;
+  --text-heading-color: #f9fafb;
+  --app-background-color: #0b1220;
+  --surface-base-color: #0f1722;
+  --surface-elevated-color: #111b2e;
+  --surface-overlay-color: rgba(17, 27, 46, 0.92);
+  --header-chip-background-color: rgba(148, 163, 184, 0.12);
+  --header-chip-hover-background-color: rgba(24, 144, 255, 0.18);
+  --header-chip-border-color: rgba(148, 163, 184, 0.18);
+  --header-background-color: rgba(15, 23, 34, 0.88);
+  --sidebar-background-color: #0f1722;
+  --box-shadow-color: rgba(0, 0, 0, 0.28);
+  --shell-divider-color: rgba(148, 163, 184, 0.18);
+  --shell-accent-color: rgba(24, 144, 255, 0.18);
+  --shell-hover-color: rgba(24, 144, 255, 0.12);
+  --sidebar-active-background-color: linear-gradient(135deg, #0b5db2, #1890ff);
+  --sidebar-active-text-color: #ffffff;
+  --sidebar-text-color: #b8c7d9;
+  --sidebar-text-hover-color: #ffffff;
 }
 
 html {
@@ -62,13 +147,18 @@ body {
   line-height: 1.8rem;
   font-size: 1.6rem;
   text-align: left;
-  font-family: 'Inter', sans-serif !important;
+  font-family: var(--font-family) !important;
   font-optical-sizing: auto;
   font-style: normal;
   overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
   color: var(--text-color);
+  background: var(--app-background-color);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
   &::-webkit-scrollbar {
     display: none;
   }

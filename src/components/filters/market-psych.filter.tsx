@@ -1,12 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
-import { Form, Row, Col, DatePicker, Space, Button, Select } from 'antd';
+import { Form, Row, Col, DatePicker, Space, Button } from 'antd';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo } from 'react';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { useSearchParams } from 'next/navigation';
 import { MARKET_PSYCH_DATA_TYPES } from '@/constants/common.constant';
+import FloatField from '@/components/float-field';
+import FloatSelect from '@/components/float-select';
 
 type Props = {
   customStyles?: SerializedStyles;
@@ -76,23 +78,37 @@ export const MarketPsychFilter = ({
           justify='end'
         >
           <Col css={fullWidthStyles}>
-            <Form.Item css={formItemStyles} name='range'>
-              <DatePicker.RangePicker
-                css={fullWidthStyles}
-                placeholder={[t('fromDate'), t('toDate')]}
-                onChange={() => triggerFilter()}
-              />
+            <Form.Item css={formItemStyles}>
+              <FloatField
+                label={t('dateRange')}
+                width={isMobile ? '100%' : '26rem'}
+              >
+                <Form.Item name='range' noStyle>
+                  <DatePicker.RangePicker
+                    className='brand-ant-picker'
+                    placeholder={[t('fromDate'), t('toDate')]}
+                    onChange={() => triggerFilter()}
+                  />
+                </Form.Item>
+              </FloatField>
             </Form.Item>
           </Col>
 
           <Col css={fullWidthStyles}>
-            <Form.Item css={formItemStyles} name='dataType'>
-              <Select
-                options={dataTypeOptions}
-                placeholder={t('dataType')}
-                onChange={() => triggerFilter()}
-                style={{ width: isMobile ? '100%' : '16rem' }}
-              />
+            <Form.Item css={formItemStyles}>
+              <Form.Item name='dataType' noStyle>
+                <FloatSelect
+                  label={t('dataType')}
+                  width={isMobile ? '100%' : '16rem'}
+                  options={dataTypeOptions}
+                  placeholder={t('allDataType')}
+                  value={form.getFieldValue('dataType') ?? ''}
+                  onChange={(value) => {
+                    form.setFieldValue('dataType', value ?? '');
+                    triggerFilter();
+                  }}
+                />
+              </Form.Item>
             </Form.Item>
           </Col>
 

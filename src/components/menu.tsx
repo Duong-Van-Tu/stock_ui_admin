@@ -38,12 +38,9 @@ export const Menu = ({
 
   const menuStructure = getMenuStructure(t);
   const getMenuIcon = (type: string, itemKey: string) => {
-    const isActive = pathname.includes(itemKey);
-    const fillColor = isActive ? 'var(--primary-color)' : 'var(--text-color)';
-
     return (
-      <span>
-        <Icon icon={type} width={20} height={20} fill={fillColor} />
+      <span css={menuIconStyles(pathname.includes(itemKey))}>
+        <Icon icon={type} width={20} height={20} fill='currentColor' />
       </span>
     );
   };
@@ -132,12 +129,17 @@ export const Menu = ({
 
 const rootStyles = (collapsed: boolean) => css`
   height: 100%;
+  background: var(--sidebar-background-color);
+  color: var(--sidebar-text-color);
+  border-inline-end: none !important;
+
   .ant-menu-sub.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title,
   .ant-menu-item {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
     line-height: 2rem;
+    color: var(--sidebar-text-color) !important;
     .ant-menu-title-content {
       display: ${collapsed ? 'none' : 'block'} !important;
     }
@@ -146,8 +148,44 @@ const rootStyles = (collapsed: boolean) => css`
     }
   }
 
+  .ant-menu-item:hover,
+  .ant-menu-submenu-title:hover {
+    background: var(--shell-hover-color) !important;
+    color: var(--sidebar-text-hover-color) !important;
+  }
+
+  .ant-menu-item-icon,
+  .ant-menu-item-icon > span {
+    color: inherit;
+  }
+
+  .ant-menu-item .ant-menu-title-content a,
+  .ant-menu-submenu-title .ant-menu-title-content {
+    color: inherit;
+  }
+
   .ant-menu-item-selected,
   .ant-menu-submenu-selected > .ant-menu-submenu-title {
-    color: var(--primary-color) !important;
+    background: var(--sidebar-active-background-color) !important;
+    color: var(--sidebar-active-text-color) !important;
   }
+
+  .ant-menu-item-selected a,
+  .ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-title-content {
+    color: var(--sidebar-active-text-color) !important;
+  }
+
+  .ant-menu-submenu-arrow {
+    color: var(--sidebar-text-color) !important;
+  }
+
+  .ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-submenu-arrow,
+  .ant-menu-submenu-title:hover .ant-menu-submenu-arrow {
+    color: currentColor !important;
+  }
+`;
+
+const menuIconStyles = (isActive: boolean) => css`
+  display: inline-flex;
+  color: ${isActive ? 'var(--primary-color)' : 'inherit'};
 `;

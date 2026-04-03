@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Table, Button, Tooltip, Space, Checkbox } from 'antd';
+import { Table, Button, Space, Checkbox } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -20,6 +20,7 @@ import { useNotification } from '@/hooks/notification.hook';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { isDesktop, isMobile } from 'react-device-detect';
 import { useModal } from '@/hooks/modal.hook';
+import { BackButton } from '../back-button';
 import { LedgerEntryInformation } from '../ledger-entry-information';
 import { stripHtmlFromQuill } from '@/utils/strip-html';
 
@@ -249,13 +250,11 @@ export function MembersLedgerEntry() {
         <Title level={3} css={titleStyles}>
           {t('membersList')}
         </Title>
-        <Tooltip title={isMobile ? null : t('back')} css={goBackStyles}>
-          <Button
-            shape='circle'
-            icon={<Icon icon='back' width={18} height={18} />}
-            onClick={handleGoBack}
-          />
-        </Tooltip>
+        <BackButton
+          onClick={handleGoBack}
+          tooltip={t('back')}
+          wrapperCss={goBackStyles}
+        />
         <div css={actionHeaderStyles}>
           <Space >
             <Button
