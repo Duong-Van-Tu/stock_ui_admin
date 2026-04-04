@@ -142,7 +142,7 @@ const formStyles = css`
   }
 
   .ant-form-item-label {
-    padding-bottom: 0.5rem;
+    padding-bottom: 0 !important;
   }
 
   .ant-input-outlined,
@@ -173,6 +173,7 @@ const formStyles = css`
   .ant-input::placeholder,
   .ant-input-affix-wrapper input::placeholder {
     color: var(--text-tertiary-color) !important;
+    font-size: 1.3rem;
   }
 
   .ant-input-prefix {
