@@ -7,6 +7,7 @@ import { CSSProperties, ReactNode, useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { Button, Layout, theme } from 'antd';
 import { Icon } from '@/components/icons';
+import LastVisitedRouteHandler from '@/components/last-visited-route-handler';
 import { Menu } from '@/components/menu';
 import Header from '@/components/header';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -53,6 +54,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <Layout hasSider css={rootStyles}>
+      <LastVisitedRouteHandler />
       <Sider
         trigger={null}
         collapsible

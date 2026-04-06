@@ -15,6 +15,10 @@ import { PageURLs } from '@/utils/navigate';
 import { getLastPathnameSegment, getPathnameSegment } from '@/utils/common';
 import { setSideBarCollapsed } from '@/redux/slices/app.slice';
 import { regex } from '@/utils/regex';
+import {
+  buildRouteWithSearch,
+  withLocalePath
+} from '@/utils/last-visited-route';
 import BreakingNews from './breaking-news';
 import { EconomicCalendarList } from './economic-calendar-list';
 import { useWindowSize } from '@/hooks/window-size.hook';
@@ -70,12 +74,10 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
   const handleUserMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === UserMenu.LOGOUT.toString()) {
       dispatch(logoutUser());
-      if (pathname !== PageURLs.ofIndex()) {
-        const currentUrl =
-          pathname +
-          (searchParams?.toString() ? `?${searchParams.toString()}` : '');
-        router.push(`/login?redirect=${encodeURIComponent(currentUrl)}`);
-      }
+      const loginPath = withLocalePath(PageURLs.ofLogin(), locale);
+      const currentUrl = buildRouteWithSearch(pathname, searchParams);
+
+      router.push(`${loginPath}?redirect=${encodeURIComponent(currentUrl)}`);
     }
   };
 
