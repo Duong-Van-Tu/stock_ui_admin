@@ -55,12 +55,8 @@ export namespace PageURLs {
     return withPrefix('/high-activity');
   }
 
-  export function ofStockDetail(symbol: string, signalId?: number) {
-    let url = `/symbol/${symbol}`;
-    if (signalId) {
-      url += `?signalId=${signalId}`;
-    }
-    return withPrefix(url);
+  export function ofStockDetail(symbol: string) {
+    return withPrefix(`/symbol/${symbol}`);
   }
 
   export function ofWatchListSwingTrade() {

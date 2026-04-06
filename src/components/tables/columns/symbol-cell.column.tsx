@@ -33,7 +33,6 @@ type SymbolCellProps = {
   earningDate?: string;
   isNewsNegative?: boolean;
   showRecentNewsEarnings?: boolean;
-  signalId?: number;
   stockInfo?: StockInfo;
   isOptions?: boolean;
   isSellSignal?: boolean;
@@ -50,7 +49,6 @@ export const SymbolCell = ({
   isNews,
   earningDate,
   isNewsNegative,
-  signalId,
   stockInfo,
   isOptions = false,
   isPutOptions = false,
@@ -191,7 +189,7 @@ export const SymbolCell = ({
           ) : (
             <Link
               css={stockLinkStyles(symbolColor)}
-              href={link ?? PageURLs.ofStockDetail(symbol, signalId)}
+              href={link ?? PageURLs.ofStockDetail(symbol)}
               target={link ? undefined : isDesktop ? '_blank' : undefined}
             >
               <span>{symbol}</span>

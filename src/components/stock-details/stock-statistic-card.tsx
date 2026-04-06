@@ -16,9 +16,6 @@ import AIRatingChart from '../charts/AI-rating.chart';
 import { useModal } from '@/hooks/modal.hook';
 import { AIExplain } from '../ai-explain';
 import { Icon } from '../icons';
-import { watchSignal } from '@/redux/slices/signals.slice';
-import { SignalInformation } from '../signal-information';
-import { useSearchParams } from 'next/navigation';
 import { ReactNode } from 'react';
 
 const { Text } = Typography;
@@ -62,11 +59,8 @@ const StatRow = ({ label, value }: { label: string; value: ReactNode }) => (
 
 export const StatisticCard = () => {
   const t = useTranslations();
-  const searchParams = useSearchParams();
-  const signalId = Number(searchParams.get('signalId')) ?? null;
   const modal = useModal();
   const stockDetails = useAppSelector(watchStockDetails);
-  const signal = useAppSelector(watchSignal);
 
   const {
     ticker,
@@ -150,24 +144,14 @@ export const StatisticCard = () => {
                 <Button
                   css={signalBtnStyles}
                   onClick={() =>
-                    signalId
-                      ? modal.openModal(
-                          <SignalInformation signal={signal!} />,
-                          {
-                            width: 1200
-                          }
-                        )
-                      : modal.openModal(
-                          <AIExplain
-                            symbol={ticker!}
-                            text={grokReasoningText!}
-                          />
-                        )
+                    modal.openModal(
+                      <AIExplain symbol={ticker!} text={grokReasoningText!} />
+                    )
                   }
                   type='link'
                   block
                 >
-                  {signalId ? t('viewDetails') : t('grokExplain')}
+                  {t('grokExplain')}
                 </Button>
               </Col>
             </div>
