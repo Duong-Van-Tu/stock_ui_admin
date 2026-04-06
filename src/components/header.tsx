@@ -12,7 +12,7 @@ import { MenuItemType } from 'antd/es/menu/interface';
 import { logoutUser, watchUser } from '@/redux/slices/auth.slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { PageURLs } from '@/utils/navigate';
-import { getPathnameSegment } from '@/utils/common';
+import { getLastPathnameSegment, getPathnameSegment } from '@/utils/common';
 import { setSideBarCollapsed } from '@/redux/slices/app.slice';
 import { regex } from '@/utils/regex';
 import BreakingNews from './breaking-news';
@@ -48,9 +48,24 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
   const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
-    const urlSymbol = searchParams.get('symbol')?.toUpperCase() || '';
-    setSearchValue(urlSymbol);
-  }, [searchParams]);
+    const urlSymbol = searchParams.get('symbol')?.toUpperCase();
+
+    if (urlSymbol) {
+      setSearchValue(urlSymbol);
+      return;
+    }
+
+    if (
+      regex.stockDetailPath.test(pathname) ||
+      regex.watchlistSwingTradeHistoryPath.test(pathname)
+    ) {
+      const currentSymbol = getLastPathnameSegment(pathname);
+      setSearchValue(currentSymbol.toUpperCase());
+      return;
+    }
+
+    setSearchValue('');
+  }, [pathname, searchParams]);
 
   const handleUserMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === UserMenu.LOGOUT.toString()) {
@@ -113,29 +128,37 @@ export default function Header({ collapsed, setCollapsed }: HeaderProps) {
   const handleSearch = (value: string) => {
     const upperCaseValue = value.trim().toUpperCase();
     const params = new URLSearchParams(searchParams);
+    const isStockDetailPage = regex.stockDetailPath.test(pathname);
+    const isWatchlistHistoryPage =
+      regex.watchlistSwingTradeHistoryPath.test(pathname);
 
     if (!upperCaseValue) {
       params.delete('symbol');
-      router.push(`${pathname}?${params.toString()}`);
+      const nextQuery = params.toString();
+      router.push(nextQuery ? `${pathname}?${nextQuery}` : pathname);
       setSearchValue('');
+      return;
+    }
+
+    if (isStockDetailPage) {
+      router.push(PageURLs.ofStockDetail(upperCaseValue));
+      return;
+    }
+
+    if (isWatchlistHistoryPage) {
+      router.push(PageURLs.ofHistoryWatchListSwingTrade(upperCaseValue));
       return;
     }
 
     params.set('symbol', upperCaseValue);
     router.push(`${pathname}?${params.toString()}`);
-
-    if (
-      regex.stockDetailPath.test(pathname) ||
-      regex.watchlistSwingTradeHistoryPath.test(pathname)
-    ) {
-      dispatch(searchSymbol(upperCaseValue));
-    }
   };
 
   const handleClear = () => {
     const params = new URLSearchParams(searchParams);
     params.delete('symbol');
-    router.push(`${pathname}?${params.toString()}`);
+    const nextQuery = params.toString();
+    router.push(nextQuery ? `${pathname}?${nextQuery}` : pathname);
     setSearchValue('');
   };
 

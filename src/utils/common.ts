@@ -164,6 +164,11 @@ export const getPathnameSegment = (pathname: string, index: number) => {
   return segments[index] || '';
 };
 
+export const getLastPathnameSegment = (pathname: string) => {
+  const segments = pathname.split('/').filter(Boolean);
+  return segments.at(-1) || '';
+};
+
 export const cleanFalsyValues = (values: Record<string, any> = {}) => {
   return Object.fromEntries(
     Object.entries(values).filter(([_, value]) => Boolean(value))
