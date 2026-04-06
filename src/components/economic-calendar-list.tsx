@@ -82,7 +82,10 @@ export const EconomicCalendarList = () => {
       <div css={headerStyles}>
         <Text
           strong
-          style={{ fontSize: '1.5rem', color: 'var(--text-primary-strong-color)' }}
+          style={{
+            fontSize: '1.5rem',
+            color: 'var(--text-primary-strong-color)'
+          }}
         >
           Economic Calendar (New York Time)
         </Text>
@@ -172,7 +175,12 @@ export const EconomicCalendarList = () => {
             background: 'var(--surface-elevated-color)'
           }}
         >
-          <Badge count={newEventsCount} offset={[0, 0]} color='gold'>
+          <Badge
+            count={newEventsCount}
+            offset={[0, 0]}
+            color='gold'
+            css={countBadgeStyles}
+          >
             <button
               type='button'
               aria-label='Open economic calendar'
@@ -194,6 +202,13 @@ export const EconomicCalendarList = () => {
 
 const rootStyles = css`
   margin-right: 0.8rem;
+`;
+
+const countBadgeStyles = css`
+  .ant-badge-count {
+    color: var(--white-color) !important;
+    font-weight: 600;
+  }
 `;
 
 const popoverContentStyles = css`
