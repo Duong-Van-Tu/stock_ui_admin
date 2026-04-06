@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, CSSProperties, useRef, useState } from 'react';
 import { Button } from 'antd';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { useNotification } from '@/hooks/notification.hook';
@@ -32,6 +32,17 @@ export const ImportSymbolButton = ({
   const { notifySuccess, notifyError } = useNotification();
   const inputImportRef = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState<boolean>(false);
+  const isPrimaryButton = buttonType === 'primary';
+  const buttonLabelColor = isPrimaryButton
+    ? 'var(--white-color)'
+    : 'var(--electric-indigo-color)';
+  const buttonStyle: CSSProperties = {
+    ...(width ? { width } : {}),
+    color: buttonLabelColor,
+    WebkitTextFillColor: buttonLabelColor,
+    borderColor: 'var(--electric-indigo-color)',
+    ...(isPrimaryButton ? { background: 'var(--electric-indigo-color)' } : {})
+  };
 
   const handleImportSymbol = async (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files?.length) return;
@@ -61,30 +72,28 @@ export const ImportSymbolButton = ({
 
   return (
     <Button
+      className={`import-symbol-button import-symbol-button--${buttonType}`}
       type={buttonType}
-      css={
-        buttonType === 'primary' ? importUserBtnStyles : importOutlineBtnStyles
-      }
+      css={isPrimaryButton ? importUserBtnStyles : importOutlineBtnStyles}
       size={size}
-      style={width ? { width } : undefined}
+      style={buttonStyle}
       loading={importing}
       icon={
         hideIcon ? undefined : (
-          <Icon
-            fill={
-              buttonType === 'primary'
-                ? 'var(--white-color)'
-                : 'var(--electric-indigo-color)'
-            }
-            icon='upload'
-            width={18}
-            height={18}
-          />
+          <Icon fill={buttonLabelColor} icon='upload' width={18} height={18} />
         )
       }
       onClick={() => inputImportRef.current?.click()}
     >
-      {buttonText || t('importExcel')}
+      <span
+        className='import-symbol-button__label'
+        style={{
+          color: buttonLabelColor,
+          WebkitTextFillColor: buttonLabelColor
+        }}
+      >
+        {buttonText || t('importExcel')}
+      </span>
       <input
         ref={inputImportRef}
         type='file'
@@ -97,7 +106,18 @@ export const ImportSymbolButton = ({
 };
 
 const importUserBtnStyles = css`
-  background: var(--electric-indigo-color);
+  && {
+    background: var(--electric-indigo-color);
+    color: var(--white-color);
+    -webkit-text-fill-color: var(--white-color);
+    border-color: var(--electric-indigo-color);
+  }
+
+  && .import-symbol-button__label {
+    color: var(--white-color) !important;
+    -webkit-text-fill-color: var(--white-color) !important;
+  }
+
   &:hover {
     background: var(--electric-indigo-color) !important;
     opacity: 0.9;
@@ -105,11 +125,21 @@ const importUserBtnStyles = css`
 `;
 
 const importOutlineBtnStyles = css`
-  color: var(--electric-indigo-color);
-  border-color: var(--electric-indigo-color);
+  && {
+    color: var(--electric-indigo-color) !important;
+    -webkit-text-fill-color: var(--electric-indigo-color) !important;
+    border-color: var(--electric-indigo-color) !important;
+  }
+
+  && .import-symbol-button__label {
+    color: var(--electric-indigo-color) !important;
+    -webkit-text-fill-color: var(--electric-indigo-color) !important;
+  }
+
   &:hover,
   &:focus {
     color: var(--electric-indigo-color) !important;
+    -webkit-text-fill-color: var(--electric-indigo-color) !important;
     border-color: var(--electric-indigo-color) !important;
     background: rgba(93, 56, 245, 0.04) !important;
   }
