@@ -642,7 +642,10 @@ export const EstForecastSelectedTable = ({
         align: 'center',
         render: (v, r) =>
           isNumeric(v) && isNumeric(r.percentEstForecast) ? (
-            <StockChangeCell value={v} percentage={Number(r.percentEstForecast)} />
+            <StockChangeCell
+              value={v}
+              percentage={Number(r.percentEstForecast)}
+            />
           ) : isNumeric(v) ? (
             renderNumber(v, 'priceCurrentEstForecast', r)
           ) : (
@@ -1353,6 +1356,9 @@ const typeHeaderStyles = (type: 'call' | 'put') => css`
 `;
 
 const tableStyles = (isDarkMode: boolean) => css`
+  --upcoming-earning-row-bg: ${lightenColor('#faad14', 0.85)};
+  --upcoming-earning-row-text: #111111;
+
   .ant-table-cell {
     padding: 0.8rem 1rem !important;
   }
@@ -1378,10 +1384,20 @@ const tableStyles = (isDarkMode: boolean) => css`
     background: ${isDarkMode ? '#1f1f1f' : '#fafafa'} !important;
   }
 
+  .ant-table-tbody > tr.upcoming-earning-row > td {
+    color: var(--upcoming-earning-row-text) !important;
+  }
+
+  .ant-table-tbody > tr.upcoming-earning-row > td *,
+  .ant-table-tbody > tr.upcoming-earning-row > td a,
+  .ant-table-tbody > tr.upcoming-earning-row > td .ant-btn-link {
+    color: var(--upcoming-earning-row-text) !important;
+  }
+
   .ant-table-tbody
     > tr.upcoming-earning-row
     > td:not(:first-of-type):not(:last-of-type) {
-    background: ${lightenColor('#faad14', 0.85)} !important;
+    background: var(--upcoming-earning-row-bg) !important;
   }
 `;
 
