@@ -97,9 +97,6 @@ export namespace PageURLs {
   export function ofEstForecast() {
     return withPrefix('/forecast');
   }
-  export function ofEstForecastSelected() {
-    return withPrefix('/forecast/selected');
-  }
   export function ofEarningSelection() {
     return withPrefix('/earning-selection');
   }
