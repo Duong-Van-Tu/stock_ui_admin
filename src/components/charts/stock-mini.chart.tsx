@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { createChart, LineStyle, Time } from 'lightweight-charts';
 import { useThemeMode } from '@/providers/theme.provider';
 
@@ -24,40 +24,19 @@ export default function StockMiniChart({
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ReturnType<typeof createChart>>();
 
-  const getMiniChartTheme = useCallback(() => {
-    if (typeof window === 'undefined') {
-      return {
-        backgroundColor: '#ffffff',
-        textColor: '#999999',
-        baselineColor: '#999999'
-      };
-    }
-
-    const rootStyle = window.getComputedStyle(document.documentElement);
-    const getVar = (name: string, fallback: string) =>
-      rootStyle.getPropertyValue(name).trim() || fallback;
-
-    return {
-      backgroundColor: getVar(
-        '--surface-base-color',
-        isDarkMode ? '#0f1722' : '#ffffff'
-      ),
-      textColor: getVar(
-        '--text-tertiary-color',
-        isDarkMode ? '#93a4b8' : '#999999'
-      ),
-      baselineColor: getVar(
-        '--text-tertiary-color',
-        isDarkMode ? '#93a4b8' : '#999999'
-      )
-    };
-  }, [isDarkMode]);
+  const chartTheme = useMemo(
+    () => ({
+      backgroundColor: isDarkMode ? '#0f1722' : '#ffffff',
+      textColor: isDarkMode ? '#93a4b8' : '#999999',
+      baselineColor: isDarkMode ? '#93a4b8' : '#999999'
+    }),
+    [isDarkMode]
+  );
 
   useEffect(() => {
     if (!chartContainerRef.current || data.length === 0) return;
 
     const container = chartContainerRef.current;
-    const chartTheme = getMiniChartTheme();
 
     const chart = createChart(container, {
       layout: {
@@ -190,7 +169,7 @@ export default function StockMiniChart({
       resizeObserver.disconnect();
       chart.remove();
     };
-  }, [data, getMiniChartTheme]);
+  }, [chartTheme, data]);
 
   return (
     <div
