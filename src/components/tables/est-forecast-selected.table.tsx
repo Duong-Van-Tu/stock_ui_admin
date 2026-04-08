@@ -5,7 +5,6 @@ import {
   TableColumnsType,
   Button,
   Space,
-  Input,
   Popconfirm,
   Tooltip,
   Modal,
@@ -57,6 +56,7 @@ import { DateTimeCell } from './columns/date-time-cell.column';
 import { StockChangeCell } from './columns/stock-change-cell.column';
 import EllipsisText from '../ellipsis-text';
 import { useThemeMode } from '@/providers/theme.provider';
+import { SearchPillInput } from '../search-pill-input';
 
 type EstForecastSelectedTableProps = {
   mode?: 'date' | 'active';
@@ -481,7 +481,11 @@ export const EstForecastSelectedTable = ({
 
       return (
         <Space css={actionCellStyles}>
-          <Button type='primary' onClick={() => startEdit(record)}>
+          <Button
+            type='primary'
+            css={editActionButtonStyles}
+            onClick={() => startEdit(record)}
+          >
             Edit
           </Button>
           <Popconfirm
@@ -490,7 +494,9 @@ export const EstForecastSelectedTable = ({
             okText='Yes'
             cancelText='No'
           >
-            <Button danger>Delete</Button>
+            <Button danger css={deleteActionButtonStyles}>
+              Delete
+            </Button>
           </Popconfirm>
         </Space>
       );
@@ -1232,14 +1238,12 @@ export const EstForecastSelectedTable = ({
           </TableTitle>
           <div css={actionGroupStyles}>
             {mode !== 'active' ? (
-              <Input.Search
+              <SearchPillInput
                 placeholder={t('searchToAddEstForecast')}
-                enterButton={t('search')}
                 value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
+                onChange={(value) => setSearchValue(value.toUpperCase())}
                 onSearch={handleSearch}
-                allowClear
-                style={{ width: 320 }}
+                width='32rem'
               />
             ) : null}
           </div>
@@ -1404,6 +1408,50 @@ const tableStyles = (isDarkMode: boolean) => css`
 const actionCellStyles = css`
   width: 100%;
   justify-content: center;
+`;
+
+const editActionButtonStyles = css`
+  font-weight: 600;
+  border-radius: 0.8rem;
+  box-shadow: none;
+
+  :root[data-theme='dark'] & {
+    color: #f8fbff !important;
+    -webkit-text-fill-color: #f8fbff !important;
+    background: linear-gradient(180deg, #2d8cff 0%, #1765d8 100%) !important;
+    border-color: #5aa8ff !important;
+    box-shadow: 0 0.6rem 1.6rem rgba(23, 101, 216, 0.3);
+  }
+
+  :root[data-theme='dark'] &:hover,
+  :root[data-theme='dark'] &:focus-visible {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background: linear-gradient(180deg, #4ca3ff 0%, #1f74ea 100%) !important;
+    border-color: #86c3ff !important;
+  }
+`;
+
+const deleteActionButtonStyles = css`
+  font-weight: 600;
+  border-radius: 0.8rem;
+  box-shadow: none;
+
+  :root[data-theme='dark'] & {
+    color: #ffb8b8 !important;
+    -webkit-text-fill-color: #ffb8b8 !important;
+    background: rgba(255, 77, 79, 0.14) !important;
+    border-color: rgba(255, 120, 117, 0.78) !important;
+    box-shadow: 0 0.6rem 1.6rem rgba(163, 33, 33, 0.18);
+  }
+
+  :root[data-theme='dark'] &:hover,
+  :root[data-theme='dark'] &:focus-visible {
+    color: #ffe5e5 !important;
+    -webkit-text-fill-color: #ffe5e5 !important;
+    background: rgba(255, 77, 79, 0.22) !important;
+    border-color: rgba(255, 154, 151, 0.95) !important;
+  }
 `;
 
 const paginationWrapperStyles = css`

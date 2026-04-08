@@ -14,8 +14,7 @@ import {
   TableColumnsType,
   Tooltip,
   Badge,
-  Checkbox,
-  Input
+  Checkbox
 } from 'antd';
 import { useCallback, useEffect, useState, Key } from 'react';
 import { fieldMapping } from '@/helpers/field-mapping.helper';
@@ -47,6 +46,7 @@ import { StockChangeCell } from './columns/stock-change-cell.column';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import { transformFinnhubAndLsegNews } from '@/helpers/sentiment.helper';
 import { useThemeMode } from '@/providers/theme.provider';
+import { SearchPillInput } from '../search-pill-input';
 
 export const FinnhubAndLsegNewsTable = () => {
   const t = useTranslations();
@@ -930,20 +930,18 @@ export const FinnhubAndLsegNewsTable = () => {
               Article Score {'>'} 8
             </Checkbox>
             <ExportExcelFinnhubLsegNews filter={filter} />
-            <Input.Search
-              allowClear
+            <SearchPillInput
               value={textSearch}
-              placeholder='Search by symbol, headline, news type, story'
-              enterButton={t('search')}
-              onChange={(e) => {
-                const value = e.target.value;
+              placeholder='Search anything'
+              width={isMobile ? '100%' : '34rem'}
+              minWidth={isMobile ? undefined : '20rem'}
+              onChange={(value) => {
                 setTextSearch(value);
                 if (!value.trim()) {
                   handleSearchByText('');
                 }
               }}
               onSearch={handleSearchByText}
-              css={textSearchStyles}
             />
           </div>
         </div>
@@ -1040,11 +1038,6 @@ const actionStyles = css`
   gap: 1.2rem;
   align-items: center;
   flex-wrap: wrap;
-`;
-
-const textSearchStyles = css`
-  width: ${isMobile ? '100%' : '32rem'};
-  min-width: 20rem;
 `;
 
 const filterBarStyles = (isDarkMode: boolean) => css`
