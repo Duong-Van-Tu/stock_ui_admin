@@ -216,18 +216,38 @@ const collapseStyles = css`
   .ant-collapse-header {
     align-items: center !important;
   }
+
   .ant-collapse-content-box {
     padding: 0 !important;
   }
 `;
 
 const tableStyles = css`
+  .ant-table-header,
+  .ant-table-thead > tr > th,
+  .ant-table-thead > tr > td {
+    background: var(--table-header-bg-color) !important;
+  }
+
+  .ant-table-cell {
+    padding: 0.8rem 1rem !important;
+  }
+
   .ant-table-thead {
     .ant-table-cell {
-      background: var(--blue-100);
+      background: var(--table-header-bg-color) !important;
+
+      &.ant-table-cell-fix-left,
+      &.ant-table-cell-fix-right,
+      &.ant-table-cell-fix-left-last,
+      &.ant-table-cell-fix-right-first {
+        background: var(--table-header-bg-color) !important;
+      }
+
       &:first-of-type {
         border-start-start-radius: 0 !important;
       }
+
       &:last-child {
         border-start-end-radius: 0 !important;
       }
