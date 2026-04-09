@@ -79,6 +79,12 @@ export const getMenuStructure = (
       link: PageURLs.ofBreakingNewsAnalytics()
     },
     {
+      label: t('lsegSelection'),
+      key: 'lseg-selection',
+      iconType: 'starMine',
+      link: PageURLs.ofLsegSelection()
+    },
+    {
       label: t('marketPsychology'),
       key: 'market-psychology',
       iconType: 'marketPsychology',
@@ -101,12 +107,6 @@ export const getMenuStructure = (
       key: 'earning-selection',
       iconType: 'earningSelection',
       link: PageURLs.ofEarningSelection()
-    },
-    {
-      label: t('lsegSelection'),
-      key: 'lseg-selection',
-      iconType: 'starMine',
-      link: PageURLs.ofLsegSelection()
     },
     {
       label: t('watchlistSwingTrade'),
