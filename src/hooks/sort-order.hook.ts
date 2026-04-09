@@ -23,24 +23,27 @@ export const useSortOrder = <TFilter = any>({
 
   const handleSortOrder = useCallback(
     (field: string) => {
+      let newSortField = field;
       let newSortType: SortOrder;
 
       if (field === sortField) {
-        newSortType =
-          sortType === 'descend'
-            ? 'ascend'
-            : sortType === 'ascend'
-            ? undefined
-            : 'descend';
+        if (sortType === 'descend') {
+          newSortType = 'ascend';
+        } else if (sortType === 'ascend') {
+          newSortField = defaultField;
+          newSortType = defaultOrder;
+        } else {
+          newSortType = 'descend';
+        }
       } else {
         newSortType = 'descend';
       }
 
-      setSortField(field);
+      setSortField(newSortField);
       setSortType(newSortType);
 
       const sortFieldMapped = newSortType
-        ? fieldMapping[field] ?? field
+        ? (fieldMapping[newSortField] ?? newSortField)
         : undefined;
       const sortTypeMapped = newSortType
         ? newSortType === 'ascend'
@@ -54,9 +57,9 @@ export const useSortOrder = <TFilter = any>({
         sortType: sortTypeMapped
       };
 
-      onChange?.(field, newSortType, newFilter as TFilter);
+      onChange?.(newSortField, newSortType, newFilter as TFilter);
     },
-    [sortField, sortType, currentFilter, onChange]
+    [sortField, sortType, currentFilter, defaultField, defaultOrder, onChange]
   );
 
   return {

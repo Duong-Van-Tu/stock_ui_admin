@@ -114,11 +114,14 @@ export const LsegSelectionTable = () => {
 
   useEffect(() => {
     fetchLsegSelection();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [symbol]);
+
+  useEffect(() => {
     return () => {
       dispatch(resetState());
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [symbol, dispatch]);
+  }, [dispatch]);
 
   const handleRefresh = useCallback(() => {
     fetchLsegSelection({
