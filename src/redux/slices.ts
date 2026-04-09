@@ -4,6 +4,7 @@ import { earningsSlice } from './slices/earnings.slice';
 import { estForecastSlice } from './slices/est-forecast.slice';
 import { highActivitySlice } from './slices/high-activity.slice';
 import { ledgerEntrySlice } from './slices/ledger-entry.slice';
+import { lsegSelectionSlice } from './slices/lseg-selection.slice';
 import { membersSlice } from './slices/members.slice';
 import { notesSlice } from './slices/notes.slice';
 import { optionChangesSlice } from './slices/options-changes.slice';
@@ -24,6 +25,7 @@ export const slices = [
   SentimentSlice,
   stockDetailsSlice,
   highActivitySlice,
+  lsegSelectionSlice,
   notesSlice,
   swingTradingWatchlistSlice,
   ledgerEntrySlice,

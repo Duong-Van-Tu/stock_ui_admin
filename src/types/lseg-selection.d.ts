@@ -1,0 +1,45 @@
+type LsegSelection = {
+  key: string;
+  id: number;
+  ric: string;
+  symbol: string;
+  company: string;
+  sector: string | null;
+  industry: string | null;
+  marketCapSelection: number | null;
+  avgVol: number | null;
+  starEq: number | string | null;
+  starCombinedAlpha: number | string | null;
+  starPriceMomentum: number | string | null;
+  starValueMomentum: number | string | null;
+  starArmGlobal: number | string | null;
+  starArmSector: number | string | null;
+  starArmRegion: number | string | null;
+  starPredictedSurpriseEps: number | string | null;
+  starNumbAnalystRevUp: number | string | null;
+  starNumbAnalystRevDown: number | string | null;
+  starRecommendation: number | string | null;
+  starRsi14: number | string | null;
+  starBeta: number | string | null;
+  starNumbAnalyst: number | string | null;
+  starEpsSmartEstimate: number | string | null;
+  starEpsMean: number | string | null;
+  marketPsychPriceUp: number | null;
+  marketPsychPriceMomentum: number | null;
+  marketPsychOptimism: number | null;
+  marketPsychMarketRisk: number | null;
+  news1dScore: number | null;
+  news3dScore: number | null;
+  newsNegativeArticleLast12h: number | null;
+  starUpdateOn: string | null;
+  marketPsychUpdateOn: string | null;
+  newsUpdateOn: string | null;
+  isTop: boolean;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
+type LsegSelectionFilter = Filter & {
+  sortBy?: string;
+  sortOrder?: 'ASC' | 'DESC';
+};

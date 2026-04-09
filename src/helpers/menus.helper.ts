@@ -103,6 +103,12 @@ export const getMenuStructure = (
       link: PageURLs.ofEarningSelection()
     },
     {
+      label: t('lsegSelection'),
+      key: 'lseg-selection',
+      iconType: 'menu',
+      link: PageURLs.ofLsegSelection()
+    },
+    {
       label: t('watchlistSwingTrade'),
       key: 'watchlist-swing-trade',
       iconType: 'watchlistSwingTrade',

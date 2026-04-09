@@ -479,5 +479,20 @@ export const fieldMapping: Record<string, string> = {
   thetaDesc: 'theta_desc',
   itmProbPercent: 'itm_prob_percent',
   aiUpdatedAt: 'ai_updated_at',
-  estId: 'est_id'
+  estId: 'est_id',
+  company: 'company',
+  sector: 'sector',
+  industry: 'industry',
+  marketCapSelection: 'market_cap',
+  avgVol: 'avg_vol',
+  marketPsychPriceUp: 'market_psych_price_up',
+  marketPsychPriceMomentum: 'market_psych_price_momentum',
+  marketPsychOptimism: 'market_psych_optimism',
+  marketPsychMarketRisk: 'market_psych_market_risk',
+  news1dScore: 'news_1d_score',
+  news3dScore: 'news_3d_score',
+  newsNegativeArticleLast12h: 'news_negative_article_last_12h',
+  starUpdateOn: 'star_updateon',
+  marketPsychUpdateOn: 'market_psych_updateon',
+  newsUpdateOn: 'news_updateon'
 };
