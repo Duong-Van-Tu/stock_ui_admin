@@ -319,7 +319,11 @@ export const LsegSelectionTable = () => {
       }),
       align: 'center',
       render: (value) =>
-        isNumeric(value) ? formatMarketCap(value / 1000000) : '-'
+        isNumeric(value)
+          ? value >= 1_000_000
+            ? formatMarketCap(value / 1_000_000)
+            : roundToDecimals(value, 2)
+          : '-'
     },
     {
       title: t('avgVolume'),
@@ -333,8 +337,7 @@ export const LsegSelectionTable = () => {
         onClick: () => handleSortOrder('avgVol')
       }),
       align: 'center',
-      render: (value) =>
-        isNumeric(value) ? formatNumberShort(value as number) : '-'
+      render: (value) => (isNumeric(value) ? formatNumberShort(value) : '-')
     },
     {
       title: t('lsegStarmine'),
