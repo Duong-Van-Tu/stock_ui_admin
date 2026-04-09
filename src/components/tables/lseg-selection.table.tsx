@@ -319,7 +319,7 @@ export const LsegSelectionTable = () => {
       }),
       align: 'center',
       render: (value) =>
-        isNumeric(value) ? formatMarketCap(value as number) : '-'
+        isNumeric(value) ? formatMarketCap(value / 1000000) : '-'
     },
     {
       title: t('avgVolume'),
