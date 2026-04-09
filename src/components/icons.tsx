@@ -63,8 +63,9 @@ import InsightScore from '@/assets/svg/insight-score.svg';
 import Forecast from '@/assets/svg/est-forecast.svg';
 import EarningSelection from '@/assets/svg/earning-selection.svg';
 import Add from '@/assets/svg/add.svg';
-import marketPsychology from '@/assets/svg/market-psychology.svg';
-import breakingNewsAnalytics from '@/assets/svg/breaking-news-analytics.svg';
+import MarketPsychology from '@/assets/svg/market-psychology.svg';
+import BreakingNewsAnalytics from '@/assets/svg/breaking-news-analytics.svg';
+import StarMine from '@/assets/svg/star-mine.svg';
 
 type IconProps = {
   width?: number | string;
@@ -135,8 +136,9 @@ const svgList = {
   Forecast,
   EarningSelection,
   Add,
-  marketPsychology,
-  breakingNewsAnalytics
+  MarketPsychology,
+  BreakingNewsAnalytics,
+  StarMine
 };
 
 const iconMap: Record<string, React.ComponentType<any>> = Object.entries(

@@ -105,7 +105,7 @@ export const getMenuStructure = (
     {
       label: t('lsegSelection'),
       key: 'lseg-selection',
-      iconType: 'menu',
+      iconType: 'starMine',
       link: PageURLs.ofLsegSelection()
     },
     {
