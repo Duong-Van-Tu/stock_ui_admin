@@ -236,6 +236,91 @@ export const LsegSelectionTable = () => {
       )
     },
     {
+      title: t('lsegStarmine'),
+      dataIndex: 'starEq',
+      key: 'star',
+      width: 130,
+      align: 'center',
+      render: (_, record) => {
+        const availableStarCount = getAvailableStarCount(record);
+
+        if (!availableStarCount) return '-';
+
+        const starItems = [
+          { label: 'EQ', value: record.starEq },
+          { label: t('combinedAlpha'), value: record.starCombinedAlpha },
+          { label: t('priceMomentum'), value: record.starPriceMomentum },
+          { label: t('valueMomentum'), value: record.starValueMomentum },
+          { label: t('armGlobal'), value: record.starArmGlobal },
+          { label: t('armSector'), value: record.starArmSector },
+          { label: t('armRegion'), value: record.starArmRegion },
+          {
+            label: t('predictedSurpriseEps'),
+            value: record.starPredictedSurpriseEps
+          },
+          { label: t('analystRevUp'), value: record.starNumbAnalystRevUp },
+          {
+            label: t('analystRevDown'),
+            value: record.starNumbAnalystRevDown
+          },
+          { label: t('recommendation'), value: record.starRecommendation },
+          { label: `${t('rsi')} 14`, value: record.starRsi14 },
+          { label: t('beta'), value: record.starBeta },
+          { label: t('analystCount'), value: record.starNumbAnalyst },
+          {
+            label: t('epsSmartEstimate'),
+            value: record.starEpsSmartEstimate
+          },
+          { label: t('epsMean'), value: record.starEpsMean }
+        ];
+
+        return (
+          <Popover
+            color={popoverBackgroundColor}
+            content={
+              <div css={popoverContentStyles}>
+                <div css={popoverHeaderStyles}>
+                  <div css={popoverTitleStyles}>{t('starMetrics')}</div>
+                </div>
+                <div css={popoverBodyStyles}>
+                  <div css={popoverGridStyles}>
+                    {starItems.map((item) => (
+                      <div key={item.label} css={popoverRowStyles}>
+                        <span css={popoverLabelStyles}>{item.label}</span>
+                        <span css={popoverValueStyles}>
+                          {typeof item.value === 'string' ||
+                          typeof item.value === 'number' ||
+                          item.value == null
+                            ? formatStarValue(item.value)
+                            : item.value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            }
+            trigger='click'
+            placement='rightTop'
+            overlayStyle={{
+              padding: 0,
+              ['--antd-arrow-background-color' as any]: popoverBackgroundColor
+            }}
+            overlayInnerStyle={{
+              background: popoverBackgroundColor,
+              border: `1px solid ${popoverBorderColor}`,
+              borderRadius: '0.8rem',
+              padding: 0
+            }}
+          >
+            <Button type='text' css={starButtonStyles}>
+              <span css={starButtonContentStyles}>Open</span>
+            </Button>
+          </Popover>
+        );
+      }
+    },
+    {
       title: t('lsegRanking'),
       dataIndex: 'lsegRanking',
       key: 'lsegRanking',
@@ -338,91 +423,6 @@ export const LsegSelectionTable = () => {
       }),
       align: 'center',
       render: (value) => (isNumeric(value) ? formatNumberShort(value) : '-')
-    },
-    {
-      title: t('lsegStarmine'),
-      dataIndex: 'starEq',
-      key: 'star',
-      width: 130,
-      align: 'center',
-      render: (_, record) => {
-        const availableStarCount = getAvailableStarCount(record);
-
-        if (!availableStarCount) return '-';
-
-        const starItems = [
-          { label: 'EQ', value: record.starEq },
-          { label: t('combinedAlpha'), value: record.starCombinedAlpha },
-          { label: t('priceMomentum'), value: record.starPriceMomentum },
-          { label: t('valueMomentum'), value: record.starValueMomentum },
-          { label: t('armGlobal'), value: record.starArmGlobal },
-          { label: t('armSector'), value: record.starArmSector },
-          { label: t('armRegion'), value: record.starArmRegion },
-          {
-            label: t('predictedSurpriseEps'),
-            value: record.starPredictedSurpriseEps
-          },
-          { label: t('analystRevUp'), value: record.starNumbAnalystRevUp },
-          {
-            label: t('analystRevDown'),
-            value: record.starNumbAnalystRevDown
-          },
-          { label: t('recommendation'), value: record.starRecommendation },
-          { label: `${t('rsi')} 14`, value: record.starRsi14 },
-          { label: t('beta'), value: record.starBeta },
-          { label: t('analystCount'), value: record.starNumbAnalyst },
-          {
-            label: t('epsSmartEstimate'),
-            value: record.starEpsSmartEstimate
-          },
-          { label: t('epsMean'), value: record.starEpsMean }
-        ];
-
-        return (
-          <Popover
-            color={popoverBackgroundColor}
-            content={
-              <div css={popoverContentStyles}>
-                <div css={popoverHeaderStyles}>
-                  <div css={popoverTitleStyles}>{t('starMetrics')}</div>
-                </div>
-                <div css={popoverBodyStyles}>
-                  <div css={popoverGridStyles}>
-                    {starItems.map((item) => (
-                      <div key={item.label} css={popoverRowStyles}>
-                        <span css={popoverLabelStyles}>{item.label}</span>
-                        <span css={popoverValueStyles}>
-                          {typeof item.value === 'string' ||
-                          typeof item.value === 'number' ||
-                          item.value == null
-                            ? formatStarValue(item.value)
-                            : item.value}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            }
-            trigger='click'
-            placement='rightTop'
-            overlayStyle={{
-              padding: 0,
-              ['--antd-arrow-background-color' as any]: popoverBackgroundColor
-            }}
-            overlayInnerStyle={{
-              background: popoverBackgroundColor,
-              border: `1px solid ${popoverBorderColor}`,
-              borderRadius: '0.8rem',
-              padding: 0
-            }}
-          >
-            <Button type='text' css={starButtonStyles}>
-              <span css={starButtonContentStyles}>Open</span>
-            </Button>
-          </Popover>
-        );
-      }
     },
     {
       title: t('priceUp'),
