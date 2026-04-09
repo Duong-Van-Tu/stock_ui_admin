@@ -139,6 +139,7 @@ export const fieldMapping: Record<string, string> = {
   AIRecommendation: 'ai_rec',
   AIRecommendationSignal: 'ai_recommendation',
   AIExplain: 'ai_explain',
+  lsegRanking: 'lseg_ranking',
   previousClose: 'prev_close',
   lowest50: 'lowest_50',
   changeLowest50: 'change_pct_lowest_50',

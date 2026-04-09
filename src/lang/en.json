@@ -612,6 +612,10 @@
   "lsegSelectionDescription": "LSEG Starmine page",
   "star": "Star",
   "lsegStarmine": "LSEG Starmine",
+  "lsegRanking": "LSEG Ranking",
+  "lsegRankingSummary": "LSEG Ranking Summary",
+  "marketPsychSummary": "Market Psych Summary",
+  "lsegNewsSummary": "LSEG News Summary",
   "starMetrics": "Star Metrics",
   "combinedAlpha": "Combined Alpha",
   "valueMomentum": "Value Momentum",
@@ -655,6 +659,6 @@
   "priceMomentum": "Price Momentum",
   "news1dScore": "News 1D Score",
   "news3dScore": "News 3D Score",
-  "negativeArticles12h": "News Negative Articles (12h)",
+  "negativeArticles12h": "Negative News 12h",
   "topFlag": "Top"
 }

@@ -4,6 +4,10 @@ type LsegSelection = {
   ric: string;
   symbol: string;
   company: string;
+  lsegRanking: string | null;
+  lsegRankingSummary: string | null;
+  marketPsychSummary: string | null;
+  lsegNewsSummary: string | null;
   sector: string | null;
   industry: string | null;
   marketCapSelection: number | null;

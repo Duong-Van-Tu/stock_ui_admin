@@ -36,6 +36,7 @@ import { Icon } from '../icons';
 import { DateTimeCell } from './columns/date-time-cell.column';
 import { useThemeMode } from '@/providers/theme.provider';
 import { useSearchParams } from 'next/navigation';
+import EllipsisText from '../ellipsis-text';
 
 const renderSentimentCell = (value: number | null | undefined) => {
   if (!isNumeric(value)) return '-';
@@ -51,6 +52,33 @@ const renderSentimentCell = (value: number | null | undefined) => {
     </PositiveNegativeText>
   );
 };
+
+const renderTextCell = (value: string | null | undefined) => {
+  if (!value?.trim()) return '-';
+
+  return value;
+};
+
+const parseSummaryLines = (value: string) =>
+  value
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const separatorIndex = line.indexOf(':');
+
+      if (separatorIndex === -1) {
+        return {
+          label: line,
+          value: '-'
+        };
+      }
+
+      return {
+        label: line.slice(0, separatorIndex).trim(),
+        value: line.slice(separatorIndex + 1).trim() || '-'
+      };
+    });
 
 export const LsegSelectionTable = () => {
   const t = useTranslations();
@@ -130,6 +158,54 @@ export const LsegSelectionTable = () => {
     });
   }, [fetchLsegSelection, pagination.currentPage, pagination.pageSize]);
 
+  const renderSummaryPopoverCell = useCallback(
+    (title: string, value: string | null | undefined) => {
+      if (!value?.trim()) return '-';
+
+      const summaryItems = parseSummaryLines(value);
+
+      return (
+        <Popover
+          color={popoverBackgroundColor}
+          content={
+            <div css={popoverContentStyles}>
+              <div css={popoverHeaderStyles}>
+                <div css={popoverTitleStyles}>{title}</div>
+              </div>
+              <div css={popoverBodyStyles}>
+                <div css={popoverGridStyles}>
+                  {summaryItems.map((item, index) => (
+                    <div key={`${item.label}-${index}`} css={popoverRowStyles}>
+                      <span css={popoverLabelStyles}>{item.label}</span>
+                      <span css={popoverValueStyles}>{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          }
+          trigger='click'
+          placement='rightTop'
+          overlayStyle={{
+            padding: 0,
+            ['--antd-arrow-background-color' as any]: popoverBackgroundColor
+          }}
+          overlayInnerStyle={{
+            background: popoverBackgroundColor,
+            border: `1px solid ${popoverBorderColor}`,
+            borderRadius: '0.8rem',
+            padding: 0
+          }}
+        >
+          <Button type='text' css={starButtonStyles}>
+            <span css={starButtonContentStyles}>Open</span>
+          </Button>
+        </Popover>
+      );
+    },
+    [popoverBackgroundColor, popoverBorderColor]
+  );
+
   const columns: TableColumnsType<LsegSelection> = [
     {
       title: t('stt'),
@@ -152,30 +228,74 @@ export const LsegSelectionTable = () => {
       )
     },
     {
+      title: t('lsegRanking'),
+      dataIndex: 'lsegRanking',
+      key: 'lsegRanking',
+      width: 130,
+      sorter: true,
+      showSorterTooltip: false,
+      sortOrder: sortField === 'lsegRanking' ? sortType : null,
+      onHeaderCell: () => ({
+        onClick: () => handleSortOrder('lsegRanking')
+      }),
+      align: 'center',
+      render: renderTextCell
+    },
+    {
+      title: t('lsegRankingSummary'),
+      dataIndex: 'lsegRankingSummary',
+      key: 'lsegRankingSummary',
+      width: 180,
+      align: 'center',
+      render: (value) =>
+        renderSummaryPopoverCell(t('lsegRankingSummary'), value)
+    },
+    {
+      title: t('marketPsychSummary'),
+      dataIndex: 'marketPsychSummary',
+      key: 'marketPsychSummary',
+      width: 180,
+      align: 'center',
+      render: (value) =>
+        renderSummaryPopoverCell(t('marketPsychSummary'), value)
+    },
+    {
+      title: t('lsegNewsSummary'),
+      dataIndex: 'lsegNewsSummary',
+      key: 'lsegNewsSummary',
+      width: 180,
+      align: 'center',
+      render: (value) => renderSummaryPopoverCell(t('lsegNewsSummary'), value)
+    },
+    {
       title: t('sector'),
       dataIndex: 'sector',
       key: 'sector',
-      width: 180,
+      width: 200,
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'sector' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('sector')
       }),
-      render: (value) => value || '-'
+      align: 'left',
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
     },
     {
       title: t('industry'),
       dataIndex: 'industry',
       key: 'industry',
-      width: 260,
+      width: 180,
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'industry' ? sortType : null,
       onHeaderCell: () => ({
         onClick: () => handleSortOrder('industry')
       }),
-      render: (value) => value || '-'
+      align: 'left',
+      render: (value) =>
+        value ? <EllipsisText text={value} maxLines={2} /> : '-'
     },
     {
       title: t('marketCap'),
@@ -212,7 +332,7 @@ export const LsegSelectionTable = () => {
       title: t('lsegStarmine'),
       dataIndex: 'starEq',
       key: 'star',
-      width: 110,
+      width: 130,
       align: 'center',
       render: (_, record) => {
         const availableStarCount = getAvailableStarCount(record);
@@ -297,7 +417,7 @@ export const LsegSelectionTable = () => {
       title: t('priceUp'),
       dataIndex: 'marketPsychPriceUp',
       key: 'marketPsychPriceUp',
-      width: 120,
+      width: 100,
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'marketPsychPriceUp' ? sortType : null,
@@ -311,7 +431,7 @@ export const LsegSelectionTable = () => {
       title: t('priceMomentum'),
       dataIndex: 'marketPsychPriceMomentum',
       key: 'marketPsychPriceMomentum',
-      width: 140,
+      width: 150,
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'marketPsychPriceMomentum' ? sortType : null,
@@ -353,7 +473,7 @@ export const LsegSelectionTable = () => {
       title: t('news1dScore'),
       dataIndex: 'news1dScore',
       key: 'news1dScore',
-      width: 130,
+      width: 140,
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'news1dScore' ? sortType : null,
@@ -367,7 +487,7 @@ export const LsegSelectionTable = () => {
       title: t('news3dScore'),
       dataIndex: 'news3dScore',
       key: 'news3dScore',
-      width: 130,
+      width: 140,
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'news3dScore' ? sortType : null,
@@ -381,7 +501,7 @@ export const LsegSelectionTable = () => {
       title: t('negativeArticles12h'),
       dataIndex: 'newsNegativeArticleLast12h',
       key: 'newsNegativeArticleLast12h',
-      width: 150,
+      width: 170,
       sorter: true,
       showSorterTooltip: false,
       sortOrder: sortField === 'newsNegativeArticleLast12h' ? sortType : null,
@@ -448,8 +568,8 @@ export const LsegSelectionTable = () => {
           dataSource={data}
           loading={loading}
           scroll={{
-            x: 2200,
-            y: data.length > 0 ? height - 268 : undefined
+            x: 2900,
+            y: data.length > 0 ? height - 246 : undefined
           }}
           sortDirections={['descend', 'ascend']}
           locale={{
@@ -611,6 +731,8 @@ const popoverLabelStyles = css`
 const popoverValueStyles = css`
   text-align: right;
   font-weight: 600;
+  white-space: pre-wrap;
+  word-break: break-word;
 `;
 
 const newsNegativeValueStyles = (isNegative: boolean) => css`

@@ -612,6 +612,10 @@
   "lsegSelectionDescription": "Trang LSEG Starmine",
   "star": "Star",
   "lsegStarmine": "LSEG Starmine",
+  "lsegRanking": "Xếp hạng LSEG",
+  "lsegRankingSummary": "Tóm tắt xếp hạng LSEG",
+  "marketPsychSummary": "Tóm tắt tâm lý thị trường",
+  "lsegNewsSummary": "Tóm tắt tin tức LSEG",
   "starMetrics": "Chỉ số Star",
   "combinedAlpha": "Combined Alpha",
   "valueMomentum": "Động lượng giá trị",
@@ -655,6 +659,6 @@
   "priceMomentum": "Động lượng giá",
   "news1dScore": "Điểm tin tức 1 ngày",
   "news3dScore": "Điểm tin tức 3 ngày",
-  "negativeArticles12h": "Số bài tiêu cực (12h)",
+  "negativeArticles12h": "Tin xấu 12h",
   "topFlag": "Top"
 }
