@@ -244,15 +244,7 @@ export const LsegSelectionTable = () => {
             label: t('epsSmartEstimate'),
             value: record.starEpsSmartEstimate
           },
-          { label: t('epsMean'), value: record.starEpsMean },
-          {
-            label: t('updatedAt'),
-            value: record.starUpdateOn ? (
-              <DateTimeCell value={record.starUpdateOn} />
-            ) : (
-              '-'
-            )
-          }
+          { label: t('epsMean'), value: record.starEpsMean }
         ];
 
         return (
@@ -260,20 +252,24 @@ export const LsegSelectionTable = () => {
             color={popoverBackgroundColor}
             content={
               <div css={popoverContentStyles}>
-                <div css={popoverTitleStyles}>{t('starMetrics')}</div>
-                <div css={popoverGridStyles}>
-                  {starItems.map((item) => (
-                    <div key={item.label} css={popoverRowStyles}>
-                      <span css={popoverLabelStyles}>{item.label}</span>
-                      <span css={popoverValueStyles}>
-                        {typeof item.value === 'string' ||
-                        typeof item.value === 'number' ||
-                        item.value == null
-                          ? formatStarValue(item.value)
-                          : item.value}
-                      </span>
-                    </div>
-                  ))}
+                <div css={popoverHeaderStyles}>
+                  <div css={popoverTitleStyles}>{t('starMetrics')}</div>
+                </div>
+                <div css={popoverBodyStyles}>
+                  <div css={popoverGridStyles}>
+                    {starItems.map((item) => (
+                      <div key={item.label} css={popoverRowStyles}>
+                        <span css={popoverLabelStyles}>{item.label}</span>
+                        <span css={popoverValueStyles}>
+                          {typeof item.value === 'string' ||
+                          typeof item.value === 'number' ||
+                          item.value == null
+                            ? formatStarValue(item.value)
+                            : item.value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             }
@@ -291,15 +287,7 @@ export const LsegSelectionTable = () => {
             }}
           >
             <Button type='text' css={starButtonStyles}>
-              <span css={starButtonContentStyles}>
-                <Icon
-                  icon='aiStar'
-                  width={16}
-                  height={16}
-                  fill='var(--primary-color)'
-                />
-                <span>{availableStarCount}</span>
-              </span>
+              <span css={starButtonContentStyles}>Open</span>
             </Button>
           </Popover>
         );
@@ -578,13 +566,22 @@ const starButtonContentStyles = css`
 
 const popoverContentStyles = css`
   width: min(34rem, 80vw);
+`;
+
+const popoverHeaderStyles = css`
   padding: 1.2rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
 `;
 
 const popoverTitleStyles = css`
   font-size: 1.4rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+`;
+
+const popoverBodyStyles = css`
+  padding: 1.2rem;
+  max-height: min(42rem, calc(100vh - 12rem));
+  overflow-y: auto;
 `;
 
 const popoverGridStyles = css`

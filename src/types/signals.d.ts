@@ -104,6 +104,7 @@ type Signal = {
   sentiment: number;
   impactScore: number;
   storyId?: string;
+  lsegStarmine?: string | null;
 };
 
 type AlertLogsFilter = Filter & {

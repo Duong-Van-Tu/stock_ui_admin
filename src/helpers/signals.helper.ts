@@ -10,6 +10,86 @@ import { toNumber } from 'lodash';
 
 const UNUSED_IDS = [4, 7, 8];
 
+export type LsegStarmineItem =
+  | { type: 'metric'; label: string; value: string }
+  | { type: 'text'; value: string };
+
+export type LsegStarmineSection = {
+  title?: string;
+  items: LsegStarmineItem[];
+};
+
+const getDisplayText = (value: unknown) => {
+  if (value == null) return '-';
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    return trimmed === '' ? '-' : trimmed;
+  }
+
+  return String(value);
+};
+
+export const parseLsegStarmine = (value: unknown): LsegStarmineSection[] => {
+  const text = getDisplayText(value);
+  if (text === '-') return [];
+
+  const sections: LsegStarmineSection[] = [];
+  let currentSection: LsegStarmineSection = { items: [] };
+
+  const pushCurrentSection = () => {
+    if (currentSection.title || currentSection.items.length > 0) {
+      sections.push(currentSection);
+    }
+  };
+
+  text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .forEach((line) => {
+      const separatorIndex = line.indexOf(':');
+
+      if (separatorIndex === -1) {
+        currentSection.items.push({ type: 'text', value: line });
+        return;
+      }
+
+      const label = line.slice(0, separatorIndex).trim();
+      const rawValue = line.slice(separatorIndex + 1).trim();
+      const normalizedLabel = label.toLowerCase();
+
+      if (normalizedLabel === 'updated at') {
+        return;
+      }
+
+      const isSectionTitle =
+        rawValue === '' &&
+        label === label.toUpperCase() &&
+        /^[A-Z0-9/&()\s-]+$/.test(label) &&
+        label.length <= 12;
+
+      if (isSectionTitle) {
+        pushCurrentSection();
+        currentSection = { title: label, items: [] };
+        return;
+      }
+
+      currentSection.items.push({
+        type: 'metric',
+        label,
+        value: rawValue || '-'
+      });
+    });
+
+  pushCurrentSection();
+  return sections;
+};
+
+export const hasLsegStarmineData = (value: unknown) =>
+  parseLsegStarmine(value).some((section) =>
+    section.items.some((item) => item.value.trim() !== '-')
+  );
+
 export const transformStrategyData = (strategies: any[]): Strategies => {
   return strategies
     .filter((strategy) => !UNUSED_IDS.includes(strategy.id))
@@ -166,7 +246,8 @@ export const transformSignalsData = (signals: any[]): Signal[] => {
       sentiment: scaleScore(stock.sentiment),
       articleScore: scaleScore(stock[fieldMapping.articleScore]),
       impactScore: scaleScore(stock[fieldMapping.impactScore]),
-      storyId: co?.newsId
+      storyId: co?.newsId,
+      lsegStarmine: stock[fieldMapping.lsegStarmine]
     } as Signal;
   });
 };

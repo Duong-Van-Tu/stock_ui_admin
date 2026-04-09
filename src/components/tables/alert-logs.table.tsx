@@ -6,6 +6,7 @@ import {
   Badge,
   Button,
   Dropdown,
+  Popover,
   Segmented,
   Space,
   Table,
@@ -71,7 +72,9 @@ import PriceRangeSlider from '../charts/price-range.chart';
 import { defaultApiFetcher } from '@/utils/api-instances';
 import {
   detailColumnKeys,
+  hasLsegStarmineData,
   mobileColumnKeys,
+  parseLsegStarmine,
   transformSignalsData
 } from '@/helpers/signals.helper';
 import dayjs from 'dayjs';
@@ -301,6 +304,63 @@ export const AlertLogsTable = ({
       }
     },
     [modal]
+  );
+
+  const renderLsegStarmineContent = useCallback(
+    (record: Signal) => {
+      const sections = parseLsegStarmine(record.lsegStarmine);
+
+      return (
+        <div css={lsegStarminePopoverStyles}>
+          <div css={lsegStarminePopoverHeaderStyles}>
+            <div css={lsegStarminePopoverTitleStyles}>{t('starMetrics')}</div>
+          </div>
+          <div css={lsegStarminePopoverBodyStyles}>
+            {sections.map((section, sectionIndex) => (
+              <div
+                key={`${record.id}-${section.title || 'section'}-${sectionIndex}`}
+                css={lsegStarmineSectionStyles}
+              >
+                {section.title ? (
+                  <div css={lsegStarmineSectionTitleStyles}>
+                    {section.title}
+                  </div>
+                ) : null}
+                <div css={lsegStarmineSectionListStyles}>
+                  {section.items.map((item, itemIndex) =>
+                    item.type === 'metric' ? (
+                      <div
+                        key={`${item.label}-${itemIndex}`}
+                        css={lsegStarmineMetricRowStyles}
+                      >
+                        <span css={lsegStarmineMetricLabelStyles}>
+                          {item.label}
+                        </span>
+                        <span
+                          css={lsegStarmineMetricValueStyles(
+                            item.value === '-'
+                          )}
+                        >
+                          {item.value}
+                        </span>
+                      </div>
+                    ) : (
+                      <div
+                        key={`${item.value}-${itemIndex}`}
+                        css={lsegStarmineTextRowStyles}
+                      >
+                        {item.value}
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    },
+    [t]
   );
 
   useEffect(() => {
@@ -570,15 +630,47 @@ export const AlertLogsTable = ({
 
         return (
           <Button
-            type='link'
-            block
+            type='text'
+            css={lsegStarmineButtonStyles}
             loading={!!storyLoadingMap[value]}
             onClick={() => handleOpenStoryModal(record)}
           >
-            Story
+            <span css={lsegStarmineButtonContentStyles}>Story</span>
           </Button>
         );
       }
+    },
+    {
+      title: t('lsegStarmine'),
+      dataIndex: 'lsegStarmine',
+      key: 'lsegStarmine',
+      width: 120,
+      align: 'center',
+      render: (value, record) =>
+        hasLsegStarmineData(value) ? (
+          <Popover
+            content={renderLsegStarmineContent(record)}
+            trigger='click'
+            placement='leftTop'
+            overlayStyle={{
+              padding: 0,
+              ['--antd-arrow-background-color' as any]:
+                'var(--surface-elevated-color)'
+            }}
+            overlayInnerStyle={{
+              background: 'var(--surface-elevated-color)',
+              border: '1px solid var(--border-light-color)',
+              borderRadius: '0.8rem',
+              padding: 0
+            }}
+          >
+            <Button type='text' css={lsegStarmineButtonStyles}>
+              <span css={lsegStarmineButtonContentStyles}>Open</span>
+            </Button>
+          </Popover>
+        ) : (
+          '-'
+        )
     },
     {
       title: 'Article Score',
@@ -761,10 +853,12 @@ export const AlertLogsTable = ({
             onClick={() =>
               modal.openModal(<AIExplain symbol={record.symbol} text={value} />)
             }
-            type='link'
-            block
+            type='text'
+            css={lsegStarmineButtonStyles}
           >
-            {t('viewDetails')}
+            <span css={lsegStarmineButtonContentStyles}>
+              {t('viewDetails')}
+            </span>
           </Button>
         ) : (
           '-'
@@ -828,10 +922,12 @@ export const AlertLogsTable = ({
                 />
               )
             }
-            type='link'
-            block
+            type='text'
+            css={lsegStarmineButtonStyles}
           >
-            {t('viewDetails')}
+            <span css={lsegStarmineButtonContentStyles}>
+              {t('viewDetails')}
+            </span>
           </Button>
         ) : (
           '-'
@@ -2126,6 +2222,112 @@ const storyModalStyles = css`
   p {
     margin-bottom: 0;
   }
+`;
+
+const lsegStarminePopoverStyles = css`
+  width: min(34rem, 80vw);
+`;
+
+const lsegStarminePopoverHeaderStyles = css`
+  padding: 1.2rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+`;
+
+const lsegStarminePopoverTitleStyles = css`
+  font-size: 1.4rem;
+  font-weight: 700;
+`;
+
+const lsegStarminePopoverBodyStyles = css`
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1.2rem;
+  max-height: min(42rem, calc(100vh - 12rem));
+  overflow-y: auto;
+`;
+
+const lsegStarmineSectionStyles = css`
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+
+  &:not(:last-child) {
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  }
+`;
+
+const lsegStarmineSectionTitleStyles = css`
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: var(--primary-color);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+`;
+
+const lsegStarmineSectionListStyles = css`
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+`;
+
+const lsegStarmineMetricRowStyles = css`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: start;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  padding-bottom: 0.8rem;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+`;
+
+const lsegStarmineMetricLabelStyles = css`
+  color: var(--text-secondary-color);
+  line-height: 1.45;
+`;
+
+const lsegStarmineMetricValueStyles = (isEmpty: boolean) => css`
+  color: ${isEmpty
+    ? 'var(--text-tertiary-color, var(--text-secondary-color))'
+    : 'var(--text-color)'};
+  font-weight: 600;
+  text-align: right;
+  line-height: 1.45;
+`;
+
+const lsegStarmineTextRowStyles = css`
+  white-space: pre-wrap;
+  line-height: 1.5;
+  color: var(--text-color);
+`;
+
+const lsegStarmineButtonStyles = css`
+  color: var(--text-color);
+  padding: 0 !important;
+  height: auto;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
+  }
+`;
+
+const lsegStarmineButtonContentStyles = css`
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+  color: var(--primary-color);
 `;
 
 const titleContainerStyles = css`
