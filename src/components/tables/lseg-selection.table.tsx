@@ -59,6 +59,14 @@ const renderTextCell = (value: string | null | undefined) => {
   return value;
 };
 
+const normalizeSummaryValue = (value: string | null | undefined) => {
+  const trimmedValue = value?.trim();
+
+  if (!trimmedValue || trimmedValue.toLowerCase() === 'nan') return '-';
+
+  return trimmedValue;
+};
+
 const parseSummaryLines = (value: string) =>
   value
     .split('\n')
@@ -76,7 +84,7 @@ const parseSummaryLines = (value: string) =>
 
       return {
         label: line.slice(0, separatorIndex).trim(),
-        value: line.slice(separatorIndex + 1).trim() || '-'
+        value: normalizeSummaryValue(line.slice(separatorIndex + 1))
       };
     });
 
